@@ -2,6 +2,14 @@
 
 namespace App\Models;
 
+// VISION CUBE SOFTWARE CO. 
+// Model: User
+// Describe the functionalities of the user of document tracking system.
+// It contain the basic information, their roles in the system. 
+// Roles are important to establish hierarchy of access into the system.
+// Contributor/s: 
+// Calulut, Joshua Miguel C.
+
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
