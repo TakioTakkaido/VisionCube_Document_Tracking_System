@@ -11,6 +11,9 @@ namespace App\Models;
 // Calulut, Joshua Miguel C.
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Role;
+use Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -56,6 +59,6 @@ class User extends Authenticatable
 
     // Verify if user is the admin
     public function isAdmin(){
-        return $this->role === 'admin';
+        return $this->role === Role::ADMIN;
     }
 }
