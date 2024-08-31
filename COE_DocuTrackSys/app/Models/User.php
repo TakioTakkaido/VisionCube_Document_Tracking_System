@@ -12,7 +12,9 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Role;
+// Enums Used
+use App\UserRole;
+
 use Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -59,6 +61,6 @@ class User extends Authenticatable
 
     // Verify if user is the admin
     public function isAdmin(){
-        return $this->role === Role::ADMIN;
+        return $this->role === UserRole::ADMIN;
     }
 }
