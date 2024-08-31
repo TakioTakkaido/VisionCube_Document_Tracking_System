@@ -11,5 +11,7 @@ namespace App;
 enum Role: string
 {
     case ADMIN = 'admin';
-    case USER = 'user';
+    case CLERK = 'clerk';
+    case ASST = 'asst';
+    case ARCHIVES = 'archives';
 }
