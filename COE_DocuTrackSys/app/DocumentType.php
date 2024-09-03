@@ -12,5 +12,6 @@ enum DocumentType : string
 {
     case MEMO = 'memo';
     case LETTER = 'letter';
+    case REQUISITION = 'requisition';
     case DEFAULT = 'default';
 }
