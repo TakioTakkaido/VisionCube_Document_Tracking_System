@@ -11,7 +11,11 @@ namespace App;
 enum DocumentStatus : string
 {
     case APPROVED = 'approved';
+    case PENDING = 'pending';
     case REVISION = 'revision';
-    case REJECTED = 'rejected';
+    case DEFERRED = 'deferred';
+    case ARCHIVED = 'archived';
+    case OUTGOING = 'outgoing';
+    case INCOMING = 'incoming';
     case DEFAULT = 'default';
 }
