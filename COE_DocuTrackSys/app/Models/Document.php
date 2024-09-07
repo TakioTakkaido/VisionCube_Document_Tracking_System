@@ -63,5 +63,4 @@ class Document extends Model
     public function versions(){
         return $this->hasMany(DocumentVersion::class);
     }
-
 }
