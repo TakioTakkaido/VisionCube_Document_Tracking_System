@@ -12,7 +12,6 @@ enum UserRole: string
 {
     case ADMIN = 'admin';
     case CLERK = 'clerk';
-    case ASST = 'asst';
     case ARCHIVES = 'archives';
     case DEFAULT = 'default';
 }
