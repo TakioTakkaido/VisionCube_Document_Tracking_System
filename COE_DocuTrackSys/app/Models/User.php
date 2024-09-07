@@ -63,4 +63,12 @@ class User extends Authenticatable
     public function isAdmin(){
         return $this->role === UserRole::ADMIN;
     }
+
+    // Below are the relationships of Document to other models in the system.
+    // Document belongs to one User
+    // Document has many DocumentVersions
+
+    public function documents(){
+        return $this->hasMany(Document::class);
+    }
 }
