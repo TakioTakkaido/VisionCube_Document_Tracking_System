@@ -57,7 +57,7 @@ class Document extends Model
     // Document has many DocumentVersions
 
     public function user(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Account::class);
     }
 
     public function versions(){
