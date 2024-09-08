@@ -55,8 +55,9 @@ class AccountController extends Controller
     {
         // Validate the login credentials
         $credentials = $request->only('email', 'password');
-        
-        if (Auth::guard('web')->attempt($credentials)) {
+        $remember = $request->has('remember');
+
+        if (Auth::guard('web')->attempt($credentials, $remember)) {
             // Authentication passed, redirect to dashboard
             return redirect()->intended(route('account.dashboard'))->with([
                 'success' => 'Login Successful'
@@ -73,11 +74,12 @@ class AccountController extends Controller
     public function loginAdmin(Request $request){
          // Validate the login credentials
          $credentials = $request->only('email', 'password');
-        
-         if (Auth::guard('web')->attempt($credentials)) {
+         $remember = $request->has('remember');
+ 
+         if (Auth::guard('web')->attempt($credentials, $remember)) {
              // Authentication passed, redirect to dashboard
              return redirect()->intended(route('account.dashboard'))->with([
-                 'success' => 'Login Admin Successful'
+                 'success' => 'Login Successful'
              ]);
          }
          

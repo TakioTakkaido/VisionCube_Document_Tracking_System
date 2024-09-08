@@ -25,7 +25,7 @@
         <i class='bx bxs-lock-alt' ></i>
       </div>
       <div class="remember-forgot">
-        <label><input type="checkbox">Remember Me</label>
+        <label><input type="checkbox" name="remember">Remember Me</label>
         <a href="{{route('account.showForgotPassword')}}">Forgot Password</a>
       </div>
       <button type="submit" class="btn">Login</button>
