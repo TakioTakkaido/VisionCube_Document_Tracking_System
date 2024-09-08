@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Document;
+use App\AccountRole;
+use App\Models\Account;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\Document;
+use Illuminate\Container\Attributes\Auth;
 
-class UserController extends Controller
+class AccountController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('dashboard', [
-            'documents' => Document::with(Auth::user())->get()
-        ]);
+        return view('dashboard');
     }
 
     /**
@@ -32,7 +33,20 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+        ]);
+    
+        Account::create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
+            'role' => AccountRole::DEFAULT
+        ]);
+        
+        return redirect()->route('dashboard')->with('success', 'User created successfully.');
     }
 
     /**

@@ -2,25 +2,12 @@
 
 namespace App\Models;
 
-// VISION CUBE SOFTWARE CO. 
-// Model: User
-// Describe the functionalities of the user of document tracking system.
-// It contain the basic information, their roles in the system. 
-// Roles are important to establish hierarchy of access into the system.
-// Contributor/s: 
-// Calulut, Joshua Miguel C.
-
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
-// Enums Used
-use App\UserRole;
-
-use Attribute;
+use App\AccountRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class Account extends Model
 {
     use HasFactory, Notifiable;
 
@@ -61,7 +48,7 @@ class User extends Authenticatable
 
     // Verify if user is the admin
     public function isAdmin(){
-        return $this->role === UserRole::ADMIN;
+        return $this->role === AccountRole::ADMIN;
     }
 
     // Below are the relationships of Document to other models in the system.
@@ -72,3 +59,4 @@ class User extends Authenticatable
         return $this->hasMany(Document::class);
     }
 }
+
