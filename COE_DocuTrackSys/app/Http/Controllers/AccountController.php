@@ -69,6 +69,24 @@ class AccountController extends Controller
         ]);
     }
 
+    // Log In Admin
+    public function loginAdmin(Request $request){
+         // Validate the login credentials
+         $credentials = $request->only('email', 'password');
+        
+         if (Auth::guard('web')->attempt($credentials)) {
+             // Authentication passed, redirect to dashboard
+             return redirect()->intended(route('account.dashboard'))->with([
+                 'success' => 'Login Admin Successful'
+             ]);
+         }
+         
+         // Authentication failed, redirect back with an error message
+         return redirect()->route('account.showLogInAdmin')->withErrors([
+             'email' => 'The provided credentials do not match our records.',
+         ]);
+    }
+
     // Forgot Password
     public function forgotPassword(Request $request){
         $request->validate([

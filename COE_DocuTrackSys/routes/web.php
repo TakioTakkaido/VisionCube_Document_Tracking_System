@@ -27,6 +27,14 @@ Route::get('/account/login', function () {
 // Log In Account
 Route::post('/account/login', [AccountController::class, 'login'])->name('account.login');
 
+// Show Log In Admin Form
+Route::get('/account/login/admin', function () {
+    return view('loginAdmin');
+})->name('account.showLogInAdmin');
+
+// Log In Admin
+Route::post('/account/login/admin', [AccountController::class, 'loginAdmin'])->name('account.loginAdmin');
+
 // Show Forgot Password Form
 Route::get('/account/forgot-password', function(){
     return view('forgotPassword');
