@@ -24,17 +24,18 @@
         <input type="password" name = "password" placeholder="Password" required>
         <i class='bx bxs-lock-alt' ></i>
       </div>
-      {{-- <div class="remember-forgot">
+      <div class="remember-forgot">
         <label><input type="checkbox">Remember Me</label>
         <a href="forgotpassword.html">Forgot Password</a>
-      </div> --}}
+      </div>
       <button type="submit" class="btn">Login</button>
       <div class="register-link">
         <p>Dont have an account? <a href="{{route('account.create')}}">Register</a></p>
       </div>
     </form>
   </div>
-
+  
+  {{-- Add html box for error, temporary html --}}
   @if ($errors->any())
     <div class="alert">
       <ul>

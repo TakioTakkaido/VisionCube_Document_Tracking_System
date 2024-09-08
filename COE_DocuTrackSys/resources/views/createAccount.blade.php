@@ -49,6 +49,15 @@ Sanchez, Shane David U.
       <p>Already have an account? <a href="{{ route('account.showLogIn') }}">Login</a></p>
     </div>
   </div>
-  {{-- Add html box for error --}}
+  {{-- Add html box for error, temporary html --}}
+  @if ($errors->any())
+    <div class="alert">
+      <ul>
+        @foreach ($errors->all() as $error)
+          <li>{{ $error }}</li>
+        @endforeach
+      </ul>
+    </div>
+  @endif
 </body>
 </html>
