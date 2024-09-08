@@ -26,7 +26,7 @@
       </div>
       <div class="remember-forgot">
         <label><input type="checkbox">Remember Me</label>
-        <a href="forgotpassword.html">Forgot Password</a>
+        <a href="{{route('account.forgotPassword')}}">Forgot Password</a>
       </div>
       <button type="submit" class="btn">Login</button>
       <div class="register-link">
@@ -34,7 +34,7 @@
       </div>
     </form>
   </div>
-  
+
   {{-- Add html box for error, temporary html --}}
   @if ($errors->any())
     <div class="alert">

@@ -35,7 +35,7 @@ class AccountController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:accounts',
             'password' => 'required|string|confirmed|min:8',
             'password_confirmation' => 'required'
         ]);
@@ -67,6 +67,19 @@ class AccountController extends Controller
         return redirect()->route('account.showLogIn')->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ]);
+    }
+
+    // Forgot Password
+    public function forgotPassword(Request $request){
+        $request->validate([
+            'email' => 'required|string|email|max:255|exists:accounts'
+        ]);
+        // Add additional instuction like sending a verification link
+        // that when clicked would redirect to a link that would change the password
+        // and redirect the user to the log in page to input the new password
+
+        // Temporary fix: redirect to login for now
+        return redirect()->route('account.showLogIn');
     }
 
     /**
