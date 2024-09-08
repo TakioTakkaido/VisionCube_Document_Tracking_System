@@ -27,11 +27,11 @@ Sanchez, Shane David U.
       @csrf
       <h1>Create Account</h1>
       <div class="input-box">
-        <input type="text" name="name" placeholder="Username" required>
+        <input type="text" name="name" placeholder="Username" autocomplete="name" required>
         <i class='bx bxs-user'></i>
       </div>
       <div class="input-box">
-        <input type="email" name="email" placeholder="Email" required>
+        <input type="email" name="email" placeholder="Email" autocomplete="email" required>
         <i class='bx bx-mail-send'></i>
       </div>
       <div class="input-box">
@@ -46,7 +46,7 @@ Sanchez, Shane David U.
       <button type="submit" class="btn">Register</button>
     </form>
     <div class="register-link">
-      <p>Already have an account? <a href="login.html">Login</a></p>
+      <p>Already have an account? <a href="{{ route('account.showLogIn') }}">Login</a></p>
     </div>
   </div>
   {{-- Check Password --}}

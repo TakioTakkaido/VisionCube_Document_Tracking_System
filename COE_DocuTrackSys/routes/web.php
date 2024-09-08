@@ -14,13 +14,21 @@ use Illuminate\Support\Facades\Route;
 // Log In page
 Route::get('/', function(){
     return view('createAccount');
-});
+})->name('account.create');
 
 // Create Account
 Route::post('/account/store', [AccountController::class, 'store'])->name('account.store');
 
+Route::get('/account/login', function () {
+    return view('login');
+})->name('account.showLogIn');
+
+// Log In Account
+Route::post('/account/login', [AccountController::class, 'login'])->name('account.login');
+
+// Dashboard
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->name('dashboard');
+})->name('account.dashboard');
 
 require __DIR__.'/auth.php';
