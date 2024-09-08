@@ -38,10 +38,10 @@ Sanchez, Shane David U.
         <input type="password" name="password" placeholder="Password" required>
         <i class='bx bxs-lock-alt'></i>
       </div>
-      {{-- <div class="input-box">
-        <input type="password" name="confirmpassword" placeholder="Confirm Password" required>
+      <div class="input-box">
+        <input type="password" name="password_confirmation" placeholder="Confirm Password" required>
         <i class='bx bxs-lock-alt'></i>
-      </div> --}}
+      </div>
       <div class="input-box">
       <button type="submit" class="btn">Register</button>
     </form>
@@ -49,17 +49,6 @@ Sanchez, Shane David U.
       <p>Already have an account? <a href="{{ route('account.showLogIn') }}">Login</a></p>
     </div>
   </div>
-  {{-- Check Password --}}
-  {{-- <script>
-    document.getElementById("registrationForm").onsubmit = function() {
-        var password = document.getElementById("password").value;
-        var confirm_password = document.getElementById("confirm_password").value;
-        if (password.length < 8) {
-            alert("Password must be at least 8 characters long");
-            return false;
-        }
-  
-    };
-  </script> --}}
+  {{-- Add html box for error --}}
 </body>
 </html>
