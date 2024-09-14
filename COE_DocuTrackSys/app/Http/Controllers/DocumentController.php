@@ -13,10 +13,14 @@ namespace App\Http\Controllers;
 // Contributor/s: 
 // Calulut, Joshua Miguel C.
 
+use App\AccountRole;
+use App\DocumentCategory;
+use App\DocumentStatus;
 use App\Models\Document;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class DocumentController extends Controller
 {
@@ -46,9 +50,9 @@ class DocumentController extends Controller
             'recipient' => 'required|string|max:255',
             'subject' => 'required|string',
             // 'file' => 'required|file|mimes:pdf,doc,docx',
-            'category' => 'required',
-            'status' => 'required',
-            'assignee' => 'required',
+            'category' => ['required', Rule::in(array_column(DocumentCategory::cases(), 'value'))],
+            'status' => ['required', Rule::in(array_column(DocumentStatus::cases(), 'value'))],
+            'assignee' => ['required', Rule::in(array_column(AccountRole::cases(), 'value'))],
         ], [
             'type.required' => 'Document type is required!',
             'sender.required' => 'Document sender is required!',
@@ -86,12 +90,20 @@ class DocumentController extends Controller
 
     // Display all incoming documents
     public function showIncoming(){
-        // 
+        $incomingDocuments = Document::where('category', DocumentCategory::INCOMING->value)->get();
+
+        return response()->json([
+            'incomingDocuments' => compact('incomingDocuments')
+        ]);
     }
 
     // Display all outgoing documents
     public function showOutgoing(){
-        // 
+        $outgoingDocuments = Document::where('category', DocumentCategory::OUTGOING->value)->get();
+
+        return response()->json([
+            'outgoingDocuments' => compact('outgoingDocuments')
+        ]);
     }
     /**
      * Display the specified resource.
