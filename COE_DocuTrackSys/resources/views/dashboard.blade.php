@@ -8,16 +8,16 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <!--...........TOP BAR.............-->
-
     <div class="top-panel">
             <img src="{{asset('img/COE.png')}}" alt="Logo" class="header-logo">
             <div class="header-text">Document Tracking System</div>
         <div class="profile">
             <div class="account-info">
             <img src="{{asset('img/user-photo.jpg')}}" alt="User Photo" class="account-photo">
-            <p class="account-name">Migs Balulut<a href="#"> </a></p>
+            <p class="account-name">{{$user->name}}<a href="#"> </a></p>
             </div>
         </div>
     </div>
@@ -56,65 +56,90 @@
 <!--..............MODAL FORM....................-->      
 
 <div class="uploadModal" id="uploadModal">
-    <div class="uploadContent">
-        <label for="uploadDocType">Document Type:</label>
-        <input type="text" id="uploadDocType" name="docType" placeholder="Enter the Type of Document">
-        
-        <label for="uploadFrom">From:</label>
-        <input type="text" id="uploadFrom" name="from" placeholder="Enter the Sender's Name/Department">
-
-        <label for="uploadTo">To:</label>
-        <input type="text" id="uploadTo" name="to" placeholder="Enter the Recipient's Name/Department">
-
-        <label for="uploadSubject">Subject:</label>
-        <textarea id="uploadSubject" name="subject" rows="2" placeholder="Enter the Subject of the Document"></textarea>
-
-        <div class="flex-row"> 
-            <div>                 
-                <label for="uploadSoftcopy">Document (Softcopy):</label>
-                <input type="file" id="softcopy" name="softcopy">
-            </div>  
-            <div>
-                <label for="uploadCategory">Category:</label>
-                <select id="uploadCategory" name="category" placeholder="SELEECTT">
-                    <option value="" disabled selected>Select Category</option>
-                    <option value="outgoing">Outgoing</option>
-                    <option value="incoming">Incoming</option>
-                </select>
-                <span class="error" id="categoryError" style="display:none;">This field is required!</span>
+    <form action="{{route('document.store')}}" id="uploadModalForm" method="post">
+        @csrf
+        @method('POST')
+        <div class="uploadContent">
+            <label for="uploadDocType">Document Type:</label>
+            <select id="uploadDocType" name="type" placeholder="Enter the Type of Document">
+                <option value="" disabled selected>Select the Type of Document</option>
+                @foreach ($docTypes as $index => $docType)
+                    @if ($docType->value !== 'default')
+                        <option value="{{$index}}">{{$docType->value}}</option>
+                    @endif
+                @endforeach
+            </select>
+            <span class="error" id="typeError" style="display:none;">This field is required!</span>
+            
+            <label for="uploadFrom">From:</label>
+            <input type="text" id="uploadFrom" name="sender" placeholder="Enter the Sender's Name/Department">
+            <span class="error" id="senderError" style="display:none;">This field is required!</span>
+    
+            <label for="uploadTo">To:</label>
+            <input type="text" id="uploadTo" name="recipient" placeholder="Enter the Recipient's Name/Department">
+            <span class="error" id="recipientError" style="display:none;">This field is required!</span>
+    
+            <label for="uploadSubject">Subject:</label>
+            <textarea id="uploadSubject" name="subject" rows="2" placeholder="Enter the Subject of the Document"></textarea>
+            <span class="error" id="subjectError" style="display:none;">This field is required!</span>
+    
+            <div class="flex-row"> 
+                <div>                 
+                    <label for="uploadSoftcopy">Document (Softcopy):</label>
+                    <input type="file" id="softcopy" name="file">
+                    <span class="error" id="fileError" style="display:none;">This field is required!</span>
+                </div>  
+                <div>
+                    <label for="uploadCategory">Category:</label>
+                    <select id="uploadCategory" name="category" placeholder="SELECT">
+                        <option value="" disabled selected>Select Category</option>
+                        @foreach ($docCategories as $index => $docCategory)
+                            @if ($docCategory->value !== 'default')
+                                <option value="{{$index}}">{{$docCategory->value}}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    @error('record')
+                        
+                    @enderror
+                    <span class="error" id="categoryError" style="display:none;">This field is required!</span>
+                </div>
+            </div>
+    
+            <div class="flex-row">
+                <div>
+                    <label for="uploadStatus">Status:</label>
+                    <select id="uploadStatus" name="status">
+                        <option value="" disabled selected>Select Document Status</option>
+                        @foreach ($docStatuses as $index => $docStatus)
+                            @if ($docStatus->value !== 'default')
+                                <option value="{{$index}}">{{$docStatus->value}}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <span class="error" id="statusError" style="display:none;">This field is required!</span>
+                </div>
+                <div>
+                    <label for="uploadAssignee">Assignee:</label>
+                    <select id="uploadAssignee" name="assignee">
+                        <option value="" disabled selected>Select Assignee</option>
+                        @foreach ($roles as $index => $role)
+                            @if ($role->value !== 'default' && $role->value !== 'Admin')
+                                <option value="{{$index}}">{{$role->value}}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <span class="error" id="assigneeError" style="display:none;">This field is required!</span>
+                </div>
+            </div>
+    
+            <div class="button-group">
+                <button type="button" class="cancel-btn" id="cancelBtn">Cancel</button>
+                <button type="submit" class="submit-btn" id="submitBtn" type="button">Submit</button>
             </div>
         </div>
-
-        <div class="flex-row">
-            <div>
-                <label for="uploadStatus">Status:</label>
-                <select id="uploadStatus" name="status">
-                    <option value="" disabled selected>Current Status</option>
-                    <option value="inprogress">In Progress</option>
-                    <option value="deferred">Deferred</option>   
-                    <option value="voided">Voided</option>
-                    <option value="to-be-revised">To be Revised</option>
-                    <option value="pending">Pending Approval</option>
-                    <option value="accepted">Accepted</option>
-                </select>
-                <span class="error" id="statusError" style="display:none;">This field is required!</span>
-            </div>
-            <div>
-                <label for="uploadAssignee">Assignee:</label>
-                <select id="uploadAssignee" name="assignee">
-                    <option value="" disabled selected>Select Assignee</option>
-                    <option value="clerk1">Clerk</option>
-                    <option value="assistant1">Assistant</option>
-                </select>
-                <span class="error" id="assigneeError" style="display:none;">This field is required!</span>
-            </div>
-        </div>
-
-        <div class="button-group">
-            <button class="cancel-btn" id="cancelBtn">Cancel</button>
-            <button class="submit-btn" id="submitBtn" type="button">Submit</button>
-        </div>
-    </div>
+    </form>
+    
 </div>
          </div>
     </div>
@@ -123,5 +148,6 @@
     <script src="{{asset('js/sidepanel-archived.js')}}"></script>
     <script src="{{asset('js/sidepanel-active.js')}}"></script>
     <script src="{{asset('js/uploadform.js')}}"></script>
+    
 </body>
 </html>
