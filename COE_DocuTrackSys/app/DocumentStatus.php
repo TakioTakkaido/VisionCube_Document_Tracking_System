@@ -10,12 +10,15 @@ namespace App;
 
 enum DocumentStatus : string
 {
-    case DONE = 'done';
-    case ON_PROGRESS = 'on_progress';
-    case TO_BE_CHECKED = 'to_be_checked';
-    case ON_HOLD = 'on_hold';
-    case FOLLOW_UP = 'follow_up';
-    case DEFERRED = 'deferred';
-    case ARCHIVED = 'archived';
+    case ACCEPTED = 'Accepted';
+    case IN_PROGRESS = 'In Progress';
+    case TO_BE_REVISED = 'To Be Revised';
+    case ON_HOLD = 'On Hold';
+    case FOLLOW_UP = 'To Be Followed Up';
+    case DEFERRED = 'Deferred';
+    case ARCHIVED = 'Archived';
+    case VOIDED = 'Voided';
+    case PENDING = 'Pending';
     case DEFAULT = 'default';
+    
 }

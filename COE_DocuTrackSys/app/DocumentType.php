@@ -10,8 +10,8 @@ namespace App;
 
 enum DocumentType : string
 {
-    case MEMO = 'memo';
-    case LETTER = 'letter';
-    case REQUISITION = 'requisition';
+    case MEMO = 'Memoranda';
+    case LETTER = 'Letter';
+    case REQUISITION = 'Requisition';
     case DEFAULT = 'default';
 }
