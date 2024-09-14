@@ -32,7 +32,6 @@ class Document extends Model
     protected $fillable = [
         'type',
         'status',
-        'date_sent',
         'owner_id',
         'file',
         'sender',
