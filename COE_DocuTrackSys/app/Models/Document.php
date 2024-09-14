@@ -27,12 +27,16 @@ class Document extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
         'type',
         'status',
         'date_sent',
         'owner_id',
-        'file'
+        'file',
+        'sender',
+        'recipient',
+        'subject',
+        'assignee',
+        'category'
     ];
 
     // This function is called whenever the document is updated or revised.
