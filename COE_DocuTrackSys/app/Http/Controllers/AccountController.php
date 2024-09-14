@@ -2,6 +2,20 @@
 
 namespace App\Http\Controllers;
 
+// VISION CUBE SOFTWARE CO. 
+// Controller: DocumentController
+// Facilitates the functionalities to access modal data Account
+// made by the requests from the view
+// 
+// It contains:
+// -Storing and creation of account
+// -Validation of the login information inputted by a user
+// -Validation of the login information inputted by an admin user
+// -Sending of verification link whenever the password is forgotten
+// Contributor/s: 
+// Calulut, Joshua Miguel C.
+
+// Enums
 use App\AccountRole;
 use App\DocumentCategory;
 use App\DocumentStatus;

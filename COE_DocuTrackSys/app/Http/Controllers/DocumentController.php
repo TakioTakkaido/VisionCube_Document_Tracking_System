@@ -2,6 +2,17 @@
 
 namespace App\Http\Controllers;
 
+// VISION CUBE SOFTWARE CO. 
+// Controller: DocumentController
+// Facilitates the functionalities to access modal data Document
+// made by the requests from the view
+// 
+// It contains:
+// -Storing and creation of document
+// -Retrieving incoming and outgoing documents
+// Contributor/s: 
+// Calulut, Joshua Miguel C.
+
 use App\Models\Document;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;

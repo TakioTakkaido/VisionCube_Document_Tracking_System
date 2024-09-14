@@ -2,6 +2,15 @@
 
 namespace App\Models;
 
+// VISION CUBE SOFTWARE CO. 
+// Model: Account
+// Represents the account that of the user in
+// COE Document Tracking System. 
+// It contains:
+// -Information relevant to the account
+// Contributor/s: 
+// Calulut, Joshua Miguel C.
+
 use App\AccountRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
