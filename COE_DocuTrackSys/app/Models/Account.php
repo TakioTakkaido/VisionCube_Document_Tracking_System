@@ -33,6 +33,9 @@ class Account extends Authenticatable
         'role'
     ];
 
+    protected $casts = [
+        'role' => AccountRole::class,
+    ];
     /**
      * The attributes that should be hidden for serialization.
      *
