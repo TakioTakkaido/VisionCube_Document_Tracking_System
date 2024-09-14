@@ -229,6 +229,16 @@ body {
     border: 1px solid #ccc;
 }
 
+.uploadContent textarea {
+    resize: none;
+}
+
+.error {
+    color: red !important;
+    font-size: 10px;
+    padding: none;
+}
+
 .error-input{ 
     color: red !important;
     border: 1px solid red;
