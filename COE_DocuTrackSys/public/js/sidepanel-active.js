@@ -61,3 +61,15 @@ document.getElementById('outgoing-button').addEventListener('click', function(ev
 
     xhr.send();
 });
+
+// READ!!
+// Documents follow has these variables
+//     'type',
+//     'status',
+//     'owner_id', DONT DISPLAY
+//     'file', NOT SHOWN YET JUST SAY ITS NULL
+//     'sender',
+//     'recipient',
+//     'subject',
+//     'assignee',
+//     'category'
