@@ -5,16 +5,28 @@
  // Get close button
  const closeBtn = document.getElementById('cancelBtn');
 
+//  Get submit button
  const submitBtn = document.getElementById('submitBtn');
+
+//  Get error boxes
+ const errors = document.querySelectorAll('.error');
 
  // Listen for click on upload button
  uploadBtn.addEventListener('click', function() {
      modal.style.display = 'flex';
+    //  
  });
 
- // Listen for click on close button
+//  Listen for click on close button
  closeBtn.addEventListener('click', function() {
-     modal.style.display = 'none';
+    // Close form
+    modal.style.display = 'none';
+
+    // Remove error spans
+    errors.forEach(function(errorSpan) {
+        errorSpan.style.display = 'none';
+        errorSpan.textContent = '';
+    });
  });
 
  // Close the modal if user clicks outside of it
@@ -24,93 +36,54 @@
      }
  });
 
- document.getElementById('submitBtn').addEventListener('click', function(event) {
-    let isValid = true;
-    
-    // Check Document Type
-    const docType = document.getElementById('uploadDocType');
-    uploadDocType.placeholder = "Enter the type of Document";
-    if (docType.value === '') {
-        uploadDocType.placeholder = "This field is required!"
-        uploadDocType.classList.add('error-input');
-    } else {
-        uploadDocType.placeholder = "This field is required!"
-        uploadDocType.classList.remove('error-input');
-    }
+document.getElementById('submitBtn').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent the default form submission
 
-    // Check From
-    const from = document.getElementById('uploadFrom');
-    const fromError = document.getElementById('fromError');
-    if (from.value === '') {
-        fromError.style.display = 'inline';
-        isValid = false;
-    } else {
-        fromError.style.display = 'none';
-    }
+    // Get the form element
+    var form = document.getElementById('uploadModalForm');
+    var formData = new FormData(form);
 
-    // Check To
-    const to = document.getElementById('uploadTo');
-    const toError = document.getElementById('toError');
-    if (to.value === '') {
-        toError.style.display = 'inline';
-        isValid = false;
-    } else {
-        toError.style.display = 'none';
-    }
+    // Create a new XMLHttpRequest
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', form.action, true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
-    // Check Subject
-    const subject = document.getElementById('uploadSubject');
-    const subjectError = document.getElementById('subjectError');
-    if (subject.value === '') {
-        subjectError.style.display = 'inline';
-        isValid = false;
-    } else {
-        subjectError.style.display = 'none';
-    }
+    // Handle the response
+    xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            // Success response
+            var response = JSON.parse(xhr.responseText);
+            alert(response.success);
+            document.getElementById('uploadModal').style.display = 'none'; // Hide the modal or perform other actions
+        } else {
+            alert("Please check the necessary information in your form, and try again.");
+            // Error response
+            var errorTexts = JSON.parse(xhr.responseText).errors;
+            // Clear previous errors
+            errors.forEach(function(errorSpan) {
+                errorSpan.style.display = 'none';
+                errorSpan.textContent = '';
+            });
 
-    // Check Softcopy
-    const softcopy = document.getElementById('softcopy');
-    const softcopyError = document.getElementById('softcopyError');
-    if (softcopy.value === '') {
-        softcopyError.style.display = 'inline';
-        isValid = false;
-    } else {
-        softcopyError.style.display = 'none';
-    }
+            // Display new errors
+            for (var key in errorTexts) {
+                if (errorTexts.hasOwnProperty(key)) {
+                    var errorId = key + 'Error';
+                    var errorSpan = document.getElementById(errorId);
+                    if (errorSpan) {
+                        errorSpan.textContent = errorTexts[key][0];
+                        errorSpan.style.display = 'block';
+                    }
+                }
+            }
+        }
+    };
 
-    // Check Category
-    const category = document.getElementById('uploadCategory');
-    const categoryError = document.getElementById('categoryError');
-    if (category.value === '') {
-        categoryError.style.display = 'inline';
-        isValid = false;
-    } else {
-        categoryError.style.display = 'none';
-    }
+    // Handle request errors
+    xhr.onerror = function() {
+        console.error('Request failed');
+    };
 
-    // Check Status
-    const status = document.getElementById('uploadStatus');
-    const statusError = document.getElementById('statusError');
-    if (status.value === '') {
-        statusError.style.display = 'inline';
-        isValid = false;
-    } else {
-        statusError.style.display = 'none';
-    }
-
-    // Check Assignee
-    const assignee = document.getElementById('uploadAssignee');
-    const assigneeError = document.getElementById('assigneeError');
-    if (assignee.value === '') {
-        assigneeError.style.display = 'inline';
-        isValid = false;
-    } else {
-        assigneeError.style.display = 'none';
-    }
-
-    // If not valid, prevent form submission
-    if (!isValid) {
-        alert('Please fill out all required fields.');
-        event.preventDefault();
-    }
+    // Send the request
+    xhr.send(formData);
 });
