@@ -1,3 +1,17 @@
+{{-- 
+VISION CUBE SOFTWARE CO. 
+
+View: Forgot Password
+The page that would change the user's password by entering their respective email
+It contains:
+-Form to fill up email used in the system
+-Sending of verification link to their respective emails for changing their password
+
+Contributor/s: 
+Calulut, Joshua Miguel C. 
+Sanchez, Shane David U.
+--}}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +23,7 @@
 </head>
 <body>
   <div class="wrapper">
+    {{-- Forgot Password form --}}
     <form action="{{route('account.forgotPassword')}}" id="forgotPasswordForm" method="POST">
         @csrf
         @method('POST')
@@ -17,14 +32,22 @@
             <input type="email" id="email" name="email" placeholder="Email" required>
             <i class='bx bx-mail-send'></i>
         </div>
+        {{-- 
+          Sends verification link into the inputted email, whenever the email is proved to be present in the accounts table
+          IMPORTANT: NEEDED IMPLEMENTATION IN SENDING LINK IN EMAIL
+        --}}
         <button type="submit" class="btn">Send Verification</button>
         <div class="register-link">
+          {{-- Redirect the user to login page whenever the password is remembered --}}
             <p>Remembered your password? <a href="{{route('account.showLogIn')}}">Login</a></p>
         </div>
     </form>
   </div>
 
-    {{-- Add html box for error, temporary html --}}
+    {{--
+      IMPORTANT: NEEDED IMPLEMENTATION TO SHOW ERRORS BELOW THE FORM INSTEAD, MUCH LIKE
+      THE ONES PRESENT IN DOCUMENT MODAL FORM
+  --}}
     @if ($errors->any())
     <div class="alert">
       <ul>

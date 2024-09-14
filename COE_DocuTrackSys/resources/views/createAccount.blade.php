@@ -1,12 +1,14 @@
 {{-- 
 VISION CUBE SOFTWARE CO. 
+
 View: Create Account
 Displays the account creation of the for the document tracking system.
 COE Document Tracking System. 
+
 It contains:
--Information relevant to the document
--Status of the document
--Versions of the document
+-Form to input credentials of the new user
+-Button to redirect users with account to login page
+
 Contributor/s: 
 Calulut, Joshua Miguel C. 
 Sanchez, Shane David U.
@@ -23,6 +25,7 @@ Sanchez, Shane David U.
 </head>
 <body>
   <div class="wrapper">
+    {{-- Account creation form --}}
     <form action="{{route('account.store')}}" method="POST">
       @csrf
       <h1>Create Account</h1>
@@ -46,10 +49,15 @@ Sanchez, Shane David U.
       <button type="submit" class="btn">Register</button>
     </form>
     <div class="register-link">
+      {{-- Redirect users with account to the login page --}}
       <p>Already have an account? <a href="{{ route('account.showLogIn') }}">Login</a></p>
     </div>
   </div>
-  {{-- Add html box for error, temporary html --}}
+
+  {{--
+      IMPORTANT: NEEDED IMPLEMENTATION TO SHOW ERRORS BELOW THE FORM INSTEAD, MUCH LIKE
+      THE ONES PRESENT IN DOCUMENT MODAL FORM
+  --}}
   @if ($errors->any())
     <div class="alert">
       <ul>

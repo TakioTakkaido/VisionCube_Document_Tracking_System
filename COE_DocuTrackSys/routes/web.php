@@ -4,12 +4,10 @@
 // Routes
 // Facilitates the routing of the system and its corresponding pages in the system.
 // Contributor/s: 
-// Calulut, Joshua Miguel C
+// Calulut, Joshua Miguel C.
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DocumentController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Log In page

@@ -1,3 +1,20 @@
+{{-- 
+VISION CUBE SOFTWARE CO. 
+
+View: Dashboard
+The dashboard of the COE Document Tracking System.
+It contains:
+-Displays the recent documents created in the system.
+-Displays the recent documents created in the system.
+-Allows the user to upload, edit, and delete document
+-Allows the user to view various document versions
+-Allows the user to also access its account to edit information and logout
+
+Contributor/s: 
+Calulut, Joshua Miguel C. 
+Sanchez, Shane David U.
+--}}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,6 +80,7 @@
             <label for="uploadDocType">Document Type:</label>
             <select id="uploadDocType" name="type" placeholder="Enter the Type of Document">
                 <option value="" disabled selected>Select the Type of Document</option>
+                {{-- Obtained document types using Laravel--}}
                 @foreach ($docTypes as $index => $docType)
                     @if ($docType->value !== 'default')
                         <option value="{{$index}}">{{$docType->value}}</option>
@@ -73,26 +91,32 @@
             
             <label for="uploadFrom">From:</label>
             <input type="text" id="uploadFrom" name="sender" placeholder="Enter the Sender's Name/Department">
-            <span class="error" id="senderError" style="display:none;">This field is required!</span>
+            <span class="error" id="senderError" style="display:none;"></span>
     
             <label for="uploadTo">To:</label>
             <input type="text" id="uploadTo" name="recipient" placeholder="Enter the Recipient's Name/Department">
-            <span class="error" id="recipientError" style="display:none;">This field is required!</span>
+            <span class="error" id="recipientError" style="display:none;"></span>
     
             <label for="uploadSubject">Subject:</label>
             <textarea id="uploadSubject" name="subject" rows="2" placeholder="Enter the Subject of the Document"></textarea>
-            <span class="error" id="subjectError" style="display:none;">This field is required!</span>
+            <span class="error" id="subjectError" style="display:none;"></span>
     
             <div class="flex-row"> 
                 <div>                 
+                    {{-- 
+                        TEMPORARILY MADE NULLABLE FOR TESTING PURPOSES
+                        NEEDED IMPLEMENTATION TO STORE FILES SECURELY AND
+                        EFFECTIVELY
+                    --}}
                     <label for="uploadSoftcopy">Document (Softcopy):</label>
                     <input type="file" id="softcopy" name="file">
-                    <span class="error" id="fileError" style="display:none;">This field is required!</span>
+                    <span class="error" id="fileError" style="display:none;"></span>
                 </div>  
                 <div>
                     <label for="uploadCategory">Category:</label>
                     <select id="uploadCategory" name="category" placeholder="SELECT">
                         <option value="" disabled selected>Select Category</option>
+                        {{-- Obtained document categories using Laravel--}}
                         @foreach ($docCategories as $index => $docCategory)
                             @if ($docCategory->value !== 'default')
                                 <option value="{{$index}}">{{$docCategory->value}}</option>
@@ -102,7 +126,7 @@
                     @error('record')
                         
                     @enderror
-                    <span class="error" id="categoryError" style="display:none;">This field is required!</span>
+                    <span class="error" id="categoryError" style="display:none;"></span>
                 </div>
             </div>
     
@@ -111,30 +135,33 @@
                     <label for="uploadStatus">Status:</label>
                     <select id="uploadStatus" name="status">
                         <option value="" disabled selected>Select Document Status</option>
+                        {{-- Obtained document statuses using Laravel--}}
                         @foreach ($docStatuses as $index => $docStatus)
                             @if ($docStatus->value !== 'default')
                                 <option value="{{$index}}">{{$docStatus->value}}</option>
                             @endif
                         @endforeach
                     </select>
-                    <span class="error" id="statusError" style="display:none;">This field is required!</span>
+                    <span class="error" id="statusError" style="display:none;"></span>
                 </div>
                 <div>
                     <label for="uploadAssignee">Assignee:</label>
                     <select id="uploadAssignee" name="assignee">
                         <option value="" disabled selected>Select Assignee</option>
+                        {{-- Obtained assignees through account roles using Laravel--}}
                         @foreach ($roles as $index => $role)
                             @if ($role->value !== 'default' && $role->value !== 'Admin')
                                 <option value="{{$index}}">{{$role->value}}</option>
                             @endif
                         @endforeach
                     </select>
-                    <span class="error" id="assigneeError" style="display:none;">This field is required!</span>
+                    <span class="error" id="assigneeError" style="display:none;"></span>
                 </div>
             </div>
     
             <div class="button-group">
                 <button type="button" class="cancel-btn" id="cancelBtn">Cancel</button>
+                {{-- Submit form data using AJAX in uploadform.js --}}
                 <button type="submit" class="submit-btn" id="submitBtn" type="button">Submit</button>
             </div>
         </div>
@@ -145,6 +172,7 @@
     </div>
 
 
+    {{-- Scripts --}}
     <script src="{{asset('js/sidepanel-archived.js')}}"></script>
     <script src="{{asset('js/sidepanel-active.js')}}"></script>
     <script src="{{asset('js/uploadform.js')}}"></script>
