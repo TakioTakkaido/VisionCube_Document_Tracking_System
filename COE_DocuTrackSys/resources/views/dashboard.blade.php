@@ -117,9 +117,9 @@ Sanchez, Shane David U.
                     <select id="uploadCategory" name="category" placeholder="SELECT">
                         <option value="" disabled selected>Select Category</option>
                         {{-- Obtained document categories using Laravel--}}
-                        @foreach ($docCategories as $index => $docCategory)
+                        @foreach ($docCategories as $docCategory)
                             @if ($docCategory->value !== 'default')
-                                <option value="{{$index}}">{{$docCategory->value}}</option>
+                                <option value="{{$docCategory->value}}">{{$docCategory->value}}</option>
                             @endif
                         @endforeach
                     </select>
@@ -136,9 +136,9 @@ Sanchez, Shane David U.
                     <select id="uploadStatus" name="status">
                         <option value="" disabled selected>Select Document Status</option>
                         {{-- Obtained document statuses using Laravel--}}
-                        @foreach ($docStatuses as $index => $docStatus)
+                        @foreach ($docStatuses as $docStatus)
                             @if ($docStatus->value !== 'default')
-                                <option value="{{$index}}">{{$docStatus->value}}</option>
+                                <option value="{{$docStatus->value}}">{{$docStatus->value}}</option>
                             @endif
                         @endforeach
                     </select>
@@ -149,9 +149,9 @@ Sanchez, Shane David U.
                     <select id="uploadAssignee" name="assignee">
                         <option value="" disabled selected>Select Assignee</option>
                         {{-- Obtained assignees through account roles using Laravel--}}
-                        @foreach ($roles as $index => $role)
+                        @foreach ($roles as  $role)
                             @if ($role->value !== 'default' && $role->value !== 'Admin')
-                                <option value="{{$index}}">{{$role->value}}</option>
+                                <option value="{{$role->value}}">{{$role->value}}</option>
                             @endif
                         @endforeach
                     </select>
@@ -176,6 +176,14 @@ Sanchez, Shane David U.
     <script src="{{asset('js/sidepanel-archived.js')}}"></script>
     <script src="{{asset('js/sidepanel-active.js')}}"></script>
     <script src="{{asset('js/uploadform.js')}}"></script>
+
+    {{-- Routes retrieving document, since AJAX cannot get this as a link, when inserted directly --}}
+    <script>
+        window.dashboardRoutes = {
+            showIncoming: "{{ route('documents.showIncoming') }}",
+            showOutgoing: "{{ route('documents.showOutgoing') }}",
+        };
+    </script>
     
 </body>
 </html>
