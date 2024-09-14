@@ -7,6 +7,7 @@
 // Calulut, Joshua Miguel C
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -44,8 +45,8 @@ Route::get('/account/forgot-password', function(){
 Route::post('/account/forgot-password', [AccountController::class, 'forgotPassword'])->name('account.forgotPassword');
 
 // Dashboard
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('account.dashboard');
+Route::get('/dashboard', [AccountController::class, 'showDashboard'])->name('account.dashboard');
 
+// Store Documents
+Route::post('/dashboard/add', [DocumentController::class, 'store'])->name('document.store');
 require __DIR__.'/auth.php';

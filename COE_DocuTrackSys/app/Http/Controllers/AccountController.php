@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\AccountRole;
+use App\DocumentCategory;
+use App\DocumentStatus;
+use App\DocumentType;
+
 use App\Models\Account;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -47,7 +51,9 @@ class AccountController extends Controller
             'role' => AccountRole::DEFAULT
         ]);
         
-        return redirect()->route('account.dashboard')->with('success', 'User created successfully.');
+        return redirect()->route('account.dashboard')->with([
+            'success' => 'User created successfully.',
+        ]);
     }
 
     // Log In User
@@ -60,7 +66,7 @@ class AccountController extends Controller
         if (Auth::guard('web')->attempt($credentials, $remember)) {
             // Authentication passed, redirect to dashboard
             return redirect()->intended(route('account.dashboard'))->with([
-                'success' => 'Login Successful'
+                'success' => 'Login Successful',
             ]);
         }
         
@@ -102,6 +108,16 @@ class AccountController extends Controller
         return redirect()->route('account.showLogIn');
     }
 
+    // Show Dashboard
+    public function showDashboard(Request $request){
+        return view('dashboard', [
+            'user' => Auth::user(),
+            'docTypes' => DocumentType::cases(),
+            'docStatuses' => DocumentStatus::cases(),
+            'docCategories' => DocumentCategory::cases(),
+            'roles' => AccountRole::cases(),
+        ]);
+    }
     /**
      * Display the specified resource.
      */
