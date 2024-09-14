@@ -14,6 +14,9 @@ namespace App\Models;
 // Calulut, Joshua Miguel C.
 
 // Enums Used
+
+use App\AccountRole;
+use App\DocumentCategory;
 use App\DocumentStatus;
 use App\DocumentType;
 
@@ -37,6 +40,12 @@ class Document extends Model
         'subject',
         'assignee',
         'category'
+    ];
+
+    protected $casts = [
+        'assignee' => AccountRole::class,
+        'category' => DocumentCategory::class,
+        'status' => DocumentStatus::class,
     ];
 
     // This function is called whenever the document is updated or revised.
