@@ -47,4 +47,10 @@ Route::get('/dashboard', [AccountController::class, 'showDashboard'])->name('acc
 
 // Store Documents
 Route::post('/dashboard/add', [DocumentController::class, 'store'])->name('document.store');
+
+// Get Incoming Documents
+Route::get('/documents/incoming', [DocumentController::class, 'showIncoming'])->name('documents.showIncoming');
+
+// Get Outgoing Documents
+Route::get('/documents/outgoing', [DocumentController::class, 'showOutgoing'])->name('documents.showOutgoing');
 require __DIR__.'/auth.php';
