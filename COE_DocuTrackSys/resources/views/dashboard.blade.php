@@ -26,14 +26,21 @@ Sanchez, Shane David U.
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="icon" href="{{Vite::asset('resources/img/COE.png')}}" type="image/x-icon">
+    @vite([
+        'resources/js/sidepanel-active.js',
+        'resources/js/sidepanel-archived.js',
+        'resources/js/uploadform.js',
+        'resources/css/dashboard.css'
+    ])
 
 <!--...........TOP BAR.............-->
     <div class="top-panel">
-            <img src="{{asset('img/COE.png')}}" alt="Logo" class="header-logo">
+            <img src="{{Vite::asset('resources/img/COE.png')}}" alt="Logo" class="header-logo">
             <div class="header-text">Document Tracking System</div>
         <div class="profile">
             <div class="account-info">
-            <img src="{{asset('img/user-photo.jpg')}}" alt="User Photo" class="account-photo">
+            <img src="{{Vite::asset('resources/img/user-photo.jpg')}}" alt="User Photo" class="account-photo">
             <p class="account-name">{{$user->name}}<a href="#"> </a></p>
             </div>
         </div>
@@ -170,12 +177,6 @@ Sanchez, Shane David U.
 </div>
          </div>
     </div>
-
-
-    {{-- Scripts --}}
-    <script src="{{asset('js/sidepanel-archived.js')}}"></script>
-    <script src="{{asset('js/sidepanel-active.js')}}"></script>
-    <script src="{{asset('js/uploadform.js')}}"></script>
 
     {{-- Routes retrieving document, since AJAX cannot get this as a link, when inserted directly --}}
     <script>

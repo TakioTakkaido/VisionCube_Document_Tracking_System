@@ -20,8 +20,9 @@ Sanchez, Shane David U.
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register | Document Tracking System</title>
-  <link rel="stylesheet" href="{{ asset('css/register_login.css') }}">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link rel="icon" href="{{Vite::asset('resources/img/COE.png')}}" type="image/x-icon">
+  @vite(['resources/css/register_login.css'])
 </head>
 <body>
   <div class="wrapper">
