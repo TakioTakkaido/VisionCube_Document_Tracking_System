@@ -53,4 +53,7 @@ Route::get('/documents/incoming', [DocumentController::class, 'showIncoming'])->
 
 // Get Outgoing Documents
 Route::get('/documents/outgoing', [DocumentController::class, 'showOutgoing'])->name('documents.showOutgoing');
+
+// Download Documents
+Route::get('/download/{id}', [DocumentController::class, 'download'])->name('document.download');
 require __DIR__.'/auth.php';

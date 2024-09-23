@@ -25,7 +25,9 @@ Sanchez, Shane David U.
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.7/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.1.7/js/dataTables.js"></script>
     <link rel="icon" href="{{Vite::asset('resources/img/COE.png')}}" type="image/x-icon">
     @vite([
         'resources/js/sidepanel-active.js',
@@ -90,7 +92,7 @@ Sanchez, Shane David U.
                 {{-- Obtained document types using Laravel--}}
                 @foreach ($docTypes as $index => $docType)
                     @if ($docType->value !== 'default')
-                        <option value="{{$index}}">{{$docType->value}}</option>
+                        <option value="{{$docType->value}}">{{$docType->value}}</option>
                     @endif
                 @endforeach
             </select>
@@ -178,11 +180,27 @@ Sanchez, Shane David U.
          </div>
     </div>
 
+    <table id="docuTable">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Status</th>
+                <th>File</th>
+                <th>Sender</th>
+                <th>Recipient</th>
+                <th>Subject</th>
+                <th>Assignee</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>        </tbody>
+    </table>
     {{-- Routes retrieving document, since AJAX cannot get this as a link, when inserted directly --}}
     <script>
         window.dashboardRoutes = {
             showIncoming: "{{ route('documents.showIncoming') }}",
             showOutgoing: "{{ route('documents.showOutgoing') }}",
+            downloadUrl: "{{route('document.download', ':id')}}"
         };
     </script>
     
