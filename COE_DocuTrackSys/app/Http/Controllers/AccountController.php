@@ -58,12 +58,14 @@ class AccountController extends Controller
             'password_confirmation' => 'required'
         ]);
     
-        Account::create([
+        $user = Account::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
-            'role' => AccountRole::DEFAULT
+            'role' => AccountRole::GUEST
         ]);
+
+        Auth::login($user);
         
         return redirect()->route('account.dashboard')->with([
             'success' => 'User created successfully.',
@@ -109,6 +111,11 @@ class AccountController extends Controller
          ]);
     }
 
+    public function logout(){
+        Auth::logout();
+        return redirect()->route('account.showLogIn');
+    }
+    
     // Forgot Password
     public function forgotPassword(Request $request){
         $request->validate([
