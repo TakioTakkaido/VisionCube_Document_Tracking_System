@@ -8,5 +8,5 @@ enum AccountRole : string
     case CLERK = 'Clerk';
     case ASSISTANT = 'Assistant';
     case ARCHIVES = 'Archives';
-    case DEFAULT = 'default';
+    case GUEST = 'Guest';
 }
