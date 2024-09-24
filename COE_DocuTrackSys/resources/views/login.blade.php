@@ -52,7 +52,7 @@ Sanchez, Shane David U.
       </div>
     </form>
   </div>
-
+  
   {{--
       IMPORTANT: NEEDED IMPLEMENTATION TO SHOW ERRORS BELOW THE FORM INSTEAD, MUCH LIKE
       THE ONES PRESENT IN DOCUMENT MODAL FORM
@@ -67,4 +67,10 @@ Sanchez, Shane David U.
     </div>
   @endif
 </body>
+<script>
+  if("{{$errors}}" !== "[]"){
+    alert("{{$errors}}");
+  }
+  console.log("{{$errors}}")
+</script>
 </html>
