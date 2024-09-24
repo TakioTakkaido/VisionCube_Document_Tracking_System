@@ -275,3 +275,42 @@ body {
     background-color: #ead149;
     padding: 5px 5px;
 }
+
+/* EDIT ACCOUNT MODAL */
+
+/* Custom modal header */
+.custom-modal-header {
+    background-color: #4e73df; /* Change header background */
+    color: white; /* Change text color */
+    border-bottom: 2px solid #e3e6f0; /* Border for the header */
+}
+
+/* Custom modal body */
+.custom-modal-body {
+    padding: 20px; /* Add some padding */
+    background-color: #f8f9fc; /* Light background */
+    font-size: 16px; /* Increase font size */
+    color: #5a5c69; /* Text color */
+}
+
+/* Custom modal footer */
+.custom-modal-footer {
+    background-color: #f1f1f1; /* Light gray footer background */
+    border-top: none; /* Remove border from footer */
+}
+
+/* Button styling */
+.btn-secondary {
+    background-color: #858796;
+    border-color: #858796;
+}
+
+.btn-primary {
+    background-color: #4e73df;
+    border-color: #4e73df;
+}
+
+.btn-primary:hover {
+    background-color: #2e59d9;
+    border-color: #2653d4;
+}
