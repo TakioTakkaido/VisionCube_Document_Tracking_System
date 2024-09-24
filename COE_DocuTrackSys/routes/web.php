@@ -8,6 +8,8 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Middleware\NoCache;
+use App\Http\Middleware\VerifyAccount;
 use Illuminate\Support\Facades\Route;
 
 // Log In page
@@ -34,6 +36,9 @@ Route::get('/account/login/admin', function () {
 // Log In Admin
 Route::post('/account/login/admin', [AccountController::class, 'loginAdmin'])->name('account.loginAdmin');
 
+// Log Out
+Route::post('/account/logout', [AccountController::class, 'logout'])->name('account.logout');
+
 // Show Forgot Password Form
 Route::get('/account/forgot-password', function(){
     return view('forgotPassword');
@@ -43,11 +48,14 @@ Route::get('/account/forgot-password', function(){
 Route::post('/account/forgot-password', [AccountController::class, 'forgotPassword'])->name('account.forgotPassword');
 
 // Dashboard
-Route::get('/dashboard', [AccountController::class, 'showDashboard'])->name('account.dashboard');
+Route::get('/dashboard', [AccountController::class, 'showDashboard'])->name('account.dashboard')->middleware([
+    VerifyAccount::class,
+    NoCache::class
+]);
 
 // Store Documents
 Route::post('/dashboard/add', [DocumentController::class, 'store'])->name('document.store');
-
+    
 // Get Incoming Documents
 Route::get('/documents/incoming', [DocumentController::class, 'showIncoming'])->name('documents.showIncoming');
 
