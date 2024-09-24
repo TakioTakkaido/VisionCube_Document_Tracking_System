@@ -43,7 +43,12 @@ document.getElementById('outgoing-button').addEventListener('click', function(ev
         columns: [
             {data: 'type'},
             {data: 'status'},
-            {data: 'file'},
+            {
+                data: 'id',
+                render: function(data){
+                    return '<a href="' + window.dashboardRoutes.downloadUrl.replace(':id', data) + '">Download File</a>';
+                }
+            },
             {data: 'sender'},
             {data: 'recipient'},
             {data: 'subject'},
