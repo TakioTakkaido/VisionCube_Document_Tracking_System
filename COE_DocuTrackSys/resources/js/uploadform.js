@@ -19,21 +19,12 @@
 
 //  Listen for click on close button
  closeBtn.addEventListener('click', function() {
-    // Close form
-    modal.style.display = 'none';
 
     // Remove error spans
     errors.forEach(function(errorSpan) {
         errorSpan.style.display = 'none';
         errorSpan.textContent = '';
     });
- });
-
- // Close the modal if user clicks outside of it
- window.addEventListener('click', function(event) {
-     if (event.target === modal) {
-         modal.style.display = 'none';
-     }
  });
 
 document.getElementById('submitBtn').addEventListener('click', function(event) {
@@ -54,7 +45,8 @@ document.getElementById('submitBtn').addEventListener('click', function(event) {
             // Success response
             var response = JSON.parse(xhr.responseText);
             alert(response.success);
-            document.getElementById('uploadModal').style.display = 'none'; // Hide the modal or perform other actions
+            $('#uploadModal').modal('hide');
+            $('#documentTable').DataTable().ajax.reload();
         } else {
             alert("Please check the necessary information in your form, and try again.");
             // Error response
