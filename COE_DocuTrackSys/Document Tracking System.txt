@@ -1,0 +1,355 @@
+Landing Page: /login
+
+Login 
+/login
+Pre: 
+login_token 
+-> expired: to login
+-> not expired: to dashboard
+-> CheckLoginToken
+
+Post: 
+login credentials
+-> validate credentials
+-> validated: add token, authenticate user, to dashboard
+-> not validated: show errors, make the user fill up again
+
+Auth: no
+
+Components: 
+LoginForm
+-> form with places for error
+
+Destinations: /create, /forgot-password, /dashboard
+Other: User can log in on multiple devices, once the login token is expired, it would logout in that device
+
+============================================================
+Create Account
+/create
+Pre: 
+login_token 
+-> expired: to create account
+-> not expired: to dashboard
+-> CheckLoginToken
+
+Post: 
+new account credentials
+-> validate credentials
+-> validated: add account to database [role=guest], add token, authenticate user, to dashboard
+-> not validated: show errors, make the user fill up again
+
+Auth: no
+
+Components: CreateAccountForm
+Destinations: /login, /dashboard
+Other: The account created here is only guest account, the account must be verified by the admin
+
+============================================================
+Forgot Password
+/password/forgot
+
+Pre: n/a
+
+Post: 
+email
+-> validate email
+-> validated: send verification link
+-> not validated: show errors, make the user fill up again
+verification link
+-> send verification link, that would open up the page /password/reset
+-> clicked: take the verification link, invalidate it, and to reset password
+ 
+Auth: no
+
+Components: ForgotPasswordForm
+
+Destinations: /password/reset
+
+Other: the link would never expired unless clicked, only emails of created accounts are meant to reset
+============================================================
+Reset Password
+/password/reset
+
+Pre: verification link was clicked 
+-> clicked: to reset password
+-> not clicked: prevent access
+
+Post: 
+new password
+-> confirmed: to login
+-> not confirmed: show errors, make the user fill up again
+
+Auth: no
+
+Events: 
+ResetPassword
+->log out to all devices
+
+Components: ResetPasswordForm
+
+Destinations: /login
+
+Other: requires entry from user that clicked the verification link, and nothing else. it is required for the user to log out all on all of its devices
+============================================================
+Dashboard
+/dashboard
+
+Pre: 
+-> expired: to login
+-> not expired: to dashboard
+-> CheckLoginToken
+
+default:
+->view outgoing documents
+
+Post:
+upload_document
+->roles: secretary
+->add all necessary credentials
+->validate credentials
+->validated: add the document to the table, DocumentUploaded
+->not validated: show errors, make the user fill up again
+->send notification
+
+view_document
+->roles: secretary, clerk, archivist
+->by table: according to the side panel buttons,
+incoming, outgoing, archived (specified by document), show category by color
+->individual: by left clicking the table, previews the document
+->show last modified date
+
+view_document_versions
+->roles: secretary, clerk, archivist
+->view all versions and edit history of the document
+
+edit_document
+->roles: secretary, clerk
+->shows the edit form, with the document preview on the side
+->EditedDocument
+->send notification
+
+move_document
+->roles: secretary, clerk, archivist (but only from incoming/outgoing to archived)
+->move to archive: enables deleting, disables editing
+->move to incoming/outgoing: disables deleting, enables editing
+->MovedDocument
+->send notification
+
+delete_document
+->roles: secretary, archivist
+->can only be done to archived documents
+->DeletedDocument
+->send notification
+
+view_account
+->view email, forgot password, deactivate account, and logout
+
+forgot_password
+->send verification link, when pressed: to reset password
+
+deactivate_account
+->deactivate account, the user cannot use that account for using the system and must contact admin to reinstate the account
+->DeactivatedAccount
+
+Auth: yes (secretary, clerk, archivist)
+
+Events (would send notifications too): 
+EditedDocument
+->update the overall database, and the tables
+
+UploadedDocument
+->update the overall database, and the tables
+
+MovedDocument
+->update the overall database, and the tables
+
+DeletedDocument
+->update the overall database, and the tables
+
+ResetPassword
+->log out on all accounts
+
+DeactivatedAccount
+->log out on all accounts and deactivate
+
+InvalidAccess
+->send notification of invalid access
+
+Components:
+UploadDocumentForm:
+->with space for errors
+->can change if the user chose memoranda
+
+EditAccountForm:
+->show name, email
+->reset password
+->deactivate account
+->logout
+
+GuestView:
+->view for audience to not see everything in the system, until they are verified
+
+DocumentTable:
+->show version number, and last modified data
+->left click: docu preview
+->right click: float window (download, move, edit, docu versions, delete)
+
+
+Destinations (needed verification to access, middleware to prevent direct access, it must be retreated back to the dashboard home page): 
+/document/upload
+/document/view/incoming
+/document/view/outgoing
+/document/view/archived/memoranda
+/document/view/archived/requisition
+/document/view/archived/letter
+/document/view/{id}, 
+/document/edit/{id},
+/document/move/incoming/{id},
+/document/move/outgoing/{id},
+/document/move/archived/{id}
+/forgot-password
+/deactivate/{id}
+
+Others: guests wont view anything in the document
+============================================================
+Admin Dashboard
+/dashboard/admin
+
+Pre:
+-> expired: to login
+-> not expired: to dashboard
+-> CheckLoginToken
+
+default:
+->view guest accounts
+
+Post:
+verify_guest
+->verify the guest and assign roles to it
+->VerifiedGuest
+->send notification
+
+view_account
+->by individual: according to guests and verified accounts, right clicking the table would result in seeing edit account function
+
+edit_account_role
+->edit the account role in the website
+->EditedAccountRole
+->send notification
+
+upload_document
+->add all necessary credentials
+->validate credentials
+->validated: add the document to the table, DocumentUploaded
+->not validated: show errors, make the user fill up again
+->send notification
+
+view_document
+->by table: according to the side panel buttons,
+incoming, outgoing, archived (specified by document), show category by color
+->individual: by left clicking the table, previews the document
+->show last modified date
+
+view_document_versions
+->view all versions and edit history of the document
+
+edit_document
+->shows the edit form, with the document preview on the side
+->EditedDocument
+->send notification
+
+move_document
+->move to archive: enables deleting, disables editing
+->move to incoming/outgoing: disables deleting, enables editing
+->MovedDocument
+->send notification
+
+delete_document
+->can only be done to archived documents
+->DeletedDocument
+->send notification
+
+view_account
+->view email, forgot password, deactivate account, and logout
+
+forgot_password
+->send verification link, when pressed: to reset password
+
+deactivate_account
+->deactivate account, the user cannot use that account for using the system and must contact admin to reinstate the account
+->DeactivatedAccount
+
+Auth: yes(admin)
+
+Events (would send notifications too): 
+VerifiedGuest
+->log out the account in all devices
+->let the guest access the system and assign roles to it
+
+EditedAccountRole
+->log out the account in all devices
+
+EditedDocument
+->update the overall database, and the tables
+
+UploadedDocument
+->update the overall database, and the tables
+
+MovedDocument
+->update the overall database, and the tables
+
+DeletedDocument
+->update the overall database, and the tables
+
+ResetPassword
+->log out on all accounts
+
+DeactivatedAccount
+->log out on all accounts and deactivate
+
+InvalidAccess
+->send notification of invalid access
+
+Components:
+UploadDocumentForm:
+->with space for errors
+->can change if the user chose memoranda
+
+EditAccountForm:
+->show name, email
+->reset password
+->deactivate account
+->logout
+
+GuestView:
+->view for audience to not see everything in the system, until they are verified
+
+DocumentTable:
+->show version number, and last modified data
+->left click: docu preview
+->right click: float window (download, move, edit, docu versions, delete)
+
+AccountTable:
+->show when it was first created
+->left click: none
+->right click: float window (verify as, reactivate account, reject guest)
+
+Destinations (would be able to send notifications):
+/document/view/incoming
+/document/view/outgoing
+/document/view/archived/memoranda
+/document/view/archived/requisition
+/document/view/archived/letter
+/document/view/{id}, 
+/document/edit/{id},
+/document/move/incoming/{id},
+/document/move/outgoing/{id},
+/document/move/archived/{id}
+/document/view/{id}/versions
+/edit-role/{id}/{role}
+/forgot-password
+/reactivate/{id}
+/remove-guest
+/verify/{id}/{role}
+
+Other: only the admin can access the entire admin dashboard, any unauthorized entries are blocked, or taken back to the user login page, with InvalidAccess
