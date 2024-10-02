@@ -12,9 +12,11 @@ class FileExtensionController extends Controller {
         // Get all extensions
         $fileExtensions = FileExtension::all();
         
-        foreach ($fileExtensions as $fileExtension) {
-            // Change every value of the extension
-            $fileExtension->checked = $request->checked;
+        for ($i=0; $i < sizeof($fileExtensions); $i++) { 
+            $fileExtension = $fileExtensions[$i];
+
+            // Check every file extension in the checklist
+            $fileExtension->checked = $request->extensions[$i];
 
             // Save extension
             $fileExtension->save();

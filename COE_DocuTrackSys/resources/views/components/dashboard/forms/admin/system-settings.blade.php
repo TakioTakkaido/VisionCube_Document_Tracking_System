@@ -257,7 +257,7 @@
                 {{-- <p>{{$fileExtensions}}</p> --}}
                 @foreach ($fileExtensions as $fileExtension)
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input editExtension" name="extensions[]" id="{{$fileExtension->id}}" {{$fileExtension->checked ? 'checked' : ''}}>
+                        <input type="checkbox" class="form-check-input editExtension" name="extensions[]" id="{{$fileExtension->id}}" {{$fileExtension->checked == 'true' ? 'checked' : ''}}>
                         <label for="{{$fileExtension->id}}" class="form-check-label">
                             {{$fileExtension->value}}
                         </label>
