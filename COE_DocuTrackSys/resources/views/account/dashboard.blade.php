@@ -95,6 +95,11 @@ Sanchez, Shane David U.
         deleteStatus: "{{route('status.delete')}}",
         updateFileExtensions: "{{route('fileExtension.update')}}"
 
+        updateCategory: "{{route('category.update')}}",
+        deleteCategory: "{{route('category.delete')}}",
+
+        updateType: "{{route('type.update')}}",
+        deleteType: "{{route('type.delete')}}",
     };
 </script>
 

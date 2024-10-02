@@ -6,61 +6,53 @@ use App\Models\Type;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class TypeController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+class TypeController extends Controller {
+    // Edit type
+    public function update(Request $request){
+        // Validate the request
+
+        // Get type by id
+        // Check whether the status already exists or not
+        if ($request->id != null){
+            // Status exists, find the status
+            $type = Type::find($request->id);
+
+            // Change value
+            $type->value = $request->value;
+
+            // Save
+            $type->save();
+
+            // Log
+        } else {
+            // Type doesn't exist
+            // Create type
+            Type::create([
+                'value' => $request->input('value')
+            ]);
+
+            // Log
+        }
+
+        
+
+        // Return success
+        return response()->json([
+            'success' => 'Type edited successfully.'
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+    // Delete type
+    public function delete(Request $request){
+        $type = Type::find($request->id);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $type->delete();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Type $type)
-    {
-        //
-    }
+        // Log
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Type $type)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Type $type)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Type $type)
-    {
-        //
+        // Return success
+        return response()->json([
+            'success' => 'Type delete successfully.'
+        ]);
     }
 }
