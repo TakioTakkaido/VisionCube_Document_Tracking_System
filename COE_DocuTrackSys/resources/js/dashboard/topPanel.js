@@ -9,7 +9,7 @@ $('.editStatusBtn').on('click', function(event){
     $('#statusText').val($(this).val());
 });
 
-
+// To trigger delete status confirm
 $('.deleteStatusBtn').on('click', function(event){
     // Prevent other events
     event.preventDefault();
@@ -121,8 +121,8 @@ $('#updateStatusForm').on('submit', function(event){
 });
 
 
-// EDITING FILE EXTENSIONS
 
+// EDITING FILE EXTENSIONS
 // Update File Extensions Form
 $('#updateFileExtensionForm').on('submit', function (event) {
     // Prevent other events
