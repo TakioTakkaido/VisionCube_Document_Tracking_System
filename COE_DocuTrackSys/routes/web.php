@@ -12,10 +12,11 @@ use App\DocumentStatus;
 use App\DocumentType;
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FileExtensionController;
 use App\Http\Controllers\StatusController;
-
+use App\Http\Controllers\TypeController;
 use App\Http\Middleware\NoCache;
 use App\Http\Middleware\NoDirectAccess;
 use App\Http\Middleware\VerifyAccount;
@@ -198,6 +199,18 @@ Route::post('/status/update', [StatusController::class, 'update'])
 
 Route::post('/status/delete', [StatusController::class, 'delete'])
 ->name('status.delete');
+
+Route::post('/type/update', [CategoryController::class, 'update'])
+->name('type.update');
+
+Route::post('/type/delete', [CategoryController::class, 'delete'])
+->name('type.delete');
+
+Route::post('/category/update', [TypeController::class, 'update'])
+->name('category.update');
+
+Route::post('/category/delete', [TypeController::class, 'delete'])
+->name('category.delete');
 
 Route::post('/fileExtensions/update', [FileExtensionController::class, 'update'])
 ->name('fileExtension.update');

@@ -1,0 +1,12 @@
+Finish editing document categories and types
+
+NOTE: Check comments for the guide
+
+What needs to be edited:
+*functions for topPanel
+-resources\js\dashboard\topPanel.js
+
+*forms for system settings
+-resources\views\components\dashboard\forms\admin\system-settings.blade.php
+-i made a template guide for creating new forms here:
+    :resources\views\components\dashboard\forms\admin\a.php

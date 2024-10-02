@@ -1,3 +1,10 @@
+// EDITING DOCUMENT TYPE
+// Place new functions here
+
+
+// EDITING DOCUMENT CATEGORY
+// Place new functions here
+
 // EDITING DOCUMENT STATUS
 // For statuses, when clicked
 $('.editStatusBtn').on('click', function(event){
@@ -119,7 +126,6 @@ $('#updateStatusForm').on('submit', function(event){
         }
     });
 });
-
 
 
 // EDITING FILE EXTENSIONS

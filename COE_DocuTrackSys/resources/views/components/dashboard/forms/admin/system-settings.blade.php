@@ -95,6 +95,7 @@
                     <a name="cancel" class="btn btn-secondary" href="#" role="button">Cancel</a>
                 </div>
             </div>
+
             {{-- Edit Document Categories --}}
             <h5>Edit Document Categories</h5>
             <p>NOTE: Edited or deleted categories won't affect the status of the previous documents.</p>
@@ -109,34 +110,10 @@
                     Confirm the changes
                 Discard
             --}}
-            <div class="row">
-                <div class="dropdown mr-2">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="categoryList" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">
-                        Category List
-                    </button>
-                    <div class="dropdown-menu" style="max-height: 500px; overflow-y: scroll;" aria-labelledby="categoryList">
-                        @foreach ($categories as $category)
-                            <div class="dropdown-item d-flex justify-content-between align-items-center" href="#" id={{"category".$category->id}}>
-                                <span class="text-left">{{$category->value}}</span>
-                                <div class="ml-auto">
-                                    <button type="button" class="btn btn-primary btn-sm">Edit</button>
-                                    <button type="button" class="btn btn-primary btn-sm">Delete</button>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-    
-                <div class="form-group row align-items-center flex-grow-1">
-                    <label for="text"></label>
-                    <input type="text" class="form-control" name="text" id="text" aria-describedby="helpId" placeholder="Add Document Type">
-                    
-                    {{-- If changes are present, show save changes --}}
-                    <a name="submit" class="btn btn-primary" href="#" role="button">Save Changes</a>        
-                    <a name="cancel" class="btn btn-secondary" href="#" role="button">Cancel</a>
-                </div>
-            </div>
+
+            {{-- Place new form here --}}
+
+
             {{-- Dropdown List of Categories --}}
                     
 
@@ -147,37 +124,8 @@
             {{-- Dropdown List of Document Types --}}
 
             
-            <div class="row">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="typeList" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">
-                        Type List
-                    </button>
-                    <div class="dropdown-menu" style="max-height: 400px; overflow-y: scroll;" aria-labelledby="typeList">
-                        @foreach ($types as $type)
-                            <div class="dropdown-item d-flex justify-content-between align-items-center" style="max-width: 1000px !important;" href="#" id={{"type".$type->id}}>
-                                <span class="text-left">{{$type->value}}</span>
-                                <div class="ml-auto">
-                                    <button type="button" class="btn btn-primary btn-sm">Edit</button>
-                                    <button type="button" class="btn btn-primary btn-sm">Delete</button>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-                
-                {{-- For editing and adding --}}
-                <div class="form-group row">
-                    <label for="text"></label>
-                    <input type="text" class="form-control" name="text" id="text" aria-describedby="helpId" placeholder="Add Document Type">
+            {{-- Place new form here --}}
 
-                    {{-- If changes are present, show save changes --}}
-                    <a name="submit" class="btn btn-primary" href="#" role="button">Save Changes</a>        
-                    <a name="cancel" class="btn btn-secondary" href="#" role="button">Cancel</a>
-                </div>
-                  
-                
-            </div>
 
             {{-- Edit Document Status --}}
             <h5>Edit Document Status</h5>
