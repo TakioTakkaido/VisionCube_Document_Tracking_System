@@ -30,7 +30,8 @@ class Account extends Authenticatable
         'name',
         'email',
         'password',
-        'role'
+        'role',
+        'deactivated'
     ];
 
     protected $casts = [
