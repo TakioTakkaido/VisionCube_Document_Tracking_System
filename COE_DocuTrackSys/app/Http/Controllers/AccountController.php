@@ -17,80 +17,95 @@ namespace App\Http\Controllers;
 
 // Enums
 use App\AccountRole;
-use App\DocumentCategory;
-use App\DocumentStatus;
-use App\DocumentType;
 
 use App\Models\Account;
+
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateAccountFormRequest;
+use App\Http\Requests\ForgotPasswordRequest;
+use App\Http\Requests\LoginFormRequest;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Hash;
-use App\Models\Document;
 use Illuminate\Support\Facades\Auth;
 
-class AccountController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return view('dashboard');
+class AccountController extends Controller {
+    // Show Account
+    public function show(Request $request){
+        // 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+    // Login Existing User
+    public function login(LoginFormRequest $request){
+        // Validate credentials
+        $request->validated();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:accounts',
-            'password' => 'required|string|confirmed|min:8',
-            'password_confirmation' => 'required'
-        ]);
-    
-        Account::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
-            'role' => AccountRole::DEFAULT
-        ]);
-        
-        return redirect()->route('account.dashboard')->with([
-            'success' => 'User created successfully.',
-        ]);
-    }
+        // Retrieve the necessary credentials
+        $credentials = $request->safe()->only('email', 'password');
+        $remember = $request->safe()->has('remember');
 
-    // Log In User
-    public function login(Request $request)
-    {
-        // Validate the login credentials
-        $credentials = $request->only('email', 'password');
-        $remember = $request->has('remember');
-
+        // Authorization attempt
         if (Auth::guard('web')->attempt($credentials, $remember)) {
-            // Authentication passed, redirect to dashboard
-            return redirect()->intended(route('account.dashboard'))->with([
-                'success' => 'Login Successful',
+            $request->session()->regenerate();
+
+            // Send log
+
+            
+            // Authentication passed, to dashboard
+            return response()->json([
+                'success' => 'Login successful.'
             ]);
         }
         
         // Authentication failed, redirect back with an error message
-        return redirect()->route('account.showLogIn')->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
+        return response()->json([
+            'errors' => [
+                'email' => 'Email does not match the given records.',
+                'password' => 'Incorrect password inputted.'
+            ]
+        ], 422);
     }
 
-    // Log In Admin
+    //Create New Account
+    public function create(CreateAccountFormRequest $request){
+        // Validate credentials
+        $request->validated();
+        
+        // Make new guest account
+        $guest = Account::create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
+            'role' => AccountRole::GUEST
+        ]);
+
+        Auth::login($guest);
+        
+        // Emit CreatedNewAccount event
+
+        // To dashboard
+        return redirect()->route('account.dashboard');
+    }
+
+    // Forgot Password
+    public function forgotPassword(ForgotPasswordRequest $request){
+        // Validate credentials
+        $request->validated();
+        
+        // Add additional instuction like sending a verification link
+        // that when clicked would redirect to a link that would change the password
+        // and redirect the user to the log in page to input the new password
+
+        // Temporary fix: redirect to login for now
+        return redirect()->route('show.login');
+    }
+
+    // Reset Password
+    public function resetPassword(){
+        // 
+    }
+
+    // Log In Admin User
     public function loginAdmin(Request $request){
          // Validate the login credentials
          $credentials = $request->only('email', 'password');
@@ -98,7 +113,7 @@ class AccountController extends Controller
  
          if (Auth::guard('web')->attempt($credentials, $remember)) {
              // Authentication passed, redirect to dashboard
-             return redirect()->intended(route('account.dashboard'))->with([
+             return redirect()->intended(route('show.dashboard'))->with([
                  'success' => 'Login Successful'
              ]);
          }
@@ -109,58 +124,45 @@ class AccountController extends Controller
          ]);
     }
 
-    // Forgot Password
-    public function forgotPassword(Request $request){
-        $request->validate([
-            'email' => 'required|string|email|max:255|exists:accounts'
-        ]);
-        // Add additional instuction like sending a verification link
-        // that when clicked would redirect to a link that would change the password
-        // and redirect the user to the log in page to input the new password
-
-        // Temporary fix: redirect to login for now
+    // Logout
+    public function logout(){
+        Auth::logout();
         return redirect()->route('account.showLogIn');
     }
 
-    // Show Dashboard
-    public function showDashboard(Request $request){
-        return view('dashboard', [
-            'user' => Auth::user(),
-            'docTypes' => DocumentType::cases(),
-            'docStatuses' => DocumentStatus::cases(),
-            'docCategories' => DocumentCategory::cases(),
-            'roles' => AccountRole::cases(),
+    // Deactivate
+    public function deactivate(){
+        // 
+    }
+
+    //ADMIN FUNCTIONS
+
+    public function showAllAccounts(){
+        // 
+    }
+
+    public function showAllDeactivatedAccounts(){
+        $accounts = Account::where('deactivated', false)->get();
+
+        return response()->json([
+            'success' => 'All deactivated accounts obtained.',
+            'accounts' => $accounts
         ]);
     }
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+
+    public function editAccountRole(Request $request){
+        // 
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+    public function verifyAccount(Request $request){
+        // 
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+    public function rejectGuest(Request $request){
+        // 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+    public function reactivate(Request $request){
+        // 
     }
 }
