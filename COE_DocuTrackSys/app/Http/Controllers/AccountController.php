@@ -141,6 +141,15 @@ class AccountController extends Controller {
         // 
     }
 
+    public function showAllDeactivatedAccounts(){
+        $accounts = Account::where('deactivated', false)->get();
+
+        return response()->json([
+            'success' => 'All deactivated accounts obtained.',
+            'accounts' => $accounts
+        ]);
+    }
+
     public function editAccountRole(Request $request){
         // 
     }
