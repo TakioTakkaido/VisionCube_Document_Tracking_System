@@ -76,7 +76,7 @@ class DocumentController extends Controller{
     }
 
     // Display all incoming documents
-    public function showIncoming(){
+    public function showIncoming(Request $request){
         $incomingDocuments = Document::where('category', DocumentCategory::INCOMING->value)->get();
 
         return response()->json([
@@ -85,7 +85,7 @@ class DocumentController extends Controller{
     }
 
     // Display all outgoing documents
-    public function showOutgoing(){
+    public function showOutgoing(Request $request){
         $outgoingDocuments = Document::where('category', DocumentCategory::OUTGOING->value)->get();
 
         return response()->json([
@@ -95,7 +95,11 @@ class DocumentController extends Controller{
 
     // Display archived documents by type
     public function showArchived(Request $request){
-        // $archivedDocuments = Document::where
+        $documents = Document::where('type', $request->id)->get();
+
+        return response()->json([
+            'documents' => $documents
+        ]);
     }
 
     // Get Document for Editing Document

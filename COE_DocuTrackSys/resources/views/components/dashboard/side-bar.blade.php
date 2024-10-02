@@ -43,7 +43,7 @@
         </a>
         {{-- Accounts Dropdown --}}
         <div class="dropdown-container" id="accountsDropdown">
-            <a id="deactivatedBtn"><i class='bx bx-notepad'></i>Deactivated</a>
+            <a id="deactivatedBtn" href="#"><i class='bx bx-notepad'></i>Deactivated</a>
         </div>
 
         {{-- Documents --}}
@@ -60,9 +60,9 @@
 
             {{-- Archived Dropdown --}}
             <div class="dropdown-container" id="archivedDropdown">
-                <a><i class='bx bx-notepad' id="letter"></i>Letters</a>
-                <a><i class='bx bx-notepad'></i>Requistion</a>
-                <a><i class='bx bx-notepad'></i>Memoranda</a>
+                <a id="archivedLetterBtn"       href="#"><i class='bx bx-notepad'></i>Letters</a>
+                <a id="archivedRequisitionsBtn" href="#"><i class='bx bx-notepad'></i>Requistion</a>
+                <a id="archivedMemorandaBtn"    href="#"><i class='bx bx-notepad'></i>Memoranda</a>
             </div>
         </div>
 

@@ -13,19 +13,24 @@ use App\DocumentType;
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\FileExtensionController;
+use App\Http\Controllers\StatusController;
 
 use App\Http\Middleware\NoCache;
 use App\Http\Middleware\NoDirectAccess;
 use App\Http\Middleware\VerifyAccount;
 use App\Http\Middleware\VerifyAccountRole;
-
+use Illuminate\Database\Console\Migrations\StatusCommand;
+use Illuminate\Http\Client\Request;
+use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request as FacadesRequest;
 use Illuminate\Support\Facades\Route;
 
 // All accounts here shall undergo the middleware to check
 // whether the the user is logged in or not
 // Middleware: Check Login Token
-Route::middleware([VerifyAccount::class, NoCache::class])->group(function() {
+Route::middleware([VerifyAccount::class])->group(function() {
     // Display Routes
     Route::name('show.')->group(function(){
         // Display: Login, Landing Page
@@ -108,7 +113,10 @@ Route::middleware(NoDirectAccess::class)->group(function(){
                 Route::post('deactivate/{id}', 'deactivate')
                 ->name('deactivate');
 
-
+                // View All Deactivated Accounts
+                Route::get('/view/deactivated', 'showAllDeactivatedAccounts')
+                ->name('showAllDeactivatedAccounts');
+                
                 // ROLES: ADMIN
                 Route::middleware(VerifyAccountRole::class.':Admin')->group(function(){
                     // Admin Functions
@@ -116,9 +124,7 @@ Route::middleware(NoDirectAccess::class)->group(function(){
                     Route::get('view/all', 'showAllAccounts')
                     ->name('showAllAccounts');
                     
-                    // View All Deactivated Accounts
-                    Route::get('/view/deactivated', 'show')
-                    ->name('showAllDeactivated');
+                    
 
                     // Edit Account Role
                     Route::post('edit/{id}/{role}', 'editAccountRole')
@@ -139,7 +145,7 @@ Route::middleware(NoDirectAccess::class)->group(function(){
                 // ROLES: ALL, EXCEPT GUEST
                 Route::middleware(VerifyAccountRole::class.':Admin,Secretary,Clerk,Archivist')->group(function(){
                     // Get Incoming Documents
-                    Route::get('view/incoming', 'show')
+                    Route::get('view/incoming', 'showIncoming')
                     ->name('showIncoming');
 
                     // Get Outgoing Documents
@@ -185,5 +191,15 @@ Route::middleware(NoDirectAccess::class)->group(function(){
         }); 
     });
 });
-// Get Document for Editing Documents
+
+// System Settings Route for AJAX Requests
+Route::post('/status/update', [StatusController::class, 'update'])
+->name('status.update');
+
+Route::post('/status/delete', [StatusController::class, 'delete'])
+->name('status.delete');
+
+Route::post('/fileExtensions/update', [FileExtensionController::class, 'update'])
+->name('fileExtension.update');
+
 require __DIR__.'/auth.php';

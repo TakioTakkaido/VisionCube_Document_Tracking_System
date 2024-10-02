@@ -69,9 +69,7 @@ body {
     margin-right: 10px;
 }
 .account-info {
-    display: flex;
-    text-align: justify;
-    align-items: center; 
+    display: block;
 }
 .account-name {
     font-size: 16px;
@@ -346,10 +344,27 @@ body {
     display: block;
 }
 
+/* SIDE PANEL */
 .side-panel {
     color: white;
 }
 
 .side-panel-section a:hover {
     color: black !important;
+}
+
+/* ACCOUNT MENU DROPDOWN */
+#accountMenuDropdownBtn:active {
+    background-color: #ead149 !important;
+    border-color: #ead149 !important;
+}
+
+#accountMenuDropdownBtn:focus {
+    box-shadow: none;
+}
+
+/* SYSTEM SETTINGS */
+#systemSettingsBody {
+    max-height: 65vh !important;
+    overflow-y: scroll !important;
 }

@@ -45,6 +45,7 @@ Sanchez, Shane David U.
 
     {{-- Scripts --}}
     @vite([
+        'resources/js/dashboard/topPanel.js',
         'resources/js/dashboard/sidePanel.js',
     ])
 
@@ -66,6 +67,8 @@ Sanchez, Shane David U.
 {{-- VIEW ACCOUNT --}}
 {{-- <x-dashboard.view-account /> --}}
 
+{{-- SYSTEM SETTINGS --}}
+<x-dashboard.forms.admin.system-settings />
 
 {{-- Routes retrieving document, since AJAX cannot get this as a link, when inserted directly --}}
 <script>
@@ -73,7 +76,7 @@ Sanchez, Shane David U.
         // Accounts Routes
         showAllAccounts: "{{route('account.showAllAccounts')}}",
         editAccountRole: "{{route('account.editAccountRole', [':id', ':role'])}}",
-        showDeactivatedAccounts: "{{route('account.showAllDeactivated')}}",
+        showAllDeactivatedAccounts: "{{route('account.showAllDeactivatedAccounts')}}",
         reactivateAccount: "{{route('account.reactivate', ':id')}}",
         
         // Document Routes
@@ -84,8 +87,14 @@ Sanchez, Shane David U.
         showDocumentVersions: "{{route('document.showDocumentVersions', ':id')}}",
         downloadDocument: "{{route('document.download', ':id')}}",
         editDocument: "{{route('document.edit', ':id')}}",
-        moveDocument: "{{route('document.move', [':id', ':category'])}}"
-        uploadDocument: "{{route('document.upload')}}"
+        moveDocument: "{{route('document.move', [':id', ':category'])}}",
+        uploadDocument: "{{route('document.upload')}}",
+
+        // System Settings
+        updateStatus: "{{route('status.update')}}",
+        deleteStatus: "{{route('status.delete')}}",
+        updateFileExtensions: "{{route('fileExtension.update')}}"
+
     };
 </script>
 
