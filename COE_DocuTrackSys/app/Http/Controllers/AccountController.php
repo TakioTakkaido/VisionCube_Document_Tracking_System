@@ -165,4 +165,55 @@ class AccountController extends Controller {
     public function reactivate(Request $request){
         // 
     }
+
+    public function editAccess(Request $request){
+        $accounts = Account::where('role', $request->role);
+        
+        foreach ($accounts as $account) {
+            $account->canUpload     = $account[0];
+            $account->canEdit       = $account[1];
+            $account->canMove       = $account[2];
+            $account->canArchive    = $account[3];
+            $account->canDownload   = $account[4];
+            $account->canPrint      = $account[5];
+
+            $account->save();
+        }
+
+        return response()->json([
+            'success' => 'Edited roles successfully'
+        ]);
+    }
+
+    public static function getSecretaryRole(){
+        $secretary = Account::where('role', AccountRole::SECRETARY)->first();
+        $access = [];
+
+        $access[0] = isset($secretary->canUpload) ? $secretary->canUpload : false;
+        $access[1] = isset($secretary->canEdit) ? $secretary->canEdit : false;
+        $access[2] = isset($secretary->canMove) ? $secretary->canMove : false;
+        $access[3] = isset($secretary->canArchive) ? $secretary->canArchive : false;
+        $access[4] = isset($secretary->canDownload) ? $secretary->canDownload : false;
+        $access[5] = isset($secretary->canPrint) ? $secretary->canPrint : false;
+
+        return response()->json([
+            'secretary' => $secretary
+        ]);
+    }
+
+    public static function getClerkRole(){
+        $clerk = Account::where('role', AccountRole::CLERK)->first();
+        $access = [];
+
+        $access[0] = isset($clerk->canUpload) ? $clerk->canUpload : false;
+        $access[1] = isset($clerk->canEdit) ? $clerk->canEdit : false;
+        $access[2] = isset($clerk->canMove) ? $clerk->canMove : false;
+        $access[3] = isset($clerk->canArchive) ? $clerk->canArchive : false;
+        $access[4] = isset($clerk->canDownload) ? $clerk->canDownload : false;
+        $access[5] = isset($clerk->canPrint) ? $clerk->canPrint : false;
+        
+        return response()->json([
+            'clerk' => $clerk
+        ]);
+    }
 }
