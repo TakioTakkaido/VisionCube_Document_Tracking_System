@@ -61,3 +61,5 @@ $('#password').on('input' , function(event){
     $('#error-password').remove();
     $(this).removeClass('error-input');
 });
+
+// Message
