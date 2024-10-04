@@ -25,7 +25,7 @@ $(document).on('submit', '#loginForm', function(event){
             // Change the input field, and
             // Add error text
             if (data.errors.email){
-                if (('#email').hasClass('error-input')) {
+                if ($('#email').hasClass('error-input')) {
                     $('#email').removeClass('error-input');
                 }
                 $('#email').addClass('error-input');
@@ -33,7 +33,7 @@ $(document).on('submit', '#loginForm', function(event){
             }
 
             if (data.errors.password){
-                if (('#password').hasClass('error-input')) {
+                if ($('#password').hasClass('error-input')) {
                     $('#password').removeClass('error-input');
                 }
 
