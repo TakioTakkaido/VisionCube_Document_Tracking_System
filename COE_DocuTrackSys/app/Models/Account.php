@@ -27,10 +27,20 @@ class Account extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        // Basic info
         'name',
         'email',
         'password',
-        'role'
+        'role',
+        'deactivated',
+
+        // Access Functions
+        'canUpload',
+        'canEdit',
+        'canMove',
+        'canArchive',
+        'canDownload',
+        'canPrint'
     ];
 
     protected $casts = [
