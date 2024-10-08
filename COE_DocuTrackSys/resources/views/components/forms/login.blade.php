@@ -45,7 +45,7 @@ Password
       </div>
 
       {{-- Submit Button --}}
-      <button type="submit" class="btn">Login</button>
+      <button type="submit" class="btn" id="loginBtn">Login</button>
 
       <div class="register-link">
         {{-- Redirect the user to account creation whenever no account is made --}}
