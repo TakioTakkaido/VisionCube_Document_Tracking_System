@@ -161,17 +161,16 @@ class AccountController extends Controller {
 
     // Logout
     public function logout(){
-        // Logout
-        Auth::logout();
-
         // Create new log
         ModelsLog::create([
             'account' => Auth::user()->name . " • " . Auth::user()->role->value,
             'description' => 'Logged out to the system'
         ]);
 
-        // Redirect to the login page
-        return redirect()->route('show.login');
+        // Logout
+        Auth::logout();
+
+        return response()->json(['redirect' => route('show.login')]);
     }
 
     // Deactivate
