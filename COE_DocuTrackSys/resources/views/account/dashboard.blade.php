@@ -81,6 +81,7 @@ Sanchez, Shane David U.
 <script>
     window.routes = {
         // Accounts Routes
+        create: "{{route('account.create')}}",
         showAllActiveAccounts: "{{route('account.showAllActiveAccounts')}}",
         editAccountRole: "{{route('account.editAccountRole', [':id', ':role'])}}",
         showAllDeactivatedAccounts: "{{route('account.showAllDeactivatedAccounts')}}",

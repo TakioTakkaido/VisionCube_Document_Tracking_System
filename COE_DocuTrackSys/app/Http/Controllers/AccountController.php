@@ -87,13 +87,17 @@ class AccountController extends Controller {
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
-            'role' => AccountRole::GUEST
+            'role' => $request->input('role')
         ]);
 
         // Create new log file
         ModelsLog::create([
             'account' => Auth::user()->name . " • " . Auth::user()->role->value,
             'description' => 'Added new user to the system'
+        ]);
+
+        return response()->json([
+            'success' => 'Account created successfully'
         ]);
 
     }

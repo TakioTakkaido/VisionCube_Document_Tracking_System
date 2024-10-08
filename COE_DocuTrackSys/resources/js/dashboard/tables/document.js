@@ -1,3 +1,4 @@
+// hinde pa 
 export function showIncoming(){
     $('.dashboardTableTitle').html('Incoming Documents');
     
@@ -143,6 +144,7 @@ export function showIncoming(){
     }
 }
 
+// wala na to
 export function showAllDocuments(){
     $('.dashboardTableTitle').html('All Documents');
 
@@ -281,6 +283,7 @@ export function showAllDocuments(){
     });
 }
 
+// ok na to
 export function showOutgoing(){
     $('.dashboardTableTitle').html('Outgoing Documents');
 
