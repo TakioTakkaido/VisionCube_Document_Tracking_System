@@ -24,15 +24,23 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateAccountFormRequest;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginFormRequest;
+use App\Models\Log as ModelsLog;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AccountController extends Controller {
     // Show Account
     public function show(Request $request){
         // 
+
+        // Send log
+        ModelsLog::create([
+            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'description' => 'Viewed account profile'
+        ]);
     }
 
     // Login Existing User
@@ -49,7 +57,10 @@ class AccountController extends Controller {
             $request->session()->regenerate();
 
             // Send log
-
+            ModelsLog::create([
+                'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+                'description' => 'Logged in to the system'
+            ]);
             
             // Authentication passed, to dashboard
             return response()->json([
@@ -71,20 +82,20 @@ class AccountController extends Controller {
         // Validate credentials
         $request->validated();
         
-        // Make new guest account
-        $guest = Account::create([
+        // Make new account
+        Account::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
             'role' => AccountRole::GUEST
         ]);
 
-        Auth::login($guest);
-        
-        // Emit CreatedNewAccount event
+        // Create new log file
+        ModelsLog::create([
+            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'description' => 'Added new user to the system'
+        ]);
 
-        // To dashboard
-        return redirect()->route('account.dashboard');
     }
 
     // Forgot Password
@@ -96,6 +107,12 @@ class AccountController extends Controller {
         // that when clicked would redirect to a link that would change the password
         // and redirect the user to the log in page to input the new password
 
+        // Create new log
+        ModelsLog::create([
+            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'description' => 'Requested to change password'
+        ]);
+
         // Temporary fix: redirect to login for now
         return redirect()->route('show.login');
     }
@@ -103,6 +120,13 @@ class AccountController extends Controller {
     // Reset Password
     public function resetPassword(){
         // 
+
+        // Create new log
+        ModelsLog::create([
+            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'description' => 'Resetted password'
+        ]);
+
     }
 
     // Log In Admin User
@@ -112,6 +136,13 @@ class AccountController extends Controller {
          $remember = $request->has('remember');
  
          if (Auth::guard('web')->attempt($credentials, $remember)) {
+
+            // Create new log
+            ModelsLog::create([
+                'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+                'description' => 'Logged in to the system'
+            ]);
+
              // Authentication passed, redirect to dashboard
              return redirect()->intended(route('show.dashboard'))->with([
                  'success' => 'Login Successful'
@@ -126,49 +157,100 @@ class AccountController extends Controller {
 
     // Logout
     public function logout(){
+        // Logout
         Auth::logout();
-        return redirect()->route('account.showLogIn');
+
+        // Create new log
+        ModelsLog::create([
+            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'description' => 'Logged out to the system'
+        ]);
+
+        // Redirect to the login page
+        return redirect()->route('show.login');
     }
 
     // Deactivate
     public function deactivate(){
-        // 
+        //
+
+        // Create new log
+        ModelsLog::create([
+            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'description' => 'Deactivated its account'
+        ]);
     }
 
     //ADMIN FUNCTIONS
+    public function showAllActiveAccounts(){
+        // Obtain all active accounts
+        $accounts = Account::where('deactivated', 0)->get();
 
-    public function showAllAccounts(){
-        // 
+        // Log
+        Log::channel('daily')->info('All accounts obtained: {accounts}', ['accounts' => $accounts]);
+
+        // Create new log
+        ModelsLog::create([
+            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'description' => 'Viewed all active accounts'
+        ]);
+
+        // Return all accounts
+        return response()->json([
+            'accounts' => $accounts
+        ]);
     }
 
     public function showAllDeactivatedAccounts(){
-        $accounts = Account::where('deactivated', false)->get();
+        // Get all deactivated accounts
+        $accounts = Account::where('deactivated', 1)->get();
+
+        // Log
+        Log::channel('daily')->info('Deactivated accounts obtained: {accounts}', ['accounts' => $accounts]);
+        
+        // Create new log
+        ModelsLog::create([
+            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'description' => 'Viewed all deactivated accounts'
+        ]);
 
         return response()->json([
-            'success' => 'All deactivated accounts obtained.',
+            'success' => 'Successfully obtained deactivated accounts',
             'accounts' => $accounts
         ]);
     }
 
     public function editAccountRole(Request $request){
-        // 
-    }
+        // Find account
 
-    public function verifyAccount(Request $request){
-        // 
-    }
+        // Change the role
 
-    public function rejectGuest(Request $request){
-        // 
+        // Save new account role
+
+        // Create new log
+        ModelsLog::create([
+            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'description' => 'Edited account role'
+        ]);
     }
 
     public function reactivate(Request $request){
-        // 
+        // Find account
+
+        // Change account status to active
+
+        // Create new log
+        ModelsLog::create([
+            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'description' => 'Reactivated account'
+        ]);
     }
 
     public function editAccess(Request $request){
+        // Find all accounts of that role
         $accounts = Account::where('role', $request->role);
         
+        // Edit access for each roles
         foreach ($accounts as $account) {
             $account->canUpload     = $account[0];
             $account->canEdit       = $account[1];
@@ -178,7 +260,13 @@ class AccountController extends Controller {
             $account->canPrint      = $account[5];
 
             $account->save();
-        }
+        }   
+
+        // Create new log
+        ModelsLog::create([
+            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'description' => 'Edited access of roles'
+        ]);
 
         return response()->json([
             'success' => 'Edited roles successfully'
@@ -186,9 +274,11 @@ class AccountController extends Controller {
     }
 
     public static function getSecretaryRole(){
+        // Get first instance of that role
         $secretary = Account::where('role', AccountRole::SECRETARY)->first();
         $access = [];
 
+        // Get all access
         $access[0] = isset($secretary->canUpload) ? $secretary->canUpload : false;
         $access[1] = isset($secretary->canEdit) ? $secretary->canEdit : false;
         $access[2] = isset($secretary->canMove) ? $secretary->canMove : false;
@@ -196,15 +286,18 @@ class AccountController extends Controller {
         $access[4] = isset($secretary->canDownload) ? $secretary->canDownload : false;
         $access[5] = isset($secretary->canPrint) ? $secretary->canPrint : false;
 
+        // Return all access
         return response()->json([
             'secretary' => $secretary
         ]);
     }
 
     public static function getClerkRole(){
+        // Get first instance of that role
         $clerk = Account::where('role', AccountRole::CLERK)->first();
         $access = [];
 
+        // Get all access
         $access[0] = isset($clerk->canUpload) ? $clerk->canUpload : false;
         $access[1] = isset($clerk->canEdit) ? $clerk->canEdit : false;
         $access[2] = isset($clerk->canMove) ? $clerk->canMove : false;
@@ -212,6 +305,7 @@ class AccountController extends Controller {
         $access[4] = isset($clerk->canDownload) ? $clerk->canDownload : false;
         $access[5] = isset($clerk->canPrint) ? $clerk->canPrint : false;
         
+        // Return all access
         return response()->json([
             'clerk' => $clerk
         ]);
