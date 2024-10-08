@@ -241,6 +241,9 @@ Route::post('/fileExtensions/update', [FileExtensionController::class, 'update']
 Route::post('/account/update/access', [AccountController::class, 'editAccess'])
 ->name('account.editAccess');
 
+Route::get('/document/preview/{id}', [DocumentController::class, 'preview'])
+->name('document.preview');
+
 
 
 require __DIR__.'/auth.php';

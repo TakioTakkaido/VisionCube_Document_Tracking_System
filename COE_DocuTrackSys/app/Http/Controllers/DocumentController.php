@@ -256,4 +256,15 @@ class DocumentController extends Controller{
             'description' => 'Moved document'
         ]);
     }
+
+    // Document preview
+    public function preview(Request $request){
+        $document = Document::find($request->id);
+        $filePath = "public/documents/". basename($document->file); // Assuming $document->file contains the filename
+        $fileLink = Storage::url($filePath); // This generates the URL for accessing the document
+        
+        return response()->json([
+            'fileLink' => asset($fileLink),
+        ]);
+    }
 }

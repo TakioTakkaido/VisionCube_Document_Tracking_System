@@ -7,7 +7,7 @@
             <!-- Modal content goes here -->
             <form class="uploadContent" id="editDocumentForm" method="post">
                 @csrf
-                @method('POST')
+                @method('POST') 
                 <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
                 <input type='hidden' name='document_id' id="documentId">
                 <input type='hidden' name='owner_id' id="ownerId">

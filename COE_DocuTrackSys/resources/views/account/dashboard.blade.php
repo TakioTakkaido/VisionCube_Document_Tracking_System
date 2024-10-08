@@ -71,6 +71,9 @@ Sanchez, Shane David U.
 {{-- EDIT DOCUMENT FORM --}}
 <x-dashboard.forms.edit-document />
 
+{{-- DOCUMENT PREVIEW --}}
+<x-dashboard.document-preview />
+
 {{-- VIEW ACCOUNT --}}
 {{-- <x-dashboard.view-account /> --}}
 
@@ -93,7 +96,7 @@ Sanchez, Shane David U.
         editDocument: "{{route('document.edit', ':id')}}",
         moveDocument: "{{route('document.move')}}",
         uploadDocument: "{{route('document.upload')}}",
-
+        previewDocument: "{{route('document.preview', ':id')}}",
         showAllLogs: "{{route('log.showAll')}}",
         
         // System Settings

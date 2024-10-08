@@ -403,13 +403,16 @@ export function showOutgoing(){
 
                 if($(this).data('bs.popover')){
                     console.log('has popover');
-                    $(this).popover('toggle')
+                    $(this).popover('hide');
                 };
+
+                // Preview document
+                documentPreview(data.id, row);
                 console.log('Document preview');
             });
 
             // Document menu
-            $(row).on('contextmenu', function(event){
+            $(row).on('contextmenu',  function(event){
                 event.preventDefault();
                 console.log('document menu')
 
@@ -428,12 +431,13 @@ export function showOutgoing(){
                     default:
                         break;
                 }
+
                 // Create popover
                 $(this).popover({
                     content: `<div class="list-group menu">`+
                         `<button type="button" class="list-group-item" id="editDocumentBtn${data.id}">Edit Document</button>` +
                         `<a type="button" class="list-group-item list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">Download File</a>` +
-                        `<button type="button" class="list-group-item" id="viewDocumentBtn${data.id}">View Document Versions</button>` +
+                        `<button type="button" class="list-group-item" id="viewDocumentVersionsBtn${data.id}">View Document Versions</button>` +
                         `<button type="button" class="list-group-item" id="moveDocumentBtn${data.id}">Move Document</button>` +
                         `<div class="list-group-item dropright">` +
                         `<div class="dropdown-menu" id="moveDocumentDropdown${data.id}" aria-hidden="true">
@@ -456,14 +460,6 @@ export function showOutgoing(){
                         // Edit document Function
                         editDocument(data.id);
                     });
-                    
-                    // $('#downloadDocumentBtn' + data.id).off('click').on('click', function (event) {
-                    //     event.stopPropagation();
-                        
-                    //     $(row).popover('toggle');
-                    //     // Edit document Function
-                    //     downloadDocument(data.id);
-                    // });
 
                     // Move document btn
                     $('#moveDocumentBtn' + data.id).off('click').on('click', function(event) {
@@ -485,7 +481,13 @@ export function showOutgoing(){
                     $('#moveArchived' + data.id).off('click').on('click', function (event) {
                         moveDocument(data.id, 'Archived', row);
                     });
+
                     // View document versions
+                    $('#viewDocumentVersionsBtn' + data.id).off('click').on('click', function (event) {
+                        event.preventDefault();
+
+                        viewDocumentVersions(id);
+                    })
                 });
                 
                 $(this).popover('toggle');
@@ -493,9 +495,6 @@ export function showOutgoing(){
                 // Add event listeners after showing the popover
                 // $(this).popover()
             });
-
-
-            
         }
     });
 
@@ -681,6 +680,7 @@ function editDocument(id){
         }
     });
 }
+
 // Move Document Dropdown
 function moveDocument(id, location, row){
     var formData = new FormData();
@@ -702,12 +702,20 @@ function moveDocument(id, location, row){
     });
 }
 
-// function downloadDocument(id){
-//     console.log('download');
-//     window.routes.downloadDocument.replace(':id', id);
-// }
 // View Document Versions
 function viewDocumentVersions(id){
     console.log('view document versions');
 }
 
+function documentPreview(id, row){
+    $.ajax({
+        method: "GET",
+        url: window.routes.previewDocument.replace(':id', id),
+        success: function (response) {
+            $('#documentPreviewIFrame').attr('src', response.fileLink + `#toolbar=0&navpanes=0`);
+            console.log($('#documentPreviewIFrame').attr('src'));
+            $(row).popover('hide');
+            $('#documentPreview').modal('show');
+        }
+    });
+}
