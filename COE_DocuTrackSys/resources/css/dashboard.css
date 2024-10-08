@@ -14,15 +14,17 @@ body {
     font-family: "Arial", sans-serif;
     margin: 0;
     padding: 0;
-    height: 100%;
-    width: 100%;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
 }
 
 
 /************************TOP PANEL*************************/
 .top-panel {
     height: 10%; 
-    width: 100vw;
+    width: 100%;
     background-color: #b22222;
     top: 0; 
     left: 0; 
@@ -37,6 +39,11 @@ body {
 
 .middle-panel {
     height: 90%;
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .header-logo{
@@ -94,8 +101,8 @@ body {
 .side-panel {
     display: flex;
     height: 100%;
-    width: 235px;
-    position: fixed;
+    width: 15%;
+    position: relative;
     text-align: middle;
     background-color: #802121;
     overflow-x: hidden;
@@ -317,12 +324,11 @@ body {
 
 /* Document Table */
 .tableContents { 
-    display: inline-block;
-    position: relative;
-    top: 100px;
-    left: 260px;
-    background-clip: padding-box;
-    width: 80%;
+    display: none;
+    background-clip: padding-box;   
+    width: 100%;
+    max-height: 500px;
+    overflow-y: scroll;
 }
 
 .custom-shadow{
@@ -367,4 +373,37 @@ body {
 #systemSettingsBody {
     max-height: 65vh !important;
     overflow-y: scroll !important;
+}
+
+.table-panel {
+    width: 85%;
+    height: 100%;
+    display: flex;
+    position:relative;
+    padding: 15px;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
+.table {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    
+}
+
+.table-panel > div {
+    display: none; 
+}
+
+.table-panel > div.active {
+    display: block; 
+}
+
+.system-settings.div > div {
+    display: none;
+}
+
+.system-settings.div > div.active {
+    display: block; 
 }

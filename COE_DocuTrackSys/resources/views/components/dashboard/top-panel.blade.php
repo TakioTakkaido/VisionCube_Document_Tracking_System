@@ -13,9 +13,6 @@
 
             {{-- Account Dropdown --}}  
             <div class="dropdown-menu" aria-labelledby="accountMenuDropdownBtn">
-                {{-- For Admin only --}}
-                <a class="dropdown-item" id="systemSettingsBtn" role="button" id="viewAccountBtn" data-toggle="modal" data-target="#systemSettings" href="#">System Settings</a>
-
                 {{-- For Users --}}
                 <a class="dropdown-item" href="#">View Account</a>
                 <a class="dropdown-item" id="logoutBtn"         href="#">Logout</a>

@@ -15,6 +15,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FileExtensionController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TypeController;
 use App\Http\Middleware\NoCache;
@@ -61,13 +62,7 @@ Route::middleware([VerifyAccount::class])->group(function() {
 
         // Display Dashboard
         Route::get('/dashboard', function(){
-            return view('account.dashboard',[
-                'user'          => Auth::user(),
-                'docTypes'      => DocumentType::cases(),
-                'docStatuses'   => DocumentStatus::cases(),
-                'docCategories' => DocumentCategory::cases(),
-                'roles'         => AccountRole::cases()
-            ]);
+            return view('account.dashboard');
         })->name('dashboard');
     });
 });
@@ -75,66 +70,85 @@ Route::middleware([VerifyAccount::class])->group(function() {
 // Middleware: No Direct Access
 // Checks if the user directly access the functions using the link
 // If yes, dont redirect or perform the functions and send an error event
+Route::middleware([NoDirectAccess::class, VerifyAccountRole::class.':Admin'])->group(function(){
+    // Account Routes ('/account')
+    Route::name('account.')->group(function(){
+        Route::controller(AccountController::class)->group(function(){
+            Route::prefix('/account')->group(function(){
+                // ROLES: ADMIN
+                // Admin Functions
+                // View All Accounts
+                Route::get('/show/all', 'showAllActiveAccounts')
+                ->name('showAllActiveAccounts');
+                
+                // View All Deactivated Accounts
+                Route::get('/show/deact', 'showAllDeactivatedAccounts')
+                ->name('showAllDeactivatedAccounts');
+
+                // Edit Account Role
+                Route::post('/edit/{id}/{role}', 'editAccountRole')
+                ->name('editAccountRole');
+
+                // Reactivate Account
+                Route::post('/reactivate/{id}', 'reactivate')
+                ->name('reactivate');
+
+                // Deactivate Account
+                Route::post('/deactivate/{id}', 'deactivate')
+                ->name('deactivate');
+            });
+        });
+    });
+});
+
+Route::middleware([NoDirectAccess::class, VerifyAccountRole::class.':Admin'])->group(function(){
+    // Account Routes ('/account')
+    Route::name('log.')->group(function(){
+        Route::controller(LogController::class)->group(function(){
+            Route::prefix('/log')->group(function(){
+                // ROLES: ADMIN
+                // Admin Functions
+                // View All Logs
+                Route::get('/show/all', 'showAllLogs')
+                ->name('showAll');
+            });
+        });
+    });
+});
+
 Route::middleware(NoDirectAccess::class)->group(function(){
     // Account Routes ('/account')
     Route::name('account.')->group(function(){
         Route::controller(AccountController::class)->group(function(){
-            Route::prefix('account')->group(function(){
+            Route::prefix('/account')->group(function(){
                 // ROLES: NOT REQUIRED
                 // View Account
-                Route::get('/view/{id}', 'show')
+                Route::get('/show/{id}', 'show')
                 ->name('show');
 
                 // Send Login Credentials
-                Route::post('login', 'login')
+                Route::post('/login', 'login')
                 ->name('login');
 
                 // Send Create Account Credentials
-                Route::post('create', 'create')
+                Route::post('/create', 'create')
                 ->name('create');
                 
-
                 // Send Forgot Password Credentials
-                Route::post('forgot-password', 'forgotPassword')
+                Route::post('/forgot-password', 'forgotPassword')
                 ->name('forgotPassword');
 
                 // Send Reset Password Credentials
-                Route::post('reset-password', 'resetPassword')
+                Route::post('/reset-password', 'resetPassword')
                 ->name('resetPassword');
 
                 // Send Log In Admin
-                Route::post('login/admin', 'loginAdmin')
+                Route::post('/login/admin', 'loginAdmin')
                 ->name('loginAdmin');
 
                 // Log Out
-                Route::post('logout', 'logout')
+                Route::post('/logout', 'logout')
                 ->name('logout');
-
-                // Deactivate Account
-                Route::post('deactivate/{id}', 'deactivate')
-                ->name('deactivate');
-
-                // View All Deactivated Accounts
-                Route::get('/view/deactivated', 'showAllDeactivatedAccounts')
-                ->name('showAllDeactivatedAccounts');
-                
-                // ROLES: ADMIN
-                Route::middleware(VerifyAccountRole::class.':Admin')->group(function(){
-                    // Admin Functions
-                    // View All Accounts
-                    Route::get('view/all', 'showAllAccounts')
-                    ->name('showAllAccounts');
-                    
-                    
-
-                    // Edit Account Role
-                    Route::post('edit/{id}/{role}', 'editAccountRole')
-                    ->name('editAccountRole');
-
-                    // Reactivate Account
-                    Route::post('reactivate/{id}', 'reactivate')
-                    ->name('reactivate');
-                });
             });
         });
     });
@@ -144,7 +158,7 @@ Route::middleware(NoDirectAccess::class)->group(function(){
         Route::controller(DocumentController::class)->group(function(){
             Route::prefix('/document')->group(function(){
                 // ROLES: ALL, EXCEPT GUEST
-                Route::middleware(VerifyAccountRole::class.':Admin,Secretary,Clerk,Archivist')->group(function(){
+                Route::middleware(VerifyAccountRole::class.':Admin,Secretary,Clerk')->group(function(){
                     // Get Incoming Documents
                     Route::get('view/incoming', 'showIncoming')
                     ->name('showIncoming');
@@ -154,7 +168,7 @@ Route::middleware(NoDirectAccess::class)->group(function(){
                     ->name('showOutgoing');
 
                     // Get Archived Documents, by Document Type
-                    Route::get('view/archived/{document_type}', 'showArchived')
+                    Route::get('view/archived', 'showArchived')
                     ->name('showArchived');
 
                     // Get Document View
@@ -177,7 +191,7 @@ Route::middleware(NoDirectAccess::class)->group(function(){
                     ->name('edit');
 
                     // Move Document
-                    Route::post('move/{id}/{category}', 'move')
+                    Route::post('move', 'move')
                     ->name('move');
                 });
 
@@ -193,6 +207,15 @@ Route::middleware(NoDirectAccess::class)->group(function(){
     });
 });
 
+Route::middleware(NoDirectAccess::class)->group(function(){
+    Route::name('display.')->group(function(){
+        Route::get('/display/table', function(){
+            return view('components.dashboard.table');
+        })
+        ->name('table');
+    });
+});
+
 // System Settings Route for AJAX Requests
 Route::post('/status/update', [StatusController::class, 'update'])
 ->name('status.update');
@@ -200,19 +223,24 @@ Route::post('/status/update', [StatusController::class, 'update'])
 Route::post('/status/delete', [StatusController::class, 'delete'])
 ->name('status.delete');
 
-Route::post('/type/update', [CategoryController::class, 'update'])
+Route::post('/type/update', [TypeController::class, 'update'])
 ->name('type.update');
 
-Route::post('/type/delete', [CategoryController::class, 'delete'])
+Route::post('/type/delete', [TypeController::class, 'delete'])
 ->name('type.delete');
 
-Route::post('/category/update', [TypeController::class, 'update'])
+Route::post('/category/update', [CategoryController::class, 'update'])
 ->name('category.update');
 
-Route::post('/category/delete', [TypeController::class, 'delete'])
+Route::post('/category/delete', [CategoryController::class, 'delete'])
 ->name('category.delete');
 
 Route::post('/fileExtensions/update', [FileExtensionController::class, 'update'])
 ->name('fileExtension.update');
+
+Route::post('/account/update/access', [AccountController::class, 'editAccess'])
+->name('account.editAccess');
+
+
 
 require __DIR__.'/auth.php';

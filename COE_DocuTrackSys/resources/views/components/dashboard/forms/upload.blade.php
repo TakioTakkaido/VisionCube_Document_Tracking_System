@@ -1,4 +1,4 @@
-<div class="modal fade" id="uploadDocument" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="exampleModalLabel">
+<div class="modal fade" id="uploadDocument" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="editAccount">
         <div class="modal-content">
         <div class="modal-body uploadDocument">
@@ -7,6 +7,9 @@
             <form class="uploadContent" id="uploadDocumentForm" method="post">
                 @csrf
                 @method('POST')
+                {{-- CSRF Token --}}
+                <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+        
                 <label for="uploadDocType">Document Type:</label>
                 <select id="uploadDocType" name="type" placeholder="Enter the Type of Document">
                     <option value="" disabled selected>Select the Type of Document</option>
@@ -89,10 +92,12 @@
 
         <div class="modal-footer">
             {{-- Submit form data using AJAX in uploadform.js --}}
-            <button type="submit" class="btn btn-primary" type="button">Submit</button>
+            <button type="submit" id="submitDocumentForm" class="btn btn-primary" type="button">Submit</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelBtn">Cancel</button>
         </div>
 
         </div>
     </div>
 </div>
+
+
