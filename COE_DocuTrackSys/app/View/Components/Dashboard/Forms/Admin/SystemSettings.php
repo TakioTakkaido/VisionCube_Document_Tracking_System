@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Dashboard\Forms\Admin;
 
+use App\Http\Controllers\AccountController;
 use App\Models\Category;
 use App\Models\FileExtension;
 use App\Models\Participant;
@@ -23,12 +24,6 @@ class SystemSettings extends Component {
      */
     public function render(): View|Closure|string
     {
-        return view('components.dashboard.forms.admin.system-settings', [
-            'categories' => Category::all(),
-            'types' => Type::all(),
-            'participants' => Participant::all(),
-            'statuses' => Status::all(),
-            'fileExtensions' => FileExtension::all()
-        ]);
+        return view('components.dashboard.forms.admin.system-settings');
     }
 }

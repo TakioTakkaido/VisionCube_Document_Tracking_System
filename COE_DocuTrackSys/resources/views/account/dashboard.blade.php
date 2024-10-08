@@ -39,16 +39,23 @@ Sanchez, Shane David U.
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" 
     integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
+    {{-- Datatable --}}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+
     {{-- Assets --}}
     <link rel="icon" href="{{Vite::asset('resources/img/COE.png')}}" type="image/x-icon">
     @vite(['resources/css/dashboard.css'])
 
     {{-- Scripts --}}
     @vite([
+        // Panel
         'resources/js/dashboard/topPanel.js',
         'resources/js/dashboard/sidePanel.js',
-    ])
 
+        // Upload Form
+        'resources/js/dashboard/uploadForm.js'
+    ])
 </head>
 <body>
 
@@ -59,22 +66,19 @@ Sanchez, Shane David U.
 <x-dashboard.middle-panel />
 
 {{-- UPLOAD FORM --}}
-{{-- <x-dashboard.forms.upload-document /> --}}
+<x-dashboard.forms.upload />
 
 {{-- EDIT DOCUMENT FORM --}}
-{{-- <x-dashboard.forms.edit-document /> --}}
+<x-dashboard.forms.edit-document />
 
 {{-- VIEW ACCOUNT --}}
 {{-- <x-dashboard.view-account /> --}}
-
-{{-- SYSTEM SETTINGS --}}
-<x-dashboard.forms.admin.system-settings />
 
 {{-- Routes retrieving document, since AJAX cannot get this as a link, when inserted directly --}}
 <script>
     window.routes = {
         // Accounts Routes
-        showAllAccounts: "{{route('account.showAllAccounts')}}",
+        showAllActiveAccounts: "{{route('account.showAllActiveAccounts')}}",
         editAccountRole: "{{route('account.editAccountRole', [':id', ':role'])}}",
         showAllDeactivatedAccounts: "{{route('account.showAllDeactivatedAccounts')}}",
         reactivateAccount: "{{route('account.reactivate', ':id')}}",
@@ -82,24 +86,30 @@ Sanchez, Shane David U.
         // Document Routes
         showIncoming: "{{route('document.showIncoming')}}",
         showOutgoing: "{{route('document.showOutgoing')}}",
-        showArchived: "{{route('document.showArchived', ':id')}}",
+        showArchived: "{{route('document.showArchived')}}",
         showDocument: "{{route('document.show', ':id')}}",
         showDocumentVersions: "{{route('document.showDocumentVersions', ':id')}}",
         downloadDocument: "{{route('document.download', ':id')}}",
         editDocument: "{{route('document.edit', ':id')}}",
-        moveDocument: "{{route('document.move', [':id', ':category'])}}",
+        moveDocument: "{{route('document.move')}}",
         uploadDocument: "{{route('document.upload')}}",
 
+        showAllLogs: "{{route('log.showAll')}}",
+        
         // System Settings
         updateStatus: "{{route('status.update')}}",
         deleteStatus: "{{route('status.delete')}}",
-        updateFileExtensions: "{{route('fileExtension.update')}}"
+        updateFileExtensions: "{{route('fileExtension.update')}}",
 
         updateCategory: "{{route('category.update')}}",
         deleteCategory: "{{route('category.delete')}}",
 
         updateType: "{{route('type.update')}}",
         deleteType: "{{route('type.delete')}}",
+
+        updateRoleAccess: "{{route('account.editAccess')}}",
+
+        displayTable: "{{route('display.table')}}"
     };
 </script>
 

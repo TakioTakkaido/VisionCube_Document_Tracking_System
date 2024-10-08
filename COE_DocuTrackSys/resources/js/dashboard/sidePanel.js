@@ -1,3 +1,7 @@
+import { showAllActiveAccounts, showAllDeactivatedAccounts } from "./tables/account";
+import { showArchived, showIncoming, showOutgoing } from "./tables/document";
+import { showAllLogs } from "./tables/log";
+
 // Event listener for the side panel buttons
 // Upload button for uploading documents
 $('#uploadBtn').on('click', function(event){
@@ -13,41 +17,40 @@ $('#accountBtn').on('click', function(event){
 });
 
 // Account Dropdown Buttons
+// Active Accounts
+$('#activeBtn').on('click', function(event){
+    event.preventDefault();
+
+    if (!$('.dashboard-table').hasClass('active')){
+        $('.dashboard-table').addClass('active');
+        $('.account-settings').removeClass('active');
+        $('.document-settings').removeClass('active');
+        $('.system-settings').removeClass('active'); 
+    }
+
+    // Show all active accounts
+    showAllActiveAccounts();
+});
+
 // Deactivated Accounts
 $('#deactivatedBtn').on('click', function(event){
     event.preventDefault();
-    // AJAX Request to get deactivated accounts into
-    // the system
+    
+    if (!$('.dashboard-table').hasClass('active')){
+        $('.dashboard-table').addClass('active');
+        $('.account-settings').removeClass('active');
+        $('.document-settings').removeClass('active');
+        $('.system-settings').removeClass('active'); 
+    }
 
-    $.ajax({
-        type: "GET",
-        url: window.routes.showAllDeactivatedAccounts,
-        datatype: "json",
-        success: function (data) {
-            // Parse the data from the json response
-            // var data = JSON.parse(response);
-
-            // Display the data at the accounts table
-            console.log("[ACCOUNTS:] " + data.accounts);
-
-            // Log success message
-            console.log("[SUCCESS:] " + data.success)
-        },
-        error: function (data) {
-            // Parse the data from the json response
-            var data = JSON.parse(data.responseText);
-
-            // Log error
-            console.log("Error occured while obtaining deactivated accounts")
-            console.log(data.errors)
-        }
-    });
+    showAllDeactivatedAccounts();
 });
 
 
 // Document Button
 $('#documentBtn').on('click', function(event){
     event.preventDefault();
+
     // Show the dropdown
     $('#documentsDropdown').toggleClass('show');
 });
@@ -59,154 +62,92 @@ $('#incomingBtn').on('click', function(event){
     // AJAX Request to get incoming documents into
     // the system
 
-    $.ajax({
-        method: "GET",
-        url: window.routes.showIncoming,
-        success: function (data) {
-            // Parse the data from the json response
-            // var data = JSON.parse(response);
+    if (!$('.dashboard-table').hasClass('active')){
+        $('.dashboard-table').addClass('active');
+        $('.account-settings').removeClass('active');
+        $('.document-settings').removeClass('active');
+        $('.system-settings').removeClass('active'); 
+    }
 
-            // Display the data at the documents table
-            console.log(data.documents);
-
-            // Log success message
-            console.log(data.documents)
-        },
-        error: function (data) {
-            // Parse the data from the json response
-            var data = JSON.parse(data.responseText);
-
-            // Log error
-            console.log("Error occured while obtaining incoming documents")
-            console.log(data.errors)
-        }
-    });
+    showIncoming();
 });
 
 // Outgoing Document
 $('#outgoingBtn').on('click', function(event){
     event.preventDefault();
+
+    if (!$('.dashboard-table').hasClass('active')){
+        $('.dashboard-table').addClass('active');
+        $('.account-settings').removeClass('active');
+        $('.document-settings').removeClass('active');
+        $('.system-settings').removeClass('active');
+    }
+
     // AJAX Request to get outgoing documents into
     // the system
-
-    $.ajax({
-        method: "GET",
-        url: window.routes.showOutgoing,
-        success: function (data) {
-            // Parse the data from the json response
-            // var data = JSON.parse(response);
-
-            // Display the data at the documents table
-            console.log(data.documents);
-
-            // Log success message
-            console.log(data.documents)
-        },
-        error: function (data) {
-            // Parse the data from the json response
-            var data = JSON.parse(data.responseText);
-
-            // Log error
-            console.log("Error occured while obtaining outgoing documents")
-            console.log(data.errors)
-        }
-    });
+    showOutgoing();
 });
 
 // Archived Button 
 $('#archivedBtn').on('click', function(event){
     event.preventDefault();
+
+    if (!$('.dashboard-table').hasClass('active')){
+        $('.dashboard-table').addClass('active');
+        $('.account-settings').removeClass('active');
+        $('.document-settings').removeClass('active');
+        $('.system-settings').removeClass('active'); 
+    }
+
     // Show the dropdown
-    $('#archivedDropdown').toggleClass('show');
+    showArchived();
 });
 
-// Archived Dropdown Buttons
-// Letters
-$('#archivedLetterBtn').on('click', function(event){
+// Log Button
+$('#logBtn').on('click', function(event){
     event.preventDefault();
-    // AJAX Request to get archived letters into
-    // the system
 
-    $.ajax({
-        method: "GET",
-        url: window.routes.showArchived.replace(':id', 'Letter'),
-        success: function (data) {
-            // Parse the data from the json response
-            // var data = JSON.parse(response);
-
-            // Display the data at the documents table
-            console.log(data.documents);
-
-            // Log success message
-            console.log(data.documents)
-        },
-        error: function (data) {
-            // Parse the data from the json response
-            var data = JSON.parse(data.responseText);
-
-            // Log error
-            console.log("Error occured while obtaining archived letters")
-            console.log(data.errors)
-        }
-    });
+    if (!$('.dashboard-table').hasClass('active')){
+        $('.dashboard-table').addClass('active');
+        $('.account-settings').removeClass('active');
+        $('.document-settings').removeClass('active');
+        $('.system-settings').removeClass('active'); 
+    }
+    
+    showAllLogs();
 });
 
-// Requisitions
-$('#archivedRequisitionsBtn').on('click', function(event){
+// System Settings Button
+$('#systemSettingsBtn').on('click', function (event) {
     event.preventDefault();
-    // AJAX Request to get archived requisitions into
-    // the system
 
-    $.ajax({
-        method: "GET",
-        url: window.routes.showArchived.replace(':id', 'Requisition'),
-        success: function (data) {
-            // Parse the data from the json response
-            // var data = JSON.parse(response);
-
-            // Display the data at the documents table
-            console.log(data.documents);
-
-            // Log success message
-            console.log(data.documents)
-        },
-        error: function (data) {
-            // Parse the data from the json response
-            var data = JSON.parse(data.responseText);
-
-            // Log error
-            console.log("Error occured while obtaining archived requisitions")
-            console.log(data.errors)
-        }
-    });
+    // Show the dropdown
+    $('#systemSettingsDropdown').toggleClass('show');
 });
 
-// Memoranda
-$('#archivedMemorandaBtn').on('click', function(event){
+// Account System Settings
+// Any table
+// system settings
+// Accoun settings
+// Document Settingas
+$('#accountSettingsBtn').on('click', function (event) {
     event.preventDefault();
-    // AJAX Request to get incoming memoranda into
-    // the system
 
-    $.ajax({
-        method: "GET",
-        url: window.routes.showArchived.replace(':id', 'Memoranda'),
-        success: function (data) {
-            // Parse the data from the json response
-            // var data = JSON.parse(response);
+    if (!$('.account-settings').hasClass('active')){
+        $('.system-settings').addClass('active');
+        $('.account-settings').addClass('active');
+        $('.document-settings').removeClass('active');
+        $('.dashboard-table').removeClass('active');
+    }
+});
 
-            // Display the data at the documents table
-            console.log(data.documents);
+$('#documentSettingsBtn').on('click', function (event) {
+    event.preventDefault();
 
-            // Log success message
-            console.log(data.documents)
-        },
-        error: function (data) {
-            // Parse the data from the json response
-            var data = JSON.parse(data.responseText);
-
-            // Log error
-            console.log("Error occured while obtaining archived memoranda")
-            console.log(data.errors)
-        }
-    });
+    if (!$('.document-settings').hasClass('active')){
+        $('.system-settings').addClass('active');
+        $('.document-settings').addClass('active'); 
+        $('.account-settings').removeClass('active');
+        $('.dashboard-table').removeClass('active');
+    }
 });

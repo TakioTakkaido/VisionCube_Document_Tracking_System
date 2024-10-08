@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components\Dashboard\Forms;
+namespace App\View\Components\Dashboard;
 
 use Closure;
 use Illuminate\View\Component;
 use Illuminate\Contracts\View\View;
 
-class UploadDocument extends Component
+class Table extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class UploadDocument extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.dashboard.forms.upload-document');
+        return view('components.dashboard.table');
     }
 }

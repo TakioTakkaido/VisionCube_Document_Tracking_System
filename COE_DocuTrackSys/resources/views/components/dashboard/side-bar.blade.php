@@ -3,7 +3,7 @@
     {{-- Upload Button
         Disabled for anyone not permitted to use it.
     --}}
-    <button class="upload-btn" id="uploadBtn" data-toggle="modal" data-target="#uploadModal">
+    <button class="upload-btn" id="uploadBtn">
         <i class='bx bx-upload bx-flashing'></i>
         <span>Upload</span>
     </button>
@@ -38,39 +38,45 @@
     <div class="side-panel-section" id="dropdown-arrow">
         {{-- Accounts --}}
         <a class="sidepanel-btn" id="accountBtn">
-            <span class="dropdown-arrow"><i class='bx bx-paper-plane'></i>
+            <span class="dropdown-arrow"><i class='bx bx-user'></i>
             </span> Accounts
         </a>
         {{-- Accounts Dropdown --}}
         <div class="dropdown-container" id="accountsDropdown">
-            <a id="deactivatedBtn" href="#"><i class='bx bx-notepad'></i>Deactivated</a>
+            <a id="activeBtn" href="#"><i class='bx bx-user-check'></i>Active</a>
+            <a id="deactivatedBtn" href="#"><i class='bx bx-user-x'></i>Deactivated</a>
         </div>
 
         {{-- Documents --}}
         <a class="sidepanel-btn" id="documentBtn">
-            <span class="dropdown-arrow"><i class='bx bx-archive-in' ></i>
+            <span class="dropdown-arrow"><i class='bx bx-file'></i>
             </span> Documents
         </a>
 
         {{-- Documents Dropdown --}}
         <div class="dropdown-container" id="documentsDropdown">
-            <a id="incomingBtn"><i class='bx bx-envelope'></i>Incoming</a>
-            <a id="outgoingBtn"><i class='bx bx-envelope'></i>Outgoing</a>
-            <a id="archivedBtn"><i class='bx bx-archive-in' ></i>Archived</a>
-
-            {{-- Archived Dropdown --}}
-            <div class="dropdown-container" id="archivedDropdown">
-                <a id="archivedLetterBtn"       href="#"><i class='bx bx-notepad'></i>Letters</a>
-                <a id="archivedRequisitionsBtn" href="#"><i class='bx bx-notepad'></i>Requistion</a>
-                <a id="archivedMemorandaBtn"    href="#"><i class='bx bx-notepad'></i>Memoranda</a>
-            </div>
+            <a id="incomingBtn"><i class='bx bx-archive-in'></i>Incoming</a>
+            <a id="outgoingBtn"><i class='bx bx-archive-out'></i>Outgoing</a>
+            <a id="archivedBtn"><i class='bx bx-archive'></i>Archived</a>
         </div>
 
         {{-- Logs --}}
-        <a class="sidepanel-btn" id="archived-button">
-            <span class="dropdown-arrow"><i class='bx bx-archive-in' ></i>
+        <a class="sidepanel-btn" id="logBtn">
+            <span class="dropdown-arrow"><i class='bx bx-history'></i>
             </span> Logs
         </a>
+
+        {{-- System Settings --}}
+        <a class="sidepanel-btn" id="systemSettingsBtn">
+            <span class="dropdown-arrow"><i class='bx bx-cog'></i>
+            </span> Settings
+        </a>
+
+        {{-- System Settings Dropdown --}}
+        <div class="dropdown-container" id="systemSettingsDropdown">
+            <a id="accountSettingsBtn"><i class='bx bx-user'></i>Account</a>
+            <a id="documentSettingsBtn"><i class='bx bx-file'></i>Document</a>
+        </div>
 
     </div>
 </div>
