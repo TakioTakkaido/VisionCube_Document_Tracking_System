@@ -5,62 +5,87 @@ namespace App\Http\Controllers;
 use App\Models\ParticipantGroup;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ParticipantGroupController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+class ParticipantGroupController extends Controller {
+    public function add(Request $request) {
+        // Validate
+        $request->validate([
+            'value' => 'required|string'
+        ]);
+
+        // Create
+        ParticipantGroup::create([
+            'value' => $request->input('value')
+        ]);
+
+        // Return succcess
+        return response()->json([
+            'success' => 'Participant group added successfully'
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    public function delete(Request $request) {
+        // Find group by id
+        $participantGroup = ParticipantGroup::where('id', $request->id)->get();
+
+        // Delete
+        $participantGroup->delete();
+
+        // Returnn success
+        return response()->json([
+            'success' => 'Participant group deleted successfully'
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    public function edit(Request $request) {
+        // Find group by id
+        $participantGroup = ParticipantGroup::where('id', $request->id)->get();
+
+        // Change name
+        $participantGroup->value = $request->value;
+
+        // Save
+        $participantGroup->save();;
+
+        // Return success
+        // Returnn success
+        return response()->json([
+            'success' => 'Participant group deleted successfully'
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(ParticipantGroup $participantGroup)
-    {
-        //
+    // groups can add/remove another group
+    // groups can add/remove participant
+
+    public function updateParticipantGroup(Request $request){
+        // Request should contain all of the ids of groups
+        // obtained from the updated table
+
+        // Find parent group
+        $participantGroup = ParticipantGroup::where('id', $request->id);
+
+        // Sync participantGroups
+        $participantGroup->participantGroups()->sync($request->participantGroupsIDs);
+        
+        return response()->json([
+            'success' => 'Groups under the participant group updated successfully'
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ParticipantGroup $participantGroup)
-    {
-        //
-    }
+    public function updateParticipant(Request $request){
+        // Request should contain all of the ids of participants
+        // obtained from the updated table
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, ParticipantGroup $participantGroup)
-    {
-        //
-    }
+        // Find parent group
+        $participantGroup = ParticipantGroup::where('id', $request->id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(ParticipantGroup $participantGroup)
-    {
-        //
+        // Sync participantGroups
+        $participantGroup->participants()->sync($request->participantIDs);
+        
+        return response()->json([
+            'success' => 'Participants under the participant group updated successfully'
+        ]);
     }
 }
+
