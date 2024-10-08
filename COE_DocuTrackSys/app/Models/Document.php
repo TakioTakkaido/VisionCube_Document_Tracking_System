@@ -41,12 +41,6 @@ class Document extends Model
         'category'
     ];
 
-    protected $casts = [
-        'assignee' => AccountRole::class,
-        'category' => DocumentCategory::class,
-        'status' => DocumentStatus::class,
-    ];
-
     // This function is called whenever the document is updated or revised.
     public static function boot(){
         parent::boot();
