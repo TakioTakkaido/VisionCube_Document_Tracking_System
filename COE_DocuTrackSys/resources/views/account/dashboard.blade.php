@@ -55,12 +55,15 @@ Sanchez, Shane David U.
 
         // Upload Form
         'resources/js/dashboard/uploadForm.js'
+
+        // System Settings
+        'resources/js/dashboard/systemSettings.js'
     ])
 </head>
 <body>
 
 {{-- TOP BAR --}}
-<x-dashboard.top-panel :user="Auth::user()"/>
+<x-dashboard.top-panel />
 
 {{-- MIDDLE PANEL --}}
 <x-dashboard.middle-panel />

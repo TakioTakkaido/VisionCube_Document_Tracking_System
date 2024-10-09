@@ -1,6 +1,6 @@
-import { showAllActiveAccounts, showAllDeactivatedAccounts } from "./tables/account";
+import { showActive, showDeactivated } from "./tables/account";
 import { showArchived, showIncoming, showOutgoing } from "./tables/document";
-import { showAllLogs } from "./tables/log";
+import { showLogs } from "./tables/log";
 
 // Event listener for the side panel buttons
 // Upload button for uploading documents
@@ -29,7 +29,7 @@ $('#activeBtn').on('click', function(event){
     }
 
     // Show all active accounts
-    showAllActiveAccounts();
+    showActive();
 });
 
 // Deactivated Accounts
@@ -43,7 +43,7 @@ $('#deactivatedBtn').on('click', function(event){
         $('.system-settings').removeClass('active'); 
     }
 
-    showAllDeactivatedAccounts();
+    showDeactivated();
 });
 
 

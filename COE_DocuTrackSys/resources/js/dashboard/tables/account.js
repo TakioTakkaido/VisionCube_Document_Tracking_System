@@ -1,4 +1,4 @@
-export function showAllActiveAccounts() {
+export function showActive() {
     $('.dashboardTableTitle').html('Active Accounts');
 
     if ($.fn.DataTable.isDataTable('#dashboardTable')) {
@@ -53,7 +53,7 @@ export function showAllActiveAccounts() {
     }
 }
 
-export function showAllDeactivatedAccounts() {
+export function showDeactivated() {
     $('.dashboardTableTitle').html('Deactivated Accounts');
 
     if ($.fn.DataTable.isDataTable('#dashboardTable')) {
