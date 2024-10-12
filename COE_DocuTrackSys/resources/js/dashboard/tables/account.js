@@ -114,9 +114,9 @@ export function showAllActiveAccounts() {
                 $(this).popover('toggle');  
 
                 $(document).off('click.popover').on('click.popover', function(e) {
-                    // Check if the clicked element is outside the popover and the row
+                   
                     if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
-                        $(row).popover('hide');  // Close the popover
+                        $(row).popover('hide'); 
                     }
                 });
                 
@@ -220,9 +220,8 @@ export function showAllDeactivatedAccounts() {
                 $(this).popover('toggle'); 
 
                 $(document).off('click.popover').on('click.popover', function(e) {
-                    // Check if the clicked element is outside the popover and the row
                     if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
-                        $(row).popover('hide');  // Close the popover
+                        $(row).popover('hide');  
                     }
                 });
             });
@@ -243,39 +242,8 @@ export function showAllDeactivatedAccounts() {
 
 
 
+
 function deactivateAccount(accountId) {
-    $.ajax({
-        url: window.routes.deactivateAccount,  // Adjust this API endpoint accordingly
-        method: 'POST',
-        data: { id: accountId },
-        success: function(response) {
-            if (response.success) {
-                showAllDeactivatedAccounts();  // Automatically switch to Deactivated Accounts view
-            } else {
-                alert('Failed to deactivate account');
-            }
-        }
-    });
-}
-
-function reactivateAccount(accountId) {
-    $.ajax({
-        url: window.routes.reactivateAccount,  // Adjust this API endpoint accordingly
-        method: 'POST',
-        data: { id: accountId },
-        success: function(response) {
-            if (response.success) {
-                showAllActiveAccounts();  // Automatically switch to Active Accounts view
-            } else {
-                alert('Failed to reactivate account');
-            }
-        }
-    });
-}
-
-
-
-/*function deactivateAccount(accountId) {
     console.log(accountId);
 }
 
@@ -289,4 +257,4 @@ function changeRole(accountId, newRole, row) {
 
 function viewLogInformation(accountId) {
     console.log(accountId);
-}*/
+}
