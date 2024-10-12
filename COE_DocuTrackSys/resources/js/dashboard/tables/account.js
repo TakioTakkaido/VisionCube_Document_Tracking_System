@@ -34,7 +34,16 @@ export function showAllActiveAccounts() {
         ],
         destroy: true,
         pagination: true,
-        createdRow: function(row){
+
+        createdRow: function(row, data){
+            $(row).on('mouseenter', function(){
+                document.body.style.cursor = 'pointer';
+            });
+
+            $(row).on('mouseleave', function() {
+                document.body.style.cursor = 'default';
+            });
+
             $(row).on('click', function(event){
                 event.preventDefault();
                 console.log('Document preview');
@@ -42,7 +51,75 @@ export function showAllActiveAccounts() {
 
             $(row).on('contextmenu', function(event){
                 event.preventDefault();
-                console.log('Right click menu');
+                console.log('document menu');
+
+                var secretary, assistant, clerk;
+                switch (data.role) {
+                    case 'Secretary':
+                        secretary = 'disabled';
+                        break;
+                    case 'Assistant':
+                        assistant = 'disabled';
+                        break;
+                    case 'Clerk':
+                        clerk = 'disabled';
+                        break;
+                    default:
+                        break;
+                }
+
+
+                $(this).popover({
+                    content: `<div class="list-group menu">`+
+                        `<button type="button" class="list-group-item" id="deactivateBtn${data.id}">Deactivate</button>` +
+                        
+                        `<button type="button" class="list-group-item" id="changeRoleBtn${data.id}">Change Role</button>` +
+                        `<div class="list-group-item dropright">` +
+                        `<div class="dropdown-menu" id="changeRoleDropdown${data.id}" aria-hidden="true">
+                            <a class="dropdown-item ${secretary}" href="#" id="changeSecretary${data.id}">Secretary</a>
+                            <a class="dropdown-item ${assistant}" href="#" id="changeAssistant${data.id}">Assistant</a>
+                            <a class="dropdown-item ${clerk}" href="#" id="changeClerk${data.id}">Clerk</a>
+                        </div>`+
+                    `</div>`,
+                    html: true,
+                    container: 'body',
+                    placement: 'right',
+                    trigger: 'manual', 
+                    animation: false
+                }).on('inserted.bs.popover', function(event) {
+                    $('#deactivateBtn' + data.id).off('click').on('click', function(event) {
+                        $(row).popover('toggle'); 
+                        deactivateAccount(data.id); 
+                    });
+
+                    $('#changeRoleBtn' + data.id).off('click').on('click', function(event) {
+                        console.log('change');
+                        $('#changeRoleDropdown' + data.id).toggleClass('show');
+                    });
+
+                    $('#changeSecretary' + data.id).off('click').on('click', function(event) {
+                        changeRole(data.id, 'Secretary', row);
+                    });
+
+                    $('#changeAssistant' + data.id).off('click').on('click', function(event) {
+                        changeRole(data.id, 'Assistant', row);
+                    });
+
+                    $('#changeClerk' + data.id).off('click').on('click', function(event) {
+                        changeRole(data.id, 'Clerk', row);
+                    });
+                });
+
+
+                $(this).popover('toggle');  
+
+                $(document).off('click.popover').on('click.popover', function(e) {
+                    // Check if the clicked element is outside the popover and the row
+                    if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
+                        $(row).popover('hide');  // Close the popover
+                    }
+                });
+                
             });
         }
     });
@@ -52,6 +129,12 @@ export function showAllActiveAccounts() {
         $('.dashboardTableContents').addClass('show');
     }
 }
+
+
+
+
+
+
 
 export function showAllDeactivatedAccounts() {
     $('.dashboardTableTitle').html('Deactivated Accounts');
@@ -88,7 +171,17 @@ export function showAllDeactivatedAccounts() {
         ],
         destroy: true,
         pagination: true,
-        createdRow: function(row){
+
+        createdRow: function(row, data){
+            $(row).on('mouseenter', function(){
+                document.body.style.cursor = 'pointer';
+            });
+
+            $(row).on('mouseleave', function() {
+                document.body.style.cursor = 'default';
+            });
+
+
             $(row).on('click', function(event){
                 event.preventDefault();
                 console.log('Document preview');
@@ -96,11 +189,46 @@ export function showAllDeactivatedAccounts() {
 
             $(row).on('contextmenu', function(event){
                 event.preventDefault();
-                // Show the list group for the menu
-                console.log('Right click menu');
+                console.log('document menu');
+
+
+
+
+                $(this).popover({
+                    content: `<div class="list-group menu">`+
+                        `<button type="button" class="list-group-item" id="reactivateBtn${data.id}">Reactivate</button>` +
+                        `<button type="button" class="list-group-item" id="logsBtn${data.id}">View Log Information</button>` +
+                    `</div>`,
+                    html: true,
+                    container: 'body',
+                    placement: 'right',
+                    trigger: 'manual',
+                    animation: false
+                }).on('inserted.bs.popover', function(event) {
+                    $('#reactivateBtn' + data.id).off('click').on('click', function(event) {
+                        $(row).popover('toggle'); 
+                        editAccount(data.id);  
+                    });
+
+                    $('#logsBtn' + data.id).off('click').on('click', function(event) {
+                        $(row).popover('toggle'); 
+                        activateAccount(data.id); 
+                    });
+                });
+
+              
+                $(this).popover('toggle'); 
+
+                $(document).off('click.popover').on('click.popover', function(e) {
+                    // Check if the clicked element is outside the popover and the row
+                    if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
+                        $(row).popover('hide');  // Close the popover
+                    }
+                });
             });
         }
     });
+
 
     // Show the account table
     if (!$('.dashboardTableContents').hasClass('show')) {
@@ -112,3 +240,53 @@ export function showAllDeactivatedAccounts() {
 // Statistics, analytics
 // In and out
 // Pending for approval documents
+
+
+
+function deactivateAccount(accountId) {
+    $.ajax({
+        url: window.routes.deactivateAccount,  // Adjust this API endpoint accordingly
+        method: 'POST',
+        data: { id: accountId },
+        success: function(response) {
+            if (response.success) {
+                showAllDeactivatedAccounts();  // Automatically switch to Deactivated Accounts view
+            } else {
+                alert('Failed to deactivate account');
+            }
+        }
+    });
+}
+
+function reactivateAccount(accountId) {
+    $.ajax({
+        url: window.routes.reactivateAccount,  // Adjust this API endpoint accordingly
+        method: 'POST',
+        data: { id: accountId },
+        success: function(response) {
+            if (response.success) {
+                showAllActiveAccounts();  // Automatically switch to Active Accounts view
+            } else {
+                alert('Failed to reactivate account');
+            }
+        }
+    });
+}
+
+
+
+/*function deactivateAccount(accountId) {
+    console.log(accountId);
+}
+
+function reactivateAccount(accountId) {
+    console.log(accountId);
+}
+
+function changeRole(accountId, newRole, row) {
+    console.log(accountId, newRole);
+}
+
+function viewLogInformation(accountId) {
+    console.log(accountId);
+}*/
