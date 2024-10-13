@@ -114,7 +114,7 @@ $('#logBtn').on('click', function(event){
         $('.system-settings').removeClass('active'); 
     }
     
-    showAllLogs();
+    showLogs();
 });
 
 // System Settings Button

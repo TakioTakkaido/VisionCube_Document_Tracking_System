@@ -17,7 +17,7 @@ class StatusFactory extends Factory
      */
     public function definition(): array {
         return [
-            'value' => Str::random(10)
+            'value' => 'Status'
         ];
     }
 }

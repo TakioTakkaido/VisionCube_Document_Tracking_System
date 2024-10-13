@@ -66,7 +66,9 @@ class DocumentController extends Controller{
             'file' => $request->file('file')->store('public/documents'), // Store the file and get the path
             'owner_id' => Auth::user()->id,
             'sender' => $request->input('sender'),
+            'senderArray' => json_encode($request->input('senderArray')),
             'recipient' => $request->input('recipient'),
+            'recipientArray' => json_encode($request->input('recipientArray')),
             'subject' => $request->input('subject'),
             'assignee' => $request->input('assignee'),
             'category' => $request->input('category')
@@ -144,6 +146,8 @@ class DocumentController extends Controller{
         
         return response()->json([
             'document' => $document,
+            'senderArray' => json_decode($document->senderArray),
+            'recipientArray' => json_decode($document->recipientArray),
             'fileLink' => asset($fileLink),
         ]);
     }
@@ -162,14 +166,14 @@ class DocumentController extends Controller{
 
         // Validate the response
         $request->validate([
-            'type' => ['required', Rule::in(array_column(DocumentType::cases(), 'value'))],
+            'type' => 'required',
             'sender' => 'required|string|max:255',
             'recipient' => 'required|string|max:255',
             'subject' => 'required|string',
             'file' => 'nullable|file|mimes:pdf,doc,docx',
-            'category' => ['required', Rule::in(array_column(DocumentCategory::cases(), 'value'))],
-            'status' => ['required', Rule::in(array_column(DocumentStatus::cases(), 'value'))],
-            'assignee' => ['required', Rule::in(array_column(AccountRole::cases(), 'value'))],
+            'category' => 'required',
+            'status' => 'required', 
+            'assignee' => 'required',
         ], [
             'type.required' => 'Document type is required!',
             'sender.required' => 'Document sender is required!',
@@ -188,7 +192,9 @@ class DocumentController extends Controller{
         $document->type = $request->input('type');
         $document->status = $request->input('status');
         $document->sender = $request->input('sender');
+        $document->senderArray = json_encode($request->input('senderArray'));
         $document->recipient = $request->input('recipient');
+        $document->recipientArray = json_encode($request->input('recipientArray'));
         $document->subject = $request->input('subject');
         $document->assignee = $request->input('assignee');
         $document->category = $request->input('category');

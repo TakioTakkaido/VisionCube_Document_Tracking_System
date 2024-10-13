@@ -39,6 +39,11 @@ Sanchez, Shane David U.
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" 
     integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
+    {{-- Bootstrap Select --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
+
     {{-- Datatable --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
@@ -54,7 +59,10 @@ Sanchez, Shane David U.
         'resources/js/dashboard/sidePanel.js',
 
         // Upload Form
-        'resources/js/dashboard/uploadForm.js'
+        'resources/js/dashboard/uploadForm.js',
+
+        // Edit Form
+        'resources/js/dashboard/editForm.js',
 
         // System Settings
         'resources/js/dashboard/systemSettings.js'
@@ -115,6 +123,15 @@ Sanchez, Shane David U.
 
         updateType: "{{route('type.update')}}",
         deleteType: "{{route('type.delete')}}",
+
+        updateParticipant: "{{route('participant.update')}}",
+        deleteParticipant: "{{route('participant.delete')}}",
+
+        updateParticipantGroup: "{{route('participantGroup.update')}}",
+        deleteParticipantGroup: "{{route('participantGroup.delete')}}",
+
+        getParticipantGroupMembers : "{{route('participantGroup.getParticipantGroupMembers', ':id')}}",
+        updateParticipantGroupMembers: "{{route('participantGroup.updateParticipantGroupMembers')}}",
 
         updateRoleAccess: "{{route('account.editAccess')}}",
 

@@ -16,6 +16,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FileExtensionController;
 use App\Http\Controllers\LogController;
+use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\ParticipantGroupController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TypeController;
 use App\Http\Middleware\NoCache;
@@ -217,6 +219,24 @@ Route::middleware(NoDirectAccess::class)->group(function(){
 });
 
 // System Settings Route for AJAX Requests
+Route::post('/participant/update', [ParticipantController::class, 'update'])
+->name('participant.update');
+
+Route::post('/participant/delete', [ParticipantController::class, 'delete'])
+->name('participant.delete');
+
+Route::post('/participantGroup/update', [ParticipantGroupController::class, 'update'])
+->name('participantGroup.update');
+
+Route::post('/participantGroup/delete', [ParticipantGroupController::class, 'delete'])
+->name('participantGroup.delete');
+
+Route::post('/participantGroup/updateParticipantGroupMembers', [ParticipantGroupController::class, 'updateParticipantGroupMembers'])
+->name('participantGroup.updateParticipantGroupMembers');;
+
+Route::get('/participantGroup/getParticipantGroupMembers/{id}', [ParticipantGroupController::class, 'getParticipantGroupMembers'])
+->name('participantGroup.getParticipantGroupMembers');
+
 Route::post('/status/update', [StatusController::class, 'update'])
 ->name('status.update');
 

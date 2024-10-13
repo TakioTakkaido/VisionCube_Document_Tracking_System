@@ -12,11 +12,17 @@ class ParticipantGroup extends Model {
         'value'
     ];
 
-    public function groups(){
-        return $this->hasMany(ParticipantGroup::class);
+    public function groups() {
+        return $this->belongsToMany(ParticipantGroup::class, 
+        'participant_group_participant_group', 
+        'parent_participant_group_id', 
+        'participant_group_id');
     }
 
     public function participants(){
-        return $this->hasMany(Participant::class);
+        return $this->belongsToMany(Participant::class, 
+        'participant_group_participant',
+        'participant_group_id',
+        'participant_id');
     }
 }
