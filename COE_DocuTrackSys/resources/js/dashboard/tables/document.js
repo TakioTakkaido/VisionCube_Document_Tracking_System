@@ -1,5 +1,6 @@
 import { editDocument } from "../editForm";
 
+// SHOW INCOMING DOCUMENTS
 export function showIncoming(){
     $('.dashboardTableTitle').html('Incoming Documents');
     
@@ -60,13 +61,14 @@ export function showIncoming(){
 
             $(row).on('click', function(event) {
                 event.preventDefault();
+                $(row).popover('hide');
                 documentPreview(data.id, row);
             });
 
 
             $(row).on('contextmenu', function(event) {
                 event.preventDefault();
-                console.log('document menu');
+                $('.popover').popover('hide');
 
                 var incoming, outgoing, archived;
                 switch (data.category) {
@@ -142,8 +144,7 @@ export function showIncoming(){
     }
 }
 
-
-
+// SHOW OUTGOING DOCUMENTS
 export function showOutgoing(){
     $('.dashboardTableTitle').html('Outgoing Documents');
 
@@ -205,18 +206,14 @@ export function showOutgoing(){
             // Document preview 
             $(row).on('click', function(event){
                 event.preventDefault();
-
-                if($(this).data('bs.popover')){
-                    console.log('has popover');
-                    $(this).popover('toggle')
-                };
+                $(row).popover('hide');
                 documentPreview(data.id, row);
             });
 
             // Document menu
             $(row).on('contextmenu', function(event){
                 event.preventDefault();
-                console.log('document menu')
+                $('.popover').popover('hide');
 
                 var incoming, outgoing, archived;
                 // Determine the status of the document
@@ -293,14 +290,7 @@ export function showOutgoing(){
                         $(row).popover('hide');  
                     }
                 });
-
-                // Add event listeners after showing the popover
-                // $(this).popover()
-
             });
-
-
-            
         }
     });
 
@@ -309,9 +299,7 @@ export function showOutgoing(){
     }
 }
 
-
-
-
+// SHOW ARCHIVED DOCUMENTS
 export function showArchived(){
     $('.dashboardTableTitle').html('Archived Documents');
 
@@ -373,13 +361,14 @@ export function showArchived(){
             // Document preview
             $(row).on('click', function(event) {
                 event.preventDefault();
+                $(row).popover('hide');
                 documentPreview(data.id, row);
             });
 
             // Document context menu
             $(row).on('contextmenu', function(event) {
                 event.preventDefault();
-                console.log('document menu');
+                $('.popover').popover('hide');
 
                 var incoming, outgoing, archived;
                 // Determine the status of the document
@@ -482,6 +471,7 @@ function viewDocumentVersions(id){
     console.log('view document versions');
 }
 
+// Document Preview
 function documentPreview(id, row){
     $.ajax({
         method: "GET",
