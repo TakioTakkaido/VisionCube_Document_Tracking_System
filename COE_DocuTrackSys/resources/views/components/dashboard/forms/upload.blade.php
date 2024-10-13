@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg" role="editAccount">
         <div class="modal-content">
         <div class="modal-body uploadDocument">
-            
+    
             {{-- Upload Document Form --}}
             <form class="uploadContent" id="uploadDocumentForm" method="post">
                 @csrf
@@ -21,14 +21,34 @@
                     @endforeach
                 </select>
                 <span class="error" id="typeError" style="display:none;">This field is required!</span>
-                    
+                
                 <label for="uploadFrom">From:</label>
-                <input type="text" id="uploadFrom" name="sender" placeholder="Enter the Sender's Name/Department">
+                <select class="form-control selectpicker" id="uploadFrom" name="sender" data-live-search="true" multiple data-header="Select Sender (From)">
+                    @foreach($groups as $group)
+                        <option title="" value="{{ $group['id'] }}" data-level={{$group['level']}} data-name="{{ $group['value'] }}" data-parent="{{$group['parent']}}" data-participant="{{$group['participant']}}">
+                            {!! str_repeat('&nbsp;', $group['level'] * 4) !!} {{ $group['value'] }}
+                        </option>
+                    @endforeach
+                </select>
+                <span>Others:
+                    <input id="uploadFromText" type="text" name="sender">
+                </span>
+                
                 <span class="error" id="senderError" style="display:none;"></span>
-        
+
                 <label for="uploadTo">To:</label>
-                <input type="text" id="uploadTo" name="recipient" placeholder="Enter the Recipient's Name/Department">
+                <select class="form-control selectpicker" id="uploadTo" name="recipient" data-live-search="true" multiple data-header="Select Recipient (To)">
+                    @foreach($groups as $group)
+                        <option title="" value="{{ $group['id'] }}" data-level={{$group['level']}} data-name="{{ $group['value'] }}" data-parent="{{$group['parent']}}" data-participant="{{$group['participant']}}">
+                            {!! str_repeat('&nbsp;', $group['level'] * 4) !!} {{ $group['value'] }}
+                        </option>
+                    @endforeach
+                </select>
+                <span>Others:
+                    <input id="uploadToText" type="text" name="recipient">
+                </span>
                 <span class="error" id="recipientError" style="display:none;"></span>
+                
         
                 <label for="uploadSubject">Subject:</label>
                 <textarea id="uploadSubject" name="subject" rows="2" placeholder="Enter the Subject of the Document"></textarea>
@@ -92,10 +112,10 @@
 
         <div class="modal-footer">
             {{-- Submit form data using AJAX in uploadform.js --}}
-            <button type="submit" id="submitDocumentForm" class="btn btn-primary" type="button">Submit</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelBtn">Cancel</button>
+            <button type="submit" id="submitDocumentForm"   class="btn btn-primary" type="button">Submit</button>
+            <button type="button" id="clearUploadBtn"       class="btn btn-secondary" >Clear</button>
+            <button type="button" id="cancelBtn"            class="btn btn-secondary" data-dismiss="modal" >Cancel</button>
         </div>
-
         </div>
     </div>
 </div>

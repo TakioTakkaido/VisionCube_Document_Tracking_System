@@ -407,3 +407,22 @@ body {
 .system-settings.div > div.active {
     display: block; 
 }
+
+.dropdown-menu {
+    max-height: 200px;  /* Adjust this value to set the max visible height of the dropdown */
+    overflow-y: auto;   /* Enable vertical scrolling if content exceeds the max-height */
+    min-height: 100px;  /* Optional: Ensures the dropdown has a minimum height */
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;  /* Add padding to make the checkboxes and labels look spaced */
+    font-size: 15px;
+    padding: 3px;
+}
+
+.form-check-input {
+    margin-right: 0.5rem;  /* Add space between checkbox and label */
+    
+}

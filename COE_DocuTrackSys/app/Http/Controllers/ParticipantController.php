@@ -6,61 +6,49 @@ use App\Models\Participant;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class ParticipantController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+class ParticipantController extends Controller {
+    public function update(Request $request){
+        // Validate the request
+
+        // Get participant by id
+        // Check whether the participant already exists or not
+        if ($request->id != null){
+            // Status exists, find the participant
+            $participant = Participant::find($request->id);
+
+            // Change value
+            $participant->value = $request->value;
+
+            // Save
+            $participant->save();
+
+            // Log
+        } else {
+            // Participant doesn't exist
+            // Create participant
+            Participant::create([
+                'value' => $request->input('value')
+            ]);
+
+            // Log
+        } 
+
+        // Return success
+        return response()->json([
+            'success' => 'Participant updated successfully.'
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+    public function delete(Request $request) {
+        // Find group by id
+        $participant = Participant::find($request->id);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        // Delete
+        $participant->delete();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Participant $participant)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Participant $participant)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Participant $participant)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Participant $participant)
-    {
-        //
+        // Returnn success
+        return response()->json([
+            'success' => 'Participant deleted successfully'
+        ]);
     }
 }

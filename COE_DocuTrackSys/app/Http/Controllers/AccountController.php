@@ -38,7 +38,7 @@ class AccountController extends Controller {
 
         // Send log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'Viewed account profile'
         ]);
     }
@@ -58,7 +58,7 @@ class AccountController extends Controller {
 
             // Send log
             ModelsLog::create([
-                'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+                'account' => Auth::user()->name . " • " . Auth::user()->role,
                 'description' => 'Logged in to the system'
             ]);
             
@@ -87,13 +87,17 @@ class AccountController extends Controller {
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
-            'role' => AccountRole::GUEST
+            'role' => $request->input('role')
         ]);
 
         // Create new log file
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'Added new user to the system'
+        ]);
+
+        return response()->json([
+            'success' => 'Account created successfully'
         ]);
 
     }
@@ -109,7 +113,7 @@ class AccountController extends Controller {
 
         // Create new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'Requested to change password'
         ]);
 
@@ -123,7 +127,7 @@ class AccountController extends Controller {
 
         // Create new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'Resetted password'
         ]);
 
@@ -139,7 +143,7 @@ class AccountController extends Controller {
 
             // Create new log
             ModelsLog::create([
-                'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+                'account' => Auth::user()->name . " • " . Auth::user()->role,
                 'description' => 'Logged in to the system'
             ]);
 
@@ -157,27 +161,31 @@ class AccountController extends Controller {
 
     // Logout
     public function logout(){
-        // Logout
-        Auth::logout();
-
         // Create new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'Logged out to the system'
         ]);
 
-        // Redirect to the login page
-        return redirect()->route('show.login');
+        // Logout
+        Auth::logout();
+
+        return response()->json(['redirect' => route('show.login')]);
     }
 
     // Deactivate
-    public function deactivate(){
-        //
+    public function deactivate(Request $request){
+        // Find the account
+        $account = Account::find($request->id);
+
+        $account->deactivated = true;
+
+        $account->save();
 
         // Create new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
-            'description' => 'Deactivated its account'
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
+            'description' => 'Account deactivated'
         ]);
     }
 
@@ -191,7 +199,7 @@ class AccountController extends Controller {
 
         // Create new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'Viewed all active accounts'
         ]);
 
@@ -210,7 +218,7 @@ class AccountController extends Controller {
         
         // Create new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'Viewed all deactivated accounts'
         ]);
 
@@ -222,26 +230,32 @@ class AccountController extends Controller {
 
     public function editAccountRole(Request $request){
         // Find account
+        $account = Account::find($request->id);
 
         // Change the role
+        $account->role = $request->role;
 
         // Save new account role
-
+        $account->save();
+        
         // Create new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'Edited account role'
         ]);
     }
 
     public function reactivate(Request $request){
-        // Find account
+        /// Find the account
+        $account = Account::find($request->id);
 
-        // Change account status to active
+        $account->deactivated = false;
+
+        $account->save();
 
         // Create new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'Reactivated account'
         ]);
     }
@@ -264,7 +278,7 @@ class AccountController extends Controller {
 
         // Create new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'Edited access of roles'
         ]);
 

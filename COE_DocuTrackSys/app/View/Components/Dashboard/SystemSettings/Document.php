@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\FileExtension;
 use App\Models\Log;
 use App\Models\Participant;
+use App\Models\ParticipantGroup;
 use App\Models\Status;
 use App\Models\Type;
 use Closure;
@@ -30,6 +31,7 @@ class Document extends Component
             'categories' => Category::all(),
             'types' => Type::all(),
             'participants' => Participant::all(),
+            'participantGroups' => ParticipantGroup::all(),
             'statuses' => Status::all(),
             'fileExtensions' => FileExtension::all(),
         ]);

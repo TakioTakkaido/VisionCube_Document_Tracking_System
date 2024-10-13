@@ -1,4 +1,4 @@
-export function showAllActiveAccounts() {
+export function showActive() {
     $('.dashboardTableTitle').html('Active Accounts');
 
     if ($.fn.DataTable.isDataTable('#dashboardTable')) {
@@ -46,12 +46,12 @@ export function showAllActiveAccounts() {
 
             $(row).on('click', function(event){
                 event.preventDefault();
-                console.log('Document preview');
+                $(row).popover('hide');
             });
 
             $(row).on('contextmenu', function(event){
                 event.preventDefault();
-                console.log('document menu');
+                $('.popover').popover('hide');
 
                 var secretary, assistant, clerk;
                 switch (data.role) {
@@ -89,7 +89,7 @@ export function showAllActiveAccounts() {
                 }).on('inserted.bs.popover', function(event) {
                     $('#deactivateBtn' + data.id).off('click').on('click', function(event) {
                         $(row).popover('toggle'); 
-                        deactivateAccount(data.id); 
+                        deactivateAccount(data.id, row); 
                     });
 
                     $('#changeRoleBtn' + data.id).off('click').on('click', function(event) {
@@ -130,13 +130,7 @@ export function showAllActiveAccounts() {
     }
 }
 
-
-
-
-
-
-
-export function showAllDeactivatedAccounts() {
+export function showDeactivated() {
     $('.dashboardTableTitle').html('Deactivated Accounts');
 
     if ($.fn.DataTable.isDataTable('#dashboardTable')) {
@@ -241,18 +235,59 @@ export function showAllDeactivatedAccounts() {
 // Pending for approval documents
 
 
+function deactivateAccount(accountId, row) {
+    var formData = new FormData();
+    formData = {
+        '_token' : $('#token').val(),
+    }
 
-
-function deactivateAccount(accountId) {
-    console.log(accountId);
+    $.ajax({
+        method: "POST",
+        url: window.routes.deactivateAccount.replace(':id', accountId),
+        data: formData,
+        success: function (response) {
+            console.log("Account deactivated successfully!");
+            $('#dashboardTable').DataTable().ajax.reload();
+            $(row).popover('toggle');
+        }
+    });
 }
 
-function reactivateAccount(accountId) {
-    console.log(accountId);
+function reactivateAccount(accountId, row) {
+    var formData = new FormData();
+    formData = {
+        '_token' : $('#token').val(),
+    }
+
+    $.ajax({
+        method: "POST",
+        url: window.routes.reactivateAccount.replace(':id', accountId),
+        data: formData,
+        success: function (response) {
+            console.log("Account reactivated successfully!");
+            $('#dashboardTable').DataTable().ajax.reload();
+            $(row).popover('toggle');
+        }
+    });
 }
 
 function changeRole(accountId, newRole, row) {
-    console.log(accountId, newRole);
+    var formData = new FormData();
+    formData = {
+        '_token' : $('#token').val(),
+    }
+
+    $.ajax({
+        method: "POST",
+        url: window.routes.editAccountRole
+            .replace(':id', accountId)
+            .replace(':role', newRole),
+        data: formData,
+        success: function (response) {
+            $('#dashboardTable').DataTable().ajax.reload();
+            $(row).popover('toggle');
+        }
+    });
 }
 
 function viewLogInformation(accountId) {

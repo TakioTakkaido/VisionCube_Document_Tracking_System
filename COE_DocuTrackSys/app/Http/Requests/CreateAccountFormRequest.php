@@ -15,7 +15,8 @@ class CreateAccountFormRequest extends FormRequest{
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:accounts',
             'password' => 'required|string|confirmed|min:8',
-            'password_confirmation' => 'required'
+            'password_confirmation' => 'required',
+            'role' => 'required|string'
         ];
     }
 }

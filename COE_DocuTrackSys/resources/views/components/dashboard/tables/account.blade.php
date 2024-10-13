@@ -4,8 +4,8 @@
         <table id="accountTable" class="table table-striped">
             <thead>
                 <tr>
-                    <th>Username</th>
                     <th>Email</th>
+                    <th>Username</th>
                     <th>Role</th>
                 </tr>
             </thead>
@@ -14,8 +14,8 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <th>Username</th>
                     <th>Email</th>
+                    <th>Username</th>
                     <th>Role</th>
                 </tr>
             </tfoot>

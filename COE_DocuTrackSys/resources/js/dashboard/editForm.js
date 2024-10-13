@@ -1,50 +1,106 @@
-// Open Upload Form
-$('#uploadBtn').on('click', function (event) {
+// Edit Document Btn
+var senderName = '';
+var recipientName = '';
+
+export function editDocument(id){
+    $.ajax({
+        method: 'GET',
+        url: window.routes.showDocument.replace(':id', id),
+        success: function (response) {
+            $('#documentId').val(response.document.id);
+            $('#ownerId').val(response.document.owner_id);
+            $('#editUploadDocType').val(response.document.type);
+            senderName = response.document.sender;
+            var senderArray = JSON.parse(response.senderArray);
+            for (var index = 0; index < senderArray.length; index++) {
+                const sender = senderArray[index];
+                console.log($('#editUploadFrom option').length);
+                for (var index2 = 0; index2 < $('#editUploadFrom option').length; index2++) {
+                    var element = $('#editUploadFrom option')[index2];
+                    if ($(element).data('parent') === sender['parent'] &&
+                        $(element).data('name') === sender['value']  && 
+                        $(element).data('level') == sender['level']){
+                        element.selected = true;
+                    }
+                }    
+            }
+            $('#editUploadFrom').selectpicker('refresh');
+            if (senderArray.length === 0) {
+                $('#editUploadFromText').val(senderName);
+            }
+            
+            recipientName = response.document.recipient;
+            var recipientArray = JSON.parse(response.recipientArray);
+            for (var index = 0; index < recipientArray.length; index++) {
+                const recipient = recipientArray[index];
+                console.log($('#editUploadTo option').length);
+                for (var index2 = 0; index2 < $('#editUploadTo option').length; index2++) {
+                    var element = $('#editUploadTo option')[index2];
+                    console.log($(element).data('name'));
+                    console.log($(element).val())
+                    if ($(element).data('parent') === recipient['parent'] &&
+                        $(element).data('name') === recipient['value'] && 
+                        $(element).data('level') == recipient['level']){
+                        element.selected = true;
+                        console.log('selected');
+                    }
+                }    
+            }
+            $('#editUploadTo').selectpicker('refresh');
+            if (senderArray.length === 0) {
+                $('#editUploadToText').val(recipientName);
+            }
+
+            $('#editUploadSubject').val(response.document.subject);
+            $('#fileLink').html(response.document.file);
+            $('#editUploadCategory').val(response.document.category);
+            $('#editUploadStatus').val(response.document.status);
+            $('#editUploadAssignee').val(response.document.assignee);
+            $('#pdfIframe').attr('src', response.fileLink);
+
+            $('#editDocument').modal('show');
+        },
+        error: function (xhr){  
+            console.log(xhr.responseJSON);
+        }
+    });
+}
+
+$('#submitEditDocumentBtn').on('click', function(event) {
     event.preventDefault();
 
-    $('#uploadDocument').modal('show');
-});
-
-// Upload Document
-$('#submitDocumentForm').on('click', function(event) {
-    event.preventDefault();
     var formData = new FormData();
     var senderArray = [];
     var recipientArray = [];
-    for (var index = 0; index < $('#uploadFrom').val().length; index++) {
-        if($.inArray($($('#uploadFrom option')[index]).val(), $('#uploadFrom').val())){
+
+    for (var index = 0; index < $('#editUploadFrom').val().length; index++) {
+        if($.inArray($($('#editUploadFrom option')[index]).val(), $('#uploadFrom').val())){
             senderArray.push({
-                parent: $($('#uploadFrom option')[index]).data['parent'],
-                value: $($('#uploadFrom option')[index]).data('name'),
-                level: $($('#uploadFrom option')[index]).data('level'),
+                name: $('#editUploadFrom').val()[index],
+                value: $($('#editUploadFrom option')[index]).data('name')
             });
         }
     }
 
-    for (var index = 0; index < $('#uploadTo').val().length; index++) {
-        if($.inArray($($('#uploadTo option')[index]).val(), $('#uploadTo').val())){
+    for (var index = 0; index < $('#editUploadTo').val().length; index++) {
+        if($.inArray($($('#editUploadTo option')[index]).val(), $('#editUploadTo').val())){
             recipientArray.push({
-                parent: $($('#uploadFrom option')[index]).data['parent'],
-                value: $($('#uploadTo option')[index]).data('name'),
-                level: $($('#uploadTo option')[index]).data('level'),
+                name: $('#editUploadTo').val()[index],
+                value: $($('#editUploadTo option')[index]).data('name')
             });
         }
     }
 
+    // Manually append fields from the form to the FormData object
     formData.append('_token', $('#token').val());
-    formData.append('type', $('#uploadDocType').val());
-    formData.append('subject', $('#uploadSubject').val());
-    
+    formData.append('document_id', $('#documentId').val());
+    formData.append('type', $('#editUploadDocType').val());
+    formData.append('subject', $('#editUploadSubject').val());
 
-    // Create the name of the sender/receiver
-    // Go through every part of select form
-    // If the input is selected, make the parent detection function
-    // Append the created name to the overall name of the user
-
-    var senderName = '';
+    // var senderName = '';
     var start = false;
     var currentParent = '';
-    var uploadFromOptions = $('#uploadFrom option');
+    var uploadFromOptions = $('#editUploadFrom option');
     
     for (var index = 0; index < uploadFromOptions.length; index++) {
         const element = uploadFromOptions[index];
@@ -122,17 +178,16 @@ $('#submitDocumentForm').on('click', function(event) {
             }
         }
     }
-
     if (senderName.length === 0){
-        senderName = $('#uploadFromText').val();
+        senderName = $('#editUploadFromText').val();
     }
     formData.append('sender', senderName);
     formData.append('senderArray', JSON.stringify(senderArray));
 
-    var recipientName = '';
+    // var recipientName = '';
     var start2 = false;
     var currentParent2 = '';
-    var uploadToOptions = $('#uploadTo option');
+    var uploadToOptions = $('#editUploadTo option');
     
     for (var index = 0; index < uploadToOptions.length; index++) {
         const element = uploadToOptions[index];
@@ -211,51 +266,54 @@ $('#submitDocumentForm').on('click', function(event) {
         }
     }
     if (recipientName.length === 0){
-        recipientName = $('#uploadToText').val();
+        recipientName = $('#editUploadToText').val();
     }
     formData.append('recipient', recipientName);
     formData.append('recipientArray', JSON.stringify(recipientArray));
 
-    formData.append('assignee', $('#uploadAssignee').val());
-    formData.append('category', $('#uploadCategory').val());
-    formData.append('status', $('#uploadStatus').val());
+    formData.append('status', $('#editUploadStatus').val());
+    formData.append('assignee', $('#editUploadAssignee').val());
+    formData.append('category', $('#editUploadCategory').val());
 
-    var fileInput = $('#softcopy')[0];
+    var fileInput = $('#editSoftcopy')[0];
     if (fileInput.files.length > 0) {
-        formData.append('file', fileInput.files[0]);  // Correct file append
+        console.log('hasfile');
+        console.log(fileInput.files[0])
+        formData.append('file', fileInput.files[0]);
     }
 
     $.ajax({
         method: 'POST',
-        url: window.routes.uploadDocument,
+        url: window.routes.editDocument.replace(':id', $('#documentId').val()),
         data: formData,
-        processData: false,  // Prevent jQuery from converting the data
-        contentType: false,  // Prevent jQuery from overriding the content type
+        processData: false,
+        contentType: false,
         success: function(response) {
-            $('#uploadDocument').modal('hide');
-            // $('#documentTable').DataTable().ajax.reload();
+            alert('Document updated successfully');
+            $('#editDocument').modal('hide');
+            $('#dashboardTable').DataTable().ajax.reload();
         },
         error: function(xhr) {
-            alert('Error: ' + xhr.responseJSON?.message || 'Upload failed');
+            alert('Error: ' + xhr.responseJSON?.message || 'Update failed');
         }
     });
 });
 
 // Clear Upload Form
-$('#clearUploadBtn').on('click', function (event){
-    $('#uploadDocumentForm').trigger('reset');
-    $('#uploadFrom').selectpicker('deselectAll');
-    $('#uploadTo').selectpicker('deselectAll');
+$('#clearEditBtn').on('click', function (event){
+    $('#editDocumentForm').trigger('reset');
+    $('#editUploadFrom').selectpicker('deselectAll');
+    $('#editUploadTo').selectpicker('deselectAll');
 });
 
 var pos;
-// Event to trigger after clicking the options in the select
-$('#uploadFrom').selectpicker().on('changed.bs.select', function(event, clickedIndex, isSelected, previousValue){
+$('#editUploadFrom').selectpicker().on('changed.bs.select', function(event, clickedIndex, isSelected, previousValue){
     event.preventDefault();
-    $('#uploadFromText').val('');
+    $('#editUploadFromText').val('');
     pos = $(this).parent().find('.dropdown-menu.inner').scrollTop();
     var level = $(this.options[clickedIndex]).data('level');
-    
+
+    // Check the level of the rest of the stuff below the selected class
     if (isSelected){
         console.log('has no parent changed');
         for (var index = clickedIndex + 1; index < this.options.length; index++) {
@@ -296,18 +354,18 @@ $('#uploadFrom').selectpicker().on('changed.bs.select', function(event, clickedI
             }
         }
     }
-    // Check the level of the rest of the stuff below the selected class
-    
+
     $(this).selectpicker('refresh');
 }).on('refreshed.bs.select', function(event){
     $(this).parent().find('.dropdown-menu.inner').scrollTop(pos);
 });
 
-$('#uploadTo').selectpicker().on('changed.bs.select', function(event, clickedIndex, isSelected, previousValue){
+$('#editUploadTo').selectpicker().on('changed.bs.select', function(event, clickedIndex, isSelected, previousValue){
     event.preventDefault();
-    $('#uploadToText').val('');
+    $('#editUploadToText').val('');
     pos = $(this).parent().find('.dropdown-menu.inner').scrollTop();
     var level = $(this.options[clickedIndex]).data('level');
+    $(this).data('name', 'chichi');
 
     // Check the level of the rest of the stuff below the selected class
     if (isSelected){
@@ -350,6 +408,8 @@ $('#uploadTo').selectpicker().on('changed.bs.select', function(event, clickedInd
             }
         }
     }
+    
+    
 
     $(this).selectpicker('refresh');
 }).on('refreshed.bs.select', function(event){
@@ -357,12 +417,12 @@ $('#uploadTo').selectpicker().on('changed.bs.select', function(event, clickedInd
 });
 
 // For other text input, uncheck all of the choices
-$('#uploadFromText').on('input', function(event){
-    $('#uploadFrom').selectpicker('deselectAll');
-    $('#uploadFrom').selectpicker('refresh');
+$('#editUploadFromText').on('input', function(event){
+    $('#editUploadFrom').selectpicker('deselectAll');
+    $('#editUploadFrom').selectpicker('refresh');
 });
 
-$('#uploadToText').on('input', function(event){
-    $('#uploadTo').selectpicker('deselectAll');
-    $('#uploadTo').selectpicker('refresh');
+$('#editUploadToText').on('input', function(event){
+    $('#editUploadTo').selectpicker('deselectAll');
+    $('#editUploadTo').selectpicker('refresh');
 });

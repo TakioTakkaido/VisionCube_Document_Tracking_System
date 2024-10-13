@@ -39,6 +39,11 @@ Sanchez, Shane David U.
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" 
     integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
+    {{-- Bootstrap Select --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
+
     {{-- Datatable --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
@@ -54,13 +59,19 @@ Sanchez, Shane David U.
         'resources/js/dashboard/sidePanel.js',
 
         // Upload Form
-        'resources/js/dashboard/uploadForm.js'
+        'resources/js/dashboard/uploadForm.js',
+
+        // Edit Form
+        'resources/js/dashboard/editForm.js',
+
+        // System Settings
+        'resources/js/dashboard/systemSettings.js'
     ])
 </head>
 <body>
 
 {{-- TOP BAR --}}
-<x-dashboard.top-panel :user="Auth::user()"/>
+<x-dashboard.top-panel />
 
 {{-- MIDDLE PANEL --}}
 <x-dashboard.middle-panel />
@@ -71,6 +82,9 @@ Sanchez, Shane David U.
 {{-- EDIT DOCUMENT FORM --}}
 <x-dashboard.forms.edit-document />
 
+{{-- DOCUMENT PREVIEW --}}
+<x-dashboard.document-preview />
+
 {{-- VIEW ACCOUNT --}}
 {{-- <x-dashboard.view-account /> --}}
 
@@ -78,9 +92,13 @@ Sanchez, Shane David U.
 <script>
     window.routes = {
         // Accounts Routes
+        create: "{{route('account.create')}}",
+        logout: "{{route('account.logout')}}",
+        showAccount: "{{route('account.show', ':id')}}",
         showAllActiveAccounts: "{{route('account.showAllActiveAccounts')}}",
         editAccountRole: "{{route('account.editAccountRole', [':id', ':role'])}}",
         showAllDeactivatedAccounts: "{{route('account.showAllDeactivatedAccounts')}}",
+        deactivateAccount: "{{route('account.deactivate', ':id')}}",
         reactivateAccount: "{{route('account.reactivate', ':id')}}",
         
         // Document Routes
@@ -93,7 +111,7 @@ Sanchez, Shane David U.
         editDocument: "{{route('document.edit', ':id')}}",
         moveDocument: "{{route('document.move')}}",
         uploadDocument: "{{route('document.upload')}}",
-
+        previewDocument: "{{route('document.preview', ':id')}}",
         showAllLogs: "{{route('log.showAll')}}",
         
         // System Settings
@@ -106,6 +124,15 @@ Sanchez, Shane David U.
 
         updateType: "{{route('type.update')}}",
         deleteType: "{{route('type.delete')}}",
+
+        updateParticipant: "{{route('participant.update')}}",
+        deleteParticipant: "{{route('participant.delete')}}",
+
+        updateParticipantGroup: "{{route('participantGroup.update')}}",
+        deleteParticipantGroup: "{{route('participantGroup.delete')}}",
+
+        getParticipantGroupMembers : "{{route('participantGroup.getParticipantGroupMembers', ':id')}}",
+        updateParticipantGroupMembers: "{{route('participantGroup.updateParticipantGroupMembers')}}",
 
         updateRoleAccess: "{{route('account.editAccess')}}",
 

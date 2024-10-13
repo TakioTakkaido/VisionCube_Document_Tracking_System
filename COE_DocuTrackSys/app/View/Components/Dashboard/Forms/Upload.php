@@ -4,7 +4,9 @@ namespace App\View\Components\Dashboard\Forms;
 
 use App\AccountRole;
 use App\DocumentCategory;
+use App\Http\Controllers\ParticipantGroupController;
 use App\Models\Category;
+use App\Models\ParticipantGroup;
 use App\Models\Status;
 use App\Models\Type;
 use Closure;
@@ -28,7 +30,8 @@ class Upload extends Component
             'docTypes'      => Type::all(),
             'docStatuses'   => Status::all(),
             'docCategories' => DocumentCategory::cases(),
-            'roles'         => AccountRole::cases()
+            'roles'         => AccountRole::cases(),
+            'groups'        => ParticipantGroupController::showAllGroups()
         ]);
     }
 }
