@@ -7,7 +7,7 @@
 // Calulut, Joshua Miguel C.
 
 // Enums Used
-use App\UserRole;
+use App\AccountRole;
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('role')->default(UserRole::DEFAULT->value);
+            $table->string('role')->default(AccountRole::ADMIN->value);
             $table->timestamps();
         });
     }
