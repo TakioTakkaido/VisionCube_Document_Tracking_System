@@ -20,7 +20,7 @@ class VerifyAccountRole {
         $rolesArray = explode(",", $roles);
         // Verify the role
         foreach ($rolesArray as $rolesElem) {
-            if ($rolesElem == $user->role->value){
+            if ($rolesElem == $user->role){
                 Log::channel('daily')->info('Your account is allowed to access this functionality.'); 
                 return $next($request);
             }

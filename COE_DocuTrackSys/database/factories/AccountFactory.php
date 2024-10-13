@@ -21,14 +21,14 @@ class AccountFactory extends Factory {
             'name' => 'joshua'.$str,
             'email' => 'joshua'.$str.'@gmail.com',
             'password' => Hash::make('12345678'),
-            'role' => AccountRole::ADMIN->value
+            'role' => 'Admin'
         ];
     }
 
     public function admin(): Factory {
         return $this->state(function (array $attributes) {
             return [
-                'role' => AccountRole::ADMIN->value,
+                'role' => 'Admin',
             ];
         });
     }
@@ -36,7 +36,7 @@ class AccountFactory extends Factory {
     public function secretary(): Factory {
         return $this->state(function (array $attributes) {
             return [
-                'role' => AccountRole::SECRETARY->value,
+                'role' => 'Secretary',
             ];
         });
     }

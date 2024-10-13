@@ -2,12 +2,9 @@
 
 namespace App;
 
-enum AccountRole : string
-{
+enum AccountRole : string {
     case ADMIN = 'Admin';
-    case CLERK = 'Clerk';
     case ASSISTANT = 'Assistant';
-    case ARCHIVES = 'Archives';
+    case CLERK = 'Clerk';
     case SECRETARY = 'Secretary';
-    case GUEST = 'Guest';
 }

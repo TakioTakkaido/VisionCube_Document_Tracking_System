@@ -76,7 +76,7 @@ class DocumentController extends Controller{
 
         // Create log 
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'Uploaded a new document'
         ]);
 
@@ -95,7 +95,7 @@ class DocumentController extends Controller{
 
         // Create log class
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'Viewed incoming documents'
         ]);
 
@@ -111,7 +111,7 @@ class DocumentController extends Controller{
 
         // Create a new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'View outgoing documents'
         ]);
 
@@ -128,7 +128,7 @@ class DocumentController extends Controller{
 
         // Create new log 
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'View archived documents'
         ]);
 
@@ -215,7 +215,7 @@ class DocumentController extends Controller{
 
         // Create a new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'Edited document'
         ]);
 
@@ -237,7 +237,7 @@ class DocumentController extends Controller{
 
         // Create new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'Obtained document file URL for download'
         ]);
 
@@ -258,7 +258,7 @@ class DocumentController extends Controller{
 
         // Create new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role->value,
+            'account' => Auth::user()->name . " • " . Auth::user()->role,
             'description' => 'Moved document'
         ]);
     }
