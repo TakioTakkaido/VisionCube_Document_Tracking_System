@@ -15,7 +15,7 @@
             <div class="dropdown-menu" aria-labelledby="accountMenuDropdownBtn">
                 {{-- For Users --}}
                 <a class="dropdown-item" href="#">View Account</a>
-                <a class="dropdown-item" id="logoutBtn"         href="#">Logout</a>
+                <a class="dropdown-item" id="logoutBtn" href="#">Logout</a>
             </div>
         </div>
     </div>

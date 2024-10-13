@@ -3,6 +3,42 @@
     {{-- Account Settings --}}
     <h4>Account Settings</h4>
 
+    {{-- Add Account --}}
+    <h5>Add New Account</h5>
+    <p>Add new account that shall be used by other</p>
+    <p>users in the system.</p>
+    <form id="addNewAccount" method="post" autocomplete="off">
+        @csrf
+        @method('POST')
+        <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+
+        <div class="form-group row">
+            <input type="name" class="form-control" name="name" id="name" placeholder="Username">
+            
+            <input type="email" class="form-control" name="email" id="email" placeholder="Email">            
+        </div>
+
+        <div class="form-group row">
+            <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+
+            <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" placeholder="Confirm Password" required>
+        </div>
+
+        <label for="role">Category:</label>
+        <select id="role" name="role" placeholder="Select Account Role">
+            <option value="" disabled selected>Select Account Role</option>
+            {{-- Obtained document categories using Laravel--}}
+            @foreach ($roles as $role)
+                @if ($role->value !== 'Admin')
+                    <option value="{{$role->value}}">{{$role->value}}</option>
+                @endif
+            @endforeach
+        </select>
+
+        <a name="submit" id="addAccountBtn" class="btn btn-primary" href="#" role="button">Create Account</a>        
+        <a name="cancel" class="btn btn-secondary" href="#" role="button">Cancel</a>
+    </form>
+
     {{-- Change Access of Account Roles --}}
     <h5>Change Access of Account Roles</h5>
     <p>Change what each type of account can perform in the system.</p>

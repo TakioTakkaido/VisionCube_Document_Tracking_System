@@ -45,12 +45,6 @@ Password
       </div>
 
       {{-- Submit Button --}}
-      <button type="submit" class="btn">Login</button>
-
-      <div class="register-link">
-        {{-- Redirect the user to account creation whenever no account is made --}}
-        <p>Dont have an account? <a href="{{route('show.create')}}">Register</a></p>
-      </div>  
-
+      <button type="submit" class="btn" id="loginBtn">Login</button>
     </form>
   </div>
