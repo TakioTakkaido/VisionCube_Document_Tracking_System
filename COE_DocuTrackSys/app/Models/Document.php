@@ -35,7 +35,9 @@ class Document extends Model
         'owner_id',
         'file',
         'sender',
+        'senderArray',
         'recipient',
+        'recipientArray',
         'subject',
         'assignee',
         'category'
@@ -70,3 +72,4 @@ class Document extends Model
         return $this->hasMany(DocumentVersion::class);
     }
 }
+

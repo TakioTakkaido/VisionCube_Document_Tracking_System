@@ -2,12 +2,14 @@
 $(document).on('submit', '#loginForm', function(event){
     event.preventDefault();
 
+    $('#loginBtn').html('Logging In...');
+
     var formData = new FormData();
     formData = {
         'email' : $('#email').val(),
         'password' : $('#password').val(),
         '_token' : $('#token').val()
-    }
+    };
 
     $.ajax({
         method: "POST",
@@ -15,10 +17,12 @@ $(document).on('submit', '#loginForm', function(event){
         data: formData,
         success: function (){
             console.log('Logged in successfully.');
+            $('#loginBtn').html('Log In');
             window.location.href = window.routes.dashboard;
         },
         error: function (data) {
             console.log('Error made in logging in.')
+            $('#loginBtn').html('Log In');
             // Get errors
             var data = JSON.parse(data.responseText);
             console.log(data);

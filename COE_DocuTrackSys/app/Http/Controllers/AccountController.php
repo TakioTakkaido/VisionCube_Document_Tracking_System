@@ -87,13 +87,17 @@ class AccountController extends Controller {
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
-            'role' => AccountRole::GUEST
+            'role' => $request->input('role')
         ]);
 
         // Create new log file
         ModelsLog::create([
             'account' => Auth::user()->name . " • " . Auth::user()->role->value,
             'description' => 'Added new user to the system'
+        ]);
+
+        return response()->json([
+            'success' => 'Account created successfully'
         ]);
 
     }
@@ -157,17 +161,16 @@ class AccountController extends Controller {
 
     // Logout
     public function logout(){
-        // Logout
-        Auth::logout();
-
         // Create new log
         ModelsLog::create([
             'account' => Auth::user()->name . " • " . Auth::user()->role->value,
             'description' => 'Logged out to the system'
         ]);
 
-        // Redirect to the login page
-        return redirect()->route('show.login');
+        // Logout
+        Auth::logout();
+
+        return response()->json(['redirect' => route('show.login')]);
     }
 
     // Deactivate

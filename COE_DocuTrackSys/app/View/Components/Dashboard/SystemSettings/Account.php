@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Dashboard\SystemSettings;
 
+use App\AccountRole;
 use App\Http\Controllers\AccountController;
 use Closure;
 use Illuminate\View\Component;
@@ -19,6 +20,7 @@ class Account extends Component
      */
     public function render(): View|Closure|string{
         return view('components.dashboard.system-settings.account', [
+            'roles' => AccountRole::cases(),
             'secretary' => AccountController::getSecretaryRole(),
             'clerk' => AccountController::getClerkRole()
         ]);

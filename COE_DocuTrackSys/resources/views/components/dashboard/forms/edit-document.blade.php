@@ -1,13 +1,11 @@
 <div class="modal fade" id="editDocument" tabindex="-1" role="dialog" aria-labelledby="editDocumentModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-        {{-- Display PDF viewer --}}
-        {{-- <iframe src="documents/1UcOq0oCzMlw1eydvqjaf0pEbEw74eIUNxhq7IQY.pdf" frameborder="0" style="width:100%; height:1200px;"></iframe> --}}
         <div class="modal-body custom-modal-body">
             <!-- Modal content goes here -->
             <form class="uploadContent" id="editDocumentForm" method="post">
                 @csrf
-                @method('POST')
+                @method('POST') 
                 <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
                 <input type='hidden' name='document_id' id="documentId">
                 <input type='hidden' name='owner_id' id="ownerId">
@@ -24,11 +22,29 @@
                 <span class="error" id="editTypeError" style="display:none;">This field is required!</span>
                     
                 <label for="editUploadFrom">From:</label>
-                <input type="text" id="editUploadFrom" name="sender" placeholder="Enter the Sender's Name/Department">
-                <span class="error" id="ediSenderError" style="display:none;"></span>
+                <select class="form-control selectpicker" id="editUploadFrom" name="sender" data-live-search="true" multiple data-header="Select Sender (From)">
+                    @foreach($groups as $group)
+                    <option title="" value="{{ $group['id'] }}" data-level={{$group['level']}} data-name="{{ $group['value'] }}" data-parent="{{$group['parent']}}" data-participant="{{$group['participant']}}">
+                            {!! str_repeat('&nbsp;', $group['level'] * 4) !!} {{ $group['value'] }}
+                        </option>
+                    @endforeach
+                </select>                
+                <span>Others:
+                    <input id="editUploadFromText" type="text" name="sender">
+                </span>
+                <span class="error" id="editSenderError" style="display:none;"></span>
         
                 <label for="editUploadTo">To:</label>
-                <input type="text" id="editUploadTo" name="recipient" placeholder="Enter the Recipient's Name/Department">
+                <select class="form-control selectpicker" id="editUploadTo" name="recipient" data-live-search="true" multiple data-header="Select Recipient (To)">
+                    @foreach($groups as $group)
+                        <option title="" value="{{ $group['id'] }}" data-level={{$group['level']}} data-name="{{ $group['value'] }}" data-parent="{{$group['parent']}}" data-participant="{{$group['participant']}}">
+                            {!! str_repeat('&nbsp;', $group['level'] * 4) !!} {{ $group['value'] }}
+                        </option>
+                    @endforeach
+                </select>
+                <span>Others:
+                    <input id="editUploadToText" type="text" name="recipient">
+                </span>
                 <span class="error" id="editRecipientError" style="display:none;"></span>
         
                 <label for="editUploadSubject">Subject:</label>
@@ -101,9 +117,10 @@
             </form>
         </div>
         <div class="modal-footer custom-modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             {{-- PLACE UPDATING DOCUMENT --}}
-            <button type="submit" id="editDocumentBtn" class="btn btn-primary">Edit</button>
+            <button type="submit" id="submitEditDocumentBtn"    class="btn btn-primary">Edit</button>
+            <button type="button" id="clearEditBtn"             class="btn btn-secondary" >Clear</button>
+            <button type="button" id="cancelEditBtn"            class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-export function showAllLogs(){
+export function showLogs(){
     $('.dashboardTableTitle').html('System Logs');
 
     if ($.fn.DataTable.isDataTable('#dashboardTable')) {
