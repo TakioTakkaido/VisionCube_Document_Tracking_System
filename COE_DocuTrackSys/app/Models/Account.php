@@ -43,9 +43,6 @@ class Account extends Authenticatable
         'canPrint'
     ];
 
-    protected $casts = [
-        'role' => AccountRole::class,
-    ];
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -67,19 +64,6 @@ class Account extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    // Verify if user is the admin
-    public function isAdmin(){
-        return $this->role === AccountRole::ADMIN;
-    }
-
-    // Below are the relationships of Document to other models in the system.
-    // Document belongs to one User
-    // Document has many DocumentVersions
-
-    public function documents(){
-        return $this->hasMany(Document::class);
     }
 }
 

@@ -98,6 +98,7 @@ Sanchez, Shane David U.
         showAllActiveAccounts: "{{route('account.showAllActiveAccounts')}}",
         editAccountRole: "{{route('account.editAccountRole', [':id', ':role'])}}",
         showAllDeactivatedAccounts: "{{route('account.showAllDeactivatedAccounts')}}",
+        deactivateAccount: "{{route('account.deactivate', ':id')}}",
         reactivateAccount: "{{route('account.reactivate', ':id')}}",
         
         // Document Routes
