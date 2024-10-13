@@ -122,10 +122,62 @@ export function showAllLogs(){
         },
         language: {
             emptyTable: "No system logs present."
-        }
-    });
+        },
+        createdRow: function(row, data){
+        $(row).on('mouseenter', function(){
+            document.body.style.cursor = 'pointer';
+        });
+
+        $(row).on('mouseleave', function() {
+            document.body.style.cursor = 'default';
+        });
+
+        $(row).on('click', function(event){
+            event.preventDefault();
+            console.log('Document preview');
+        });
+
+        $(row).on('contextmenu', function(event){
+            event.preventDefault();
+            console.log('document menu');
+        
+            $(this).popover({
+                content: `<div class="list-group menu">`+
+                    `<button type="button" class="list-group-item" id="logsBtn${data.id}">View Logs Information</button>` +
+                `</div>`,
+                html: true,
+                container: 'body',
+                placement: 'right',
+                trigger: 'manual', 
+                animation: false
+            }).on('inserted.bs.popover', function(event) {
+                $('#logsBtn' + data.id).off('click').on('click', function(event) {
+                    $(row).popover('toggle'); 
+                    viewLogInformation(data.id); 
+                });
+            });
+
+            $(this).popover('toggle'); 
+
+            $(document).off('click.popover').on('click.popover', function(e) {
+                if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
+                    $(row).popover('hide');  
+                }
+            });
+        });
+    }
+});
+
+
+
+
 
     if (!$('.dashboardTableContents').hasClass('show')) {
         $('.dashboardTableContents').addClass('show');
     }
+}
+
+
+function viewLogInformation(accountId) {
+    console.log(accountId);
 }
