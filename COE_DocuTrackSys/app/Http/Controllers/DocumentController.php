@@ -60,7 +60,7 @@ class DocumentController extends Controller{
             'assignee.required' => 'Assignee is required!'
         ]);
 
-        Document::create([
+        $document = Document::create([
             'type' => $request->input('type'),
             'status' => $request->input('status'),
             'file' => $request->file('file')->store('public/documents'), // Store the file and get the path
@@ -71,8 +71,14 @@ class DocumentController extends Controller{
             'recipientArray' => json_encode($request->input('recipientArray')),
             'subject' => $request->input('subject'),
             'assignee' => $request->input('assignee'),
-            'category' => $request->input('category')
+            'category' => $request->input('category'),
+            'series_number' => $request->input('seriesNo'),
+            'memo_number' => $request->input('memoNo'),
+            'document_date' => $request->input('uploadDate'),
+            'version' => 1
         ]);
+
+        $document->createVersion();
 
         // Create log 
         ModelsLog::create([
@@ -154,9 +160,16 @@ class DocumentController extends Controller{
 
     // Get Document Versions
     public function showDocumentVersions(Request $request){
-        // Find document versions, related to this document
+        // Find document
+        $document = Document::find($request->id);
 
+        // Find document versions, related to this document
+        $documentVersions = $document->versions()->get();
+        // dd($documentVersions);
         // Return document versions
+        return response()->json([
+            'documentVersions' => $documentVersions
+        ]);
     }
 
     // Edit Document
@@ -195,6 +208,9 @@ class DocumentController extends Controller{
         $document->senderArray = json_encode($request->input('senderArray'));
         $document->recipient = $request->input('recipient');
         $document->recipientArray = json_encode($request->input('recipientArray'));
+        $document->series_number = $request->input('seriesNo');
+        $document->memo_number = $request->input('memoNo');
+        $document->document_date = $request->input('uploadDate');
         $document->subject = $request->input('subject');
         $document->assignee = $request->input('assignee');
         $document->category = $request->input('category');
@@ -212,6 +228,8 @@ class DocumentController extends Controller{
 
         // Save the new document credentials
         $document->save();
+
+        $document->createVersion();
 
         // Create a new log
         ModelsLog::create([

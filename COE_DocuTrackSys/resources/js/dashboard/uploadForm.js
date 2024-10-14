@@ -11,20 +11,22 @@ $('#submitDocumentForm').on('click', function(event) {
     var formData = new FormData();
     var senderArray = [];
     var recipientArray = [];
-    for (var index = 0; index < $('#uploadFrom').val().length; index++) {
-        if($.inArray($($('#uploadFrom option')[index]).val(), $('#uploadFrom').val())){
+    for (var index = 0; index < $('#uploadFrom option').length; index++) {
+        var uploadFromOption = $('#uploadFrom option')[index];
+        if(uploadFromOption.selected){
             senderArray.push({
-                parent: $($('#uploadFrom option')[index]).data['parent'],
+                parent: $($('#uploadFrom option')[index]).data('parent'),
                 value: $($('#uploadFrom option')[index]).data('name'),
                 level: $($('#uploadFrom option')[index]).data('level'),
             });
         }
     }
 
-    for (var index = 0; index < $('#uploadTo').val().length; index++) {
-        if($.inArray($($('#uploadTo option')[index]).val(), $('#uploadTo').val())){
+    for (var index = 0; index < $('#uploadTo option').length; index++) {
+        var uploadToOption = $('#uploadTo option')[index];
+        if(uploadToOption.selected){
             recipientArray.push({
-                parent: $($('#uploadFrom option')[index]).data['parent'],
+                parent: $($('#uploadTo option')[index]).data('parent'),
                 value: $($('#uploadTo option')[index]).data('name'),
                 level: $($('#uploadTo option')[index]).data('level'),
             });
@@ -33,6 +35,16 @@ $('#submitDocumentForm').on('click', function(event) {
 
     formData.append('_token', $('#token').val());
     formData.append('type', $('#uploadDocType').val());
+    
+    var seriesNo;
+    var memoNo;
+    if ($('#uploadDocType').val() == 'Type0') {
+        seriesNo = $('#uploadSeriesNo').val();
+        memoNo  = $('#uploadMemoNo').val();
+    }
+    formData.append('seriesNo', seriesNo);
+    formData.append('memoNo', memoNo);
+
     formData.append('subject', $('#uploadSubject').val());
     
 
@@ -45,14 +57,14 @@ $('#submitDocumentForm').on('click', function(event) {
     var start = false;
     var currentParent = '';
     var uploadFromOptions = $('#uploadFrom option');
-    
     for (var index = 0; index < uploadFromOptions.length; index++) {
         const element = uploadFromOptions[index];
         if (element.selected === true){
             // Determine if it has parent or not
-
+            console.log('element selected');
             // This element is the parent
             if (!$(element).data('parent')){
+                console.log('parent selected');
                 if (start) {senderName += ', ';}
                 // It has a child
                 if (!$(element).data('hasChild')){
@@ -68,6 +80,7 @@ $('#submitDocumentForm').on('click', function(event) {
                 if ($(element).data('parent') != $(currentParent).data('parent') &&
                     !currentParent.selected
                 ){
+                    console.log('child selected');
                     // How many are selected
                     var count = 0;
 
@@ -81,8 +94,10 @@ $('#submitDocumentForm').on('click', function(event) {
                     var parentLevel;
 
                     // Find the parent
-                    for (var index2 = index - 1; index2 > 0; index2--){
+                    console.log('index1: ' + index);
+                    for (var index2 = index - 1; index2 >= 0; index2--){
                         const element2 = uploadFromOptions[index2];
+                        console.log(element2);
                         if($(element2).data('level') < $(element).data('level')) {
                             parentIndex = index2;
                             parentLevel = $(element2).data('level');
@@ -90,9 +105,12 @@ $('#submitDocumentForm').on('click', function(event) {
                         } 
                     }
                     
+                    console.log('prent index: ' + parentIndex);
+                    console.log('parent laevel: ' + parentLevel);
                     // Check what children are selected
                     for (var index3 = parentIndex + 1; index3 < uploadFromOptions.length; index3++){
                         const element3 = uploadFromOptions[index3];
+                        console.log(element3);
                         // Check if its still a chidren
                         if($(element3).data('level') > parentLevel) {
                             if (element3.selected) {
@@ -105,6 +123,7 @@ $('#submitDocumentForm').on('click', function(event) {
                         }
                     }
 
+                    console.log(count);
                     if (count > 0) {
                         if (start) {
                             senderName += ', ';
@@ -123,6 +142,7 @@ $('#submitDocumentForm').on('click', function(event) {
         }
     }
 
+    console.log('Sender Name: ' + senderName);
     if (senderName.length === 0){
         senderName = $('#uploadFromText').val();
     }
@@ -169,7 +189,7 @@ $('#submitDocumentForm').on('click', function(event) {
                     var parentLevel;
 
                     // Find the parent
-                    for (var index2 = index - 1; index2 > 0; index2--){
+                    for (var index2 = index - 1; index2 >= 0; index2--){
                         const element2 = uploadToOptions[index2];
                         if($(element2).data('level') < $(element).data('level')) {
                             parentIndex = index2;
@@ -213,8 +233,12 @@ $('#submitDocumentForm').on('click', function(event) {
     if (recipientName.length === 0){
         recipientName = $('#uploadToText').val();
     }
+
+    console.log('Recipient Name: ' + recipientName);
     formData.append('recipient', recipientName);
     formData.append('recipientArray', JSON.stringify(recipientArray));
+
+    formData.append('uploadDate', $('#uploadDate').val());
 
     formData.append('assignee', $('#uploadAssignee').val());
     formData.append('category', $('#uploadCategory').val());
@@ -233,7 +257,7 @@ $('#submitDocumentForm').on('click', function(event) {
         contentType: false,  // Prevent jQuery from overriding the content type
         success: function(response) {
             $('#uploadDocument').modal('hide');
-            // $('#documentTable').DataTable().ajax.reload();
+            $('#documentTable').DataTable().ajax.reload();
         },
         error: function(xhr) {
             alert('Error: ' + xhr.responseJSON?.message || 'Upload failed');
@@ -256,43 +280,47 @@ $('#uploadFrom').selectpicker().on('changed.bs.select', function(event, clickedI
     pos = $(this).parent().find('.dropdown-menu.inner').scrollTop();
     var level = $(this.options[clickedIndex]).data('level');
     
-    if (isSelected){
+    if (!$(this.options[clickedIndex]).data('parent')){
         console.log('has no parent changed');
         for (var index = clickedIndex + 1; index < this.options.length; index++) {
             const element = this.options[index];
             if($(element).data('level') > level){
+                console.log('selected');
                 element.selected = isSelected;
             } else {   
                 break;
             }
         }
     } else {
-        console.log('has parent changed');
-
-        let parentFound = false;  // To ensure we find a parent before unchecking
-
-        // Traverse upwards to find parent elements
-        for (var index = clickedIndex - 1; index >= 0; index--) {
-            const currentElement = this.options[index];
-            const currentLevel = $(currentElement).data('level');
-            const clickedLevel = $(this.options[clickedIndex]).data('level');
-
-            // Find the first parent (level less than clicked element)
-            if (currentLevel < clickedLevel) {
-                // Uncheck the parent
-                currentElement.selected = isSelected;
-                parentFound = true;
-
-                console.log('unchecked a parent at level ' + currentLevel);
-                
-                // Check if this parent has its own parent and continue
-                clickedIndex = index;  // Move up to the found parent's index
-            }
+        if (!isSelected){
             
-            // If no parent is found in the loop, break
-            if (!$(this.options[clickedIndex]).data('parent')) {
-                console.log('no parent anymore');
-                break;
+            console.log('has parent changed');
+
+            var parentFound = false;  // To ensure we find a parent before unchecking
+
+            // Traverse upwards to find parent elements
+            for (var index = clickedIndex - 1; index >= 0; index--) {
+                const currentElement = this.options[index];
+                const currentLevel = $(currentElement).data('level');
+                const clickedLevel = $(this.options[clickedIndex]).data('level');
+
+                // Find the first parent (level less than clicked element)
+                if (currentLevel < clickedLevel) {
+                    // Uncheck the parent
+                    currentElement.selected = isSelected;
+                    parentFound = true;
+
+                    console.log('unchecked a parent at level ' + currentLevel);
+                    
+                    // Check if this parent has its own parent and continue
+                    clickedIndex = index;  // Move up to the found parent's index
+                }
+                
+                // If no parent is found in the loop, break
+                if (!$(this.options[clickedIndex]).data('parent')) {
+                    console.log('no parent anymore');
+                    break;
+                }
             }
         }
     }
@@ -365,4 +393,15 @@ $('#uploadFromText').on('input', function(event){
 $('#uploadToText').on('input', function(event){
     $('#uploadTo').selectpicker('deselectAll');
     $('#uploadTo').selectpicker('refresh');
+});
+
+// Show up the series no and memo number
+$('#uploadDocType').on('input', function(event){
+    event.preventDefault();
+
+    if($(this).val() == 'Type0'){
+        $('#memoInfo').css('display', 'block');
+    } else {
+        $('#memoInfo').css('display', 'none');
+    }
 });

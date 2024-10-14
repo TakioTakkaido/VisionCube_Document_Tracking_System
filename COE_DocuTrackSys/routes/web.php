@@ -264,6 +264,8 @@ Route::post('/account/update/access', [AccountController::class, 'editAccess'])
 Route::get('/document/preview/{id}', [DocumentController::class, 'preview'])
 ->name('document.preview');
 
-
+// Log Routes
+Route::get('/log/view/{id}', [LogController::class, 'show'])
+->name('log.show');
 
 require __DIR__.'/auth.php';

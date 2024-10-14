@@ -8,8 +8,10 @@ namespace App\Models;
 // Contributor/s: 
 // Calulut, Joshua Miguel C.
 
+use Illuminate\Database\Eloquent\Casts\Attribute as CastsAttribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class DocumentVersion extends Model
 {
@@ -28,4 +30,11 @@ class DocumentVersion extends Model
         return $this->belongsTo(Document::class);
     }
 
+    protected function createdAt() : CastsAttribute {
+        return CastsAttribute::make(
+            get: fn ($value) => (string) Carbon::parse($value)
+                ->setTimezone('Asia/Singapore')
+                ->format('M. d, Y h:i:s a')
+        );
+    }
 }

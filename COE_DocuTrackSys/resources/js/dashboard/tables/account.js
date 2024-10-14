@@ -1,3 +1,4 @@
+// SHOW ACTIVE ACCOUNTS
 export function showActive() {
     $('.dashboardTableTitle').html('Active Accounts');
 
@@ -32,6 +33,9 @@ export function showActive() {
             {data: 'name'},
             {data: 'role'}
         ],
+        language: {
+            emptyTable: "No active accounts present."
+        },
         destroy: true,
         pagination: true,
 
@@ -51,7 +55,11 @@ export function showActive() {
 
             $(row).on('contextmenu', function(event){
                 event.preventDefault();
-                $('.popover').popover('hide');
+                $.each($('.popover'), function () { 
+                    if ($(this).parent() !== $(row)){
+                        $(this).popover('hide');
+                    }
+                });
 
                 var secretary, assistant, clerk;
                 switch (data.role) {
@@ -130,6 +138,7 @@ export function showActive() {
     }
 }
 
+// SHOW DEACTIVATED ACCOUNTS
 export function showDeactivated() {
     $('.dashboardTableTitle').html('Deactivated Accounts');
 
@@ -163,6 +172,9 @@ export function showDeactivated() {
             {data: 'name'},
             {data: 'role'}
         ],
+        language: {
+            emptyTable: "No deactivated accounts present."
+        },
         destroy: true,
         pagination: true,
 
@@ -183,15 +195,15 @@ export function showDeactivated() {
 
             $(row).on('contextmenu', function(event){
                 event.preventDefault();
-                console.log('document menu');
-
-
-
+                $.each($('.popover'), function () { 
+                    if ($(this).parent() !== $(row)){
+                        $(this).popover('hide');
+                    }
+                });
 
                 $(this).popover({
                     content: `<div class="list-group menu">`+
                         `<button type="button" class="list-group-item" id="reactivateBtn${data.id}">Reactivate</button>` +
-                        `<button type="button" class="list-group-item" id="logsBtn${data.id}">View Log Information</button>` +
                     `</div>`,
                     html: true,
                     container: 'body',
@@ -200,13 +212,8 @@ export function showDeactivated() {
                     animation: false
                 }).on('inserted.bs.popover', function(event) {
                     $('#reactivateBtn' + data.id).off('click').on('click', function(event) {
-                        $(row).popover('toggle'); 
-                        editAccount(data.id);  
-                    });
-
-                    $('#logsBtn' + data.id).off('click').on('click', function(event) {
-                        $(row).popover('toggle'); 
-                        activateAccount(data.id); 
+                        $(row).popover('hide'); 
+                        reactivateAccount(data.id); 
                     });
                 });
 
@@ -235,6 +242,7 @@ export function showDeactivated() {
 // Pending for approval documents
 
 
+// Deactivate account
 function deactivateAccount(accountId, row) {
     var formData = new FormData();
     formData = {
@@ -248,11 +256,11 @@ function deactivateAccount(accountId, row) {
         success: function (response) {
             console.log("Account deactivated successfully!");
             $('#dashboardTable').DataTable().ajax.reload();
-            $(row).popover('toggle');
         }
     });
 }
 
+// Reactivate account
 function reactivateAccount(accountId, row) {
     var formData = new FormData();
     formData = {
@@ -271,6 +279,7 @@ function reactivateAccount(accountId, row) {
     });
 }
 
+// Change account role
 function changeRole(accountId, newRole, row) {
     var formData = new FormData();
     formData = {
@@ -288,8 +297,4 @@ function changeRole(accountId, newRole, row) {
             $(row).popover('toggle');
         }
     });
-}
-
-function viewLogInformation(accountId) {
-    console.log(accountId);
 }

@@ -10,47 +10,67 @@
                 <input type='hidden' name='document_id' id="documentId">
                 <input type='hidden' name='owner_id' id="ownerId">
                 <label for="editUploadDocType">Document Type:</label>
-                <select id="editUploadDocType" name="type" placeholder="Enter the Type of Document">
-                    <option value="" disabled selected>Select the Type of Document</option>
-                    {{-- Obtained document types using Laravel--}}
-                    @foreach ($docTypes as $index => $docType)
-                        @if ($docType->value !== 'default')
-                            <option value="{{$docType->value}}">{{$docType->value}}</option>
-                        @endif
-                    @endforeach
-                </select>
-                <span class="error" id="editTypeError" style="display:none;">This field is required!</span>
-                    
-                <label for="editUploadFrom">From:</label>
-                <select class="form-control selectpicker" id="editUploadFrom" name="sender" data-live-search="true" multiple data-header="Select Sender (From)">
-                    @foreach($groups as $group)
-                    <option title="" value="{{ $group['id'] }}" data-level={{$group['level']}} data-name="{{ $group['value'] }}" data-parent="{{$group['parent']}}" data-participant="{{$group['participant']}}">
-                            {!! str_repeat('&nbsp;', $group['level'] * 4) !!} {{ $group['value'] }}
-                        </option>
-                    @endforeach
-                </select>                
-                <span>Others:
-                    <input id="editUploadFromText" type="text" name="sender">
-                </span>
-                <span class="error" id="editSenderError" style="display:none;"></span>
+                <div class="flex-row">
+                    <select id="editUploadDocType" name="type" placeholder="Enter the Type of Document">
+                        <option value="" disabled selected>Select the Type of Document</option>
+                        {{-- Obtained document types using Laravel--}}
+                        @foreach ($docTypes as $index => $docType)
+                            @if ($docType->value !== 'default')
+                                <option value="{{$docType->value}}">{{$docType->value}}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <span class="error" id="editTypeError" style="display:none;">This field is required!</span>
+
+                    <div class="flex-row" id="editMemoInfo" style="display:none;">
+                        <label for="editUploadSeriesNo">Series No.:</label>
+                        <input id="editUploadSeriesNo" type="number" name="seriesNo">
         
-                <label for="editUploadTo">To:</label>
-                <select class="form-control selectpicker" id="editUploadTo" name="recipient" data-live-search="true" multiple data-header="Select Recipient (To)">
-                    @foreach($groups as $group)
+                        <label for="editUploadMemoNo">Memo No.:</label>
+                        <input id="editUploadMemoNo" type="number" name="memoNo">
+                    </div>
+                </div>                    
+
+                <div class="flex-row">
+                    <label for="editUploadFrom">From:</label>
+                    <select class="form-control selectpicker" id="editUploadFrom" name="sender" data-live-search="true" multiple data-header="Select Sender (From)">
+                        @foreach($groups as $group)
                         <option title="" value="{{ $group['id'] }}" data-level={{$group['level']}} data-name="{{ $group['value'] }}" data-parent="{{$group['parent']}}" data-participant="{{$group['participant']}}">
-                            {!! str_repeat('&nbsp;', $group['level'] * 4) !!} {{ $group['value'] }}
-                        </option>
-                    @endforeach
-                </select>
-                <span>Others:
-                    <input id="editUploadToText" type="text" name="recipient">
-                </span>
-                <span class="error" id="editRecipientError" style="display:none;"></span>
-        
-                <label for="editUploadSubject">Subject:</label>
-                <textarea id="editUploadSubject" name="subject" rows="2" placeholder="Enter the Subject of the Document"></textarea>
-                <span class="error" id="editSubjectError" style="display:none;"></span>
-        
+                                {!! str_repeat('&nbsp;', $group['level'] * 4) !!} {{ $group['value'] }}
+                            </option>
+                        @endforeach
+                    </select>                
+                    <span>Others:
+                        <input id="editUploadFromText" type="text" name="sender">
+                    </span>
+                    <span class="error" id="editSenderError" style="display:none;"></span>
+                </div>
+                
+                
+                <div class="flex-row">
+                    <label for="editUploadTo">To:</label>
+                    <select class="form-control selectpicker" id="editUploadTo" name="recipient" data-live-search="true" multiple data-header="Select Recipient (To)">
+                        @foreach($groups as $group)
+                            <option title="" value="{{ $group['id'] }}" data-level={{$group['level']}} data-name="{{ $group['value'] }}" data-parent="{{$group['parent']}}" data-participant="{{$group['participant']}}">
+                                {!! str_repeat('&nbsp;', $group['level'] * 4) !!} {{ $group['value'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <span>Others:
+                        <input id="editUploadToText" type="text" name="recipient">
+                    </span>
+                    <span class="error" id="editRecipientError" style="display:none;"></span>
+                </div>
+                
+                <div class="flex-row">
+                    <label for="editUploadSubject">Subject:</label>
+                    <textarea id="editUploadSubject" name="subject" rows="2" placeholder="Enter the Subject of the Document"></textarea>
+                    <span class="error" id="editSubjectError" style="display:none;"></span>
+                    
+                    <label for="editUploadDate">Date:</label>
+                    <input id="editUploadDate" type="date" name="date">
+                </div>
+
                 <div class="flex-row"> 
                     <div>
                         <label for="editUploadSoftcopy">Document (Softcopy):</label>

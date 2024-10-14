@@ -2,58 +2,75 @@
     <div class="modal-dialog modal-lg" role="editAccount">
         <div class="modal-content">
         <div class="modal-body uploadDocument">
-    
             {{-- Upload Document Form --}}
             <form class="uploadContent" id="uploadDocumentForm" method="post">
                 @csrf
                 @method('POST')
                 {{-- CSRF Token --}}
                 <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+                
+                <div class="flex-row">
+                    <label for="uploadDocType">Document Type:</label>
+                    <select id="uploadDocType" name="type" placeholder="Enter the Type of Document">
+                        <option value="" disabled selected>Select the Type of Document</option>
+                        {{-- Obtained document types using Laravel--}}
+                        @foreach ($docTypes as $index => $docType)
+                            @if ($docType->value !== 'default')
+                                <option value="{{$docType->value}}">{{$docType->value}}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <span class="error" id="typeError" style="display:none;">This field is required!</span>
+                    
+                    <div class="flex-row" id="memoInfo" style="display:none;">
+                        <label for="uploadSeriesNo">Series No.:</label>
+                        <input id="uploadSeriesNo" type="number" name="seriesNo">
         
-                <label for="uploadDocType">Document Type:</label>
-                <select id="uploadDocType" name="type" placeholder="Enter the Type of Document">
-                    <option value="" disabled selected>Select the Type of Document</option>
-                    {{-- Obtained document types using Laravel--}}
-                    @foreach ($docTypes as $index => $docType)
-                        @if ($docType->value !== 'default')
-                            <option value="{{$docType->value}}">{{$docType->value}}</option>
-                        @endif
-                    @endforeach
-                </select>
-                <span class="error" id="typeError" style="display:none;">This field is required!</span>
+                        <label for="uploadMemoNo">Memo No.:</label>
+                        <input id="uploadMemoNo" type="number" name="memoNo">
+                    </div>
+                </div>
                 
-                <label for="uploadFrom">From:</label>
-                <select class="form-control selectpicker" id="uploadFrom" name="sender" data-live-search="true" multiple data-header="Select Sender (From)">
-                    @foreach($groups as $group)
-                        <option title="" value="{{ $group['id'] }}" data-level={{$group['level']}} data-name="{{ $group['value'] }}" data-parent="{{$group['parent']}}" data-participant="{{$group['participant']}}">
-                            {!! str_repeat('&nbsp;', $group['level'] * 4) !!} {{ $group['value'] }}
-                        </option>
-                    @endforeach
-                </select>
-                <span>Others:
-                    <input id="uploadFromText" type="text" name="sender">
-                </span>
-                
-                <span class="error" id="senderError" style="display:none;"></span>
+                <div class="flex-row">                
+                    <label for="uploadFrom">From:</label>
+                    <select class="form-control selectpicker" id="uploadFrom" name="sender" data-live-search="true" multiple data-header="Select Sender (From)">
+                        @foreach($groups as $group)
+                            <option title="" value="{{ $group['id'] }}" data-level={{$group['level']}} data-name="{{ $group['value'] }}" data-parent="{{$group['parent']}}" data-participant="{{$group['participant']}}">
+                                {!! str_repeat('&nbsp;', $group['level'] * 4) !!} {{ $group['value'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <span>Others:
+                        <input id="uploadFromText" type="text" name="sender">
+                    </span>
+                    <span class="error" id="senderError" style="display:none;"></span>
+                </div>
 
-                <label for="uploadTo">To:</label>
-                <select class="form-control selectpicker" id="uploadTo" name="recipient" data-live-search="true" multiple data-header="Select Recipient (To)">
-                    @foreach($groups as $group)
-                        <option title="" value="{{ $group['id'] }}" data-level={{$group['level']}} data-name="{{ $group['value'] }}" data-parent="{{$group['parent']}}" data-participant="{{$group['participant']}}">
-                            {!! str_repeat('&nbsp;', $group['level'] * 4) !!} {{ $group['value'] }}
-                        </option>
-                    @endforeach
-                </select>
-                <span>Others:
-                    <input id="uploadToText" type="text" name="recipient">
-                </span>
-                <span class="error" id="recipientError" style="display:none;"></span>
+                <div class="flex-row">
+                    <label for="uploadTo">To:</label>
+                    <select class="form-control selectpicker" id="uploadTo" name="recipient" data-live-search="true" multiple data-header="Select Recipient (To)">
+                        @foreach($groups as $group)
+                            <option title="" value="{{ $group['id'] }}" data-level={{$group['level']}} data-name="{{ $group['value'] }}" data-parent="{{$group['parent']}}" data-participant="{{$group['participant']}}">
+                                {!! str_repeat('&nbsp;', $group['level'] * 4) !!} {{ $group['value'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <span>Others:
+                        <input id="uploadToText" type="text" name="recipient">
+                    </span>
+                    <span class="error" id="recipientError" style="display:none;"></span>
+                </div>
                 
-        
-                <label for="uploadSubject">Subject:</label>
-                <textarea id="uploadSubject" name="subject" rows="2" placeholder="Enter the Subject of the Document"></textarea>
-                <span class="error" id="subjectError" style="display:none;"></span>
-        
+                <div class="flex-row">
+                    <label for="uploadSubject">Subject:</label>
+                    <textarea id="uploadSubject" name="subject" rows="2" placeholder="Enter the Subject of the Document"></textarea>
+                    <span class="error" id="subjectError" style="display:none;"></span>
+
+                    <label for="uploadDate">Date:</label>
+                    <input id="uploadDate" type="date" name="date">
+                </div>
+                
+                
                 <div class="flex-row"> 
                     <div>
                         <label for="uploadSoftcopy">Document (Softcopy):</label>
@@ -76,7 +93,6 @@
                 </div>
         
                 <div class="flex-row">
-                    
                     <div>
                         <label for="uploadStatus">Status:</label>
                         <select id="uploadStatus" name="status">
@@ -104,7 +120,6 @@
                         </select>
                         <span class="error" id="assigneeError" style="display:none;"></span>
                     </div>
-
                 </div>
 
             </form>

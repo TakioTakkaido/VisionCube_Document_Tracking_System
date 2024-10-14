@@ -20,8 +20,10 @@ use App\DocumentCategory;
 use App\DocumentStatus;
 use App\DocumentType;
 
+use Illuminate\Database\Eloquent\Casts\Attribute as CastsAttribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use App\Models\DocumentVersion;
 use PDO;
 
@@ -40,36 +42,39 @@ class Document extends Model
         'recipientArray',
         'subject',
         'assignee',
-        'category'
+        'category',
+        'series_number',
+        'memo_number',
+        'document_date',
+        'version'
     ];
 
-    // This function is called whenever the document is updated or revised.
-    public static function boot(){
-        parent::boot();
+    // Create new document version
+    public function createVersion() : void {
+        $documentVersion = DocumentVersion::create([
+            'document_id' => $this->id,
+            'version_number' => $this->version,
+            'content' => $this->toJson()
+        ]);
 
-        static::updating(function ($document){
-            // Get the document's latest version
-            $latestVersion = $document->versions()->max('version_number') ?? 0;
-
-            // Create a new document version
-            DocumentVersion::create([
-                'document_id' => $document->id,
-                'version_number' => $latestVersion + 1,
-                'content' => $document->toJson(), // Store the current state of the document as JSON
-            ]);
-        });
+        $this->version++;
+        $this->save();
+        $this->versions()->save($documentVersion);
     }
 
+    
     // Below are the relationships of Document to other models in the system.
     // Document belongs to one User
     // Document has many DocumentVersions
 
-    public function user(){
-        return $this->belongsTo(Account::class);
-    }
-
     public function versions(){
         return $this->hasMany(DocumentVersion::class);
+    }
+
+    protected function display_date() : string {
+        return $this->document_date
+            ->setTimezone('Asia/Singapore')
+            ->format('M. d, Y');
     }
 }
 

@@ -13,18 +13,18 @@ export function showIncoming(){
     $('#dashboardTable').html(
         "<thead><tr>" +
         "<th>Type</th>" +
-        "<th>Subject</th>" +
-        "<th>Sender</th>" +         
-        "<th>Recipient</th>" +         
+        "<th>Subject</th>" +    
+        "<th>Date</th>" +  
+        "<th>Sender</th>" +            
         "<th>Status</th>" +     
         "<th>Assignee</th>" +  
         "</tr></thead>" +            
         "<tbody></tbody>" +
         "<tfoot><tr>" + 
         "<th>Type</th>" +
-        "<th>Subject</th>" +
-        "<th>Sender</th>" +         
-        "<th>Recipient</th>" +         
+        "<th>Subject</th>" +     
+        "<th>Date</th>" + 
+        "<th>Sender</th>" +            
         "<th>Status</th>" +     
         "<th>Assignee</th>" + 
         "</tr></tfoot>"
@@ -39,8 +39,8 @@ export function showIncoming(){
         columns: [
             {data: 'type'},
             {data: 'subject'},
+            {data: 'document_date'},
             {data: 'sender'},
-            {data: 'recipient'},
             {data: 'status'},
             {data: 'assignee'}
         ],
@@ -68,7 +68,11 @@ export function showIncoming(){
 
             $(row).on('contextmenu', function(event) {
                 event.preventDefault();
-                $('.popover').popover('hide');
+                $.each($('.popover'), function () { 
+                    if ($(this).parent() !== $(row)){
+                        $(this).popover('hide');
+                    }
+                });
 
                 var incoming, outgoing, archived;
                 switch (data.category) {
@@ -89,7 +93,7 @@ export function showIncoming(){
                     content: `<div class="list-group menu">`+
                         `<button type="button" class="list-group-item" id="editDocumentBtn${data.id}">Edit Document</button>` +
                         `<a type="button" class="list-group-item list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">Download File</a>` +
-                        `<button type="button" class="list-group-item" id="viewDocumentBtn${data.id}">View Document Versions</button>` +
+                        `<button type="button" class="list-group-item" id="viewDocumentVersionsBtn${data.id}">View Document Versions</button>` +
                         `<button type="button" class="list-group-item" id="moveDocumentBtn${data.id}">Move Document</button>` +
                         `<div class="list-group-item dropright">` +
                         `<div class="dropdown-menu" id="moveDocumentDropdown${data.id}" aria-hidden="true">
@@ -108,6 +112,12 @@ export function showIncoming(){
                         event.stopPropagation();
                         $(row).popover('toggle');
                         editDocument(data.id);
+                    });
+
+                    $('#viewDocumentVersionsBtn' + data.id).off('click').on('click', function(event) {
+                        event.stopPropagation();
+                        $(row).popover('toggle');
+                        viewDocumentVersions(data.id, row);
                     });
 
                     $('#moveDocumentBtn' + data.id).off('click').on('click', function(event) {
@@ -158,7 +168,7 @@ export function showOutgoing(){
         "<thead><tr>" +
         "<th>Type</th>" +
         "<th>Subject</th>" +
-        "<th>Sender</th>" +         
+        "<th>Date</th>" +         
         "<th>Recipient</th>" +         
         "<th>Status</th>" +     
         "<th>Assignee</th>" +  
@@ -167,8 +177,8 @@ export function showOutgoing(){
         "<tfoot><tr>" + 
         "<th>Type</th>" +
         "<th>Subject</th>" +
-        "<th>Sender</th>" +         
-        "<th>Recipient</th>" +         
+        "<th>Date</th>" +
+        "<th>Sender</th>" +            
         "<th>Status</th>" +     
         "<th>Assignee</th>" + 
         "</tr></tfoot>"
@@ -183,7 +193,7 @@ export function showOutgoing(){
         columns: [
             {data: 'type'},
             {data: 'subject'},
-            {data: 'sender'},
+            {data: 'document_date'},
             {data: 'recipient'},
             {data: 'status'},
             {data: 'assignee'}
@@ -213,7 +223,11 @@ export function showOutgoing(){
             // Document menu
             $(row).on('contextmenu', function(event){
                 event.preventDefault();
-                $('.popover').popover('hide');
+                $.each($('.popover'), function () { 
+                    if ($(this).parent() !== $(row)){
+                        $(this).popover('hide');
+                    }
+                });
 
                 var incoming, outgoing, archived;
                 // Determine the status of the document
@@ -235,7 +249,7 @@ export function showOutgoing(){
                     content: `<div class="list-group menu">`+
                         `<button type="button" class="list-group-item" id="editDocumentBtn${data.id}">Edit Document</button>` +
                         `<a type="button" class="list-group-item list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">Download File</a>` +
-                        `<button type="button" class="list-group-item" id="viewDocumentBtn${data.id}">View Document Versions</button>` +
+                        `<button type="button" class="list-group-item" id="viewDocumentVersionsBtn${data.id}">View Document Versions</button>` +
                         `<button type="button" class="list-group-item" id="moveDocumentBtn${data.id}">Move Document</button>` +
                         `<div class="list-group-item dropright">` +
                         `<div class="dropdown-menu" id="moveDocumentDropdown${data.id}" aria-hidden="true">
@@ -258,7 +272,13 @@ export function showOutgoing(){
                         // Edit document Function
                         editDocument(data.id);
                     });
-                  
+                    
+                    $('#viewDocumentVersionsBtn' + data.id).off('click').on('click', function(event) {
+                        event.stopPropagation();
+                        $(row).popover('toggle');
+                        viewDocumentVersions(data.id, row);
+                    });
+
                     // Move document btn
                     $('#moveDocumentBtn' + data.id).off('click').on('click', function(event) {
                         console.log('move');
@@ -368,7 +388,11 @@ export function showArchived(){
             // Document context menu
             $(row).on('contextmenu', function(event) {
                 event.preventDefault();
-                $('.popover').popover('hide');
+                $.each($('.popover'), function () { 
+                    if ($(this).parent() !== $(row)){
+                        $(this).popover('hide');
+                    }
+                });$('.popover').popover('hide');
 
                 var incoming, outgoing, archived;
                 // Determine the status of the document
@@ -390,7 +414,7 @@ export function showArchived(){
                     content: `<div class="list-group menu">`+
                         `<button type="button" class="list-group-item" id="editDocumentBtn${data.id}">Edit Document</button>` +
                         `<a type="button" class="list-group-item list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">Download File</a>` +
-                        `<button type="button" class="list-group-item" id="viewDocumentBtn${data.id}">View Document Versions</button>` +
+                        `<button type="button" class="list-group-item" id="viewDocumentVersionsBtn${data.id}">View Document Versions</button>` +
                         `<button type="button" class="list-group-item" id="moveDocumentBtn${data.id}">Move Document</button>` +
                         `<div class="list-group-item dropright">` +
                         `<div class="dropdown-menu" id="moveDocumentDropdown${data.id}" aria-hidden="true">
@@ -409,6 +433,12 @@ export function showArchived(){
                         event.stopPropagation();
                         $(row).popover('toggle');
                         editDocument(data.id);
+                    });
+
+                    $('#viewDocumentVersionsBtn' + data.id).off('click').on('click', function(event) {
+                        event.stopPropagation();
+                        $(row).popover('toggle');
+                        viewDocumentVersions(data.id, row);
                     });
 
                     $('#moveDocumentBtn' + data.id).off('click').on('click', function(event) {
@@ -467,8 +497,33 @@ function moveDocument(id, location, row){
 }
 
 // View Document Versions
-function viewDocumentVersions(id){
-    console.log('view document versions');
+function viewDocumentVersions(id, row){
+    // Hide the popover first
+    $(row).popover('hide');
+
+    // Show the modal
+    $('#documentVersions').modal('show');
+
+    // Ajax request to get document versions
+
+    $('#documentVersionsTable').DataTable({
+        ajax: {
+            url: window.routes.showDocumentVersions.replace(':id', id),
+            dataSrc: 'documentVersions'
+        },
+        columns: [
+            {data: 'created_at'},
+            {data: 'version_number'},
+            {data: 'content'}
+        ],
+        destroy: true,
+        pagination: true,
+        language: {
+            emptyTable: "No document versions present."
+        },
+    });
+    
+    $('#documentVersionsTable').addClass('show');
 }
 
 // Document Preview

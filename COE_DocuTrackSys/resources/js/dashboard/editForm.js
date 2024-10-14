@@ -10,11 +10,19 @@ export function editDocument(id){
             $('#documentId').val(response.document.id);
             $('#ownerId').val(response.document.owner_id);
             $('#editUploadDocType').val(response.document.type);
-            senderName = response.document.sender;
+            $('#editUploadSeriesNo').val(response.document.series_number);
+            $('#editUploadMemoNo').val(response.document.memo_number);
+
+            if (response.document.type != 'Type0'){
+                $('#editMemoInfo').css('display', 'none');
+            } else {
+                $('#editMemoInfo').css('display', 'block');
+            }
+
+            var senderName = response.document.sender;
             var senderArray = JSON.parse(response.senderArray);
             for (var index = 0; index < senderArray.length; index++) {
                 const sender = senderArray[index];
-                console.log($('#editUploadFrom option').length);
                 for (var index2 = 0; index2 < $('#editUploadFrom option').length; index2++) {
                     var element = $('#editUploadFrom option')[index2];
                     if ($(element).data('parent') === sender['parent'] &&
@@ -29,11 +37,10 @@ export function editDocument(id){
                 $('#editUploadFromText').val(senderName);
             }
             
-            recipientName = response.document.recipient;
+            var recipientName = response.document.recipient;
             var recipientArray = JSON.parse(response.recipientArray);
             for (var index = 0; index < recipientArray.length; index++) {
                 const recipient = recipientArray[index];
-                console.log($('#editUploadTo option').length);
                 for (var index2 = 0; index2 < $('#editUploadTo option').length; index2++) {
                     var element = $('#editUploadTo option')[index2];
                     console.log($(element).data('name'));
@@ -47,9 +54,11 @@ export function editDocument(id){
                 }    
             }
             $('#editUploadTo').selectpicker('refresh');
-            if (senderArray.length === 0) {
+            if (recipientArray.length === 0) {
                 $('#editUploadToText').val(recipientName);
             }
+
+            $('#editUploadDate').val(response.document.document_date);
 
             $('#editUploadSubject').val(response.document.subject);
             $('#fileLink').html(response.document.file);
@@ -73,20 +82,24 @@ $('#submitEditDocumentBtn').on('click', function(event) {
     var senderArray = [];
     var recipientArray = [];
 
-    for (var index = 0; index < $('#editUploadFrom').val().length; index++) {
-        if($.inArray($($('#editUploadFrom option')[index]).val(), $('#uploadFrom').val())){
+    for (var index = 0; index < $('#editUploadFrom option').length; index++) {
+        var uploadEditFromOption = $('#editUploadFrom option')[index];
+        if(uploadEditFromOption.selected){
             senderArray.push({
-                name: $('#editUploadFrom').val()[index],
-                value: $($('#editUploadFrom option')[index]).data('name')
+                parent: $($('#editUploadFrom option')[index]).data('parent'),
+                value: $($('#editUploadFrom option')[index]).data('name'),
+                level: $($('#editUploadFrom option')[index]).data('level')
             });
         }
     }
 
-    for (var index = 0; index < $('#editUploadTo').val().length; index++) {
-        if($.inArray($($('#editUploadTo option')[index]).val(), $('#editUploadTo').val())){
+    for (var index = 0; index < $('#editUploadTo option').length; index++) {
+        var uploadEditToOption = $('#editUploadTo option')[index];
+        if(uploadEditToOption.selected){
             recipientArray.push({
-                name: $('#editUploadTo').val()[index],
-                value: $($('#editUploadTo option')[index]).data('name')
+                parent: $($('#editUploadTo option')[index]).data('parent'),
+                value: $($('#editUploadTo option')[index]).data('name'),
+                level: $($('#editUploadTo option')[index]).data('level')
             });
         }
     }
@@ -95,9 +108,19 @@ $('#submitEditDocumentBtn').on('click', function(event) {
     formData.append('_token', $('#token').val());
     formData.append('document_id', $('#documentId').val());
     formData.append('type', $('#editUploadDocType').val());
+
+    var seriesNo;
+    var memoNo;
+    if ($('#editUploadDocType').val() == 'Type0') {
+        seriesNo = $('#editUploadSeriesNo').val();
+        memoNo  = $('#editUploadMemoNo').val();
+    }
+    formData.append('seriesNo', seriesNo);
+    formData.append('memoNo', memoNo);
+
     formData.append('subject', $('#editUploadSubject').val());
 
-    // var senderName = '';
+    var senderName = '';
     var start = false;
     var currentParent = '';
     var uploadFromOptions = $('#editUploadFrom option');
@@ -119,6 +142,7 @@ $('#submitEditDocumentBtn').on('click', function(event) {
                 start = true;
                 currentParent = element;
             } else {
+                
                 // It is a child
                 // Find its parent by going back to the top
                 if ($(element).data('parent') != $(currentParent).data('parent') &&
@@ -137,7 +161,7 @@ $('#submitEditDocumentBtn').on('click', function(event) {
                     var parentLevel;
 
                     // Find the parent
-                    for (var index2 = index - 1; index2 > 0; index2--){
+                    for (var index2 = index - 1; index2 >= 0; index2--){
                         const element2 = uploadFromOptions[index2];
                         if($(element2).data('level') < $(element).data('level')) {
                             parentIndex = index2;
@@ -184,7 +208,7 @@ $('#submitEditDocumentBtn').on('click', function(event) {
     formData.append('sender', senderName);
     formData.append('senderArray', JSON.stringify(senderArray));
 
-    // var recipientName = '';
+    var recipientName = '';
     var start2 = false;
     var currentParent2 = '';
     var uploadToOptions = $('#editUploadTo option');
@@ -271,6 +295,8 @@ $('#submitEditDocumentBtn').on('click', function(event) {
     formData.append('recipient', recipientName);
     formData.append('recipientArray', JSON.stringify(recipientArray));
 
+    formData.append('uploadDate', $('#editUploadDate').val());
+
     formData.append('status', $('#editUploadStatus').val());
     formData.append('assignee', $('#editUploadAssignee').val());
     formData.append('category', $('#editUploadCategory').val());
@@ -325,34 +351,37 @@ $('#editUploadFrom').selectpicker().on('changed.bs.select', function(event, clic
             }
         }
     } else {
-        console.log('has parent changed');
+        if (!isSelected){
+            console.log('has parent changed');
 
-        let parentFound = false;  // To ensure we find a parent before unchecking
+            let parentFound = false;  // To ensure we find a parent before unchecking
 
-        // Traverse upwards to find parent elements
-        for (var index = clickedIndex - 1; index >= 0; index--) {
-            const currentElement = this.options[index];
-            const currentLevel = $(currentElement).data('level');
-            const clickedLevel = $(this.options[clickedIndex]).data('level');
+            // Traverse upwards to find parent elements
+            for (var index = clickedIndex - 1; index >= 0; index--) {
+                const currentElement = this.options[index];
+                const currentLevel = $(currentElement).data('level');
+                const clickedLevel = $(this.options[clickedIndex]).data('level');
 
-            // Find the first parent (level less than clicked element)
-            if (currentLevel < clickedLevel) {
-                // Uncheck the parent
-                currentElement.selected = isSelected;
-                parentFound = true;
+                // Find the first parent (level less than clicked element)
+                if (currentLevel < clickedLevel) {
+                    // Uncheck the parent
+                    currentElement.selected = isSelected;
+                    parentFound = true;
 
-                console.log('unchecked a parent at level ' + currentLevel);
+                    console.log('unchecked a parent at level ' + currentLevel);
+                    
+                    // Check if this parent has its own parent and continue
+                    clickedIndex = index;  // Move up to the found parent's index
+                }
                 
-                // Check if this parent has its own parent and continue
-                clickedIndex = index;  // Move up to the found parent's index
-            }
-            
-            // If no parent is found in the loop, break
-            if (!$(this.options[clickedIndex]).data('parent')) {
-                console.log('no parent anymore');
-                break;
-            }
+                // If no parent is found in the loop, break
+                if (!$(this.options[clickedIndex]).data('parent')) {
+                    console.log('no parent anymore');
+                    break;
+                }
+            }            
         }
+        
     }
 
     $(this).selectpicker('refresh');
@@ -365,7 +394,6 @@ $('#editUploadTo').selectpicker().on('changed.bs.select', function(event, clicke
     $('#editUploadToText').val('');
     pos = $(this).parent().find('.dropdown-menu.inner').scrollTop();
     var level = $(this.options[clickedIndex]).data('level');
-    $(this).data('name', 'chichi');
 
     // Check the level of the rest of the stuff below the selected class
     if (isSelected){
@@ -379,32 +407,34 @@ $('#editUploadTo').selectpicker().on('changed.bs.select', function(event, clicke
             }
         }
     } else {
-        console.log('has parent changed');
-
-        let parentFound = false;  // To ensure we find a parent before unchecking
-
-        // Traverse upwards to find parent elements
-        for (var index = clickedIndex - 1; index >= 0; index--) {
-            const currentElement = this.options[index];
-            const currentLevel = $(currentElement).data('level');
-            const clickedLevel = $(this.options[clickedIndex]).data('level');
-
-            // Find the first parent (level less than clicked element)
-            if (currentLevel < clickedLevel) {
-                // Uncheck the parent
-                currentElement.selected = isSelected;
-                parentFound = true;
-
-                console.log('unchecked a parent at level ' + currentLevel);
+        if (!isSelected) {
+            console.log('has parent changed');
+    
+            let parentFound = false;  // To ensure we find a parent before unchecking
+    
+            // Traverse upwards to find parent elements
+            for (var index = clickedIndex - 1; index >= 0; index--) {
+                const currentElement = this.options[index];
+                const currentLevel = $(currentElement).data('level');
+                const clickedLevel = $(this.options[clickedIndex]).data('level');
+    
+                // Find the first parent (level less than clicked element)
+                if (currentLevel < clickedLevel) {
+                    // Uncheck the parent
+                    currentElement.selected = isSelected;
+                    parentFound = true;
+    
+                    console.log('unchecked a parent at level ' + currentLevel);
+                    
+                    // Check if this parent has its own parent and continue
+                    clickedIndex = index;  // Move up to the found parent's index
+                }
                 
-                // Check if this parent has its own parent and continue
-                clickedIndex = index;  // Move up to the found parent's index
-            }
-            
-            // If no parent is found in the loop, break
-            if (!$(this.options[clickedIndex]).data('parent')) {
-                console.log('no parent anymore');
-                break;
+                // If no parent is found in the loop, break
+                if (!$(this.options[clickedIndex]).data('parent')) {
+                    console.log('no parent anymore');
+                    break;
+                }
             }
         }
     }
@@ -425,4 +455,14 @@ $('#editUploadFromText').on('input', function(event){
 $('#editUploadToText').on('input', function(event){
     $('#editUploadTo').selectpicker('deselectAll');
     $('#editUploadTo').selectpicker('refresh');
+});
+
+$('#editUploadDocType').on('input', function(event){
+    event.preventDefault();
+
+    if($(this).val() == 'Type0'){
+        $('#editMemoInfo').css('display', 'block');
+    } else {
+        $('#editMemoInfo').css('display', 'none');
+    }
 });
