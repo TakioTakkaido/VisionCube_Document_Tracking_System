@@ -22,6 +22,7 @@ use App\Models\Document;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\FileExtension;
 use App\Models\Log as ModelsLog;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
@@ -37,8 +38,7 @@ class DocumentController extends Controller{
             'sender' => 'required|string|max:255',
             'recipient' => 'required|string|max:255',
             'subject' => 'required|string',
-            // 'file' => 'required|file|mimes:pdf,doc,docx',
-            'file' => 'required|file',
+            'file' => 'required|file|mimes:'.FileExtension::getFileExtensions(),
             'category' => 'required|string',
             'status' => 'required|string',
             'assignee' => 'required|string',
@@ -53,7 +53,7 @@ class DocumentController extends Controller{
             'subject.required' => 'Document subject is required!',
 
             'file.required' => 'Softcopy file is required!',
-            'file.mimes' => 'Softcopy file must be .pdf, .docx, or .doc type!',
+            'file.mimes' => 'Softcopy file must be of types: '.FileExtension::getFileExtensions(),
 
             'category.required' => 'Document category is required!',
             'status.required' => 'Document status is required!',

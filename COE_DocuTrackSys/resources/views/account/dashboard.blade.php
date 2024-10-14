@@ -69,7 +69,6 @@ Sanchez, Shane David U.
     ])
 </head>
 <body>
-
 {{-- TOP BAR --}}
 <x-dashboard.top-panel />
 
