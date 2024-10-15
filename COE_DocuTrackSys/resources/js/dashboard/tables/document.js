@@ -514,28 +514,107 @@ function viewDocumentVersions(id, row){
         columns: [
             {data: 'created_at'},
             {data: 'version_number'},
-            {data: 'content'}
+            {
+                data: null,
+                orderable: false,
+                render: function(data, type, row){
+                    var content = JSON.parse(data.content);
+                    return `<a class="viewDocumentVersionContent" 
+                    data-date="${content.document_date}"
+                    data-type="${content.type}"
+                    data-series="${content.series_number}"
+                    data-memo="${content.memo_number}"
+                    data-sender="${content.sender}"
+                    data-recipient="${content.recipient}"
+                    data-subject="${content.subject}"
+                    data-assignee="${content.assignee}"
+                    data-category="${content.category}"
+                    data-status="${content.status}"
+                    data-file="${data.file}"
+
+                    href="#">View Document</a>`;
+                }
+            }
         ],
         destroy: true,
         pagination: true,
         language: {
             emptyTable: "No document versions present."
         },
-    });
+        order: {
+            idx: 1,
+            dir: 'desc'
+        },
+
+        // $(this).on('click', function(event){
+
+        // });
+    })
     
     $('#documentVersionsTable').addClass('show');
 }
+// View Document Version Content
+$('#documentVersionsTable tbody').on('click', 'a.viewDocumentVersionContent', function(event){
+    event.preventDefault();
+    console.log('okay');
+    $('#documentVersionIFrame').attr('src', $(this).data('file') + `#scrollbar=1&toolbar=0`);
+    $("#documentVersionDate").html('<strong>Document Date: </strong>'+ $(this).data('date'));
+    $("#documentVersionType").html('<strong>Document Type: </strong>'+ $(this).data('type'));
+
+    if ($(this).data('type') == 'Type0') {
+        $('#documentVersionMemoInfo').css('display', 'block');
+        $('#documentVersionSeriesNo').html('<strong>Series No.: </strong>' + $(this).data('series'));
+        $('#documentVersionMemoNo').html('<strong>Memo No.: </strong>' + $(this).data('memo'));
+    } else {
+        $('#documentVersionMemoInfo').css('display', 'hide');
+    }
+
+    $("#documentVersionSender").html('<strong>From: </strong>'+ $(this).data('sender'));
+    $("#documentVersionRecipient").html('<strong>To: </strong>'+ $(this).data('recipient'));
+    $("#documentVersionSubject").html('<strong>Subject: </strong>'+ $(this).data('subject'));
+    $("#documentVersionAssignee").html('<strong>Assignee: </strong>'+ $(this).data('assignee'));
+    $("#documentVersionCategory").html('<strong>Category: </strong>'+ $(this).data('category'));
+    $("#documentVersionStatus").html('<strong>Status: </strong>'+ $(this).data('status'));
+
+    $('#documentVersions').modal('hide');
+    $('#viewDocumentVersion').modal('show');
+});
 
 // Document Preview
-function documentPreview(id, row){
+function documentPreview(id, row = null){
     $.ajax({
         method: "GET",
         url: window.routes.previewDocument.replace(':id', id),
         success: function (response) {
-            $('#documentPreviewIFrame').attr('src', response.fileLink + `#toolbar=0&navpanes=0`);
-            console.log($('#documentPreviewIFrame').attr('src'));
+            $('#documentPreviewIFrame').attr('src', response.fileLink + `#scrollbar=1&toolbar=0`);
+            
+            $("#documentDate").html('<strong>Document Date: </strong>'+ response.document.document_date);
+            $("#documentType").html('<strong>Document Type: </strong>'+ response.document.type);
+
+            if (response.document.type == 'Type0') {
+                $('#documentMemoInfo').css('display', 'block');
+                $('#documentSeriesNo').html('<strong>Series No.: </strong>' + response.document.series_number);
+                $('#documentMemoNo').html('<strong>Memo No.: </strong>' + response.document.memo_number);
+            } else {
+                $('#documentMemoInfo').css('display', 'hide');
+            }
+
+            $("#documentVersion").html('<strong>Current Version: </strong>'+ response.document.version);
+            $("#documentSender").html('<strong>From: </strong>'+ response.document.sender);
+            $("#documentRecipient").html('<strong>To: </strong>'+ response.document.recipient);
+            $("#documentSubject").html('<strong>Subject: </strong>'+ response.document.subject);
+            $("#documentAssignee").html('<strong>Assignee: </strong>'+ response.document.assignee);
+            $("#documentCategory").html('<strong>Category: </strong>'+ response.document.category);
+            $("#documentStatus").html('<strong>Status: </strong>'+ response.document.status);
+
             $(row).popover('hide');
             $('#documentPreview').modal('show');
         }
     });
 }
+
+$('#closeDocumentVersion').on('click', function(event){
+    event.preventDefault();
+    $('#documentVersions').modal('show');
+    $('#viewDocumentVersion').modal('hide');
+})

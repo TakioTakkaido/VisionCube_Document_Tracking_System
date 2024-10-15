@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use App\Models\DocumentVersion;
+use Illuminate\Support\Facades\Storage;
 use PDO;
 
 class Document extends Model
@@ -51,10 +52,13 @@ class Document extends Model
 
     // Create new document version
     public function createVersion() : void {
+        $filePath = "public/documents/". basename($this->file);
+        $fileLink = Storage::url($filePath);
         $documentVersion = DocumentVersion::create([
             'document_id' => $this->id,
             'version_number' => $this->version,
-            'content' => $this->toJson()
+            'content' => $this->toJson(),
+            'file' => asset($fileLink)
         ]);
 
         $this->version++;

@@ -38,7 +38,7 @@ class DocumentController extends Controller{
             'sender' => 'required|string|max:255',
             'recipient' => 'required|string|max:255',
             'subject' => 'required|string',
-            'file' => 'required|file|mimes:'.FileExtension::getFileExtensions(),
+            'file' => 'required|file|mimes:pdf,'.FileExtension::getFileExtensions(),
             'category' => 'required|string',
             'status' => 'required|string',
             'assignee' => 'required|string',
@@ -53,7 +53,7 @@ class DocumentController extends Controller{
             'subject.required' => 'Document subject is required!',
 
             'file.required' => 'Softcopy file is required!',
-            'file.mimes' => 'Softcopy file must be of types: '.FileExtension::getFileExtensions(),
+            'file.mimes' => 'Softcopy file must be of types: .pdf, '.FileExtension::getFileExtensions(),
 
             'category.required' => 'Document category is required!',
             'status.required' => 'Document status is required!',
@@ -96,6 +96,11 @@ class DocumentController extends Controller{
         // Find all incoming documents
         $documents = Document::where('category', DocumentCategory::INCOMING->value)->get();
 
+        foreach($documents as $document){
+            $document_date = strtotime($document->document_date);
+            $document->document_date = date('M. d, Y', $document_date);
+        }
+
         // Log
         Log::channel('daily')->info('Incoming documents obtained: {documents}', ['documents' => $documents]);
 
@@ -113,7 +118,12 @@ class DocumentController extends Controller{
     // Display all outgoing documents
     public function showOutgoing(Request $request){
         // Find outgoing documents
-        $outgoingDocuments = Document::where('category', DocumentCategory::OUTGOING->value)->get();
+        $documents = Document::where('category', DocumentCategory::OUTGOING->value)->get();
+
+        foreach($documents as $document){
+            $document_date = strtotime($document->document_date);
+            $document->document_date = date('M. d, Y', $document_date);
+        }
 
         // Create a new log
         ModelsLog::create([
@@ -123,7 +133,7 @@ class DocumentController extends Controller{
 
         // Return outgoing documents
         return response()->json([
-            'outgoingDocuments' => $outgoingDocuments
+            'outgoingDocuments' => $documents
         ]);
     }
 
@@ -131,6 +141,11 @@ class DocumentController extends Controller{
     public function showArchived(Request $request){
         // Get all archived documents
         $documents = Document::where('category', DocumentCategory::ARCHIVED->value)->get();
+
+        foreach($documents as $document){
+            $document_date = strtotime($document->document_date);
+            $document->document_date = date('M. d, Y', $document_date);
+        }
 
         // Create new log 
         ModelsLog::create([
@@ -165,6 +180,9 @@ class DocumentController extends Controller{
 
         // Find document versions, related to this document
         $documentVersions = $document->versions()->get();
+        // foreach($documentVersions as $version){
+        //     $version->content = $version->content);
+        // }
         // dd($documentVersions);
         // Return document versions
         return response()->json([
@@ -284,11 +302,14 @@ class DocumentController extends Controller{
     // Document preview
     public function preview(Request $request){
         $document = Document::find($request->id);
+        $document_date = strtotime($document->document_date);
+        $document->document_date = date('M. d, Y', $document_date);
         $filePath = "public/documents/". basename($document->file); // Assuming $document->file contains the filename
         $fileLink = Storage::url($filePath); // This generates the URL for accessing the document
         
         return response()->json([
-            'fileLink' => asset($fileLink),
+            'document' => $document,
+            'fileLink' => asset($fileLink)
         ]);
     }
 }

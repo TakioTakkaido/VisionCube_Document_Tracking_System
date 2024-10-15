@@ -11,7 +11,7 @@
                                 <tr>
                                     <th>Timestamps</th>
                                     <th>Version</th>
-                                    <th>Description</th>
+                                    <th>Document Preview</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -20,7 +20,7 @@
                                 <tr>
                                     <th>Timestamps</th>
                                     <th>Version</th>
-                                    <th>Description</th>
+                                    <th>Document Preview</th>
                                 </tr>
                             </tfoot>
                         </table>

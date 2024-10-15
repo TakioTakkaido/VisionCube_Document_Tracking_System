@@ -78,6 +78,9 @@ Sanchez, Shane David U.
 {{-- INFORMATION TABLES --}}
 <x-dashboard.info.log />
 
+
+<x-dashboard.info.document-version />
+
 {{-- UPLOAD FORM --}}
 <x-dashboard.forms.upload />
 
@@ -89,7 +92,6 @@ Sanchez, Shane David U.
 
 {{-- DOCUMENT PREVIEW --}}
 <x-dashboard.document-preview />
-
 
 {{-- Routes retrieving document, since AJAX cannot get this as a link, when inserted directly --}}
 <script>

@@ -24,7 +24,7 @@ class FileExtension extends Model {
             }
 
             if($i + 1 != sizeof($fileExtensions)){
-                $fileExtensionsStr .= ', ';
+                $fileExtensionsStr .= ',';
             }
         }
         return $fileExtensionsStr;
