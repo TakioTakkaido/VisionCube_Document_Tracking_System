@@ -9,7 +9,8 @@
                         <table id="documentVersionsTable" class="table-striped">
                             <thead>
                                 <tr>
-                                    <th>Timestamps</th>
+                                    <th>Modified At</th>
+                                    <th>Modified By</th>
                                     <th>Version</th>
                                     <th>Document Preview</th>
                                 </tr>
@@ -18,7 +19,8 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>Timestamps</th>
+                                    <th>Modified At</th>
+                                    <th>Modified By</th>
                                     <th>Version</th>
                                     <th>Document Preview</th>
                                 </tr>

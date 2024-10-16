@@ -13,6 +13,8 @@
                 </div>
                 <div id="documentVersionInfo"> 
                     <h5>Document Version</h5>
+                    <span id="documentVersionModifiedDate"></span><br>
+                    <span id="documentVersionModifiedBy"></span><br>
                     <span id="documentVersionDate"></span><br>
                     <span id="documentVersionType"></span><br>
                     <div id="documentVersionMemoInfo" style="display:none;">

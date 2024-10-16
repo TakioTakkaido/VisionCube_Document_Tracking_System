@@ -21,7 +21,8 @@ class DocumentVersion extends Model
         'document_id',
         'version_number',
         'content',
-        'file'
+        'file',
+        'modified_by'
     ];
 
     // Below are the relationships of Document to other models in the system.

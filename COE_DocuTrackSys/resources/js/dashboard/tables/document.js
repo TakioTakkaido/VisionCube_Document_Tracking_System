@@ -513,13 +513,17 @@ function viewDocumentVersions(id, row){
         },
         columns: [
             {data: 'created_at'},
+            {data: 'modified_by'},
             {data: 'version_number'},
             {
                 data: null,
                 orderable: false,
                 render: function(data, type, row){
                     var content = JSON.parse(data.content);
+                    console.log(data.created_at);
+                    console.log(data.modified_by);
                     return `<a class="viewDocumentVersionContent" 
+                    data-modifiedDate="${data.created_at}"
                     data-date="${content.document_date}"
                     data-type="${content.type}"
                     data-series="${content.series_number}"
@@ -531,6 +535,7 @@ function viewDocumentVersions(id, row){
                     data-category="${content.category}"
                     data-status="${content.status}"
                     data-file="${data.file}"
+                    data-modifiedBy="${data.modified_by}"
 
                     href="#">View Document</a>`;
                 }
@@ -558,6 +563,8 @@ $('#documentVersionsTable tbody').on('click', 'a.viewDocumentVersionContent', fu
     event.preventDefault();
     console.log('okay');
     $('#documentVersionIFrame').attr('src', $(this).data('file') + `#scrollbar=1&toolbar=0`);
+    $("#documentVersionModifiedDate").html('<strong>Modified At: </strong>'+ $(this).data('modifieddate'));
+    $("#documentVersionModifiedBy").html('<strong>Modified By: </strong>'+ $(this).data('modifiedby'));
     $("#documentVersionDate").html('<strong>Document Date: </strong>'+ $(this).data('date'));
     $("#documentVersionType").html('<strong>Document Type: </strong>'+ $(this).data('type'));
 

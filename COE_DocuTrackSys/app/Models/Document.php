@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use App\Models\DocumentVersion;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use PDO;
 
@@ -58,7 +59,8 @@ class Document extends Model
             'document_id' => $this->id,
             'version_number' => $this->version,
             'content' => $this->toJson(),
-            'file' => asset($fileLink)
+            'file' => asset($fileLink),
+            'modified_by' => Auth::user()->name . ' • ' . Auth::user()->role
         ]);
 
         $this->version++;

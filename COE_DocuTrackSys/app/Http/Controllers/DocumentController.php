@@ -270,7 +270,7 @@ class DocumentController extends Controller{
         $document->recipientArray = json_encode($request->input('recipientArray'));
         $document->series_number = $request->input('seriesNo');
         $document->memo_number = $request->input('memoNo');
-        $document->document_date = $request->input('uploadDate');
+        $document->document_date = $request->input('document_date');
         $document->subject = $request->input('subject');
         $document->assignee = $request->input('assignee');
         $document->category = $request->input('category');
