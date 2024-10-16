@@ -7,10 +7,15 @@ $('#uploadBtn').on('click', function (event) {
 
 // Upload Document
 $('#submitDocumentForm').on('click', function(event) {
+    $('#submitDocumentForm').prop('disabled', true);
+    $('#clearUploadBtn').prop('disabled', true);
     event.preventDefault();
     var formData = new FormData();
     var senderArray = [];
     var recipientArray = [];
+    var seriesRequired = $('#uploadSeriesNo').prop('required');
+    var memoRequired = $('#uploadMemoNo').prop('required');
+    
     for (var index = 0; index < $('#uploadFrom option').length; index++) {
         var uploadFromOption = $('#uploadFrom option')[index];
         if(uploadFromOption.selected){
@@ -46,7 +51,9 @@ $('#submitDocumentForm').on('click', function(event) {
     formData.append('memoNo', memoNo);
 
     formData.append('subject', $('#uploadSubject').val());
-    
+
+    formData.append('seriesRequired', seriesRequired);
+    formData.append('memoRequired', memoRequired);
 
     // Create the name of the sender/receiver
     // Go through every part of select form
@@ -61,10 +68,8 @@ $('#submitDocumentForm').on('click', function(event) {
         const element = uploadFromOptions[index];
         if (element.selected === true){
             // Determine if it has parent or not
-            console.log('element selected');
             // This element is the parent
             if (!$(element).data('parent')){
-                console.log('parent selected');
                 if (start) {senderName += ', ';}
                 // It has a child
                 if (!$(element).data('hasChild')){
@@ -80,7 +85,6 @@ $('#submitDocumentForm').on('click', function(event) {
                 if ($(element).data('parent') != $(currentParent).data('parent') &&
                     !currentParent.selected
                 ){
-                    console.log('child selected');
                     // How many are selected
                     var count = 0;
 
@@ -94,10 +98,8 @@ $('#submitDocumentForm').on('click', function(event) {
                     var parentLevel;
 
                     // Find the parent
-                    console.log('index1: ' + index);
                     for (var index2 = index - 1; index2 >= 0; index2--){
                         const element2 = uploadFromOptions[index2];
-                        console.log(element2);
                         if($(element2).data('level') < $(element).data('level')) {
                             parentIndex = index2;
                             parentLevel = $(element2).data('level');
@@ -105,12 +107,9 @@ $('#submitDocumentForm').on('click', function(event) {
                         } 
                     }
                     
-                    console.log('prent index: ' + parentIndex);
-                    console.log('parent laevel: ' + parentLevel);
                     // Check what children are selected
                     for (var index3 = parentIndex + 1; index3 < uploadFromOptions.length; index3++){
                         const element3 = uploadFromOptions[index3];
-                        console.log(element3);
                         // Check if its still a chidren
                         if($(element3).data('level') > parentLevel) {
                             if (element3.selected) {
@@ -123,7 +122,6 @@ $('#submitDocumentForm').on('click', function(event) {
                         }
                     }
 
-                    console.log(count);
                     if (count > 0) {
                         if (start) {
                             senderName += ', ';
@@ -142,7 +140,6 @@ $('#submitDocumentForm').on('click', function(event) {
         }
     }
 
-    console.log('Sender Name: ' + senderName);
     if (senderName.length === 0){
         senderName = $('#uploadFromText').val();
     }
@@ -234,13 +231,19 @@ $('#submitDocumentForm').on('click', function(event) {
         recipientName = $('#uploadToText').val();
     }
 
-    console.log('Recipient Name: ' + recipientName);
     formData.append('recipient', recipientName);
     formData.append('recipientArray', JSON.stringify(recipientArray));
 
-    formData.append('uploadDate', $('#uploadDate').val());
+    formData.append('document_date', $('#uploadDate').val());
 
     formData.append('assignee', $('#uploadAssignee').val());
+
+    // if ($('#uploadCategory').val().length === 0){
+    //     formData.append('category', $('#uploadCategory').val());
+    // } else {
+    //     formData.append('category', $('#uploadCategory').val());
+    // }
+    console.log($('#uploadCategory').val());
     formData.append('category', $('#uploadCategory').val());
     formData.append('status', $('#uploadStatus').val());
 
@@ -256,11 +259,92 @@ $('#submitDocumentForm').on('click', function(event) {
         processData: false,  // Prevent jQuery from converting the data
         contentType: false,  // Prevent jQuery from overriding the content type
         success: function(response) {
+            
             $('#uploadDocument').modal('hide');
             $('#documentTable').DataTable().ajax.reload();
+            $('#submitDocumentForm').prop('disabled', false);
+            $('#clearUploadBtn').prop('disabled', false);
         },
-        error: function(xhr) {
-            alert('Error: ' + xhr.responseJSON?.message || 'Upload failed');
+        error: function(data) {
+            if (data.responseJSON.errors.type){
+                $('#typeError').html(data.responseJSON.errors.type);
+                $('#uploadDocType').css('border', '1px solid red');
+                $('#uploadDocType').css('background-color', 'pink');
+                $('#typeError').css('display', 'block');
+            }
+
+            if (data.responseJSON.errors.series){
+                $('#seriesError').html(data.responseJSON.errors.series);
+                $('#seriesError').css('display', 'block');
+                $('#uploadSeriesNo').css('border', '1px solid red');
+                $('#uploadSeriesNo').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.memo){
+                $('#memoError').html(data.responseJSON.errors.memo);
+                $('#memoError').css('display', 'block');
+                $('#uploadMemoNo').css('border', '1px solid red');
+                $('#uploadMemoNo').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.sender){
+                $('#senderError').html(data.responseJSON.errors.sender);
+                $('#senderError').css('display', 'block');
+                $('#uploadFrom').css('border', '1px solid red');
+                $('#uploadFrom').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.recipient){
+                $('#recipientError').html(data.responseJSON.errors.recipient);
+                $('#recipientError').css('display', 'block');
+                $('#uploadTo').css('border', '1px solid red');
+                $('#uploadTo').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.subject){
+                $('#subjectError').html(data.responseJSON.errors.subject);
+                $('#subjectError').css('display', 'block');
+                $('#uploadSubject').css('border', '1px solid red');
+                $('#uploadSubject').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.date){
+                $('#dateError').html(data.responseJSON.errors.date);
+                $('#dateError').css('display', 'block');
+                $('#uploadDate').css('border', '1px solid red');
+                $('#uploadDate').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.file){
+                $('#fileError').html(data.responseJSON.errors.file);
+                $('#fileError').css('display', 'block');
+                $('#softcopy').css('border', '1px solid red');
+                $('#softcopy').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.category){
+                $('#categoryError').html(data.responseJSON.errors.category);
+                $('#categoryError').css('display', 'block');
+                $('#uploadCategory').css('border', '1px solid red');
+                $('#uploadCategory').css('background-color', 'pink');
+            }
+            
+            if (data.responseJSON.errors.status){
+                $('#statusError').html(data.responseJSON.errors.status);
+                $('#statusError').css('display', 'block');
+                $('#uploadStatus').css('border', '1px solid red');
+                $('#uploadStatus').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.assignee){
+                $('#assigneeError').html(data.responseJSON.errors.assignee);
+                $('#assigneeError').css('display', 'block');
+                $('#uploadAssignee').css('border', '1px solid red');
+                $('#uploadAssignee').css('background-color', 'pink');
+            }
+            
+            $('#submitDocumentForm').prop('disabled', false);
+            $('#clearUploadBtn').prop('disabled', false);
         }
     });
 });
@@ -270,6 +354,15 @@ $('#clearUploadBtn').on('click', function (event){
     $('#uploadDocumentForm').trigger('reset');
     $('#uploadFrom').selectpicker('deselectAll');
     $('#uploadTo').selectpicker('deselectAll');
+
+    $.each($('.uploadInput'), function () { 
+        $(this).css('border', '1px solid #ccc');
+        $(this).css('background-color', 'white');
+    });
+
+    $.each($('.error'), function () { 
+        $(this).css('display', 'none');
+    });
 });
 
 var pos;
@@ -277,15 +370,17 @@ var pos;
 $('#uploadFrom').selectpicker().on('changed.bs.select', function(event, clickedIndex, isSelected, previousValue){
     event.preventDefault();
     $('#uploadFromText').val('');
+    $(this).css('border', '1px solid #ccc');
+    $(this).css('background-color', 'white');
+    $('#senderError').css('display', 'none');
+
     pos = $(this).parent().find('.dropdown-menu.inner').scrollTop();
     var level = $(this.options[clickedIndex]).data('level');
     
     if (!$(this.options[clickedIndex]).data('parent')){
-        console.log('has no parent changed');
         for (var index = clickedIndex + 1; index < this.options.length; index++) {
             const element = this.options[index];
             if($(element).data('level') > level){
-                console.log('selected');
                 element.selected = isSelected;
             } else {   
                 break;
@@ -293,9 +388,6 @@ $('#uploadFrom').selectpicker().on('changed.bs.select', function(event, clickedI
         }
     } else {
         if (!isSelected){
-            
-            console.log('has parent changed');
-
             var parentFound = false;  // To ensure we find a parent before unchecking
 
             // Traverse upwards to find parent elements
@@ -309,16 +401,12 @@ $('#uploadFrom').selectpicker().on('changed.bs.select', function(event, clickedI
                     // Uncheck the parent
                     currentElement.selected = isSelected;
                     parentFound = true;
-
-                    console.log('unchecked a parent at level ' + currentLevel);
-                    
                     // Check if this parent has its own parent and continue
                     clickedIndex = index;  // Move up to the found parent's index
                 }
                 
                 // If no parent is found in the loop, break
                 if (!$(this.options[clickedIndex]).data('parent')) {
-                    console.log('no parent anymore');
                     break;
                 }
             }
@@ -334,12 +422,16 @@ $('#uploadFrom').selectpicker().on('changed.bs.select', function(event, clickedI
 $('#uploadTo').selectpicker().on('changed.bs.select', function(event, clickedIndex, isSelected, previousValue){
     event.preventDefault();
     $('#uploadToText').val('');
+
+    $(this).css('border', '1px solid #ccc');
+    $(this).css('background-color', 'white');
+    $('#recipientError').css('display', 'none');
+
     pos = $(this).parent().find('.dropdown-menu.inner').scrollTop();
     var level = $(this.options[clickedIndex]).data('level');
 
     // Check the level of the rest of the stuff below the selected class
     if (isSelected){
-        console.log('has no parent changed');
         for (var index = clickedIndex + 1; index < this.options.length; index++) {
             const element = this.options[index];
             if($(element).data('level') > level){
@@ -349,8 +441,6 @@ $('#uploadTo').selectpicker().on('changed.bs.select', function(event, clickedInd
             }
         }
     } else {
-        console.log('has parent changed');
-
         let parentFound = false;  // To ensure we find a parent before unchecking
 
         // Traverse upwards to find parent elements
@@ -365,7 +455,6 @@ $('#uploadTo').selectpicker().on('changed.bs.select', function(event, clickedInd
                 currentElement.selected = isSelected;
                 parentFound = true;
 
-                console.log('unchecked a parent at level ' + currentLevel);
                 
                 // Check if this parent has its own parent and continue
                 clickedIndex = index;  // Move up to the found parent's index
@@ -373,7 +462,6 @@ $('#uploadTo').selectpicker().on('changed.bs.select', function(event, clickedInd
             
             // If no parent is found in the loop, break
             if (!$(this.options[clickedIndex]).data('parent')) {
-                console.log('no parent anymore');
                 break;
             }
         }
@@ -384,15 +472,71 @@ $('#uploadTo').selectpicker().on('changed.bs.select', function(event, clickedInd
     $(this).parent().find('.dropdown-menu.inner').scrollTop(pos);
 });
 
+// Event listener for removing the colored error
+$.each($('.uploadInput'), function (index, value) { 
+    $($('.uploadInput')[index]).on('input', function(event){
+        event.preventDefault();
+        $(this).css('border', '1px solid #ccc');
+        $(this).css('background-color', 'white');
+    })
+});
+
+$('#uploadDocType').on('input', function(event){
+    event.preventDefault();
+    $('#typeError').css('display', 'none');
+})
+
+$('#uploadSeriesNo').on('input', function(event){
+    event.preventDefault();
+    $('#seriesError').css('display', 'none');
+})
+
+$('#uploadMemoNo').on('input', function(event){
+    event.preventDefault();
+    $('#memoError').css('display', 'none');
+})
+
+$('#uploadSubject').on('input', function(event){
+    event.preventDefault();
+    $('#subjectError').css('display', 'none');
+})
+
+$('#uploadDate').on('input', function(event){
+    event.preventDefault();
+    $('#dateError').css('display', 'none');
+})
+
+$('#softcopy').on('input', function(event){
+    event.preventDefault();
+    $('#fileError').css('display', 'none');
+});
+
+$('#uploadCategory').on('input', function(event){
+    event.preventDefault();
+    $('#categoryError').css('display', 'none');
+});
+
+$('#uploadStatus').on('input', function(event){
+    event.preventDefault();
+    $('#statusError').css('display', 'none');
+});
+
+$('#uploadAssignee').on('input', function(event){
+    event.preventDefault();
+    $('#assigneeError').css('display', 'none');
+});
+
 // For other text input, uncheck all of the choices
 $('#uploadFromText').on('input', function(event){
     $('#uploadFrom').selectpicker('deselectAll');
     $('#uploadFrom').selectpicker('refresh');
+    $('#senderError').css('display', 'none');
 });
 
 $('#uploadToText').on('input', function(event){
     $('#uploadTo').selectpicker('deselectAll');
     $('#uploadTo').selectpicker('refresh');
+    $('#recipientError').css('display', 'none');
 });
 
 // Show up the series no and memo number
@@ -401,7 +545,11 @@ $('#uploadDocType').on('input', function(event){
 
     if($(this).val() == 'Type0'){
         $('#memoInfo').css('display', 'block');
+        $('#uploadSeriesNo').prop('required', true);
+        $('#uploadMemoNo').prop('required', true);
     } else {
         $('#memoInfo').css('display', 'none');
+        $('#uploadSeriesNo').prop('required', false);
+        $('#uploadMemoNo').prop('required', false);
     }
 });

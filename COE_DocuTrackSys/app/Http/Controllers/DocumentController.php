@@ -33,22 +33,37 @@ use Illuminate\Validation\Rule;
 class DocumentController extends Controller{
     //Upload Document
     public function upload(Request $request){
+        $series = $request->input('seriesRequired') === 'true' ? 'required|number|max:9999|min:0' : 'nullable|integer';
+        $memo = $request->input('memoRequired') === 'true' ? 'required|number|max:9999|min:0' : 'nullable|integer';
         $request->validate([
             'type' => 'required|string',
             'sender' => 'required|string|max:255',
+            'series_number' => $series,
+            'memo_number' => $memo,
             'recipient' => 'required|string|max:255',
             'subject' => 'required|string',
             'file' => 'required|file|mimes:pdf,'.FileExtension::getFileExtensions(),
             'category' => 'required|string',
             'status' => 'required|string',
             'assignee' => 'required|string',
+            'document_date' => 'required'
         ], [
             'type.required' => 'Document type is required!',
+
             'sender.required' => 'Document sender is required!',
+            
             'sender.max' => 'Sender name can only have up to 255 characters!',
 
             'recipient.required' => 'Document recipient is required!',
             'recipient.max' => 'Recipient name can only have up to 255 characters!',
+
+            'series.required' => 'Series number required for memoranda!',
+            'series.min' => 'Series number invalid (Must be between 1-9999 only)!',
+            'series.max' => 'Series number invalid (Must be between 1-9999 only)!',
+
+            'memo.required' => 'Memo number required for memoranda!',
+            'memo.min' => 'Memo number invalid (Must be between 1-9999 only)!',
+            'memo.max' => 'Memo number invalid (Must be between 1-9999 only)!',
 
             'subject.required' => 'Document subject is required!',
 
@@ -56,8 +71,12 @@ class DocumentController extends Controller{
             'file.mimes' => 'Softcopy file must be of types: .pdf, '.FileExtension::getFileExtensions(),
 
             'category.required' => 'Document category is required!',
+
             'status.required' => 'Document status is required!',
-            'assignee.required' => 'Assignee is required!'
+
+            'assignee.required' => 'Assignee is required!',
+
+            'document_date.required' => 'Date is required!'
         ]);
 
         $document = Document::create([
@@ -74,7 +93,7 @@ class DocumentController extends Controller{
             'category' => $request->input('category'),
             'series_number' => $request->input('seriesNo'),
             'memo_number' => $request->input('memoNo'),
-            'document_date' => $request->input('uploadDate'),
+            'document_date' => $request->input('document_date'),
             'version' => 1
         ]);
 
@@ -196,28 +215,51 @@ class DocumentController extends Controller{
         $document = Document::find($request->document_id);
 
         // Validate the response
+        $series = $request->input('seriesRequired') === 'true' ? 'required|number|max:9999|min:0' : 'nullable|integer';
+        $memo = $request->input('memoRequired') === 'true' ? 'required|number|max:9999|min:0' : 'nullable|integer';
+        $file = $request->file('file') ? 'required|file|mimes:pdf,'.FileExtension::getFileExtensions() : 'nullable';
         $request->validate([
-            'type' => 'required',
+            'type' => 'required|string',
             'sender' => 'required|string|max:255',
+            'series_number' => $series,
+            'memo_number' => $memo,
+            'file' => $file,
             'recipient' => 'required|string|max:255',
             'subject' => 'required|string',
-            'file' => 'nullable|file|mimes:pdf,doc,docx',
-            'category' => 'required',
-            'status' => 'required', 
-            'assignee' => 'required',
+            'category' => 'required|string',
+            'status' => 'required|string',
+            'assignee' => 'required|string',
+            'document_date' => 'required'
         ], [
             'type.required' => 'Document type is required!',
+
             'sender.required' => 'Document sender is required!',
+            
             'sender.max' => 'Sender name can only have up to 255 characters!',
 
             'recipient.required' => 'Document recipient is required!',
             'recipient.max' => 'Recipient name can only have up to 255 characters!',
 
+            'series.required' => 'Series number required for memoranda!',
+            'series.min' => 'Series number invalid (Must be between 1-9999 only)!',
+            'series.max' => 'Series number invalid (Must be between 1-9999 only)!',
+
+            'memo.required' => 'Memo number required for memoranda!',
+            'memo.min' => 'Memo number invalid (Must be between 1-9999 only)!',
+            'memo.max' => 'Memo number invalid (Must be between 1-9999 only)!',
+
             'subject.required' => 'Document subject is required!',
 
+            'file.required' => 'Softcopy file is required!',
+            'file.mimes' => 'Softcopy file must be of types: .pdf, '.FileExtension::getFileExtensions(),
+
             'category.required' => 'Document category is required!',
+
             'status.required' => 'Document status is required!',
-            'assignee.required' => 'Assignee is required!'
+
+            'assignee.required' => 'Assignee is required!',
+
+            'document_date.required' => 'Date is required!'
         ]);
 
         $document->type = $request->input('type');

@@ -1,7 +1,7 @@
 {{-- Document Preview    --}}
 <div class="modal fade" id="documentPreview" tabindex="-1" role="dialog" aria-hidden="true" style="overflow-y: none;">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="height: 100%">
+        <div class="modal-content" style="height: 90vh">
             <div class="modal-body flex-row">
                 <div id="pdfPreview">
                     <iframe 
