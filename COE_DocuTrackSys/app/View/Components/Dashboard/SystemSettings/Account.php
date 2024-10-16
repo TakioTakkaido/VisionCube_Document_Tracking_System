@@ -21,8 +21,9 @@ class Account extends Component
     public function render(): View|Closure|string{
         return view('components.dashboard.system-settings.account', [
             'roles' => AccountRole::cases(),
-            'secretary' => AccountController::getSecretaryRole(),
-            'clerk' => AccountController::getClerkRole()
+            'secretary' => AccountController::getSecretaryAccesses(),
+            'clerk' => AccountController::getClerkAccesses(),
+            'assistant' => AccountController::getAssistantAccesses()
         ]);
     }
 }

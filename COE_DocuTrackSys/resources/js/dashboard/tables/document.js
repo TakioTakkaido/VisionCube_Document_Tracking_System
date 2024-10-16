@@ -139,7 +139,43 @@ export function showIncoming(){
                 });
 
                 $(this).popover('toggle');
-              
+
+                if (!data.canEdit){
+                    $('#editDocumentBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#editDocumentBtn' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canMove){
+                    $('#moveDocumentBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#moveDocumentBtn' + data.id).prop('disabled', true);
+                }
+                
+                if (!data.canArchive){
+                    $('#moveArchived' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#moveArchived' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canDownload){
+                    $('#downloadFileBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#downloadFileBtn' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canPrint){
+                    console.log('cannot print');
+                    // $('#editDocumentBtn' + data.id).css({
+                    //     'cursor' : 'not-allowed'
+                    // });
+                    // $('#editDocumentBtn' + data.id).prop('disabled', true);
+                }
+
                 $(document).off('click.popover').on('click.popover', function(e) {
                     if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
                         $(row).popover('hide');  
@@ -305,6 +341,42 @@ export function showOutgoing(){
                 
                 $(this).popover('toggle');
 
+                if (!data.canEdit){
+                    $('#editDocumentBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#editDocumentBtn' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canMove){
+                    $('#moveDocumentBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#moveDocumentBtn' + data.id).prop('disabled', true);
+                }
+                
+                if (!data.canArchive){
+                    $('#moveArchived' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#moveArchived' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canDownload){
+                    $('#downloadFileBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#downloadFileBtn' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canPrint){
+                    console.log('cannot print');
+                    // $('#editDocumentBtn' + data.id).css({
+                    //     'cursor' : 'not-allowed'
+                    // });
+                    // $('#editDocumentBtn' + data.id).prop('disabled', true);
+                }
+
                 $(document).off('click.popover').on('click.popover', function(e) {
                     if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
                         $(row).popover('hide');  
@@ -460,6 +532,42 @@ export function showArchived(){
                 });
 
                 $(this).popover('toggle');
+
+                if (!data.canEdit){
+                    $('#editDocumentBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#editDocumentBtn' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canMove){
+                    $('#moveDocumentBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#moveDocumentBtn' + data.id).prop('disabled', true);
+                }
+                
+                if (!data.canArchive){
+                    $('#moveArchived' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#moveArchived' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canDownload){
+                    $('#downloadFileBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#downloadFileBtn' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canPrint){
+                    console.log('cannot print');
+                    // $('#editDocumentBtn' + data.id).css({
+                    //     'cursor' : 'not-allowed'
+                    // });
+                    // $('#editDocumentBtn' + data.id).prop('disabled', true);
+                }
 
                 $(document).off('click.popover').on('click.popover', function(e) {
                     if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {

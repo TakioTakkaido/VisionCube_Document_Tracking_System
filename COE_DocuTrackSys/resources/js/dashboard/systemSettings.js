@@ -82,13 +82,14 @@ $('#password_confirmation').on('input' , function(event){
     $(this).removeClass('error-input');
 });
 
+//////////////////////////////////////////////////////////////////
 // EDITING ACCESS IN ACCOUNT ROLES
-$('#updateSecretaryAccountRole').on('submit', function (event) {
+$('#secretarySaveBtn').on('click', function (event) {
     // Prevent other events
     event.preventDefault();
 
     // Access array
-    var accesses = {};
+    var accesses = [];
 
     $.each($('.editSecretaryRole'), function (index, element) { 
         accesses[index] = $(element).is(':checked');
@@ -99,7 +100,7 @@ $('#updateSecretaryAccountRole').on('submit', function (event) {
     formData = {
         '_token' : $('#token').val(),
         'accesses' : accesses,
-        'role' : 'Secretary'
+        'role' : 'Assistant'
     }
     
     $.ajax({
@@ -125,7 +126,48 @@ $('#updateSecretaryAccountRole').on('submit', function (event) {
     });
 })
 
-$('#updateClerkAccountRole').on('submit', function (event) {
+$('#assistantSaveBtn').on('click', function (event) {
+    // Prevent other events
+    event.preventDefault();
+
+    // Access array
+    var accesses = {};
+
+    $.each($('.editAssistantRole'), function (index, element) { 
+        accesses[index] = $(element).prop('checked');
+    });
+    console.log(accesses);
+    var formData = new FormData();
+    formData = {
+        '_token' : $('#token').val(),
+        'accesses' : accesses,
+        'role' : 'Assistant'
+    }
+    console.log('edit assistant');
+    $.ajax({
+        method: "POST",
+        url: window.routes.updateRoleAccess,
+        data: formData,
+        success: function (data) {
+            // Parse the data from the json response
+            // var data = JSON.parse(response);
+
+           // Log success message
+            console.log(data);
+            console.log('Edited successfully');
+        },
+        error: function (data) {
+            // Parse the data from the json response
+            var data = JSON.parse(data.responseText);
+
+            // Log error
+            console.log("Error occured while editing status")
+            console.log(data.errors)
+        }
+    });
+});
+
+$('#clerkSaveBtn').on('click', function (event) {
     // Prevent other events
     event.preventDefault();
 
@@ -136,6 +178,8 @@ $('#updateClerkAccountRole').on('submit', function (event) {
         accesses[index] = $(element).is(':checked');
     });
 
+    var formData = new FormData();
+    
     formData = {
         '_token' : $('#token').val(),
         'accesses' : accesses,
@@ -163,7 +207,7 @@ $('#updateClerkAccountRole').on('submit', function (event) {
             console.log(data.errors)
         }
     });
-})
+});
 //////////////////////////////////////////////////////////////////
 // EDITING DOCUMENT TYPE
 // Place new functions here
@@ -282,129 +326,6 @@ $('#updateTypeForm').on('submit', function(event){
 
             // Log error
             console.log("Error occured while editing type")
-            console.log(data.errors)
-        }
-    });
-});
-
-//////////////////////////////////////////////////////////////////
-// EDITING DOCUMENT CATEGORY
-// Place new functions here
-$('.editCategoryBtn').on('click', function(event){
-    // Prevent other events
-    event.preventDefault();
-
-    // Populate the text input and id input with the value of the category
-    $('#categoryId').val($(this).data('id'));
-    $('#categoryText').val($(this).val());
-});
-
-// To trigger delete category confirm
-$('.deleteCategoryBtn').on('click', function(event){
-    // Prevent other events
-    event.preventDefault();
-
-    $('#confirmDeleteCategoryBtn').data('id', $(this).attr('id'));
-    $('#confirmDeleteCategoryText').html("Confirm deleting category: " + $(this).val());
-});
-
-// Delete category
-$('#confirmDeleteCategoryBtn').on('click', function(event){
-    // Prevent other events
-    event.preventDefault();
-
-    var formData = new FormData;
-
-    formData = {
-        '_token' : $('#token').val(),
-        'id' : $(this).data('id')
-    }
-
-    $.ajax({
-        method: "POST",
-        url: window.routes.deleteCategory,
-        data: formData,
-        success: function (data) {
-            // Parse the data from the json response
-            // var data = JSON.parse(response);
-
-           // Log success message
-            console.log(data);
-            console.log('Deleted successfully');
-
-            // Remove the category in the front end
-
-            $('#confirmDeleteCategory').modal('hide');
-        },
-        error: function (data) {
-            // Parse the data from the json response
-            var data = JSON.parse(data.responseText);
-
-            // Log error
-            console.log("Error occured while deleting category")
-            console.log(data.errors)
-        }
-    });
-    
-});
-
-// Cancel delete category
-$('#cancelDeleteCategoryBtn').on('click', function (event) { 
-    // Prevent other events
-    event.preventDefault();
-
-    // Close only the modal of confirm delete category
-    $('#confirmDeleteCategory').modal('hide');
-
- })
-
-// Remove the text if cancelling
-$('#categoryCancelBtn').on('click', function(event){
-    // Prevent other events
-    event.preventDefault();
-
-    // Empty the field
-    $('#categoryText').val(''); 
-    $('#categorySaveBtn').data('edit') = false;  
-});
-
-// Update Category Form
-$('#updateCategoryForm').on('submit', function(event){
-    // Prevent other events
-    event.preventDefault();
-
-    // Edit Mode
-    // Establish route
-
-    // Create new form data
-    var formData = new FormData();
-    
-    // Create form data for submission
-    formData = {
-        '_token' : $('#token').val(),
-        'id': $('#categoryId').val(),
-        'value': $('#categoryText').val()
-    }
-
-    // Submit the data form
-    $.ajax({
-        method: "POST",
-        url: window.routes.updateCategory,
-        data: formData,
-        success: function (data) {
-            // Parse the data from the json response
-            // var data = JSON.parse(response);
-
-           // Log success message
-            console.log(data);
-            console.log('Edited successfully');
-        },
-        error: function (data) {
-            // Parse the data from the json response
-            var data = JSON.parse(data.responseText);
-
-            // Log error
-            console.log("Error occured while editing category")
             console.log(data.errors)
         }
     });

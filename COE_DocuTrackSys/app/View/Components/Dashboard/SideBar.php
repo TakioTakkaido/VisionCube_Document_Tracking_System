@@ -3,8 +3,10 @@
 namespace App\View\Components\Dashboard;
 
 use Closure;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\View\Component;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 
 class SideBar extends Component
 {
@@ -21,6 +23,8 @@ class SideBar extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.dashboard.side-bar');
+        return view('components.dashboard.side-bar', [
+            'canUpload' => FacadesAuth::user()->canUpload
+        ]);
     }
 }

@@ -160,7 +160,7 @@ Route::middleware(NoDirectAccess::class)->group(function(){
         Route::controller(DocumentController::class)->group(function(){
             Route::prefix('/document')->group(function(){
                 // ROLES: ALL, EXCEPT GUEST
-                Route::middleware(VerifyAccountRole::class.':Admin,Secretary,Clerk')->group(function(){
+                Route::middleware(VerifyAccountRole::class.':Admin,Secretary,Clerk,Assistant')->group(function(){
                     // Get Incoming Documents
                     Route::get('view/incoming', 'showIncoming')
                     ->name('showIncoming');

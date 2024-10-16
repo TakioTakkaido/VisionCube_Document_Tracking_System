@@ -14,22 +14,20 @@ class VerifyAccountRole {
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $roles): Response {
+    public function handle(Request $request, Closure $next, ...$roles): Response {
         // Get current user
         $user = Auth::user();
-        $rolesArray = explode(",", $roles);
-        // Verify the role
-        foreach ($rolesArray as $rolesElem) {
+        foreach ($roles as $rolesElem) {
             if ($rolesElem == $user->role){
                 Log::channel('daily')->info('Your account is allowed to access this functionality.'); 
                 return $next($request);
             }
         }
 
-        Log::channel('daily')->error('{roles}', ['roles' => $rolesArray]); 
+        Log::channel('daily')->error('{roles}', ['roles' => $roles]); 
         Log::channel('daily')->error('Your account {user}, with role: {role} is not allowed to access this functionality.', [
             'user' => $user->email,
-            'role' => $user->role->value
+            'role' => $user->role
         ]); 
         return redirect()->route('show.dashboard')->withErrors([
             'access_error' => 'Your account is not allowed to access this functionality.'

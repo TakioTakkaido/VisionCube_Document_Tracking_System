@@ -118,16 +118,16 @@ class DocumentController extends Controller{
         foreach($documents as $document){
             $document_date = strtotime($document->document_date);
             $document->document_date = date('M. d, Y', $document_date);
+            $document->document_date = date('M. d, Y', $document_date);
+            $document->canEdit = Auth::user()->canEdit;
+            $document->canMove = Auth::user()->canMove;
+            $document->canArchive = Auth::user()->canArchive;
+            $document->canDownload = Auth::user()->canDownload;
+            $document->canPrint = Auth::user()->canPrint;
         }
 
         // Log
         Log::channel('daily')->info('Incoming documents obtained: {documents}', ['documents' => $documents]);
-
-        // Create log class
-        ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Viewed incoming documents'
-        ]);
 
         return response()->json([
             'incomingDocuments' => $documents
@@ -142,13 +142,13 @@ class DocumentController extends Controller{
         foreach($documents as $document){
             $document_date = strtotime($document->document_date);
             $document->document_date = date('M. d, Y', $document_date);
+            $document->document_date = date('M. d, Y', $document_date);
+            $document->canEdit = Auth::user()->canEdit;
+            $document->canMove = Auth::user()->canMove;
+            $document->canArchive = Auth::user()->canArchive;
+            $document->canDownload = Auth::user()->canDownload;
+            $document->canPrint = Auth::user()->canPrint;
         }
-
-        // Create a new log
-        ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'View outgoing documents'
-        ]);
 
         // Return outgoing documents
         return response()->json([
@@ -164,13 +164,14 @@ class DocumentController extends Controller{
         foreach($documents as $document){
             $document_date = strtotime($document->document_date);
             $document->document_date = date('M. d, Y', $document_date);
+            $document->canEdit = Auth::user()->canEdit;
+            $document->canMove = Auth::user()->canMove;
+            $document->canArchive = Auth::user()->canArchive;
+            $document->canDownload = Auth::user()->canDownload;
+            $document->canPrint = Auth::user()->canPrint;
         }
 
-        // Create new log 
-        ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'View archived documents'
-        ]);
+        
 
         // Return archived documents
         return response()->json([
