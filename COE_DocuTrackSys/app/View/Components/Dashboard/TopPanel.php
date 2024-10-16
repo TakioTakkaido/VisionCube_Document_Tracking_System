@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Dashboard;
 
+use App\Models\FileExtension;
 use Closure;
 
 use Illuminate\View\Component;
@@ -21,7 +22,7 @@ class TopPanel extends Component
     public function render(): View|Closure|string
     {
         return view('components.dashboard.top-panel', [
-            'user' => Auth::user()
+            'user' => Auth::user(),
         ]);
     }
 }

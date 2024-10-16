@@ -69,24 +69,29 @@ Sanchez, Shane David U.
     ])
 </head>
 <body>
-
 {{-- TOP BAR --}}
 <x-dashboard.top-panel />
 
 {{-- MIDDLE PANEL --}}
 <x-dashboard.middle-panel />
 
+{{-- INFORMATION TABLES --}}
+<x-dashboard.info.log />
+
+
+<x-dashboard.info.document-version />
+
 {{-- UPLOAD FORM --}}
 <x-dashboard.forms.upload />
+
+{{-- DOCUMENT VERSIONS --}}
+<x-dashboard.tables.document-version />
 
 {{-- EDIT DOCUMENT FORM --}}
 <x-dashboard.forms.edit-document />
 
 {{-- DOCUMENT PREVIEW --}}
 <x-dashboard.document-preview />
-
-{{-- VIEW ACCOUNT --}}
-{{-- <x-dashboard.view-account /> --}}
 
 {{-- Routes retrieving document, since AJAX cannot get this as a link, when inserted directly --}}
 <script>
@@ -112,7 +117,10 @@ Sanchez, Shane David U.
         moveDocument: "{{route('document.move')}}",
         uploadDocument: "{{route('document.upload')}}",
         previewDocument: "{{route('document.preview', ':id')}}",
+
+        // Logs
         showAllLogs: "{{route('log.showAll')}}",
+        logInfo: "{{route('log.show', ':id')}}",
         
         // System Settings
         updateStatus: "{{route('status.update')}}",

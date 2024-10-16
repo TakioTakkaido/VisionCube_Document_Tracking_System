@@ -3,7 +3,7 @@
     {{-- Upload Button
         Disabled for anyone not permitted to use it.
     --}}
-    <button class="upload-btn" id="uploadBtn">
+    <button class="upload-btn" id="uploadBtn" {{$canUpload == false ? 'style=cursor:not-allowed disabled' : ''}}>
         <i class='bx bx-upload bx-flashing'></i>
         <span>Upload</span>
     </button>

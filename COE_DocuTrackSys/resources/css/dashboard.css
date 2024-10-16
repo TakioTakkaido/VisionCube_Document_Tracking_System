@@ -423,6 +423,21 @@ body {
 }
 
 .form-check-input {
-    margin-right: 0.5rem;  /* Add space between checkbox and label */
-    
+    margin-right: 0.5rem;  /* Add space between checkbox and label */   
+}
+
+#documentVersionsTable {
+    width: 100% !important;
+}
+
+.modal-content {
+    width: 100%;
+}
+
+#documentVersionsTable th, #documentVersionsTable td {
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.modal-body {
+    width: 100%;
 }

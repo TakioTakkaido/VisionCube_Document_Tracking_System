@@ -262,16 +262,16 @@ class AccountController extends Controller {
 
     public function editAccess(Request $request){
         // Find all accounts of that role
-        $accounts = Account::where('role', $request->role);
-        
+        $accounts = Account::where('role', $request->role)->get();
+
         // Edit access for each roles
         foreach ($accounts as $account) {
-            $account->canUpload     = $account[0];
-            $account->canEdit       = $account[1];
-            $account->canMove       = $account[2];
-            $account->canArchive    = $account[3];
-            $account->canDownload   = $account[4];
-            $account->canPrint      = $account[5];
+            $account->canUpload     = filter_var($request->accesses[0], FILTER_VALIDATE_BOOLEAN);
+            $account->canEdit       = filter_var($request->accesses[1], FILTER_VALIDATE_BOOLEAN);;
+            $account->canMove       = filter_var($request->accesses[2], FILTER_VALIDATE_BOOLEAN);;
+            $account->canArchive    = filter_var($request->accesses[3], FILTER_VALIDATE_BOOLEAN);;
+            $account->canDownload   = filter_var($request->accesses[4], FILTER_VALIDATE_BOOLEAN);;
+            $account->canPrint      = filter_var($request->accesses[5], FILTER_VALIDATE_BOOLEAN);;
 
             $account->save();
         }   
@@ -287,9 +287,9 @@ class AccountController extends Controller {
         ]);
     }
 
-    public static function getSecretaryRole(){
+    public static function getSecretaryAccesses(){
         // Get first instance of that role
-        $secretary = Account::where('role', AccountRole::SECRETARY)->first();
+        $secretary = Account::where('role', 'Assistant')->first();
         $access = [];
 
         // Get all access
@@ -301,14 +301,29 @@ class AccountController extends Controller {
         $access[5] = isset($secretary->canPrint) ? $secretary->canPrint : false;
 
         // Return all access
-        return response()->json([
-            'secretary' => $secretary
-        ]);
+        return $access;
     }
 
-    public static function getClerkRole(){
+    public static function getAssistantAccesses(){
         // Get first instance of that role
-        $clerk = Account::where('role', AccountRole::CLERK)->first();
+        $assistant = Account::where('role', 'Assistant')->first();
+        $access = [];
+
+        // Get all access
+        $access[0] = isset($assistant->canUpload) ? $assistant->canUpload : false;
+        $access[1] = isset($assistant->canEdit) ? $assistant->canEdit : false;
+        $access[2] = isset($assistant->canMove) ? $assistant->canMove : false;
+        $access[3] = isset($assistant->canArchive) ? $assistant->canArchive : false;
+        $access[4] = isset($assistant->canDownload) ? $assistant->canDownload : false;
+        $access[5] = isset($assistant->canPrint) ? $assistant->canPrint : false;
+        
+        // Return all access
+        return $access;
+    }
+
+    public static function getClerkAccesses(){
+        // Get first instance of that role
+        $clerk = Account::where('role', 'Clerk')->first();
         $access = [];
 
         // Get all access
@@ -320,8 +335,7 @@ class AccountController extends Controller {
         $access[5] = isset($clerk->canPrint) ? $clerk->canPrint : false;
         
         // Return all access
-        return response()->json([
-            'clerk' => $clerk
-        ]);
+        return $access;
+
     }
 }

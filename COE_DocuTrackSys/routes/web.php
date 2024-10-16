@@ -160,7 +160,7 @@ Route::middleware(NoDirectAccess::class)->group(function(){
         Route::controller(DocumentController::class)->group(function(){
             Route::prefix('/document')->group(function(){
                 // ROLES: ALL, EXCEPT GUEST
-                Route::middleware(VerifyAccountRole::class.':Admin,Secretary,Clerk')->group(function(){
+                Route::middleware(VerifyAccountRole::class.':Admin,Secretary,Clerk,Assistant')->group(function(){
                     // Get Incoming Documents
                     Route::get('view/incoming', 'showIncoming')
                     ->name('showIncoming');
@@ -264,6 +264,8 @@ Route::post('/account/update/access', [AccountController::class, 'editAccess'])
 Route::get('/document/preview/{id}', [DocumentController::class, 'preview'])
 ->name('document.preview');
 
-
+// Log Routes
+Route::get('/log/view/{id}', [LogController::class, 'show'])
+->name('log.show');
 
 require __DIR__.'/auth.php';

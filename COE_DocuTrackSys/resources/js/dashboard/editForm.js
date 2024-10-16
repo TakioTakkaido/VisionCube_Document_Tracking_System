@@ -10,11 +10,19 @@ export function editDocument(id){
             $('#documentId').val(response.document.id);
             $('#ownerId').val(response.document.owner_id);
             $('#editUploadDocType').val(response.document.type);
-            senderName = response.document.sender;
+            $('#editUploadSeriesNo').val(response.document.series_number);
+            $('#editUploadMemoNo').val(response.document.memo_number);
+
+            if (response.document.type != 'Type0'){
+                $('#editMemoInfo').css('display', 'none');
+            } else {
+                $('#editMemoInfo').css('display', 'block');
+            }
+
+            var senderName = response.document.sender;
             var senderArray = JSON.parse(response.senderArray);
             for (var index = 0; index < senderArray.length; index++) {
                 const sender = senderArray[index];
-                console.log($('#editUploadFrom option').length);
                 for (var index2 = 0; index2 < $('#editUploadFrom option').length; index2++) {
                     var element = $('#editUploadFrom option')[index2];
                     if ($(element).data('parent') === sender['parent'] &&
@@ -29,11 +37,10 @@ export function editDocument(id){
                 $('#editUploadFromText').val(senderName);
             }
             
-            recipientName = response.document.recipient;
+            var recipientName = response.document.recipient;
             var recipientArray = JSON.parse(response.recipientArray);
             for (var index = 0; index < recipientArray.length; index++) {
                 const recipient = recipientArray[index];
-                console.log($('#editUploadTo option').length);
                 for (var index2 = 0; index2 < $('#editUploadTo option').length; index2++) {
                     var element = $('#editUploadTo option')[index2];
                     console.log($(element).data('name'));
@@ -47,16 +54,18 @@ export function editDocument(id){
                 }    
             }
             $('#editUploadTo').selectpicker('refresh');
-            if (senderArray.length === 0) {
+            if (recipientArray.length === 0) {
                 $('#editUploadToText').val(recipientName);
             }
+
+            $('#editUploadDate').val(response.document.document_date);
 
             $('#editUploadSubject').val(response.document.subject);
             $('#fileLink').html(response.document.file);
             $('#editUploadCategory').val(response.document.category);
             $('#editUploadStatus').val(response.document.status);
             $('#editUploadAssignee').val(response.document.assignee);
-            $('#pdfIframe').attr('src', response.fileLink);
+            $('#pdfIframe').attr('src', response.fileLink + `#scrollbar=1&toolbar=0`);
 
             $('#editDocument').modal('show');
         },
@@ -67,26 +76,34 @@ export function editDocument(id){
 }
 
 $('#submitEditDocumentBtn').on('click', function(event) {
+    $('#submitEditDocumentBtn').prop('disabled', true);
+    $('#clearEditBtn').prop('disabled', true);
     event.preventDefault();
 
     var formData = new FormData();
     var senderArray = [];
     var recipientArray = [];
+    var seriesRequired = $('#editUploadSeriesNo').prop('required');
+    var memoRequired = $('#editUploadMemoNo').prop('required');
 
-    for (var index = 0; index < $('#editUploadFrom').val().length; index++) {
-        if($.inArray($($('#editUploadFrom option')[index]).val(), $('#uploadFrom').val())){
+    for (var index = 0; index < $('#editUploadFrom option').length; index++) {
+        var uploadEditFromOption = $('#editUploadFrom option')[index];
+        if(uploadEditFromOption.selected){
             senderArray.push({
-                name: $('#editUploadFrom').val()[index],
-                value: $($('#editUploadFrom option')[index]).data('name')
+                parent: $($('#editUploadFrom option')[index]).data('parent'),
+                value: $($('#editUploadFrom option')[index]).data('name'),
+                level: $($('#editUploadFrom option')[index]).data('level')
             });
         }
     }
 
-    for (var index = 0; index < $('#editUploadTo').val().length; index++) {
-        if($.inArray($($('#editUploadTo option')[index]).val(), $('#editUploadTo').val())){
+    for (var index = 0; index < $('#editUploadTo option').length; index++) {
+        var uploadEditToOption = $('#editUploadTo option')[index];
+        if(uploadEditToOption.selected){
             recipientArray.push({
-                name: $('#editUploadTo').val()[index],
-                value: $($('#editUploadTo option')[index]).data('name')
+                parent: $($('#editUploadTo option')[index]).data('parent'),
+                value: $($('#editUploadTo option')[index]).data('name'),
+                level: $($('#editUploadTo option')[index]).data('level')
             });
         }
     }
@@ -95,9 +112,22 @@ $('#submitEditDocumentBtn').on('click', function(event) {
     formData.append('_token', $('#token').val());
     formData.append('document_id', $('#documentId').val());
     formData.append('type', $('#editUploadDocType').val());
+
+    var seriesNo;
+    var memoNo;
+    if ($('#editUploadDocType').val() == 'Type0') {
+        seriesNo = $('#editUploadSeriesNo').val();
+        memoNo  = $('#editUploadMemoNo').val();
+    }
+    formData.append('seriesNo', seriesNo);
+    formData.append('memoNo', memoNo);
+
     formData.append('subject', $('#editUploadSubject').val());
 
-    // var senderName = '';
+    formData.append('seriesRequired', seriesRequired);
+    formData.append('memoRequired', memoRequired);
+
+    var senderName = '';
     var start = false;
     var currentParent = '';
     var uploadFromOptions = $('#editUploadFrom option');
@@ -119,6 +149,7 @@ $('#submitEditDocumentBtn').on('click', function(event) {
                 start = true;
                 currentParent = element;
             } else {
+                
                 // It is a child
                 // Find its parent by going back to the top
                 if ($(element).data('parent') != $(currentParent).data('parent') &&
@@ -137,7 +168,7 @@ $('#submitEditDocumentBtn').on('click', function(event) {
                     var parentLevel;
 
                     // Find the parent
-                    for (var index2 = index - 1; index2 > 0; index2--){
+                    for (var index2 = index - 1; index2 >= 0; index2--){
                         const element2 = uploadFromOptions[index2];
                         if($(element2).data('level') < $(element).data('level')) {
                             parentIndex = index2;
@@ -184,7 +215,7 @@ $('#submitEditDocumentBtn').on('click', function(event) {
     formData.append('sender', senderName);
     formData.append('senderArray', JSON.stringify(senderArray));
 
-    // var recipientName = '';
+    var recipientName = '';
     var start2 = false;
     var currentParent2 = '';
     var uploadToOptions = $('#editUploadTo option');
@@ -271,6 +302,8 @@ $('#submitEditDocumentBtn').on('click', function(event) {
     formData.append('recipient', recipientName);
     formData.append('recipientArray', JSON.stringify(recipientArray));
 
+    formData.append('document_date', $('#editUploadDate').val());
+
     formData.append('status', $('#editUploadStatus').val());
     formData.append('assignee', $('#editUploadAssignee').val());
     formData.append('category', $('#editUploadCategory').val());
@@ -293,8 +326,86 @@ $('#submitEditDocumentBtn').on('click', function(event) {
             $('#editDocument').modal('hide');
             $('#dashboardTable').DataTable().ajax.reload();
         },
-        error: function(xhr) {
-            alert('Error: ' + xhr.responseJSON?.message || 'Update failed');
+        error: function(data) {
+            if (data.responseJSON.errors.type){
+                $('#editTypeError').html(data.responseJSON.errors.type);
+                $('#editUploadDocType').css('border', '1px solid red');
+                $('#editUploadDocType').css('background-color', 'pink');
+                $('#editTypeError').css('display', 'block');
+            }
+
+            if (data.responseJSON.errors.series){
+                $('#editSeriesError').html(data.responseJSON.errors.series);
+                $('#editSeriesError').css('display', 'block');
+                $('#editUploadSeriesNo').css('border', '1px solid red');
+                $('#editUploadSeriesNo').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.memo){
+                $('#editMemoError').html(data.responseJSON.errors.memo);
+                $('#editMemoError').css('display', 'block');
+                $('#editUploadMemoNo').css('border', '1px solid red');
+                $('#editUploadMemoNo').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.sender){
+                $('#editSenderError').html(data.responseJSON.errors.sender);
+                $('#editSenderError').css('display', 'block');
+                $('#editUploadFrom').css('border', '1px solid red');
+                $('#editUploadFrom').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.recipient){
+                $('#editRecipientError').html(data.responseJSON.errors.recipient);
+                $('#editRecipientError').css('display', 'block');
+                $('#editUploadTo').css('border', '1px solid red');
+                $('#editUploadTo').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.subject){
+                $('#editSubjectError').html(data.responseJSON.errors.subject);
+                $('#editSubjectError').css('display', 'block');
+                $('#editUploadSubject').css('border', '1px solid red');
+                $('#editUploadSubject').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.date){
+                $('#editDateError').html(data.responseJSON.errors.date);
+                $('#editDateError').css('display', 'block');
+                $('#editUploadDate').css('border', '1px solid red');
+                $('#editUploadDate').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.file){
+                $('#editFileError').html(data.responseJSON.errors.file);
+                $('#editFileError').css('display', 'block');
+                $('#editSoftcopy').css('border', '1px solid red');
+                $('#editSoftcopy').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.category){
+                $('#editCategoryError').html(data.responseJSON.errors.category);
+                $('#editCategoryError').css('display', 'block');
+                $('#editUploadCategory').css('border', '1px solid red');
+                $('#editUploadCategory').css('background-color', 'pink');
+            }
+            
+            if (data.responseJSON.errors.status){
+                $('#editStatusError').html(data.responseJSON.errors.status);
+                $('#editStatusError').css('display', 'block');
+                $('#editUploadStatus').css('border', '1px solid red');
+                $('#editUploadStatus').css('background-color', 'pink');
+            }
+
+            if (data.responseJSON.errors.assignee){
+                $('#editAssigneeError').html(data.responseJSON.errors.assignee);
+                $('#editAssigneeError').css('display', 'block');
+                $('#editUploadAssignee').css('border', '1px solid red');
+                $('#editUploadAssignee').css('background-color', 'pink');
+            }
+            
+            $('#submitEditDocumentBtn').prop('disabled', false);
+            $('#clearEditBtn').prop('disabled', false);
         }
     });
 });
@@ -304,12 +415,26 @@ $('#clearEditBtn').on('click', function (event){
     $('#editDocumentForm').trigger('reset');
     $('#editUploadFrom').selectpicker('deselectAll');
     $('#editUploadTo').selectpicker('deselectAll');
+
+    $.each($('.editInput'), function () { 
+        $(this).css('border', '1px solid #ccc');
+        $(this).css('background-color', 'white');
+    });
+
+    $.each($('.error'), function () { 
+        $(this).css('display', 'none');
+    });
 });
 
 var pos;
 $('#editUploadFrom').selectpicker().on('changed.bs.select', function(event, clickedIndex, isSelected, previousValue){
     event.preventDefault();
     $('#editUploadFromText').val('');
+
+    $(this).css('border', '1px solid #ccc');
+    $(this).css('background-color', 'white');
+    $('#editSenderError').css('display', 'none');
+
     pos = $(this).parent().find('.dropdown-menu.inner').scrollTop();
     var level = $(this.options[clickedIndex]).data('level');
 
@@ -325,34 +450,37 @@ $('#editUploadFrom').selectpicker().on('changed.bs.select', function(event, clic
             }
         }
     } else {
-        console.log('has parent changed');
+        if (!isSelected){
+            console.log('has parent changed');
 
-        let parentFound = false;  // To ensure we find a parent before unchecking
+            let parentFound = false;  // To ensure we find a parent before unchecking
 
-        // Traverse upwards to find parent elements
-        for (var index = clickedIndex - 1; index >= 0; index--) {
-            const currentElement = this.options[index];
-            const currentLevel = $(currentElement).data('level');
-            const clickedLevel = $(this.options[clickedIndex]).data('level');
+            // Traverse upwards to find parent elements
+            for (var index = clickedIndex - 1; index >= 0; index--) {
+                const currentElement = this.options[index];
+                const currentLevel = $(currentElement).data('level');
+                const clickedLevel = $(this.options[clickedIndex]).data('level');
 
-            // Find the first parent (level less than clicked element)
-            if (currentLevel < clickedLevel) {
-                // Uncheck the parent
-                currentElement.selected = isSelected;
-                parentFound = true;
+                // Find the first parent (level less than clicked element)
+                if (currentLevel < clickedLevel) {
+                    // Uncheck the parent
+                    currentElement.selected = isSelected;
+                    parentFound = true;
 
-                console.log('unchecked a parent at level ' + currentLevel);
+                    console.log('unchecked a parent at level ' + currentLevel);
+                    
+                    // Check if this parent has its own parent and continue
+                    clickedIndex = index;  // Move up to the found parent's index
+                }
                 
-                // Check if this parent has its own parent and continue
-                clickedIndex = index;  // Move up to the found parent's index
-            }
-            
-            // If no parent is found in the loop, break
-            if (!$(this.options[clickedIndex]).data('parent')) {
-                console.log('no parent anymore');
-                break;
-            }
+                // If no parent is found in the loop, break
+                if (!$(this.options[clickedIndex]).data('parent')) {
+                    console.log('no parent anymore');
+                    break;
+                }
+            }            
         }
+        
     }
 
     $(this).selectpicker('refresh');
@@ -363,9 +491,13 @@ $('#editUploadFrom').selectpicker().on('changed.bs.select', function(event, clic
 $('#editUploadTo').selectpicker().on('changed.bs.select', function(event, clickedIndex, isSelected, previousValue){
     event.preventDefault();
     $('#editUploadToText').val('');
+
+    $(this).css('border', '1px solid #ccc');
+    $(this).css('background-color', 'white');
+    $('#editRecipientError').css('display', 'none');
+
     pos = $(this).parent().find('.dropdown-menu.inner').scrollTop();
     var level = $(this.options[clickedIndex]).data('level');
-    $(this).data('name', 'chichi');
 
     // Check the level of the rest of the stuff below the selected class
     if (isSelected){
@@ -379,32 +511,34 @@ $('#editUploadTo').selectpicker().on('changed.bs.select', function(event, clicke
             }
         }
     } else {
-        console.log('has parent changed');
-
-        let parentFound = false;  // To ensure we find a parent before unchecking
-
-        // Traverse upwards to find parent elements
-        for (var index = clickedIndex - 1; index >= 0; index--) {
-            const currentElement = this.options[index];
-            const currentLevel = $(currentElement).data('level');
-            const clickedLevel = $(this.options[clickedIndex]).data('level');
-
-            // Find the first parent (level less than clicked element)
-            if (currentLevel < clickedLevel) {
-                // Uncheck the parent
-                currentElement.selected = isSelected;
-                parentFound = true;
-
-                console.log('unchecked a parent at level ' + currentLevel);
+        if (!isSelected) {
+            console.log('has parent changed');
+    
+            let parentFound = false;  // To ensure we find a parent before unchecking
+    
+            // Traverse upwards to find parent elements
+            for (var index = clickedIndex - 1; index >= 0; index--) {
+                const currentElement = this.options[index];
+                const currentLevel = $(currentElement).data('level');
+                const clickedLevel = $(this.options[clickedIndex]).data('level');
+    
+                // Find the first parent (level less than clicked element)
+                if (currentLevel < clickedLevel) {
+                    // Uncheck the parent
+                    currentElement.selected = isSelected;
+                    parentFound = true;
+    
+                    console.log('unchecked a parent at level ' + currentLevel);
+                    
+                    // Check if this parent has its own parent and continue
+                    clickedIndex = index;  // Move up to the found parent's index
+                }
                 
-                // Check if this parent has its own parent and continue
-                clickedIndex = index;  // Move up to the found parent's index
-            }
-            
-            // If no parent is found in the loop, break
-            if (!$(this.options[clickedIndex]).data('parent')) {
-                console.log('no parent anymore');
-                break;
+                // If no parent is found in the loop, break
+                if (!$(this.options[clickedIndex]).data('parent')) {
+                    console.log('no parent anymore');
+                    break;
+                }
             }
         }
     }
@@ -416,13 +550,83 @@ $('#editUploadTo').selectpicker().on('changed.bs.select', function(event, clicke
     $(this).parent().find('.dropdown-menu.inner').scrollTop(pos);
 });
 
+// Event listener for removing the colored error
+$.each($('.uploadInput'), function (index, value) { 
+    $($('.uploadInput')[index]).on('input', function(event){
+        event.preventDefault();
+        $(this).css('border', '1px solid #ccc');
+        $(this).css('background-color', 'white');
+    })
+});
+
+$('#editUploadDocType').on('input', function(event){
+    event.preventDefault();
+    $('#editTypeError').css('display', 'none');
+})
+
+$('#editUploadSeriesNo').on('input', function(event){
+    event.preventDefault();
+    $('#editSeriesError').css('display', 'none');
+})
+
+$('#editUploadMemoNo').on('input', function(event){
+    event.preventDefault();
+    $('#editMemoError').css('display', 'none');
+})
+
+$('#editUploadSubject').on('input', function(event){
+    event.preventDefault();
+    $('#editSubjectError').css('display', 'none');
+})
+
+$('#editUploadDate').on('input', function(event){
+    event.preventDefault();
+    $('#editDateError').css('display', 'none');
+})
+
+$('#editSoftcopy').on('input', function(event){
+    event.preventDefault();
+    $('#editFileError').css('display', 'none');
+});
+
+$('#editUploadCategory').on('input', function(event){
+    event.preventDefault();
+    $('#editCategoryError').css('display', 'none');
+});
+
+$('#editUploadStatus').on('input', function(event){
+    event.preventDefault();
+    $('#editStatusError').css('display', 'none');
+});
+
+$('#editUploadAssignee').on('input', function(event){
+    event.preventDefault();
+    $('#editAssigneeError').css('display', 'none');
+});
+
 // For other text input, uncheck all of the choices
 $('#editUploadFromText').on('input', function(event){
     $('#editUploadFrom').selectpicker('deselectAll');
     $('#editUploadFrom').selectpicker('refresh');
+    $('#editSenderError').css('display', 'none');
 });
 
 $('#editUploadToText').on('input', function(event){
     $('#editUploadTo').selectpicker('deselectAll');
     $('#editUploadTo').selectpicker('refresh');
+    $('#editRecipientError').css('display', 'none');
+});
+
+$('#editUploadDocType').on('input', function(event){
+    event.preventDefault();
+
+    if($(this).val() == 'Type0'){
+        $('#editMemoInfo').css('display', 'block');
+        $('#editUploadSeriesNo').prop('required', true);
+        $('#editUploadMemoNo').prop('required', true);
+    } else {
+        $('#editMemoInfo').css('display', 'none');
+        $('#editUploadSeriesNo').prop('required', false);
+        $('#editUploadMemoNo').prop('required', false);
+    }
 });

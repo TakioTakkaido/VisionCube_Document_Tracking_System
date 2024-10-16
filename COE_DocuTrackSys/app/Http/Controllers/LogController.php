@@ -16,6 +16,14 @@ class LogController extends Controller {
     // Viewed documents *
     // Resetted password
 
+    public function show(Request $request){
+        $log = Log::find($request->id);
+
+        return response()->json([
+            'log' => $log
+        ]);
+    }
+
     public function showAllLogs(){
         $logs = Log::all();
 

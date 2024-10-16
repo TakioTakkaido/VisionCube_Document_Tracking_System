@@ -1,5 +1,6 @@
 import { editDocument } from "../editForm";
 
+// SHOW INCOMING DOCUMENTS
 export function showIncoming(){
     $('.dashboardTableTitle').html('Incoming Documents');
     
@@ -12,18 +13,18 @@ export function showIncoming(){
     $('#dashboardTable').html(
         "<thead><tr>" +
         "<th>Type</th>" +
-        "<th>Subject</th>" +
-        "<th>Sender</th>" +         
-        "<th>Recipient</th>" +         
+        "<th>Subject</th>" +    
+        "<th>Date</th>" +  
+        "<th>Sender</th>" +            
         "<th>Status</th>" +     
         "<th>Assignee</th>" +  
         "</tr></thead>" +            
         "<tbody></tbody>" +
         "<tfoot><tr>" + 
         "<th>Type</th>" +
-        "<th>Subject</th>" +
-        "<th>Sender</th>" +         
-        "<th>Recipient</th>" +         
+        "<th>Subject</th>" +     
+        "<th>Date</th>" + 
+        "<th>Sender</th>" +            
         "<th>Status</th>" +     
         "<th>Assignee</th>" + 
         "</tr></tfoot>"
@@ -38,8 +39,8 @@ export function showIncoming(){
         columns: [
             {data: 'type'},
             {data: 'subject'},
+            {data: 'document_date'},
             {data: 'sender'},
-            {data: 'recipient'},
             {data: 'status'},
             {data: 'assignee'}
         ],
@@ -60,13 +61,18 @@ export function showIncoming(){
 
             $(row).on('click', function(event) {
                 event.preventDefault();
+                $(row).popover('hide');
                 documentPreview(data.id, row);
             });
 
 
             $(row).on('contextmenu', function(event) {
                 event.preventDefault();
-                console.log('document menu');
+                $.each($('.popover'), function () { 
+                    if ($(this).parent() !== $(row)){
+                        $(this).popover('hide');
+                    }
+                });
 
                 var incoming, outgoing, archived;
                 switch (data.category) {
@@ -87,7 +93,7 @@ export function showIncoming(){
                     content: `<div class="list-group menu">`+
                         `<button type="button" class="list-group-item" id="editDocumentBtn${data.id}">Edit Document</button>` +
                         `<a type="button" class="list-group-item list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">Download File</a>` +
-                        `<button type="button" class="list-group-item" id="viewDocumentBtn${data.id}">View Document Versions</button>` +
+                        `<button type="button" class="list-group-item" id="viewDocumentVersionsBtn${data.id}">View Document Versions</button>` +
                         `<button type="button" class="list-group-item" id="moveDocumentBtn${data.id}">Move Document</button>` +
                         `<div class="list-group-item dropright">` +
                         `<div class="dropdown-menu" id="moveDocumentDropdown${data.id}" aria-hidden="true">
@@ -106,6 +112,12 @@ export function showIncoming(){
                         event.stopPropagation();
                         $(row).popover('toggle');
                         editDocument(data.id);
+                    });
+
+                    $('#viewDocumentVersionsBtn' + data.id).off('click').on('click', function(event) {
+                        event.stopPropagation();
+                        $(row).popover('toggle');
+                        viewDocumentVersions(data.id, row);
                     });
 
                     $('#moveDocumentBtn' + data.id).off('click').on('click', function(event) {
@@ -127,7 +139,43 @@ export function showIncoming(){
                 });
 
                 $(this).popover('toggle');
-              
+
+                if (!data.canEdit){
+                    $('#editDocumentBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#editDocumentBtn' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canMove){
+                    $('#moveDocumentBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#moveDocumentBtn' + data.id).prop('disabled', true);
+                }
+                
+                if (!data.canArchive){
+                    $('#moveArchived' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#moveArchived' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canDownload){
+                    $('#downloadFileBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#downloadFileBtn' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canPrint){
+                    console.log('cannot print');
+                    // $('#editDocumentBtn' + data.id).css({
+                    //     'cursor' : 'not-allowed'
+                    // });
+                    // $('#editDocumentBtn' + data.id).prop('disabled', true);
+                }
+
                 $(document).off('click.popover').on('click.popover', function(e) {
                     if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
                         $(row).popover('hide');  
@@ -142,8 +190,7 @@ export function showIncoming(){
     }
 }
 
-
-
+// SHOW OUTGOING DOCUMENTS
 export function showOutgoing(){
     $('.dashboardTableTitle').html('Outgoing Documents');
 
@@ -157,7 +204,7 @@ export function showOutgoing(){
         "<thead><tr>" +
         "<th>Type</th>" +
         "<th>Subject</th>" +
-        "<th>Sender</th>" +         
+        "<th>Date</th>" +         
         "<th>Recipient</th>" +         
         "<th>Status</th>" +     
         "<th>Assignee</th>" +  
@@ -166,8 +213,8 @@ export function showOutgoing(){
         "<tfoot><tr>" + 
         "<th>Type</th>" +
         "<th>Subject</th>" +
-        "<th>Sender</th>" +         
-        "<th>Recipient</th>" +         
+        "<th>Date</th>" +
+        "<th>Sender</th>" +            
         "<th>Status</th>" +     
         "<th>Assignee</th>" + 
         "</tr></tfoot>"
@@ -182,7 +229,7 @@ export function showOutgoing(){
         columns: [
             {data: 'type'},
             {data: 'subject'},
-            {data: 'sender'},
+            {data: 'document_date'},
             {data: 'recipient'},
             {data: 'status'},
             {data: 'assignee'}
@@ -205,18 +252,18 @@ export function showOutgoing(){
             // Document preview 
             $(row).on('click', function(event){
                 event.preventDefault();
-
-                if($(this).data('bs.popover')){
-                    console.log('has popover');
-                    $(this).popover('toggle')
-                };
+                $(row).popover('hide');
                 documentPreview(data.id, row);
             });
 
             // Document menu
             $(row).on('contextmenu', function(event){
                 event.preventDefault();
-                console.log('document menu')
+                $.each($('.popover'), function () { 
+                    if ($(this).parent() !== $(row)){
+                        $(this).popover('hide');
+                    }
+                });
 
                 var incoming, outgoing, archived;
                 // Determine the status of the document
@@ -238,7 +285,7 @@ export function showOutgoing(){
                     content: `<div class="list-group menu">`+
                         `<button type="button" class="list-group-item" id="editDocumentBtn${data.id}">Edit Document</button>` +
                         `<a type="button" class="list-group-item list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">Download File</a>` +
-                        `<button type="button" class="list-group-item" id="viewDocumentBtn${data.id}">View Document Versions</button>` +
+                        `<button type="button" class="list-group-item" id="viewDocumentVersionsBtn${data.id}">View Document Versions</button>` +
                         `<button type="button" class="list-group-item" id="moveDocumentBtn${data.id}">Move Document</button>` +
                         `<div class="list-group-item dropright">` +
                         `<div class="dropdown-menu" id="moveDocumentDropdown${data.id}" aria-hidden="true">
@@ -261,7 +308,13 @@ export function showOutgoing(){
                         // Edit document Function
                         editDocument(data.id);
                     });
-                  
+                    
+                    $('#viewDocumentVersionsBtn' + data.id).off('click').on('click', function(event) {
+                        event.stopPropagation();
+                        $(row).popover('toggle');
+                        viewDocumentVersions(data.id, row);
+                    });
+
                     // Move document btn
                     $('#moveDocumentBtn' + data.id).off('click').on('click', function(event) {
                         console.log('move');
@@ -288,19 +341,48 @@ export function showOutgoing(){
                 
                 $(this).popover('toggle');
 
+                if (!data.canEdit){
+                    $('#editDocumentBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#editDocumentBtn' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canMove){
+                    $('#moveDocumentBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#moveDocumentBtn' + data.id).prop('disabled', true);
+                }
+                
+                if (!data.canArchive){
+                    $('#moveArchived' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#moveArchived' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canDownload){
+                    $('#downloadFileBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#downloadFileBtn' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canPrint){
+                    console.log('cannot print');
+                    // $('#editDocumentBtn' + data.id).css({
+                    //     'cursor' : 'not-allowed'
+                    // });
+                    // $('#editDocumentBtn' + data.id).prop('disabled', true);
+                }
+
                 $(document).off('click.popover').on('click.popover', function(e) {
                     if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
                         $(row).popover('hide');  
                     }
                 });
-
-                // Add event listeners after showing the popover
-                // $(this).popover()
-
             });
-
-
-            
         }
     });
 
@@ -309,9 +391,7 @@ export function showOutgoing(){
     }
 }
 
-
-
-
+// SHOW ARCHIVED DOCUMENTS
 export function showArchived(){
     $('.dashboardTableTitle').html('Archived Documents');
 
@@ -373,13 +453,18 @@ export function showArchived(){
             // Document preview
             $(row).on('click', function(event) {
                 event.preventDefault();
+                $(row).popover('hide');
                 documentPreview(data.id, row);
             });
 
             // Document context menu
             $(row).on('contextmenu', function(event) {
                 event.preventDefault();
-                console.log('document menu');
+                $.each($('.popover'), function () { 
+                    if ($(this).parent() !== $(row)){
+                        $(this).popover('hide');
+                    }
+                });$('.popover').popover('hide');
 
                 var incoming, outgoing, archived;
                 // Determine the status of the document
@@ -401,7 +486,7 @@ export function showArchived(){
                     content: `<div class="list-group menu">`+
                         `<button type="button" class="list-group-item" id="editDocumentBtn${data.id}">Edit Document</button>` +
                         `<a type="button" class="list-group-item list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">Download File</a>` +
-                        `<button type="button" class="list-group-item" id="viewDocumentBtn${data.id}">View Document Versions</button>` +
+                        `<button type="button" class="list-group-item" id="viewDocumentVersionsBtn${data.id}">View Document Versions</button>` +
                         `<button type="button" class="list-group-item" id="moveDocumentBtn${data.id}">Move Document</button>` +
                         `<div class="list-group-item dropright">` +
                         `<div class="dropdown-menu" id="moveDocumentDropdown${data.id}" aria-hidden="true">
@@ -420,6 +505,12 @@ export function showArchived(){
                         event.stopPropagation();
                         $(row).popover('toggle');
                         editDocument(data.id);
+                    });
+
+                    $('#viewDocumentVersionsBtn' + data.id).off('click').on('click', function(event) {
+                        event.stopPropagation();
+                        $(row).popover('toggle');
+                        viewDocumentVersions(data.id, row);
                     });
 
                     $('#moveDocumentBtn' + data.id).off('click').on('click', function(event) {
@@ -441,6 +532,42 @@ export function showArchived(){
                 });
 
                 $(this).popover('toggle');
+
+                if (!data.canEdit){
+                    $('#editDocumentBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#editDocumentBtn' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canMove){
+                    $('#moveDocumentBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#moveDocumentBtn' + data.id).prop('disabled', true);
+                }
+                
+                if (!data.canArchive){
+                    $('#moveArchived' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#moveArchived' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canDownload){
+                    $('#downloadFileBtn' + data.id).css({
+                        'cursor' : 'not-allowed'
+                    });
+                    $('#downloadFileBtn' + data.id).prop('disabled', true);
+                }
+
+                if (!data.canPrint){
+                    console.log('cannot print');
+                    // $('#editDocumentBtn' + data.id).css({
+                    //     'cursor' : 'not-allowed'
+                    // });
+                    // $('#editDocumentBtn' + data.id).prop('disabled', true);
+                }
 
                 $(document).off('click.popover').on('click.popover', function(e) {
                     if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
@@ -478,19 +605,131 @@ function moveDocument(id, location, row){
 }
 
 // View Document Versions
-function viewDocumentVersions(id){
-    console.log('view document versions');
-}
+function viewDocumentVersions(id, row){
+    // Hide the popover first
+    $(row).popover('hide');
 
-function documentPreview(id, row){
+    // Show the modal
+    $('#documentVersions').modal('show');
+
+    // Ajax request to get document versions
+
+    $('#documentVersionsTable').DataTable({
+        ajax: {
+            url: window.routes.showDocumentVersions.replace(':id', id),
+            dataSrc: 'documentVersions'
+        },
+        columns: [
+            {data: 'created_at'},
+            {data: 'modified_by'},
+            {data: 'version_number'},
+            {
+                data: null,
+                orderable: false,
+                render: function(data, type, row){
+                    var content = JSON.parse(data.content);
+                    console.log(data.created_at);
+                    console.log(data.modified_by);
+                    return `<a class="viewDocumentVersionContent" 
+                    data-modifiedDate="${data.created_at}"
+                    data-date="${content.document_date}"
+                    data-type="${content.type}"
+                    data-series="${content.series_number}"
+                    data-memo="${content.memo_number}"
+                    data-sender="${content.sender}"
+                    data-recipient="${content.recipient}"
+                    data-subject="${content.subject}"
+                    data-assignee="${content.assignee}"
+                    data-category="${content.category}"
+                    data-status="${content.status}"
+                    data-file="${data.file}"
+                    data-modifiedBy="${data.modified_by}"
+
+                    href="#">View Document</a>`;
+                }
+            }
+        ],
+        destroy: true,
+        pagination: true,
+        language: {
+            emptyTable: "No document versions present."
+        },
+        order: {
+            idx: 1,
+            dir: 'desc'
+        },
+
+        // $(this).on('click', function(event){
+
+        // });
+    })
+    
+    $('#documentVersionsTable').addClass('show');
+}
+// View Document Version Content
+$('#documentVersionsTable tbody').on('click', 'a.viewDocumentVersionContent', function(event){
+    event.preventDefault();
+    console.log('okay');
+    $('#documentVersionIFrame').attr('src', $(this).data('file') + `#scrollbar=1&toolbar=0`);
+    $("#documentVersionModifiedDate").html('<strong>Modified At: </strong>'+ $(this).data('modifieddate'));
+    $("#documentVersionModifiedBy").html('<strong>Modified By: </strong>'+ $(this).data('modifiedby'));
+    $("#documentVersionDate").html('<strong>Document Date: </strong>'+ $(this).data('date'));
+    $("#documentVersionType").html('<strong>Document Type: </strong>'+ $(this).data('type'));
+
+    if ($(this).data('type') == 'Type0') {
+        $('#documentVersionMemoInfo').css('display', 'block');
+        $('#documentVersionSeriesNo').html('<strong>Series No.: </strong>' + $(this).data('series'));
+        $('#documentVersionMemoNo').html('<strong>Memo No.: </strong>' + $(this).data('memo'));
+    } else {
+        $('#documentVersionMemoInfo').css('display', 'hide');
+    }
+
+    $("#documentVersionSender").html('<strong>From: </strong>'+ $(this).data('sender'));
+    $("#documentVersionRecipient").html('<strong>To: </strong>'+ $(this).data('recipient'));
+    $("#documentVersionSubject").html('<strong>Subject: </strong>'+ $(this).data('subject'));
+    $("#documentVersionAssignee").html('<strong>Assignee: </strong>'+ $(this).data('assignee'));
+    $("#documentVersionCategory").html('<strong>Category: </strong>'+ $(this).data('category'));
+    $("#documentVersionStatus").html('<strong>Status: </strong>'+ $(this).data('status'));
+
+    $('#documentVersions').modal('hide');
+    $('#viewDocumentVersion').modal('show');
+});
+
+// Document Preview
+function documentPreview(id, row = null){
     $.ajax({
         method: "GET",
         url: window.routes.previewDocument.replace(':id', id),
         success: function (response) {
-            $('#documentPreviewIFrame').attr('src', response.fileLink + `#toolbar=0&navpanes=0`);
-            console.log($('#documentPreviewIFrame').attr('src'));
+            $('#documentPreviewIFrame').attr('src', response.fileLink + `#scrollbar=1&toolbar=0`);
+            
+            $("#documentDate").html('<strong>Document Date: </strong>'+ response.document.document_date);
+            $("#documentType").html('<strong>Document Type: </strong>'+ response.document.type);
+
+            if (response.document.type == 'Type0') {
+                $('#documentMemoInfo').css('display', 'block');
+                $('#documentSeriesNo').html('<strong>Series No.: </strong>' + response.document.series_number);
+                $('#documentMemoNo').html('<strong>Memo No.: </strong>' + response.document.memo_number);
+            } else {
+                $('#documentMemoInfo').css('display', 'hide');
+            }
+
+            $("#documentVersion").html('<strong>Current Version: </strong>'+ response.document.version);
+            $("#documentSender").html('<strong>From: </strong>'+ response.document.sender);
+            $("#documentRecipient").html('<strong>To: </strong>'+ response.document.recipient);
+            $("#documentSubject").html('<strong>Subject: </strong>'+ response.document.subject);
+            $("#documentAssignee").html('<strong>Assignee: </strong>'+ response.document.assignee);
+            $("#documentCategory").html('<strong>Category: </strong>'+ response.document.category);
+            $("#documentStatus").html('<strong>Status: </strong>'+ response.document.status);
+
             $(row).popover('hide');
             $('#documentPreview').modal('show');
         }
     });
 }
+
+$('#closeDocumentVersion').on('click', function(event){
+    event.preventDefault();
+    $('#documentVersions').modal('show');
+    $('#viewDocumentVersion').modal('hide');
+})

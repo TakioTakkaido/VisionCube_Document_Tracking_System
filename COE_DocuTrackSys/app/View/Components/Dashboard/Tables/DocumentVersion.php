@@ -1,14 +1,12 @@
 <?php
 
-namespace App\View\Components\Dashboard;
+namespace App\View\Components\Dashboard\Tables;
 
 use Closure;
-use Illuminate\Container\Attributes\Auth;
 use Illuminate\View\Component;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
 
-class SideBar extends Component
+class DocumentVersion extends Component
 {
     /**
      * Create a new component instance.
@@ -23,8 +21,6 @@ class SideBar extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.dashboard.side-bar', [
-            'canUpload' => FacadesAuth::user()->canUpload
-        ]);
+        return view('components.dashboard.tables.document-version');
     }
 }
