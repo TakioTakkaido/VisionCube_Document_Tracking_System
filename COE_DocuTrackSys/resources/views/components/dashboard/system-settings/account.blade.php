@@ -49,11 +49,12 @@
         --}}
     
     {{-- Update Secretary Role --}}
-    <form id="updateSecretaryAccountRole" method="post" autocomplete="off">
-        <h6>Secretary</h6>
+    <form id="updateAccountAccess" method="post" autocomplete="off">
         @csrf
         @method('POST')
         <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+
+        <h5>Secretary</h5>
         {{-- <p>{{$fileExtensions}}</p> --}}
 
         <div class="form-check">
@@ -92,16 +93,8 @@
             <label for="canPrintSecretary" class="form-check-label">Print Document File</label>
         </div>
 
-        <button type="submit" class="btn btn-primary"    id="secretarySaveBtn">Save Changes</button>        
-        <button type="button" class="btn btn-secondary"  id="secretaryCancelBtn">Cancel</button>
-    </form>
-
-    {{-- Update Assistant Role --}}
-    <form id="updateAssistantAccountRole" method="post" autocomplete="off">
-        <h6>Assistant</h6>
-        @csrf
-        @method('POST')
-        <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+        {{-- Update Assistant Role --}}
+        <h5>Assistant</h5>
         {{-- <p>{{$fileExtensions}}</p> --}}
         <div class="form-check">
             <input type="checkbox" class="form-check-input editAssistantRole" name="access" id="canUploadAssistant"
@@ -138,17 +131,8 @@
             {{$assistant[5] == true ? 'checked' : null}}>
             <label for="canPrintAssistant" class="form-check-label">Print Document File</label>
         </div>
-            
-        <button type="submit" class="btn btn-primary"    id="assistantSaveBtn">Save Changes</button>        
-        <button type="button" class="btn btn-secondary"  id="assistantCancelBtn">Cancel</button>
-    </form>
 
-    {{-- Update Clerk Role --}}
-    <form id="updateClerkAccountRole" method="post" autocomplete="off">
-        <h6>Clerk</h6>
-        @csrf
-        @method('POST')
-        <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+        <h5>Clerk</h5>
         {{-- <p>{{$fileExtensions}}</p> --}}
         <div class="form-check">
             <input type="checkbox" class="form-check-input editClerkRole" name="access" id="canUploadClerk"
@@ -186,7 +170,8 @@
             <label for="canPrintClerk" class="form-check-label">Print Document File</label>
         </div>
             
-        <button type="submit" class="btn btn-primary"    id="clerkSaveBtn">Save Changes</button>        
-        <button type="button" class="btn btn-secondary"  id="clerkCancelBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary"    id="saveAccountAccessBtn">Save Changes</button>       
+        <button type="button" class="btn btn-secondary"  id="accountAccessCancelBtn">Cancel</button> 
+        <button type="button" class="btn btn-secondary"  id="defaultAccountAccessBtn">Reset to Default</button>
     </form>
 </div>

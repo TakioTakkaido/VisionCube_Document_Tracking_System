@@ -79,6 +79,7 @@
     --}}
 
     {{-- Document Settings --}}
+    
     <div class="document-settings">
         <x-dashboard.system-settings.document />
     </div>

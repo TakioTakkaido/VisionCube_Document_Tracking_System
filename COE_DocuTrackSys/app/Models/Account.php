@@ -65,5 +65,9 @@ class Account extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    protected function isAdmin() : bool{
+        return $this->role == 'Admin';
+    }
 }
 

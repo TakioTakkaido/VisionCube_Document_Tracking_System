@@ -7,6 +7,7 @@ use Illuminate\Container\Attributes\Auth;
 use Illuminate\View\Component;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
+// use App\Models\Account;
 
 class SideBar extends Component
 {
@@ -23,8 +24,10 @@ class SideBar extends Component
      */
     public function render(): View|Closure|string
     {
+        $user = FacadesAuth::user();
         return view('components.dashboard.side-bar', [
-            'canUpload' => FacadesAuth::user()->canUpload
+            'canUpload' => FacadesAuth::user()->canUpload,
+            'isAdmin' => $user->role == 'Admin'
         ]);
     }
 }
