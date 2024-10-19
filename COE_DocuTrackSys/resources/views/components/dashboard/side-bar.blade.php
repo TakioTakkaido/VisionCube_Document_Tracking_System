@@ -3,9 +3,9 @@
     {{-- Upload Button
         Disabled for anyone not permitted to use it.
     --}}
-    <button class="upload-btn" id="uploadBtn" {{$canUpload == false ? 'style=cursor:not-allowed disabled' : ''}}>
-        <i class='bx bx-upload bx-flashing'></i>
-        <span>Upload</span>
+    <button class="home-btn" id="homePageBtn">
+        <i class='bx bx-home'></i>
+        <span>Home</span>
     </button>
     
     {{-- Side Panel Buttons 

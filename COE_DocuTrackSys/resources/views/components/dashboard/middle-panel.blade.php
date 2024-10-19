@@ -3,6 +3,10 @@
     <x-dashboard.side-bar />
     
     <div class="table-panel">
+        {{-- Homepage --}}
+        <div class="homepage">
+            <x-dashboard.homepage />
+        </div>
         {{-- Document Table --}}
         <div class="dashboard-table">
             <x-dashboard.table/>

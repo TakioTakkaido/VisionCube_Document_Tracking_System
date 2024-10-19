@@ -31,7 +31,8 @@ class Upload extends Component
             'docStatuses'   => Status::all(),
             'docCategories' => DocumentCategory::cases(),
             'roles'         => AccountRole::cases(),
-            'groups'        => ParticipantGroupController::showAllGroups()
+            'groups'        => ParticipantGroupController::showAllGroups(),
+            'canUpload'     => Auth::user()->canUpload
         ]);
     }
 }

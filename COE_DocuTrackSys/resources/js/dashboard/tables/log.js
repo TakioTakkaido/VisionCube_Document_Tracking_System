@@ -26,7 +26,11 @@ export function showLogs(){
         ajax: {
             url: window.routes.showAllLogs,
             dataSrc: 'logs'
-        },
+        }
+        ,
+        columnDefs: [
+            { type: "datetime", targets : 0 }
+        ],
         columns: [
             {data: 'created_at'},
             {data: 'account'},
