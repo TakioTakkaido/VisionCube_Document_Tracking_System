@@ -4,9 +4,15 @@ import { showLogs } from "./tables/log";
 
 // Event listener for the side panel buttons
 // Upload button for uploading documents
-$('#uploadBtn').on('click', function(event){
+$('#homePageBtn').on('click', function(event){
     event.preventDefault();
-    // Remove previous errors
+    if (!$('.homepage').hasClass('active')){
+        $('.homepage').addClass('active');
+        $('.dashboard-table').removeClass('active');
+        $('.account-settings').removeClass('active');
+        $('.document-settings').removeClass('active');
+        $('.system-settings').removeClass('active'); 
+    }
 });
 
 // Account Button
@@ -23,6 +29,7 @@ $('#activeBtn').on('click', function(event){
 
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
+        $('.homepage').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
         $('.system-settings').removeClass('active'); 
@@ -38,6 +45,7 @@ $('#deactivatedBtn').on('click', function(event){
     
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
+        $('.homepage').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
         $('.system-settings').removeClass('active'); 
@@ -64,6 +72,7 @@ $('#incomingBtn').on('click', function(event){
 
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
+        $('.homepage').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
         $('.system-settings').removeClass('active'); 
@@ -78,6 +87,7 @@ $('#outgoingBtn').on('click', function(event){
 
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
+        $('.homepage').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
         $('.system-settings').removeClass('active');
@@ -94,6 +104,7 @@ $('#archivedBtn').on('click', function(event){
 
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
+        $('.homepage').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
         $('.system-settings').removeClass('active'); 
@@ -109,6 +120,7 @@ $('#logBtn').on('click', function(event){
 
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
+        $('.homepage').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
         $('.system-settings').removeClass('active'); 
@@ -135,6 +147,7 @@ $('#accountSettingsBtn').on('click', function (event) {
 
     if (!$('.account-settings').hasClass('active')){
         $('.system-settings').addClass('active');
+        $('.homepage').removeClass('active');
         $('.account-settings').addClass('active');
         $('.document-settings').removeClass('active');
         $('.dashboard-table').removeClass('active');
@@ -146,6 +159,7 @@ $('#documentSettingsBtn').on('click', function (event) {
 
     if (!$('.document-settings').hasClass('active')){
         $('.system-settings').addClass('active');
+        $('.homepage').removeClass('active');
         $('.document-settings').addClass('active'); 
         $('.account-settings').removeClass('active');
         $('.dashboard-table').removeClass('active');

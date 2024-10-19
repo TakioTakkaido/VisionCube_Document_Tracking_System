@@ -3,9 +3,9 @@
     {{-- Upload Button
         Disabled for anyone not permitted to use it.
     --}}
-    <button class="upload-btn" id="uploadBtn" {{$canUpload == false ? 'style=cursor:not-allowed disabled' : ''}}>
-        <i class='bx bx-upload bx-flashing'></i>
-        <span>Upload</span>
+    <button class="home-btn" id="homePageBtn">
+        <i class='bx bx-home'></i>
+        <span>Home</span>
     </button>
     
     {{-- Side Panel Buttons 
@@ -36,6 +36,7 @@
     --}}
 
     <div class="side-panel-section" id="dropdown-arrow">
+        @if($isAdmin)
         {{-- Accounts --}}
         <a class="sidepanel-btn" id="accountBtn">
             <span class="dropdown-arrow"><i class='bx bx-user'></i>
@@ -46,7 +47,8 @@
             <a id="activeBtn" href="#"><i class='bx bx-user-check'></i>Active</a>
             <a id="deactivatedBtn" href="#"><i class='bx bx-user-x'></i>Deactivated</a>
         </div>
-
+        @endif
+        
         {{-- Documents --}}
         <a class="sidepanel-btn" id="documentBtn">
             <span class="dropdown-arrow"><i class='bx bx-file'></i>
@@ -61,11 +63,12 @@
         </div>
 
         {{-- Logs --}}
+        @if($isAdmin)
         <a class="sidepanel-btn" id="logBtn">
             <span class="dropdown-arrow"><i class='bx bx-history'></i>
             </span> Logs
         </a>
-
+        @endif
         {{-- System Settings --}}
         <a class="sidepanel-btn" id="systemSettingsBtn">
             <span class="dropdown-arrow"><i class='bx bx-cog'></i>
@@ -75,7 +78,9 @@
         {{-- System Settings Dropdown --}}
         <div class="dropdown-container" id="systemSettingsDropdown">
             <a id="accountSettingsBtn"><i class='bx bx-user'></i>Account</a>
-            <a id="documentSettingsBtn"><i class='bx bx-file'></i>Document</a>
+            @if($isAdmin)
+                <a id="documentSettingsBtn"><i class='bx bx-file'></i>Document</a>
+            @endif
         </div>
 
     </div>

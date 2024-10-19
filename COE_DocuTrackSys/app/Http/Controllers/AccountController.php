@@ -262,18 +262,43 @@ class AccountController extends Controller {
 
     public function editAccess(Request $request){
         // Find all accounts of that role
-        $accounts = Account::where('role', $request->role)->get();
+        $secretaries = Account::where('role', "Secretary")->get();
+        $assistants = Account::where('role', "Assistant")->get();
+        $clerks = Account::where('role', "Clerk")->get();
 
         // Edit access for each roles
-        foreach ($accounts as $account) {
-            $account->canUpload     = filter_var($request->accesses[0], FILTER_VALIDATE_BOOLEAN);
-            $account->canEdit       = filter_var($request->accesses[1], FILTER_VALIDATE_BOOLEAN);;
-            $account->canMove       = filter_var($request->accesses[2], FILTER_VALIDATE_BOOLEAN);;
-            $account->canArchive    = filter_var($request->accesses[3], FILTER_VALIDATE_BOOLEAN);;
-            $account->canDownload   = filter_var($request->accesses[4], FILTER_VALIDATE_BOOLEAN);;
-            $account->canPrint      = filter_var($request->accesses[5], FILTER_VALIDATE_BOOLEAN);;
+        foreach ($secretaries as $secretary) {
+            $secretary->canUpload     = filter_var($request->secretaryAccesses[0], FILTER_VALIDATE_BOOLEAN);
+            $secretary->canEdit       = filter_var($request->secretaryAccesses[1], FILTER_VALIDATE_BOOLEAN);
+            $secretary->canMove       = filter_var($request->secretaryAccesses[2], FILTER_VALIDATE_BOOLEAN);
+            $secretary->canArchive    = filter_var($request->secretaryAccesses[3], FILTER_VALIDATE_BOOLEAN);
+            $secretary->canDownload   = filter_var($request->secretaryAccesses[4], FILTER_VALIDATE_BOOLEAN);
+            $secretary->canPrint      = filter_var($request->secretaryAccesses[5], FILTER_VALIDATE_BOOLEAN);
+            dd($secretary);
+            $secretary->save();
+        }   
 
-            $account->save();
+        foreach ($assistants as $assistant) {
+            $assistant->canUpload     = filter_var($request->assistantAccesses[0], FILTER_VALIDATE_BOOLEAN);
+            $assistant->canEdit       = filter_var($request->assistantAccesses[1], FILTER_VALIDATE_BOOLEAN);
+            $assistant->canMove       = filter_var($request->assistantAccesses[2], FILTER_VALIDATE_BOOLEAN);
+            $assistant->canArchive    = filter_var($request->assistantAccesses[3], FILTER_VALIDATE_BOOLEAN);
+            $assistant->canDownload   = filter_var($request->assistantAccesses[4], FILTER_VALIDATE_BOOLEAN);
+            $assistant->canPrint      = filter_var($request->assistantAccesses[5], FILTER_VALIDATE_BOOLEAN);
+            
+            $assistant->save();
+
+        }   
+
+        foreach ($clerks as $clerk) {
+            $clerk->canUpload     = filter_var($request->clerkAccesses[0], FILTER_VALIDATE_BOOLEAN);
+            $clerk->canEdit       = filter_var($request->clerkAccesses[1], FILTER_VALIDATE_BOOLEAN);
+            $clerk->canMove       = filter_var($request->clerkAccesses[2], FILTER_VALIDATE_BOOLEAN);
+            $clerk->canArchive    = filter_var($request->clerkAccesses[3], FILTER_VALIDATE_BOOLEAN);
+            $clerk->canDownload   = filter_var($request->clerkAccesses[4], FILTER_VALIDATE_BOOLEAN);
+            $clerk->canPrint      = filter_var($request->clerkAccesses[5], FILTER_VALIDATE_BOOLEAN);
+
+            $clerk->save();
         }   
 
         // Create new log
@@ -289,7 +314,7 @@ class AccountController extends Controller {
 
     public static function getSecretaryAccesses(){
         // Get first instance of that role
-        $secretary = Account::where('role', 'Assistant')->first();
+        $secretary = Account::where('role', 'Secretary')->first();
         $access = [];
 
         // Get all access

@@ -29,8 +29,8 @@ export function showActive() {
             dataSrc: 'accounts'
         },
         columns: [
-            {data: 'email'},
             {data: 'name'},
+            {data: 'email'},
             {data: 'role'}
         ],
         language: {
@@ -129,7 +129,9 @@ export function showActive() {
                 });
                 
             });
-        }
+        },
+
+        autoWidth: false
     });
 
     // Show the account table

@@ -620,9 +620,9 @@ function viewDocumentVersions(id, row){
             dataSrc: 'documentVersions'
         },
         columns: [
+            {data: 'version_number'},
             {data: 'created_at'},
             {data: 'modified_by'},
-            {data: 'version_number'},
             {
                 data: null,
                 orderable: false,
@@ -655,21 +655,14 @@ function viewDocumentVersions(id, row){
             emptyTable: "No document versions present."
         },
         order: {
-            idx: 1,
+            idx: 0,
             dir: 'desc'
         },
-
-        // $(this).on('click', function(event){
-
-        // });
     })
-    
-    $('#documentVersionsTable').addClass('show');
 }
 // View Document Version Content
 $('#documentVersionsTable tbody').on('click', 'a.viewDocumentVersionContent', function(event){
     event.preventDefault();
-    console.log('okay');
     $('#documentVersionIFrame').attr('src', $(this).data('file') + `#scrollbar=1&toolbar=0`);
     $("#documentVersionModifiedDate").html('<strong>Modified At: </strong>'+ $(this).data('modifieddate'));
     $("#documentVersionModifiedBy").html('<strong>Modified By: </strong>'+ $(this).data('modifiedby'));

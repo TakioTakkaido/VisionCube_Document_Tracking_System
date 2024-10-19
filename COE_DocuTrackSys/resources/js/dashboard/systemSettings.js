@@ -84,106 +84,83 @@ $('#password_confirmation').on('input' , function(event){
 
 //////////////////////////////////////////////////////////////////
 // EDITING ACCESS IN ACCOUNT ROLES
-$('#secretarySaveBtn').on('click', function (event) {
+$('#saveAccountAccessBtn').on('click', function (event) {
     // Prevent other events
     event.preventDefault();
-
-    // Access array
-    var accesses = [];
-
-    $.each($('.editSecretaryRole'), function (index, element) { 
-        accesses[index] = $(element).is(':checked');
-    });
-
-    var formData = new FormData;
-
-    formData = {
-        '_token' : $('#token').val(),
-        'accesses' : accesses,
-        'role' : 'Assistant'
-    }
-    
-    $.ajax({
-        method: "POST",
-        url: window.routes.updateRoleAccess,
-        data: formData,
-        success: function (data) {
-            // Parse the data from the json response
-            // var data = JSON.parse(response);
-
-           // Log success message
-            console.log(data);
-            console.log('Edited successfully');
-        },
-        error: function (data) {
-            // Parse the data from the json response
-            var data = JSON.parse(data.responseText);
-
-            // Log error
-            console.log("Error occured while editing status")
-            console.log(data.errors)
-        }
-    });
-})
-
-$('#assistantSaveBtn').on('click', function (event) {
-    // Prevent other events
-    event.preventDefault();
-
-    // Access array
-    var accesses = {};
-
-    $.each($('.editAssistantRole'), function (index, element) { 
-        accesses[index] = $(element).prop('checked');
-    });
-    console.log(accesses);
-    var formData = new FormData();
-    formData = {
-        '_token' : $('#token').val(),
-        'accesses' : accesses,
-        'role' : 'Assistant'
-    }
-    console.log('edit assistant');
-    $.ajax({
-        method: "POST",
-        url: window.routes.updateRoleAccess,
-        data: formData,
-        success: function (data) {
-            // Parse the data from the json response
-            // var data = JSON.parse(response);
-
-           // Log success message
-            console.log(data);
-            console.log('Edited successfully');
-        },
-        error: function (data) {
-            // Parse the data from the json response
-            var data = JSON.parse(data.responseText);
-
-            // Log error
-            console.log("Error occured while editing status")
-            console.log(data.errors)
-        }
-    });
+    updateAccountAccess();
 });
 
-$('#clerkSaveBtn').on('click', function (event) {
-    // Prevent other events
+$('#defaultAccountAccessBtn').on('click', function(event){
     event.preventDefault();
+    var secretaryAccesses = [];
+    var assistantAccesses = [];
+    var clerkAccesses = [];
+
+    // Array Pattern
+    // upload
+    // edit
+    // move 
+    // archive
+    // download
+    // print
+    secretaryAccesses = [
+        'true',
+        'true',
+        'true',
+        'true',
+        'true',
+        'true'
+    ];
+    
+    assistantAccesses = [
+        'false',
+        'true',
+        'true',
+        'true',
+        'true',
+        'true'
+    ];
+
+    clerkAccesses = [
+        'false',
+        'true',
+        'true',
+        'true',
+        'false',
+        'false'
+    ];
+
+    updateAccountAccess(secretaryAccesses, assistantAccesses, clerkAccesses);
+});
+
+function updateAccountAccess(secretaryAccesses = [], assistantAccesses = [], clerkAccesses = []){
+    if (secretaryAccesses.length == 0){
+        $.each($('.editSecretaryRole'), function (index, element) { 
+            secretaryAccesses[index] = $(element).is(':checked');
+        });
+    }
 
     // Access array
-    var accesses = {};
-
-    $.each($('.editClerkRole'), function (index, element) { 
-        accesses[index] = $(element).is(':checked');
-    });
+    if (assistantAccesses.length == 0){
+        $.each($('.editAssistantRole'), function (index, element) { 
+            assistantAccesses[index] = $(element).prop('checked');
+        });
+    }
+    
+    // Access array
+    if (clerkAccesses.length == 0){ 
+        $.each($('.editClerkRole'), function (index, element) { 
+            clerkAccesses[index] = $(element).is(':checked');
+        });
+    }
 
     var formData = new FormData();
     
     formData = {
         '_token' : $('#token').val(),
-        'accesses' : accesses,
-        'role' : 'Clerk'
+        'secretaryAccesses' : secretaryAccesses,
+        'assistantAccesses' : assistantAccesses,
+        'clerkAccesses' : clerkAccesses,
     }
 
     $.ajax({
@@ -207,7 +184,7 @@ $('#clerkSaveBtn').on('click', function (event) {
             console.log(data.errors)
         }
     });
-});
+}
 //////////////////////////////////////////////////////////////////
 // EDITING DOCUMENT TYPE
 // Place new functions here
@@ -461,12 +438,30 @@ $('#updateFileExtensionForm').on('submit', function (event) {
     // Prevent other events
     event.preventDefault();
 
-    var extensions = {};
+    updateFileExtensions();
+});
 
-    // Check whether the file extensions were now true or false
-    $.each($('.editExtension'), function (index, element) {
-        extensions[index] = $(element).is(":checked");    
-    });
+$('#fileExtensionResetBtn').on('click', function(event){
+    event.preventDefault();
+
+    var extensions = [];
+    extensions = [
+        'true',
+        'true',
+        'true',
+        'true',
+        'true'
+    ];
+
+    updateFileExtensions(extensions);
+});
+
+function updateFileExtensions(extensions = []){
+    if (extensions.length == 0){    
+        $.each($('.editExtension'), function (index, element) {
+            extensions[index] = $(element).is(":checked");    
+        });
+    }
 
     var formData = new FormData;
 
@@ -474,8 +469,6 @@ $('#updateFileExtensionForm').on('submit', function (event) {
         '_token' : $('#token').val(),
         'extensions' : extensions   
     }
-
-    console.log(formData);
 
     $.ajax({
         method: "POST",
@@ -497,8 +490,7 @@ $('#updateFileExtensionForm').on('submit', function (event) {
             console.log(data.errors)
         }
     });
-});
-
+}
 //////////////////////////////////////////////////////////////////
 // Update Participants
 $('.editParticipantBtn').on('click', function(event){
@@ -824,6 +816,8 @@ $('#updateParticipantGroupMembersForm').on('submit', function(event){
     });
 })
 // Sync New Participant Groups to the Selected Participant Group
+
+
 
 
 

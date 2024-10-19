@@ -25,7 +25,7 @@ body {
 .top-panel {
     height: 10%; 
     width: 100%;
-    background-color: #b22222;
+    background-color: #810505;
     top: 0; 
     left: 0; 
     display: flex;
@@ -54,6 +54,7 @@ body {
     display: inline-block;
     object-fit: contain;
 }
+
 .header-text {
     color: white; 
     margin-left: 0px;
@@ -75,13 +76,14 @@ body {
     object-fit: cover;
     margin-right: 10px;
 }
+
 .account-info {
     display: block;
 }
+
 .account-name {
-    font-size: 16px;
+    font-size: 15px;
     color: white;
-    font-weight: 500;
     display: flex; 
     padding-top: 15px;
 }
@@ -104,7 +106,7 @@ body {
     width: 15%;
     position: relative;
     text-align: middle;
-    background-color: #802121;
+    background-color: #a50b0b;
     overflow-x: hidden;
     padding-top: 10px;
 }
@@ -126,13 +128,13 @@ body {
 .side-panel-section a{
     position: relative;
     display: inline-block;
-    width: 220px;
+    width: 200px;
     top: 100px;
-    padding: 9px 15px; 
+    padding: 5px 10px; 
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     text-decoration: none;
-    font-size: 22px;
+    font-size: 18px;
     color: white;
     transition: 0.45s ease;
 }
@@ -140,9 +142,9 @@ body {
 .side-panel-section a:hover{
     height: auto;
     color: black;
-    background-color: #ead149;
+    background-color: #e4c309;
     box-shadow: 0 0 10px rgba(33, 33, 33, 0.5);
-    padding: 9px 25px;
+    padding: 5px 25px;
     cursor: pointer;
 }
 
@@ -159,7 +161,7 @@ body {
 
 .dropdown-container a{
     display: flex;
-    font-size: 18px;
+    font-size: 17px;
     padding: 10px 60px;
     line-height: 1;
 }
@@ -174,12 +176,12 @@ body {
     margin-right: 10px;
 }
 
-.upload-btn{
+.home-btn{
     display: flex;
     position: absolute;
-    background-color: #ead149;
+    background-color: #e4c309;
     color: black;
-    top: 30px;
+    top: 35px;
     left: 20px;
     padding: 15px 20px 15px 15px;
     border: none;
@@ -190,50 +192,36 @@ body {
     transition: 0.45s ease;
 }
 
-.upload-btn i{
+.home-btn i{
     display: inline-block;
-    font-size: 20px;
+    font-size: 18px;
 }
 
-.upload-btn span{
-    font-size: 22px;
+.home-btn span{
+    font-size: 18px;
     display: flex;
     
 }
 
-.upload-btn:hover{
+.home-btn:hover{
     box-shadow: 0 0 20px rgba(33, 33, 33, 0.5);
     padding: 20px 25px 20px 20px;
+    font-size: 20px;   
+    transition: 0.45s ease;
 }
 
 /** FOR JS, FORM POPUP**/
-.uploadModal{
-    display: flex;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    align-content: center;
-    align-items: center;
-}
 
 .editDocument {
     padding-bottom: 0.5rem;
 }
 
-/* .uploadContent{ 
-    position: relative;
-    background-color: whitesmoke;
-    border-radius: 8px;
-} */
-
 .uploadContent input, .uploadContent select, .uploadContent textarea{
     width: 100%;
-    padding: 10px;
-    margin-bottom: 5px;
+    padding: 5px;
     border-radius: 4px;
     border: 1px solid #ccc;
+    cursor: pointer;
 }
 
 .uploadContent textarea {
@@ -241,14 +229,14 @@ body {
 }
 
 .error {
-    color: red !important;
+    color: #a50b0b !important;
     font-size: 10px;
     padding: none;
 }
 
 .error-input{ 
-    color: red !important;
-    border: 1px solid red;
+    color: #a50b0b !important;
+    border: 1px solid #a50b0b;
 
 }
 
@@ -258,9 +246,6 @@ body {
     gap: 10px;
 }
 
-.flex-row > div { 
-    flex: 1;
-}
 
 .button-group{
     display: flex;
@@ -279,7 +264,7 @@ body {
 }
 
 .submit-btn{
-    background-color: #ead149;
+    background-color: #e4c309;
     padding: 5px 5px;
 }
 
@@ -313,13 +298,53 @@ body {
 }
 
 .btn-primary {
-    background-color: #b22222;
-    border-color: #b22222;
+    background-color: #a50b0b;
+    border-color: transparent;
 }
 
-.btn-primary:hover {
-    background-color: #c53838;
-    border-color: #c53838;
+.btn-primary:hover,
+.btn-primary:active,
+.btn:hover,
+.btn:active{
+    background-color: #810505 !important;
+    border-color: #810505 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    color: white !important;
+}
+
+.btn-primary:hover,
+.btn-primary:active {
+    color: black !important;
+}
+
+.btn-primary:focus {
+    border-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn-primary:hover,
+.btn-primary:disabled {
+    background-color: #810505 !important;
+    border-color: #810505 !important;
+}
+
+.btn-warning {
+    background-color: #e4c309;
+    border-color: transparent;
+}
+
+.btn-warning:active,
+.btn-warning:hover,
+.btn-warning:disabled {
+    background-color: #bb9f03 !important;
+    border-color: #bb9f03 !important;
+}
+
+.btn-warning:focus {
+    border-color: transparent;
+    box-shadow: none;
 }
 
 /* Document Table */
@@ -335,7 +360,7 @@ body {
     box-shadow: 0px 2px 5px rgba(0,0,0,0.5);
 }
 .edit-account{
-    background-color: #ead149;
+    background-color: #e4c309;
     color: black;
 }
 
@@ -361,8 +386,8 @@ body {
 
 /* ACCOUNT MENU DROPDOWN */
 #accountMenuDropdownBtn:active {
-    background-color: #ead149 !important;
-    border-color: #ead149 !important;
+    background-color: #e4c309 !important;
+    border-color: #e4c309 !important;
 }
 
 #accountMenuDropdownBtn:focus {
@@ -418,7 +443,7 @@ body {
     display: flex;
     align-items: center;
     padding: 0.5rem;  /* Add padding to make the checkboxes and labels look spaced */
-    font-size: 15px;
+    font-size: 14px;
     padding: 3px;
 }
 
@@ -427,7 +452,8 @@ body {
 }
 
 #documentVersionsTable {
-    width: 100% !important;
+    table-layout: fixed;
+    width: 100%;
 }
 
 .modal-content {
@@ -440,4 +466,73 @@ body {
 
 .modal-body {
     width: 100%;
+}
+
+.middle-panel {
+    font-size: 15px !important;
+}
+
+.btn {
+    font-size: 15px;
+}
+
+.popover-header {
+    font-size: 15px !important;
+}
+
+label {
+    display: inline;
+    margin: 0px
+}
+
+#dashboardTable {
+    table-layout: fixed;
+    width: 100%;
+}
+
+#documentVersions {
+    font-size: 15px;
+}
+
+button:focus {
+    outline: none !important;
+}
+
+.uploadInput:focus{
+    outline: none;
+}
+
+#uploadAssignee select {
+    border: 1px solid red;
+}
+
+.custom-file-label::after:hover {
+    color: black !important;
+}
+
+.custom-file-label::after {
+    background-color: #a50b0b;
+    color: white;
+}
+
+/* textarea::placeholder {
+    color: black !important;
+} */
+/* 
+input::-webkit-input-placeholder { 
+    color: black;
+}
+input:-moz-placeholder { 
+    color: black;
+}
+input::-moz-placeholder {
+    color: black;
+}
+input:-ms-input-placeholder {
+    color: black;
+} */
+
+.otherBtn {
+    border-radius: 30px;
+    padding: 0px 5px !important;
 }

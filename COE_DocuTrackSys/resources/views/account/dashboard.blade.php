@@ -69,6 +69,11 @@ Sanchez, Shane David U.
     ])
 </head>
 <body>
+<script>
+    $(function(){
+        $('#homePageBtn').trigger('click');
+    });
+</script>
 {{-- TOP BAR --}}
 <x-dashboard.top-panel />
 
@@ -78,11 +83,7 @@ Sanchez, Shane David U.
 {{-- INFORMATION TABLES --}}
 <x-dashboard.info.log />
 
-
 <x-dashboard.info.document-version />
-
-{{-- UPLOAD FORM --}}
-<x-dashboard.forms.upload />
 
 {{-- DOCUMENT VERSIONS --}}
 <x-dashboard.tables.document-version />
@@ -94,6 +95,8 @@ Sanchez, Shane David U.
 <x-dashboard.document-preview />
 
 {{-- Routes retrieving document, since AJAX cannot get this as a link, when inserted directly --}}
+
+
 <script>
     window.routes = {
         // Accounts Routes

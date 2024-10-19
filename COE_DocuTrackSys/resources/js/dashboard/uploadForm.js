@@ -238,12 +238,6 @@ $('#submitDocumentForm').on('click', function(event) {
 
     formData.append('assignee', $('#uploadAssignee').val());
 
-    // if ($('#uploadCategory').val().length === 0){
-    //     formData.append('category', $('#uploadCategory').val());
-    // } else {
-    //     formData.append('category', $('#uploadCategory').val());
-    // }
-    console.log($('#uploadCategory').val());
     formData.append('category', $('#uploadCategory').val());
     formData.append('status', $('#uploadStatus').val());
 
@@ -269,78 +263,90 @@ $('#submitDocumentForm').on('click', function(event) {
             if (data.responseJSON.errors.type){
                 $('#typeError').html(data.responseJSON.errors.type);
                 $('#uploadDocType').css('border', '1px solid red');
-                $('#uploadDocType').css('background-color', 'pink');
+                $('#uploadDocType').css('background-color', '#f09d9d');
                 $('#typeError').css('display', 'block');
             }
 
-            if (data.responseJSON.errors.series){
-                $('#seriesError').html(data.responseJSON.errors.series);
+            if (data.responseJSON.errors.series_number){
+                $('#seriesError').html(data.responseJSON.errors.series_number);
                 $('#seriesError').css('display', 'block');
                 $('#uploadSeriesNo').css('border', '1px solid red');
-                $('#uploadSeriesNo').css('background-color', 'pink');
+                $('#uploadSeriesNo').css('background-color', '#f09d9d');
             }
 
-            if (data.responseJSON.errors.memo){
-                $('#memoError').html(data.responseJSON.errors.memo);
+            if (data.responseJSON.errors.memo_number){
+                $('#memoError').html(data.responseJSON.errors.memo_number);
                 $('#memoError').css('display', 'block');
                 $('#uploadMemoNo').css('border', '1px solid red');
-                $('#uploadMemoNo').css('background-color', 'pink');
+                $('#uploadMemoNo').css('background-color', '#f09d9d');
             }
 
             if (data.responseJSON.errors.sender){
                 $('#senderError').html(data.responseJSON.errors.sender);
                 $('#senderError').css('display', 'block');
-                $('#uploadFrom').css('border', '1px solid red');
-                $('#uploadFrom').css('background-color', 'pink');
+                
+                $('.uploadFrom .btn').css({
+                    'border': '1px solid red',
+                    'background-color': '#f09d9d'
+                });
+
+                $('#uploadFromText').css('border', '1px solid red');
+                $('#uploadFromText').css('background-color', '#f09d9d');
             }
 
             if (data.responseJSON.errors.recipient){
                 $('#recipientError').html(data.responseJSON.errors.recipient);
                 $('#recipientError').css('display', 'block');
-                $('#uploadTo').css('border', '1px solid red');
-                $('#uploadTo').css('background-color', 'pink');
+
+                $('.uploadTo .btn').css({
+                    'border': '1px solid red',
+                    'background-color': '#f09d9d'
+                });
+
+                $('#uploadToText').css('border', '1px solid red');
+                $('#uploadToText').css('background-color', '#f09d9d');
             }
 
             if (data.responseJSON.errors.subject){
                 $('#subjectError').html(data.responseJSON.errors.subject);
                 $('#subjectError').css('display', 'block');
                 $('#uploadSubject').css('border', '1px solid red');
-                $('#uploadSubject').css('background-color', 'pink');
+                $('#uploadSubject').css('background-color', '#f09d9d');
             }
 
-            if (data.responseJSON.errors.date){
-                $('#dateError').html(data.responseJSON.errors.date);
+            if (data.responseJSON.errors.document_date){
+                $('#dateError').html(data.responseJSON.errors.document_date);
                 $('#dateError').css('display', 'block');
                 $('#uploadDate').css('border', '1px solid red');
-                $('#uploadDate').css('background-color', 'pink');
+                $('#uploadDate').css('background-color', '#f09d9d');
             }
 
             if (data.responseJSON.errors.file){
                 $('#fileError').html(data.responseJSON.errors.file);
                 $('#fileError').css('display', 'block');
-                $('#softcopy').css('border', '1px solid red');
-                $('#softcopy').css('background-color', 'pink');
+                $('.custom-file-label').css('border', '1px solid red');
+                $('.custom-file-label').css('background-color', '#f09d9d');
             }
 
             if (data.responseJSON.errors.category){
                 $('#categoryError').html(data.responseJSON.errors.category);
                 $('#categoryError').css('display', 'block');
                 $('#uploadCategory').css('border', '1px solid red');
-                $('#uploadCategory').css('background-color', 'pink');
+                $('#uploadCategory').css('background-color', '#f09d9d');
             }
             
             if (data.responseJSON.errors.status){
                 $('#statusError').html(data.responseJSON.errors.status);
                 $('#statusError').css('display', 'block');
                 $('#uploadStatus').css('border', '1px solid red');
-                $('#uploadStatus').css('background-color', 'pink');
+                $('#uploadStatus').css('background-color', '#f09d9d');
             }
 
             if (data.responseJSON.errors.assignee){
                 $('#assigneeError').html(data.responseJSON.errors.assignee);
                 $('#assigneeError').css('display', 'block');
                 $('#uploadAssignee').css('border', '1px solid red');
-                $('#uploadAssignee').css('background-color', 'pink');
+                $('#uploadAssignee').css('background-color', '#f09d9d');
             }
             
             $('#submitDocumentForm').prop('disabled', false);
@@ -363,6 +369,16 @@ $('#clearUploadBtn').on('click', function (event){
     $.each($('.error'), function () { 
         $(this).css('display', 'none');
     });
+
+    $('.uploadFrom .btn').css({
+        'border': '1px solid #ccc',
+        'background-color': 'white'
+    });
+
+    $('.uploadTo .btn').css({
+        'border': '1px solid #ccc',
+        'background-color': 'white'
+    });
 });
 
 var pos;
@@ -370,8 +386,10 @@ var pos;
 $('#uploadFrom').selectpicker().on('changed.bs.select', function(event, clickedIndex, isSelected, previousValue){
     event.preventDefault();
     $('#uploadFromText').val('');
-    $(this).css('border', '1px solid #ccc');
-    $(this).css('background-color', 'white');
+    $('.uploadFrom .btn').css({
+        'border': '1px solid #ccc',
+        'background-color': 'white'
+    });
     $('#senderError').css('display', 'none');
 
     pos = $(this).parent().find('.dropdown-menu.inner').scrollTop();
@@ -423,8 +441,11 @@ $('#uploadTo').selectpicker().on('changed.bs.select', function(event, clickedInd
     event.preventDefault();
     $('#uploadToText').val('');
 
-    $(this).css('border', '1px solid #ccc');
-    $(this).css('background-color', 'white');
+    $('.uploadTo .btn').css({
+        'border': '1px solid #ccc',
+        'background-color': 'white'
+    });
+
     $('#recipientError').css('display', 'none');
 
     pos = $(this).parent().find('.dropdown-menu.inner').scrollTop();
@@ -530,12 +551,20 @@ $('#uploadAssignee').on('input', function(event){
 $('#uploadFromText').on('input', function(event){
     $('#uploadFrom').selectpicker('deselectAll');
     $('#uploadFrom').selectpicker('refresh');
+    $('.uploadFrom .btn').css({
+        'border': '1px solid #ccc',
+        'background-color': 'white'
+    });
     $('#senderError').css('display', 'none');
 });
 
 $('#uploadToText').on('input', function(event){
     $('#uploadTo').selectpicker('deselectAll');
     $('#uploadTo').selectpicker('refresh');
+    $('.uploadTo .btn').css({
+        'border': '1px solid #ccc',
+        'background-color': 'white'
+    });
     $('#recipientError').css('display', 'none');
 });
 
@@ -544,12 +573,58 @@ $('#uploadDocType').on('input', function(event){
     event.preventDefault();
 
     if($(this).val() == 'Type0'){
-        $('#memoInfo').css('display', 'block');
+        $('#memoInfo').css('display', 'flex');
         $('#uploadSeriesNo').prop('required', true);
         $('#uploadMemoNo').prop('required', true);
     } else {
         $('#memoInfo').css('display', 'none');
         $('#uploadSeriesNo').prop('required', false);
         $('#uploadMemoNo').prop('required', false);
+    }
+});
+
+$('#otherSender').on('click', function(event){
+    $('#uploadFromText').toggle();
+    $('.uploadFrom').toggle();
+
+    if (!$('#uploadFromText').is(':visible')) {
+        $('#uploadFromText').val('');
+        $('#uploadFromText').css('border', '1px solid #dee2e6');
+        $('#uploadFromText').css('background-color', 'white');
+    }
+
+    if (!$('.uploadFrom').is(':visible')) {
+        $('#uploadFrom').selectpicker('deselectAll');
+        $('#uploadFrom').selectpicker('refresh');
+        $('.uploadFrom .btn').css({
+            'background-color': 'white'
+        });
+
+        $('.uploadFrom .btn .border').css({
+            'border': '1px solid #dee2e6',
+        });
+    }
+});
+
+$('#otherRecipient').on('click', function(event){
+    $('#uploadToText').toggle();
+    $('.uploadTo').toggle();
+
+    if (!$('#uploadToText').is(':visible')) {
+        $('#uploadToText').val('');
+        $('#uploadToText').css('border', '1px solid #dee2e6');
+        $('#uploadToText').css('background-color', 'white');
+    }
+
+    if (!$('.uploadTo').is(':visible')) {
+        $('#uploadTo').selectpicker('deselectAll');
+        $('#uploadTo').selectpicker('refresh');
+        $('.uploadTo .btn').css({
+            'background-color': 'white'
+        });
+
+        $('.uploadTo .border').css({
+            'border': '1px solid #dee2e6'
+        })
     }
 });

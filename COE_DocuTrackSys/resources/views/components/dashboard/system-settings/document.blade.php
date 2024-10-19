@@ -365,5 +365,6 @@
 
         <button type="submit" class="btn btn-primary"    id="fileExtensionSaveBtn">Save Changes</button>        
         <button type="button" class="btn btn-secondary"  id="fileExtensionCancelBtn">Cancel</button>
+        <button type="button" class="btn btn-secondary"  id="fileExtensionResetBtn">Reset to Default</button>
     </form>
 </div>

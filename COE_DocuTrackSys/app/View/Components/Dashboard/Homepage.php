@@ -3,13 +3,11 @@
 namespace App\View\Components\Dashboard;
 
 use Closure;
-use Illuminate\Container\Attributes\Auth;
 use Illuminate\View\Component;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
-// use App\Models\Account;
+use Illuminate\Support\Facades\Auth;
 
-class SideBar extends Component
+class Homepage extends Component
 {
     /**
      * Create a new component instance.
@@ -24,10 +22,8 @@ class SideBar extends Component
      */
     public function render(): View|Closure|string
     {
-        $user = FacadesAuth::user();
-        return view('components.dashboard.side-bar', [
-            'canUpload' => FacadesAuth::user()->canUpload,
-            'isAdmin' => $user->role == 'Admin'
+        return view('components.dashboard.homepage', [
+            'isAdmin' => Auth::user()->role == 'Admin'
         ]);
     }
 }
