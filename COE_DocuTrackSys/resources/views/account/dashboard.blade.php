@@ -65,7 +65,10 @@ Sanchez, Shane David U.
         'resources/js/dashboard/editForm.js',
 
         // System Settings
-        'resources/js/dashboard/systemSettings.js'
+        'resources/js/dashboard/systemSettings.js',
+
+        // Notifications
+        'resources/js/notification.js'
     ])
 </head>
 <body>
@@ -73,7 +76,8 @@ Sanchez, Shane David U.
     $(function(){
         $('#homePageBtn').trigger('click');
     });
-</script>
+</script>{{-- NOTIFICATION --}}
+<x-notification />
 {{-- TOP BAR --}}
 <x-dashboard.top-panel />
 
@@ -93,6 +97,8 @@ Sanchez, Shane David U.
 
 {{-- DOCUMENT PREVIEW --}}
 <x-dashboard.document-preview />
+
+
 
 {{-- Routes retrieving document, since AJAX cannot get this as a link, when inserted directly --}}
 

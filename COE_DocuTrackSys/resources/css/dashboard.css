@@ -536,3 +536,28 @@ input:-ms-input-placeholder {
     border-radius: 30px;
     padding: 0px 5px !important;
 }
+
+
+.alert-dismissible .close {
+    padding: 0px;
+}
+
+#modalAlertContainer {
+    position: fixed;             /* Fix it at the bottom of the screen */
+    bottom: 0;                   /* Align to the bottom of the viewport */
+    right: 0;
+    display: flex;               /* Enable Flexbox */
+    justify-content: center;     /* Center horizontally */
+    align-items: flex-end;       /* Align the alert at the bottom */
+    z-index: 1050;               /* Make sure it's above other content */
+    padding: 0px;               /* Add some padding at the bottom */
+    width: 20%;
+    height: auto;
+}
+
+
+.notification {
+    margin-right: 1rem;
+    background-color: #a50b0b;
+    color: white;
+}

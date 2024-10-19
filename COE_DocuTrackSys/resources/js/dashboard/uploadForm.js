@@ -258,8 +258,17 @@ $('#submitDocumentForm').on('click', function(event) {
             $('#documentTable').DataTable().ajax.reload();
             $('#submitDocumentForm').prop('disabled', false);
             $('#clearUploadBtn').prop('disabled', false);
+
+            $('.notification .close').trigger('click');
+            $('#modalAlertContainer').removeClass('d-none').addClass('show');
+            $('#notifMessage').html('Document upload success!')
+
         },
         error: function(data) {
+            $('.notification .close').trigger('click');
+            $('#modalAlertContainer').removeClass('d-none').addClass('show');
+            $('#notifMessage').html('Error in uploading document.')
+
             if (data.responseJSON.errors.type){
                 $('#typeError').html(data.responseJSON.errors.type);
                 $('#uploadDocType').css('border', '1px solid red');
