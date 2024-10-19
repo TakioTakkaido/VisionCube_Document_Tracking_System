@@ -75,6 +75,7 @@ Sanchez, Shane David U.
 <script>
     $(function(){
         $('#homePageBtn').trigger('click');
+        $('#accountAccessTable').DataTable();
     });
 </script>{{-- NOTIFICATION --}}
 <x-notification />
