@@ -603,3 +603,15 @@ button:focus {
     border: 1px solid #ccc;
     cursor: pointer;
 }
+
+.categoryBtn {
+    cursor: pointer;
+}
+
+.categoryBtn:hover {
+    color: #a50b0b;
+}
+
+.form-control {
+    font-size: 15px;
+}
