@@ -5,7 +5,7 @@ header {
     padding: 10px;
     background-color: #333; 
     border-bottom: 100px solid #000000; 
-    font-family: "Arial", sans-serif;
+    font-family: "Arial", sans-serif !important;
     
 }
 
@@ -216,7 +216,9 @@ body {
     padding-bottom: 0.5rem;
 }
 
-.uploadContent input, .uploadContent select, .uploadContent textarea{
+.uploadContent input, 
+.uploadContent select, 
+.uploadContent textarea{
     width: 100%;
     padding: 5px;
     border-radius: 4px;
@@ -433,12 +435,6 @@ body {
     display: block; 
 }
 
-.dropdown-menu {
-    max-height: 200px;  /* Adjust this value to set the max visible height of the dropdown */
-    overflow-y: auto;   /* Enable vertical scrolling if content exceeds the max-height */
-    min-height: 100px;  /* Optional: Ensures the dropdown has a minimum height */
-}
-
 .form-check {
     display: flex;
     align-items: center;
@@ -515,24 +511,139 @@ button:focus {
     color: white;
 }
 
-/* textarea::placeholder {
-    color: black !important;
-} */
-/* 
-input::-webkit-input-placeholder { 
-    color: black;
-}
-input:-moz-placeholder { 
-    color: black;
-}
-input::-moz-placeholder {
-    color: black;
-}
-input:-ms-input-placeholder {
-    color: black;
-} */
-
 .otherBtn {
     border-radius: 30px;
     padding: 0px 5px !important;
+}
+
+
+.alert-dismissible .close {
+    padding: 0px;
+}
+
+#modalAlertContainer {
+    position: fixed;             /* Fix it at the bottom of the screen */
+    bottom: 0;                   /* Align to the bottom of the viewport */
+    right: 0;
+    display: flex;               /* Enable Flexbox */
+    justify-content: center;     /* Center horizontally */
+    align-items: flex-end;       /* Align the alert at the bottom */
+    z-index: 1050;               /* Make sure it's above other content */
+    padding: 0px;               /* Add some padding at the bottom */
+    width: 20%;
+    height: auto;
+}
+
+
+.notification {
+    margin-right: 1rem;
+    background-color: #a50b0b;
+    color: white;
+    font-size: 15px;
+}
+
+.accountAccessTable th,
+.accountAccessTable td {
+    text-align: center;
+}
+
+.accountAccessTable input[type="checkbox"] {
+    background-color: #000000;
+}
+
+.accountAccessTable input[type="checkbox"]:checked {
+    background-color: #a50b0b; /* Custom color when checked */
+    border-color: #a50b0b;
+}
+
+.accountAccessTable input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+}
+
+.accountAccessTable input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+#addNewAccount input, 
+#addNewAccount textarea{
+    width: 80%;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+#addNewAccount select {
+    width: 50%;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.categoryBtn {
+    cursor: pointer;
+}
+
+.categoryBtn:hover {
+    color: #a50b0b;
+}
+
+.form-control {
+    font-size: 15px;
+}
+
+
+.rightClickList  {
+    border: transparent;
+    box-shadow: 0 0 10px rgba(33, 33, 33, 0.5);
+    width: auto;
+    text-align: left;
+    font-family: "Arial", sans-serif !important;
+}
+
+.rightClickListItem {
+    border: transparent;
+    color: #000000;
+    cursor: pointer;
+}
+
+.rightClickListItem:hover {
+    color: white;
+    background-color: #a50b0b;
+}
+
+.rightClickDropdownItem:not(.disabled):hover {
+    color: white;
+    background-color: #a50b0b;
+    
+}
+
+.rightClickDropdownItem.disabled {
+    cursor: not-allowed;
+}
+
+.rightClickDropdown {
+    border: transparent;
+    box-shadow: 0 0 10px rgba(33, 33, 33, 0.5);
+    font-family: "Arial", sans-serif !important;
+    font-size: 15px;
 }

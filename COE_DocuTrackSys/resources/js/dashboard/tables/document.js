@@ -1,3 +1,4 @@
+import { showNotification } from "../../notification";
 import { editDocument } from "../editForm";
 
 // SHOW INCOMING DOCUMENTS
@@ -49,6 +50,7 @@ export function showIncoming(){
         language: {
             emptyTable: "No incoming documents present."
         },
+        autoWidth: false,
         createdRow: function(row, data) {
             $(row).on('mouseenter', function(){
                 document.body.style.cursor = 'pointer';
@@ -58,13 +60,11 @@ export function showIncoming(){
                 document.body.style.cursor = 'default';
             });
 
-
             $(row).on('click', function(event) {
                 event.preventDefault();
                 $(row).popover('hide');
                 documentPreview(data.id, row);
             });
-
 
             $(row).on('contextmenu', function(event) {
                 event.preventDefault();
@@ -90,21 +90,28 @@ export function showIncoming(){
                 }
 
                 $(this).popover({
-                    content: `<div class="list-group menu">`+
-                        `<button type="button" class="list-group-item" id="editDocumentBtn${data.id}">Edit Document</button>` +
-                        `<a type="button" class="list-group-item list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">Download File</a>` +
-                        `<button type="button" class="list-group-item" id="viewDocumentVersionsBtn${data.id}">View Document Versions</button>` +
-                        `<button type="button" class="list-group-item" id="moveDocumentBtn${data.id}">Move Document</button>` +
-                        `<div class="list-group-item dropright">` +
-                        `<div class="dropdown-menu" id="moveDocumentDropdown${data.id}" aria-hidden="true">
-                            <a class="dropdown-item ${incoming}" href="#" id="moveIncoming${data.id}">Incoming</a>
-                            <a class="dropdown-item ${outgoing}" href="#" id="moveOutgoing${data.id}">Outgoing</a>
-                            <a class="dropdown-item ${archived}" href="#" id="moveArchived${data.id}">Archived</a>
-                        </div>`+
-                        `</div>`,
+                    content:    `<div class="list-group menu p-0">
+                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="editDocumentBtn${data.id}">
+                                        <i class='bx bx-edit-alt' style="font-size: 15px;"></i>  Edit Document</div>
+                                    <a class="list-group-item py-1 px-2 rightClickListItem list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">
+                                        <i class='bx bxs-download' style="font-size: 15px;"></i>  Download File</a>
+                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="viewDocumentVersionsBtn${data.id}"><i class='bx bx-history' style="font-size: 15px;"></i>  View Document Versions</div>
+                                    <div class="dropright p-0">
+                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="moveDocumentBtn${data.id}"><i class='bx bxs-file-export' style="font-size: 15px;"></i>  Move Document</div>
+                                        <div class="dropdown-menu rightClickDropdown p-0" id="moveDocumentDropdown${data.id}" aria-labelledby="moveDocumentBtn${data.id}">
+                                            <a class="dropdown-item ${incoming} rightClickDropdownItem py-1 pl-3" href="#" id="moveIncoming${data.id}">Incoming</a>
+                                            <a class="dropdown-item ${outgoing} rightClickDropdownItem py-1 pl-3" href="#" id="moveOutgoing${data.id}">Outgoing</a>
+                                            <a class="dropdown-item ${archived} rightClickDropdownItem py-1 pl-3" href="#" id="moveArchived${data.id}">Archived</a>
+                                        </div>
+                                    </div>
+                                </div>`,
                     html: true,
                     container: 'body',
                     placement: 'right',
+                    template:   `<div class="popover p-0 rightClickList">
+                                    <div class="popover-body p-0">
+                                    </div>
+                                </div>`,
                     trigger: 'manual',
                     animation: false
                 }).on('inserted.bs.popover', function(event) {
@@ -120,21 +127,31 @@ export function showIncoming(){
                         viewDocumentVersions(data.id, row);
                     });
 
-                    $('#moveDocumentBtn' + data.id).off('click').on('click', function(event) {
-                        console.log('move');
-                        $('#moveDocumentDropdown' + data.id).toggleClass('show');
+                    $('#moveDocumentBtn' + data.id).off('mouseenter').on('mouseenter', function(event) {
+                        setTimeout(function() {
+                            $('#moveDocumentDropdown' + data.id).toggleClass('show')
+                        }, 300);
                     });
 
                     $('#moveIncoming' + data.id).off('click').on('click', function(event) {
-                        moveDocument(data.id, 'Incoming', row);
+                        event.preventDefault();
+                        if(!$(this).hasClass('disabled')){
+                            moveDocument(data.id, 'Incoming', row);
+                        }
                     });
 
                     $('#moveOutgoing' + data.id).off('click').on('click', function(event) {
-                        moveDocument(data.id, 'Outgoing', row);
+                        event.preventDefault();
+                        if(!$(this).hasClass('disabled')){
+                            moveDocument(data.id, 'Outgoing', row);
+                        }
                     });
 
                     $('#moveArchived' + data.id).off('click').on('click', function(event) {
-                        moveDocument(data.id, 'Archived', row);
+                        event.preventDefault();
+                        if(!$(this).hasClass('disabled')){
+                            moveDocument(data.id, 'Archived', row);
+                        }
                     });
                 });
 
@@ -239,6 +256,7 @@ export function showOutgoing(){
         language: {
             emptyTable: "No outgoing documents present."
         },
+        autoWidth: false,
         createdRow: function(row, data){
             // Make cursor upon entering the row
             $(row).on('mouseenter', function(){
@@ -282,61 +300,69 @@ export function showOutgoing(){
                 }
                 // Create popover
                 $(this).popover({
-                    content: `<div class="list-group menu">`+
-                        `<button type="button" class="list-group-item" id="editDocumentBtn${data.id}">Edit Document</button>` +
-                        `<a type="button" class="list-group-item list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">Download File</a>` +
-                        `<button type="button" class="list-group-item" id="viewDocumentVersionsBtn${data.id}">View Document Versions</button>` +
-                        `<button type="button" class="list-group-item" id="moveDocumentBtn${data.id}">Move Document</button>` +
-                        `<div class="list-group-item dropright">` +
-                        `<div class="dropdown-menu" id="moveDocumentDropdown${data.id}" aria-hidden="true">
-                            <a class="dropdown-item ${incoming}" href="#" id="moveIncoming${data.id}">Incoming</a>
-                            <a class="dropdown-item ${outgoing}" href="#" id="moveOutgoing${data.id}">Outgoing</a>
-                            <a class="dropdown-item ${archived}" href="#" id="moveArchived${data.id}">Archived</a>
-                        </div>`+
-                        `</div>`,
+                    content:    `<div class="list-group menu p-0">
+                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="editDocumentBtn${data.id}">
+                                        <i class='bx bx-edit-alt' style="font-size: 15px;"></i>  Edit Document</div>
+                                    <a class="list-group-item py-1 px-2 rightClickListItem list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">
+                                        <i class='bx bxs-download' style="font-size: 15px;"></i>  Download File</a>
+                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="viewDocumentVersionsBtn${data.id}"><i class='bx bx-history' style="font-size: 15px;"></i>  View Document Versions</div>
+                                    <div class="dropright p-0">
+                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="moveDocumentBtn${data.id}"><i class='bx bxs-file-export' style="font-size: 15px;"></i>  Move Document</div>
+                                        <div class="dropdown-menu rightClickDropdown p-0" id="moveDocumentDropdown${data.id}" aria-labelledby="moveDocumentBtn${data.id}">
+                                            <a class="dropdown-item ${incoming} rightClickDropdownItem py-1 pl-3" href="#" id="moveIncoming${data.id}">Incoming</a>
+                                            <a class="dropdown-item ${outgoing} rightClickDropdownItem py-1 pl-3" href="#" id="moveOutgoing${data.id}">Outgoing</a>
+                                            <a class="dropdown-item ${archived} rightClickDropdownItem py-1 pl-3" href="#" id="moveArchived${data.id}">Archived</a>
+                                        </div>
+                                    </div>
+                                </div>`,
                     html: true,
                     container: 'body',
                     placement: 'right',
+                    template:   `<div class="popover p-0 rightClickList">
+                                    <div class="popover-body p-0">
+                                    </div>
+                                </div>`,
                     trigger: 'manual',
                     animation: false
-                }).on('inserted.bs.popover', function (event) {
-                    // Edit document button
-                    $('#editDocumentBtn' + data.id).off('click').on('click', function (event) {
+                }).on('inserted.bs.popover', function(event) {
+                    $('#editDocumentBtn' + data.id).off('click').on('click', function(event) {
                         event.stopPropagation();
-                        
                         $(row).popover('toggle');
-                        // Edit document Function
                         editDocument(data.id);
                     });
-                    
+
                     $('#viewDocumentVersionsBtn' + data.id).off('click').on('click', function(event) {
                         event.stopPropagation();
                         $(row).popover('toggle');
                         viewDocumentVersions(data.id, row);
                     });
 
-                    // Move document btn
-                    $('#moveDocumentBtn' + data.id).off('click').on('click', function(event) {
-                        console.log('move');
-                        $('#moveDocumentDropdown' + data.id).toggleClass('show');
+                    $('#moveDocumentBtn' + data.id).off('mouseenter').on('mouseenter', function(event) {
+                        setTimeout(function() {
+                            $('#moveDocumentDropdown' + data.id).toggleClass('show')
+                        }, 300);
                     });
 
-                    // Move incoming
-                    $('#moveIncoming' + data.id).off('click').on('click', function (event) {
-                        moveDocument(data.id, 'Incoming', row);
+                    $('#moveIncoming' + data.id).off('click').on('click', function(event) {
+                        event.preventDefault();
+                        if(!$(this).hasClass('disabled')){
+                            moveDocument(data.id, 'Incoming', row);
+                        }
                     });
 
-                    // Move outgoing
-                    $('#moveOutgoing' + data.id).off('click').on('click', function (event) {
-                        moveDocument(data.id, 'Outgoing', row);
+                    $('#moveOutgoing' + data.id).off('click').on('click', function(event) {
+                        event.preventDefault();
+                        if(!$(this).hasClass('disabled')){
+                            moveDocument(data.id, 'Outgoing', row);
+                        }
                     });
 
-                    // Move archived
-                    $('#moveArchived' + data.id).off('click').on('click', function (event) {
-                        moveDocument(data.id, 'Archived', row);
+                    $('#moveArchived' + data.id).off('click').on('click', function(event) {
+                        event.preventDefault();
+                        if(!$(this).hasClass('disabled')){
+                            moveDocument(data.id, 'Archived', row);
+                        }
                     });
-                  
-                    // View document versions
                 });
                 
                 $(this).popover('toggle');
@@ -440,6 +466,7 @@ export function showArchived(){
         language: {
             emptyTable: "No archived documents present."
         },
+        autoWidth: false,
         createdRow: function(row, data) {
             // Custom behavior: cursor change on hover
             $(row).on('mouseenter', function(){
@@ -483,21 +510,28 @@ export function showArchived(){
                 }
 
                 $(this).popover({
-                    content: `<div class="list-group menu">`+
-                        `<button type="button" class="list-group-item" id="editDocumentBtn${data.id}">Edit Document</button>` +
-                        `<a type="button" class="list-group-item list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">Download File</a>` +
-                        `<button type="button" class="list-group-item" id="viewDocumentVersionsBtn${data.id}">View Document Versions</button>` +
-                        `<button type="button" class="list-group-item" id="moveDocumentBtn${data.id}">Move Document</button>` +
-                        `<div class="list-group-item dropright">` +
-                        `<div class="dropdown-menu" id="moveDocumentDropdown${data.id}" aria-hidden="true">
-                            <a class="dropdown-item ${incoming}" href="#" id="moveIncoming${data.id}">Incoming</a>
-                            <a class="dropdown-item ${outgoing}" href="#" id="moveOutgoing${data.id}">Outgoing</a>
-                            <a class="dropdown-item ${archived}" href="#" id="moveArchived${data.id}">Archived</a>
-                        </div>`+
-                        `</div>`,
+                    content:    `<div class="list-group menu p-0">
+                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="editDocumentBtn${data.id}">
+                                        <i class='bx bx-edit-alt' style="font-size: 15px;"></i>  Edit Document</div>
+                                    <a class="list-group-item py-1 px-2 rightClickListItem list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">
+                                        <i class='bx bxs-download' style="font-size: 15px;"></i>  Download File</a>
+                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="viewDocumentVersionsBtn${data.id}"><i class='bx bx-history' style="font-size: 15px;"></i>  View Document Versions</div>
+                                    <div class="dropright p-0">
+                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="moveDocumentBtn${data.id}"><i class='bx bxs-file-export' style="font-size: 15px;"></i>  Move Document</div>
+                                        <div class="dropdown-menu rightClickDropdown p-0" id="moveDocumentDropdown${data.id}" aria-labelledby="moveDocumentBtn${data.id}">
+                                            <a class="dropdown-item ${incoming} rightClickDropdownItem py-1 pl-3" href="#" id="moveIncoming${data.id}">Incoming</a>
+                                            <a class="dropdown-item ${outgoing} rightClickDropdownItem py-1 pl-3" href="#" id="moveOutgoing${data.id}">Outgoing</a>
+                                            <a class="dropdown-item ${archived} rightClickDropdownItem py-1 pl-3" href="#" id="moveArchived${data.id}">Archived</a>
+                                        </div>
+                                    </div>
+                                </div>`,
                     html: true,
                     container: 'body',
                     placement: 'right',
+                    template:   `<div class="popover p-0 rightClickList">
+                                    <div class="popover-body p-0">
+                                    </div>
+                                </div>`,
                     trigger: 'manual',
                     animation: false
                 }).on('inserted.bs.popover', function(event) {
@@ -513,21 +547,31 @@ export function showArchived(){
                         viewDocumentVersions(data.id, row);
                     });
 
-                    $('#moveDocumentBtn' + data.id).off('click').on('click', function(event) {
-                        console.log('move');
-                        $('#moveDocumentDropdown' + data.id).toggleClass('show');
+                    $('#moveDocumentBtn' + data.id).off('mouseenter').on('mouseenter', function(event) {
+                        setTimeout(function() {
+                            $('#moveDocumentDropdown' + data.id).toggleClass('show')
+                        }, 300);
                     });
 
                     $('#moveIncoming' + data.id).off('click').on('click', function(event) {
-                        moveDocument(data.id, 'Incoming', row);
+                        event.preventDefault();
+                        if(!$(this).hasClass('disabled')){
+                            moveDocument(data.id, 'Incoming', row);
+                        }
                     });
 
                     $('#moveOutgoing' + data.id).off('click').on('click', function(event) {
-                        moveDocument(data.id, 'Outgoing', row);
+                        event.preventDefault();
+                        if(!$(this).hasClass('disabled')){
+                            moveDocument(data.id, 'Outgoing', row);
+                        }
                     });
 
                     $('#moveArchived' + data.id).off('click').on('click', function(event) {
-                        moveDocument(data.id, 'Archived', row);
+                        event.preventDefault();
+                        if(!$(this).hasClass('disabled')){
+                            moveDocument(data.id, 'Archived', row);
+                        }
                     });
                 });
 
@@ -597,9 +641,9 @@ function moveDocument(id, location, row){
         url: window.routes.moveDocument,
         data: formData,
         success: function (response) {
-            console.log("Document moved successfully!");
             $('#dashboardTable').DataTable().ajax.reload();
-            $(row).popover('toggle');
+            $(row).popover('hide');
+            showNotification("Document moved to " + location + " successfully!");
         }
     });
 }
@@ -628,8 +672,6 @@ function viewDocumentVersions(id, row){
                 orderable: false,
                 render: function(data, type, row){
                     var content = JSON.parse(data.content);
-                    console.log(data.created_at);
-                    console.log(data.modified_by);
                     return `<a class="viewDocumentVersionContent" 
                     data-modifiedDate="${data.created_at}"
                     data-date="${content.document_date}"
@@ -658,6 +700,7 @@ function viewDocumentVersions(id, row){
             idx: 0,
             dir: 'desc'
         },
+        autoWidth: false
     })
 }
 // View Document Version Content

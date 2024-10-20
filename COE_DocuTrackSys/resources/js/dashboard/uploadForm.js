@@ -1,3 +1,5 @@
+import { showNotification } from "../notification";
+
 // Open Upload Form
 $('#uploadBtn').on('click', function (event) {
     event.preventDefault();
@@ -258,8 +260,12 @@ $('#submitDocumentForm').on('click', function(event) {
             $('#documentTable').DataTable().ajax.reload();
             $('#submitDocumentForm').prop('disabled', false);
             $('#clearUploadBtn').prop('disabled', false);
+
+            showNotification('Document upload success!');
         },
         error: function(data) {
+            showNotification('Error in uploading document.');
+
             if (data.responseJSON.errors.type){
                 $('#typeError').html(data.responseJSON.errors.type);
                 $('#uploadDocType').css('border', '1px solid red');
