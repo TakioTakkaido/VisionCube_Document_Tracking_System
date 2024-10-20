@@ -5,7 +5,7 @@ header {
     padding: 10px;
     background-color: #333; 
     border-bottom: 100px solid #000000; 
-    font-family: "Arial", sans-serif;
+    font-family: "Arial", sans-serif !important;
     
 }
 
@@ -435,12 +435,6 @@ body {
     display: block; 
 }
 
-.dropdown-menu {
-    max-height: 200px;  /* Adjust this value to set the max visible height of the dropdown */
-    overflow-y: auto;   /* Enable vertical scrolling if content exceeds the max-height */
-    min-height: 100px;  /* Optional: Ensures the dropdown has a minimum height */
-}
-
 .form-check {
     display: flex;
     align-items: center;
@@ -545,6 +539,7 @@ button:focus {
     margin-right: 1rem;
     background-color: #a50b0b;
     color: white;
+    font-size: 15px;
 }
 
 .accountAccessTable th,
@@ -613,5 +608,42 @@ button:focus {
 }
 
 .form-control {
+    font-size: 15px;
+}
+
+
+.rightClickList  {
+    border: transparent;
+    box-shadow: 0 0 10px rgba(33, 33, 33, 0.5);
+    width: auto;
+    text-align: left;
+    font-family: "Arial", sans-serif !important;
+}
+
+.rightClickListItem {
+    border: transparent;
+    color: #000000;
+    cursor: pointer;
+}
+
+.rightClickListItem:hover {
+    color: white;
+    background-color: #a50b0b;
+}
+
+.rightClickDropdownItem:not(.disabled):hover {
+    color: white;
+    background-color: #a50b0b;
+    
+}
+
+.rightClickDropdownItem.disabled {
+    cursor: not-allowed;
+}
+
+.rightClickDropdown {
+    border: transparent;
+    box-shadow: 0 0 10px rgba(33, 33, 33, 0.5);
+    font-family: "Arial", sans-serif !important;
     font-size: 15px;
 }

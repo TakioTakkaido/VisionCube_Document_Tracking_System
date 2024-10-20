@@ -1,3 +1,5 @@
+import { showNotification } from "../notification";
+
 // Open Upload Form
 $('#uploadBtn').on('click', function (event) {
     event.preventDefault();
@@ -259,15 +261,10 @@ $('#submitDocumentForm').on('click', function(event) {
             $('#submitDocumentForm').prop('disabled', false);
             $('#clearUploadBtn').prop('disabled', false);
 
-            $('.notification .close').trigger('click');
-            $('#modalAlertContainer').removeClass('d-none').addClass('show');
-            $('#notifMessage').html('Document upload success!')
-
+            showNotification('Document upload success!');
         },
         error: function(data) {
-            $('.notification .close').trigger('click');
-            $('#modalAlertContainer').removeClass('d-none').addClass('show');
-            $('#notifMessage').html('Error in uploading document.')
+            showNotification('Error in uploading document.');
 
             if (data.responseJSON.errors.type){
                 $('#typeError').html(data.responseJSON.errors.type);

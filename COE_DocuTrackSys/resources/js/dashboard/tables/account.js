@@ -1,3 +1,5 @@
+import { showNotification } from "../../notification";
+
 // SHOW ACTIVE ACCOUNTS
 export function showActive() {
     $('.dashboardTableTitle').html('Active Accounts');
@@ -55,82 +57,101 @@ export function showActive() {
 
             $(row).on('contextmenu', function(event){
                 event.preventDefault();
-                $.each($('.popover'), function () { 
-                    if ($(this).parent() !== $(row)){
-                        $(this).popover('hide');
+                if(data.role != 'Admin'){
+                    $.each($('.popover'), function () { 
+                        if ($(this).parent() !== $(row)){
+                            $(this).popover('hide');
+                        }
+                    });
+    
+                    var secretary, assistant, clerk;
+                    switch (data.role) {
+                        case 'Secretary':
+                            secretary = 'disabled';
+                            break;
+                        case 'Assistant':
+                            assistant = 'disabled';
+                            break;
+                        case 'Clerk':
+                            clerk = 'disabled';
+                            break;
+                        default:
+                            break;
                     }
-                });
-
-                var secretary, assistant, clerk;
-                switch (data.role) {
-                    case 'Secretary':
-                        secretary = 'disabled';
-                        break;
-                    case 'Assistant':
-                        assistant = 'disabled';
-                        break;
-                    case 'Clerk':
-                        clerk = 'disabled';
-                        break;
-                    default:
-                        break;
-                }
-
-
-                $(this).popover({
-                    content: `<div class="list-group menu">`+
-                        `<button type="button" class="list-group-item" id="deactivateBtn${data.id}">Deactivate</button>` +
+    
+    
+                    $(this).popover({
+                        content:    `<div class="list-group menu p-0">
+                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="deactivateBtn${data.id}">
+                                            <i class='bx bx-user-x' style="font-size: 15px;"></i>  Deactivate</div>
+                                        <div class="dropright p-0">
+                                            <div class="list-group-item py-1 px-2 rightClickListItem" id="changeRoleBtn${data.id}">
+                                                <i class='bx bx-sort bx-rotate-90' style="font-size: 15px;"></i>  Change Role</div>
+                                            <div class="dropdown-menu rightClickDropdown p-0" id="changeRoleDropdown${data.id}" aria-labelledby="changeRoleBtn${data.id}">
+                                                <a class="dropdown-item ${secretary}    rightClickDropdownItem py-1 pl-3" href="#" id="changeSecretary${data.id}">Secretary</a>
+                                                <a class="dropdown-item ${assistant}    rightClickDropdownItem py-1 pl-3" href="#" id="changeAssistant${data.id}">Assistant</a>
+                                                <a class="dropdown-item ${clerk}        rightClickDropdownItem py-1 pl-3" href="#" id="changeClerk${data.id}">Clerk</a>
+                                            </div>
+                                        </div>
+                                    </div>`,
+                        html: true,
+                        container: 'body',
+                        placement: 'right',
+                        template:   `<div class="popover p-0 rightClickList">
+                                        <div class="popover-body p-0">
+                                        </div>
+                                    </div>`,
+                        trigger: 'focus', 
+                        animation: false
+                    }).on('inserted.bs.popover', function(event) {
+                        $('#deactivateBtn' + data.id).off('click').on('click', function(event) {
+                            event.preventDefault();
+                            $(row).popover('toggle'); 
+                            deactivateAccount(data.id, row); 
+                        });
+    
+                        $('#changeRoleBtn' + data.id).off('mouseenter').on('mouseenter', function(event) {
+                            // event.preventDefault();
+                            setTimeout(function() {
+                                $('#changeRoleDropdown' + data.id).toggleClass('show')
+                            }, 300);
+                        });
                         
-                        `<button type="button" class="list-group-item" id="changeRoleBtn${data.id}">Change Role</button>` +
-                        `<div class="list-group-item dropright">` +
-                        `<div class="dropdown-menu" id="changeRoleDropdown${data.id}" aria-hidden="true">
-                            <a class="dropdown-item ${secretary}" href="#" id="changeSecretary${data.id}">Secretary</a>
-                            <a class="dropdown-item ${assistant}" href="#" id="changeAssistant${data.id}">Assistant</a>
-                            <a class="dropdown-item ${clerk}" href="#" id="changeClerk${data.id}">Clerk</a>
-                        </div>`+
-                    `</div>`,
-                    html: true,
-                    container: 'body',
-                    placement: 'right',
-                    trigger: 'manual', 
-                    animation: false
-                }).on('inserted.bs.popover', function(event) {
-                    $('#deactivateBtn' + data.id).off('click').on('click', function(event) {
-                        $(row).popover('toggle'); 
-                        deactivateAccount(data.id, row); 
+                        $('#changeSecretary' + data.id).off('click').on('click', function(event) {
+                            event.preventDefault();
+                            if(!$(this).hasClass('disabled')){
+                                changeRole(data.id, 'Secretary', row);
+                            }
+                        });
+    
+                        $('#changeAssistant' + data.id).off('click').on('click', function(event) {
+                            event.preventDefault();
+                            if(!$(this).hasClass('disabled')){
+                                changeRole(data.id, 'Assistant', row);
+                            }
+                        });
+    
+                        $('#changeClerk' + data.id).off('click').on('click', function(event) {
+                            event.preventDefault();
+                            if(!$(this).hasClass('disabled')){
+                                changeRole(data.id, 'Clerk', row);
+    
+                            }
+                        });
                     });
-
-                    $('#changeRoleBtn' + data.id).off('click').on('click', function(event) {
-                        console.log('change');
-                        $('#changeRoleDropdown' + data.id).toggleClass('show');
+    
+    
+                    $(this).popover('toggle');  
+    
+                    $(document).off('click.popover').on('click.popover', function(e) {
+                    
+                        if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
+                            $(row).popover('hide'); 
+                        }
                     });
-
-                    $('#changeSecretary' + data.id).off('click').on('click', function(event) {
-                        changeRole(data.id, 'Secretary', row);
-                    });
-
-                    $('#changeAssistant' + data.id).off('click').on('click', function(event) {
-                        changeRole(data.id, 'Assistant', row);
-                    });
-
-                    $('#changeClerk' + data.id).off('click').on('click', function(event) {
-                        changeRole(data.id, 'Clerk', row);
-                    });
-                });
-
-
-                $(this).popover('toggle');  
-
-                $(document).off('click.popover').on('click.popover', function(e) {
-                   
-                    if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
-                        $(row).popover('hide'); 
-                    }
-                });
-                
+                }
             });
         },
-
         autoWidth: false
     });
 
@@ -170,8 +191,8 @@ export function showDeactivated() {
             dataSrc: 'accounts'
         },
         columns: [
-            {data: 'email'},
             {data: 'name'},
+            {data: 'email'},
             {data: 'role'}
         ],
         language: {
@@ -179,7 +200,6 @@ export function showDeactivated() {
         },
         destroy: true,
         pagination: true,
-
         createdRow: function(row, data){
             $(row).on('mouseenter', function(){
                 document.body.style.cursor = 'pointer';
@@ -204,12 +224,16 @@ export function showDeactivated() {
                 });
 
                 $(this).popover({
-                    content: `<div class="list-group menu">`+
-                        `<button type="button" class="list-group-item" id="reactivateBtn${data.id}">Reactivate</button>` +
-                    `</div>`,
+                    content:    `<div class="list-group menu p-0">
+                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="reactivateBtn${data.id}"><i class='bx bx-user-check' style="font-size: 15px;"></i>   Reactivate</div>
+                                </div>`,
                     html: true,
                     container: 'body',
                     placement: 'right',
+                    template:   `<div class="popover p-0 rightClickList">
+                                    <div class="popover-body p-0">
+                                    </div>
+                                </div>`,
                     trigger: 'manual',
                     animation: false
                 }).on('inserted.bs.popover', function(event) {
@@ -228,7 +252,8 @@ export function showDeactivated() {
                     }
                 });
             });
-        }
+        },
+        autoWidth: false
     });
 
 
@@ -256,8 +281,8 @@ function deactivateAccount(accountId, row) {
         url: window.routes.deactivateAccount.replace(':id', accountId),
         data: formData,
         success: function (response) {
-            console.log("Account deactivated successfully!");
             $('#dashboardTable').DataTable().ajax.reload();
+            showNotification("Account deactivated successfully!");
         }
     });
 }
@@ -274,9 +299,9 @@ function reactivateAccount(accountId, row) {
         url: window.routes.reactivateAccount.replace(':id', accountId),
         data: formData,
         success: function (response) {
-            console.log("Account reactivated successfully!");
             $('#dashboardTable').DataTable().ajax.reload();
             $(row).popover('toggle');
+            showNotification("Account reactivated successfully!");
         }
     });
 }
@@ -295,8 +320,9 @@ function changeRole(accountId, newRole, row) {
             .replace(':role', newRole),
         data: formData,
         success: function (response) {
+            showNotification('Account changed to ' + newRole + ' successfully!')
             $('#dashboardTable').DataTable().ajax.reload();
-            $(row).popover('toggle');
+            $(row).popover('hide');
         }
     });
 }
