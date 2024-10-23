@@ -1,11 +1,6 @@
 # COE Document Tracking System
 
 ## Contributors:
-- Calulut, Joshua Miguel C. (Assistant Backend Programmer)
-- Macaso, Jiselle Leann S. (Assistant Programmer)
-- Petey, Chat G. (Lead Programmer)
+- Calulut, Joshua Miguel C. (Lead Programmer)
+- Macaso, Jiselle Leann S. (Assistant Full Stack Programmer)
 - Sanchez, Shane David U. (Assistant Frontend Programmer)
-
-
-### P.S. Underpaid kame rito, di pa kame sinasahuran ni project manager
-puta na yaaaan
