@@ -12,7 +12,7 @@
                 style="width: 95%; height: 80vh;">
             </iframe>
         </div>
-        <div class="modal-body custom-modal-body ">
+        <div class="modal-body custom-modal-body">
             <!-- Modal content goes here -->
             <form class="uploadContent" id="editDocumentForm" method="post">
                 @csrf
