@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 class TypeController extends Controller {
     // Edit type
     public function update(Request $request){
+        $id = 0;
         // Validate the request
 
         // Get type by id
@@ -27,18 +28,18 @@ class TypeController extends Controller {
         } else {
             // Type doesn't exist
             // Create type
-            Type::create([
+            $type = Type::create([
                 'value' => $request->input('value')
             ]);
-
-            // Log
+            $id = $type->id;
         }
 
         
 
         // Return success
         return response()->json([
-            'success' => 'Type edited successfully.'
+            'success' => 'Type edited successfully.',
+            'id' => $id
         ]);
     }
 

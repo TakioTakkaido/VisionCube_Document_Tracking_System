@@ -41,7 +41,7 @@
                     
                 {{-- Dropdown List of Categories --}}
                 {{-- Participant List --}}
-                <ul class="list-group p-0 mb-4" style="max-height: 150px; overflow-y: scroll;">
+                <ul class="list-group p-0 mb-4" style="max-height: 250px; overflow-y: scroll;">
                     @foreach ($participants as $participant)
                         <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
                             {{-- Document Participant --}}
@@ -95,7 +95,7 @@
                     </form>
     
                     {{-- Dropdown List of Group from Selected Group --}}
-                    <ul class="list-group p-0 mb-1" style="max-height: 150px; overflow-y: scroll;">
+                    <ul class="list-group p-0 mb-1" style="max-height: 250px; overflow-y: scroll;">
                         <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
                             No child group in this group.
                         </li>
@@ -131,7 +131,7 @@
 
                 {{-- Dropdown List of Participants --}}
                 {{-- Participant Group List --}}
-                <ul class="list-group p-0 mb-2" style="max-height: 150px; overflow-y: scroll;">
+                <ul class="list-group p-0 mb-2" style="max-height: 250px; overflow-y: scroll;">
                     @foreach ($participantGroups as $participantGroup)
                     <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
                         {{-- Document ParticipantGroup --}}
@@ -178,7 +178,7 @@
                     </div>
                 </div>
                 {{-- Dropdown List of Participants from Selected Group --}}
-                <ul class="list-group p-0 mb-1" style="max-height: 150px; overflow-y: scroll;">
+                <ul class="list-group p-0 mb-1" style="max-height: 250px; overflow-y: scroll;">
                     <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
                         No participant in this group.
                     </li>
@@ -194,66 +194,70 @@
     
 
     {{-- ////////////////////////////////////////////////////////////////// --}}
-    {{-- Edit Document Categories --}}
+    {{-- Edit Document Types and Categories --}}
     <div class="container border p-3 rounded mb-5">
         <div class="row">
-            <div class="col">
-                {{-- Edit Document Status --}}
+            <div class="col typeSettings">
+                {{-- Edit Document Type --}}
                 <h6 class="p-0 font-weight-bold mb-0">Edit Document Type</h6>
                 <p>Add, remove or delete types for the document tracking system.</p>
 
-                <div class="input-group mb-2">    
-                    <input type="text" class="form-control" name="text" placeholder="Search Document Type">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary" id="statusSaveBtn"><i class='bx bx-search' style="text-align: center;"></i></button>
+                <div class="row mb-2">
+                    <div class="col">
+                        <div class="input-group">    
+                            <input type="text" class="form-control" name="text" id="addTypeText" placeholder="Add New Document Type">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary input-group-text addSettings disabled" id="addTypeBtn">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col"> 
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="text" id="searchTypeText" placeholder="Search Document Type">
+                            <div class="input-group-append">
+                                <span class="input-group-text search"><i class='bx bx-search' style='text-align: center;'></i></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                {{-- Form for editing status --}}
-                <form id="updateStatusForm" method="POST" autocomplete="off" style="display:none;">
-                    @csrf
-                    @method('POST')
-                    <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="id" id="statusId" >
-                </form>
-
-               {{-- Type List --}}
-                <ul class="list-group p-0 mb-1" style="max-height: 150px; overflow-y: scroll;">
-                @foreach ($types as $type)
-                    <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
-                        {{-- Document Status --}}
-                        <span class="text-left mr-auto">{{$type->value}}</span>
-                        {{-- Edit and Delete Buttons --}}
-                        <div class="editStatusBtn mr-2" 
-                            id={{$type->id}} data-id={{$type->id}} value={{$type->value}}><i class='bx bx-edit-alt' style="font-size: 20px;"></i>
-                        </div>
-                        <div class="deleteStatusBtn" 
-                            id={{$type->id}} data-id={{$type->id}} value={{$type->value}}
-                            data-toggle="modal" data-target="#confirmDeleteStatus"><i class='bx bx-trash' style="font-size: 20px;"></i></div>
-                    </li>
-                @endforeach
-                </ul>
-
-                        {{-- <input type="text" class="form-control" name="text" id="statusText" placeholder="Add Document Status">
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary"    id="statusSaveBtn">Save Changes</button>        
-                            <button type="button" class="btn btn-secondary"  id="statusCancelBtn">Cancel</button>
-                        </div> --}}
+                
+                <div class="row">
+                    <div class="col">
+                        {{-- Type List --}}
+                        <ul class="list-group p-0 mb-1 systemTypeList" style="max-height: 250px; overflow-y: scroll;">
+                            @foreach ($types as $type)
+                                <li class="list-group-item p-2 d-flex justify-content-between align-items-center systemType" id="{{"type".$type->id}}">
+                                    {{-- Document Status --}}
+                                    <span class="text-left mr-auto p-0">{{$type->value}}</span>
+                                    {{-- Edit and Delete Buttons --}}
+                                    <div class="editTypeBtn mr-2 p-0" 
+                                        data-id={{$type->id}} data-value="{{$type->value}}"><i class='bx bx-edit-alt' style="font-size: 20px;"></i>
+                                    </div>
+                                    <div class="deleteTypeBtn p-0" 
+                                        data-id={{$type->id}} data-value="{{$type->value}}"
+                                        data-toggle="modal" data-target="#confirmDeleteType"><i class='bx bx-trash' style="font-size: 20px;"></i>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
 
                 {{-- Popup Confirmation of Deletion --}}
-                <div class="modal fade" id="confirmDeleteStatus" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteStatus" style="z-index: 1060;" aria-hidden="true">
-                    <div class="modal-dialog" role="status">
+                <div class="modal fade" id="confirmDeleteType" tabindex="-1" aria-labelledby="confirmDeleteTypeLabel" aria-hidden="true" style="z-index: 1060;">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
-                            <div class="modal-body" id="confirmDeleteStatusText">
-                                Confirm deleting status: .{{$type->value}}
+                            <div class="modal-body" id="confirmDeleteTypeText">
+                                <!-- Your confirmation text here -->
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" id="confirmDeleteStatusBtn" data-id="">Yes</button>
-                                <button type="button" class="btn btn-secondary" id="cancelDeleteStatusBtn">No</button>
+                            <div class="modal-footer"> 
+                                <button type="button" class="btn btn-primary" id="confirmDeleteTypeBtn" data-id="">Delete</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             </div>
                         </div>
                     </div>
                 </div>
+                
             </div>
 
             <div class="col">
@@ -287,7 +291,7 @@
                 </div> --}}
                 
                 {{-- Dropdown List of Categories --}}
-                <ul class="list-group p-0 mb-1" style="max-height: 150px; overflow-y: scroll;">
+                <ul class="list-group p-0 mb-1" style="max-height: 250px; overflow-y: scroll;">
                     @foreach ($categories as $category)
                         <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
                             {{-- Document Category --}}

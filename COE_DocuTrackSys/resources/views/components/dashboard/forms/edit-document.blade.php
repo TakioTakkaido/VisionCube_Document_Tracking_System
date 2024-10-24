@@ -1,7 +1,8 @@
 <div class="modal fade" id="editDocument" tabindex="-1" role="dialog" aria-labelledby="editDocumentModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="container" style="background-color:white;">
+        <div class="flex-row">
+        <div class="container" style="background-color:white;">
                 <div class="row">
                     <!-- Column 1 -->
                     <div class="col-sm-6">
@@ -16,7 +17,26 @@
                             </iframe>
                         </div>
                     </div>
-
+        <div class="modal-body custom-modal-body">
+            <!-- Modal content goes here -->
+            <form class="uploadContent" id="editDocumentForm" method="post">
+                @csrf
+                @method('POST') 
+                <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+                <input type='hidden' name='document_id' id="documentId">
+                <input type='hidden' name='owner_id' id="ownerId">
+                <label for="editUploadDocType">Document Type:</label>
+                <div class="flex-row">
+                    <select id="editUploadDocType" class="editInput" name="type" placeholder="Enter the Type of Document">
+                        <option value="">Select the Type of Document</option>
+                        {{-- Obtained document types using Laravel--}}
+                        @foreach ($docTypes as $index => $docType)
+                            @if ($docType->value !== 'default')
+                                <option value="{{$docType->value}}">{{$docType->value}}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <span class="error" id="editTypeError" style="display:none;"></span>
                     <!-- Column 2 -->
                     <div class="col-sm-3">
                         <form class="editContent" id="editDocumentForm" method="post">

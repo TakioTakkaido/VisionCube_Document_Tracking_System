@@ -302,6 +302,7 @@ body {
 .btn-primary {
     background-color: #a50b0b;
     border-color: transparent;
+    border: none;
 }
 
 .btn-primary:hover,
@@ -374,7 +375,7 @@ body {
 }
 
 .show {
-    display: block;
+    display: block !important;
 }
 
 /* SIDE PANEL */
@@ -646,4 +647,62 @@ button:focus {
     box-shadow: 0 0 10px rgba(33, 33, 33, 0.5);
     font-family: "Arial", sans-serif !important;
     font-size: 15px;
+}
+
+.systemType.disabled {
+    pointer-events: auto;
+}
+
+.systemType div:hover {
+    color:#a50b0b;
+    cursor: pointer;
+}
+
+.reload {
+    color: white;
+}
+
+.reload:hover {
+    color: #810505
+}
+
+.search {
+    background-color: transparent !important;
+}
+
+.addSettings {
+    color: white;
+    pointer-events: auto;
+}
+
+.addSettings.disabled:hover {
+    cursor: not-allowed !important;
+}
+
+.addSettings:hover {
+    cursor: pointer;
+    color: #810505;
+}
+
+.editTypeBtn.disabled:hover,
+.addSettings.disabled:hover,
+.deleteTypeBtn.disabled:hover {
+    /* color:#a50b0b !important; */
+    cursor: not-allowed !important;
+    color: unset;
+}
+
+.addSettings.disabled {
+    background-color:#a50b0b !important;
+    border: transparent;
+    cursor: not-allowed !important;
+}
+
+.systemType input {
+    border: transparent;
+    cursor: text;
+}
+
+.hide {
+    display: none !important;
 }
