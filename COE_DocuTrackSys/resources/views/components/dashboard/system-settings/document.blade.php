@@ -3,6 +3,7 @@
 
     {{-- ////////////////////////////////////////////////////////////////// --}}
     {{-- Edit Sender and Recipients --}}
+    {{-- participant --}}
     <div class="container border p-3 rounded mb-5">
         <div class="row">
             <div class="col">
@@ -22,46 +23,72 @@
             </div>
         </div>
 
-        <div class="row">
+        <!-- 3rd row -->
+        <div class="row"> 
+            <!-- column 1  -->
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-2">    
+                            <input type="text" class="form-control" name="text" placeholder="Add New Sender/Recipient">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" id="addParticipantBtn">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="col">
+                        <div class="input-group mb-2">    
+                            <input type="text" class="form-control" name="text" placeholder="Search Sender/Recipient">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary" id="searchParticipantBtn"><i class='bx bx-search' style="text-align: center;"></i></button>
+                            </div>
+                        </div>
+                    </div>               
+                </div>
+            </div>
+                   
+
+
+            <!--  column 2  -->
             <div class="col">
                 <div class="input-group mb-2">    
-                    <input type="text" class="form-control" name="text" placeholder="Search Sender/Recipient">
+                    <input type="text" class="form-control" name="text" placeholder="Search Child Sender/Recipient Group in this Group">
                     <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary" id="statusSaveBtn"><i class='bx bx-search' style="text-align: center;"></i></button>
+                        <button type="submit" class="btn btn-primary" id="participantSaveBtn"><i class='bx bx-search' style="text-align: center;"></i></button>
                     </div>
-                </div>
+                </div>          
+            </div>
+        </div>
 
+        <!-- 4th row -->
+        <div class="row">
+            <div class="col">
                 {{-- Form for editing --}}
-                <form id="updateParticipantForm" method="POST" autocomplete="off" style="display:none;">
-                    @csrf
-                    @method('POST')
-                    <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="id" id="participantId" >
-                </form>
-                    
+                    <form id="updateParticipantForm" method="POST" autocomplete="off" style="display:none;">
+                             @csrf
+                            @method('POST')
+                        <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="id" id="participantId" >
+                    </form>
+                                
                 {{-- Dropdown List of Categories --}}
                 {{-- Participant List --}}
-                <ul class="list-group p-0 mb-4" style="max-height: 250px; overflow-y: scroll;">
-                    @foreach ($participants as $participant)
-                        <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
-                            {{-- Document Participant --}}
-                            <span class="text-left mr-auto">{{$participant->value}}</span>
-                            {{-- Edit and Delete Buttons --}}
-                            <div class="editParticipantBtn mr-2" 
-                                id={{$participant->id}} data-id={{$participant->id}} value={{$participant->value}}><i class='bx bx-edit-alt' style="font-size: 20px;"></i></div>
-                            <div class="deleteParticipantBtn" 
-                                id={{$participant->id}} data-id={{$participant->id}} value={{$participant->value}}
-                                data-toggle="modal" data-target="#confirmDeleteParticipant"><i class='bx bx-trash' style="font-size: 20px;"></i></button>
-                        </li>
-                    @endforeach
-                </ul>
-            
-                {{-- <input type="text" class="form-control" name="text" id="participantText" placeholder="Add Document Participant">
-                <div class="input-group-append">
-                    <button type="submit" class="btn btn-primary"    id="participantSaveBtn">Save Changes</button>        
-                    <button type="button" class="btn btn-secondary"  id="participantCancelBtn">Cancel</button>
-                </div> --}}
-            
+                    <ul class="list-group p-0 mb-4" style="max-height: 250px; overflow-y: scroll;">
+                        @foreach ($participants as $participant)
+                            <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
+                                {{-- Document Participant --}}
+                                <span class="text-left mr-auto">{{$participant->value}}</span>
+                                {{-- Edit and Delete Buttons --}}
+                                <div class="editParticipantBtn mr-2" 
+                                    id={{$participant->id}} data-id={{$participant->id}} value={{$participant->value}}><i class='bx bx-edit-alt' style="font-size: 20px;"></i></div>
+                                <div class="deleteParticipantBtn" 
+                                    id={{$participant->id}} data-id={{$participant->id}} value={{$participant->value}}
+                                    data-toggle="modal" data-target="#confirmDeleteParticipant"><i class='bx bx-trash' style="font-size: 20px;"></i></button>
+                            </li>
+                        @endforeach
+                    </ul>
+
                 {{-- Popup Confirmation of Deletion --}}
                 <div class="modal fade" id="confirmDeleteParticipant" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteParticipant" style="z-index: 1060;" aria-hidden="true">
                     <div class="modal-dialog" role="participant">
@@ -77,51 +104,81 @@
                     </div>
                 </div>
             </div>
+
+
             <div class="col">
-                <div>
-                    <div class="input-group mb-2">    
-                        <input type="text" class="form-control" name="text" placeholder="Search Child Sender/Recipient Group in this Group">
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary" id="statusSaveBtn"><i class='bx bx-search' style="text-align: center;"></i></button>
-                        </div>
-                    </div>
-    
-                    {{-- Form for editing --}}
-                    <form id="updateParticipantGroupMembersForm" method="POST" autocomplete="off" class="flex-grow-1">
-                        @csrf
-                        @method('POST')
-                        <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-                        <input type="hidden" name="id" id="selectedParticipantGroupId" >
-                    </form>
-    
-                    {{-- Dropdown List of Group from Selected Group --}}
-                    <ul class="list-group p-0 mb-1" style="max-height: 250px; overflow-y: scroll;">
-                        <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
-                            No child group in this group.
-                        </li>
-                    </ul>
-                </div>
+                {{-- Form for editing --}}
+                <form id="updateParticipantMembersForm" method="POST" autocomplete="off" class="flex-grow-1">
+                    @csrf
+                    @method('POST')
+                    <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="id" id="selectedParticipantId" >
+                </form>
+        
+                {{-- Dropdown List of Group from Selected Group --}}
+                <ul class="list-group p-0 mb-1" style="max-height: 250px; overflow-y: scroll;">
+                    <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
+                        No child group in this group.
+                    </li>
+                </ul>
             </div>
         </div>
+      
+
         
+        {{-- participantGroup--}}
+        <!-- 5th row -->
         <div class="row">
             <div class="col-6">
                 <p>You can manage the senders and recipient for the document tracking system using groups.</p>
             </div>
         </div>
 
+        <!-- 6th row -->
         <div class="row">
+            <!-- column 1 -->
             <div class="col">
-                {{-- ////////////////////////////////////////////////////////////////// --}}
-                {{-- GROUPS --}}
-                {{-- Form for editing --}}
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-2">    
+                            <input type="text" class="form-control" name="text" placeholder="Add New Sender/Recipient Groups">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" id="addParticipantGroupBtn">Add</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col">
+                        {{-- ////////////////////////////////////////////////////////////////// --}}
+                        {{-- GROUPS --}}
+                        {{-- Form for editing --}}
+                        <div class="input-group mb-2">    
+                            <input type="text" class="form-control" name="text" placeholder="Search Sender/Recipient Groups">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary" id="participantGroupSaveBtn"><i class='bx bx-search' style="text-align: center;"></i></button>
+                            </div>
+                        </div>
+                    </div>               
+                </div>
+            </div>
+
+           
+            <!-- column 2 -->   
+            <div class="col">
                 <div class="input-group mb-2">    
-                    <input type="text" class="form-control" name="text" placeholder="Search Sender/Recipient Groups">
+                    <input type="text" class="form-control" name="text" placeholder="Search Sender/Recipient in this Group">
                     <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary" id="statusSaveBtn"><i class='bx bx-search' style="text-align: center;"></i></button>
+                            <button type="submit" class="btn btn-primary" id="participantGroupSaveBtn"><i class='bx bx-search' style="text-align: center;"></i></button>
                     </div>
                 </div>
+            </div>
+        </div>
 
+
+        <!-- 7th row -->
+        <div class="row">
+            <div class="col">
                 <form id="updateParticipantGroupForm" method="POST" autocomplete="off" style="display:none;">
                     @csrf
                     @method('POST')
@@ -153,11 +210,11 @@
                     </div> --}}
                 </ul>
 
-                
+                    
                 {{-- Popup Confirmation of Deletion --}}
                 <div class="modal fade" id="confirmDeleteParticipantGroup" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteParticipantGroup" style="z-index: 1060;" aria-hidden="true">
-                    <div class="modal-dialog" role="participantGroup">
-                        <div class="modal-content">
+                        <div class="modal-dialog" role="participantGroup">
+                            <div class="modal-content">
                             <div class="modal-body" id="confirmDeleteParticipantGroupText">
                                 Confirm deleting participantGroup: .{{$participantGroup->value}}
                             </div>
@@ -166,17 +223,12 @@
                                 <button type="button" class="btn btn-secondary" id="cancelDeleteParticipantGroupBtn">No</button>
                             </div>
                         </div>
-                    </div>
+                    </div>                                        
                 </div>
             </div>
-                
+
+
             <div class="col">
-                <div class="input-group mb-2">    
-                    <input type="text" class="form-control" name="text" placeholder="Search Sender/Recipient in this Group">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary" id="statusSaveBtn"><i class='bx bx-search' style="text-align: center;"></i></button>
-                    </div>
-                </div>
                 {{-- Dropdown List of Participants from Selected Group --}}
                 <ul class="list-group p-0 mb-1" style="max-height: 250px; overflow-y: scroll;">
                     <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
@@ -184,17 +236,18 @@
                     </li>
                 </ul>
 
-                {{-- <div class="input-group-append">
-                    <button type="submit" class="btn btn-primary"    id="participantGroupMembersSaveBtn">Save Changes</button>        
-                    <button type="button" class="btn btn-secondary"  id="participantGroupMembersCancelBtn">Cancel</button>
-                </div>                        --}}
+                {{--<div class="input-group-append">
+                        <button type="submit" class="btn btn-primary"    id="participantGroupMembersSaveBtn">Save Changes</button>        
+                        <button type="button" class="btn btn-secondary"  id="participantGroupMembersCancelBtn">Cancel</button>
+                    </div>                        --}}
+                </div>
             </div>
         </div>
-    </div>
     
 
     {{-- ////////////////////////////////////////////////////////////////// --}}
     {{-- Edit Document Types and Categories --}}
+    <!-- EDIT DOCUMENT TYPE -->
     <div class="container border p-3 rounded mb-5">
         <div class="row">
             <div class="col typeSettings">
@@ -260,79 +313,85 @@
                 
             </div>
 
-            <div class="col">
-                <h6 class="p-0 font-weight-bold mb-0">Edit Document Categories</h6>
-                <p>Add, remove or delete categories for the document tracking system.</p>
+
+
+    <!-- EDIT DOCUMENT STATUS -->
+    <div class="col statusSettings">
+        <h6 class="p-0 font-weight-bold mb-0">Edit Document Status</h6>
+        <p>Add, remove or delete statuses for the document tracking system.</p>
             
-                {{-- Form
-                    Category list, edit and delete
-                        Once edit is pressed, it would appear 
-                        in the category list and the add would change
-                        to Edit
-                    Add Category
-                    Save Changes
-                        Confirm the changes
-                    Discard
-                --}}
-
-                <div class="input-group mb-2">    
-                    <input type="text" class="form-control" name="text" placeholder="Search Document Category">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary" id="categorySaveBtn"><i class='bx bx-search' style="text-align: center;"></i></button>
-                    </div>
-                </div>
-
-                {{-- <div class="input-group mb-2">    
-                    <input type="text" class="form-control" name="text" id="categoryText" placeholder="Add Document Category">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary"    id="categorySaveBtn">Save Changes</button>        
-                        <button type="button" class="btn btn-secondary"  id="categoryCancelBtn">Cancel</button>
-                    </div>
-                </div> --}}
-                
-                {{-- Dropdown List of Categories --}}
-                <ul class="list-group p-0 mb-1" style="max-height: 250px; overflow-y: scroll;">
-                    @foreach ($categories as $category)
-                        <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
-                            {{-- Document Category --}}
-                            <span class="text-left mr-auto">{{$category->value}}</span>
-                            {{-- Edit and Delete Buttons --}}
-                            <div class="editCategoryBtn categoryBtn mr-2" 
-                                id={{$category->id}} data-id={{$category->id}} value={{$category->value}}><i class='bx bx-edit-alt' style="font-size: 20px;"></i></div>
-                            <div class="deleteCategoryBtn categoryBtn" 
-                                id={{$category->id}} data-id={{$category->id}} value={{$category->value}}
-                                data-toggle="modal" data-target="#confirmDeleteCategory"><i class='bx bx-trash' style="font-size: 20px;"></i></div>
-                        </li>
-                    @endforeach
-                </ul>
-
-                {{-- Form for editing --}}
-                <form id="updateCategoryForm" style="display:none;" method="POST" autocomplete="off">
-                    @csrf
-                    @method('POST')
-                    <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="id" id="categoryId">
-                    <input type="hidden" name="text" id="categoryValue">
-                </form>
-                    
-            
-                {{-- Popup Confirmation of Deletion --}}
-                <div class="modal fade" id="confirmDeleteCategory" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteCategory" style="z-index: 1060;" aria-hidden="true">
-                    <div class="modal-dialog" role="category">
-                        <div class="modal-content">
-                            <div class="modal-body" id="confirmDeleteCategoryText">
-                                Confirm deleting category: .{{$category->value}}
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" id="confirmDeleteCategoryBtn" data-id="">Yes</button>
-                                <button type="button" class="btn btn-secondary" id="cancelDeleteCategoryBtn">No</button>
+                <div class="row mb-2">
+                    <div class="col statusSettings"> 
+                        <div class="input-group">    
+                            <input type="text" class="form-control" name="text" id="addStatusText" placeholder="Add New Document Status">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary input-group-text addSettings disabled" id="addStatusBtn">Add</button>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+
+                    <div class="col">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="text" id="searchStatusText" placeholder="Search Document Status">
+                            <div class="input-group-append">
+                                <span class="input-group-text search"><i class='bx bx-search' style='text-align: center;'></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+
+                <div class="row">
+                    <div class="col">
+                        {{-- Dropdown List of Categories --}}
+                        <ul class="list-group p-0 mb-1" style="max-height: 250px; overflow-y: scroll;">
+                        @foreach ($categories as $status)
+                            <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
+                            {{-- Document Status --}}
+                            <span class="text-left mr-auto">{{$status->value}}</span>
+                            {{-- Edit and Delete Buttons --}}
+                                <div class="editStatusBtn statusBtn mr-2" 
+                                    id={{$status->id}} data-id={{$status->id}} value={{$status->value}}><i class='bx bx-edit-alt' style="font-size: 20px;"></i></div>
+                                <div class="deleteStatusBtn statusBtn" 
+                                    id={{$status->id}} data-id={{$status->id}} value={{$status->value}}
+                                    data-toggle="modal" data-target="#confirmDeleteStatus"><i class='bx bx-trash' style="font-size: 20px;"></i></div>
+                            </li>
+                        @endforeach
+                        </ul>
+
+                        {{-- Form for editing --}}
+                        <form id="updateStatusForm" style="display:none;" method="POST" autocomplete="off">
+                            @csrf
+                            @method('POST')
+                            <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="id" id="statusId">
+                            <input type="hidden" name="text" id="statusValue">
+                        </form>
+                    
+            
+                        {{-- Popup Confirmation of Deletion --}}
+                        <div class="modal fade" id="confirmDeleteStatus" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteStatus" style="z-index: 1060;" aria-hidden="true">
+                            <div class="modal-dialog" role="status">
+                                <div class="modal-content">
+                                    <div class="modal-body" id="confirmDeleteStatusText">
+                                        Confirm deleting status: .{{$status->value}}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" id="confirmDeleteStatusBtn" data-id="">Yes</button>
+                                        <button type="button" class="btn btn-secondary" id="cancelDeleteStatusBtn">No</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>        
         </div>
     </div>
+
+
+
+                
+                
+                
     
     {{-- ////////////////////////////////////////////////////////////////// --}}
     {{-- Edit File Extensions --}}
