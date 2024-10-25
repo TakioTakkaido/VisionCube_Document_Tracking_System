@@ -43,8 +43,6 @@ export function editDocument(id){
                 const recipient = recipientArray[index];
                 for (var index2 = 0; index2 < $('#editUploadTo option').length; index2++) {
                     var element = $('#editUploadTo option')[index2];
-                    console.log($(element).data('name'));
-                    console.log($(element).val())
                     if ($(element).data('parent') === recipient['parent'] &&
                         $(element).data('name') === recipient['value'] && 
                         $(element).data('level') == recipient['level']){
@@ -628,5 +626,51 @@ $('#editUploadDocType').on('input', function(event){
         $('#editMemoInfo').css('display', 'none');
         $('#editUploadSeriesNo').prop('required', false);
         $('#editUploadMemoNo').prop('required', false);
+    }
+});
+
+$('#editOtherSender').on('click', function(event){
+    $('#editUploadFromText').toggle();
+    $('.editFrom').toggle();
+
+    if (!$('#editUploadFromText').is(':visible')) {
+        $('#editUploadFromText').val('');
+        $('#editUploadFromText').css('border', '1px solid #dee2e6');
+        $('#editUploadFromText').css('background-color', 'white');
+    }
+
+    if (!$('.editFrom').is(':visible')) {
+        $('#editUploadFrom').selectpicker('deselectAll');
+        $('#editUploadFrom').selectpicker('refresh');
+        $('.editFrom .btn').css({
+            'background-color': 'white'
+        });
+
+        $('.editFrom .btn .border').css({
+            'border': '1px solid #dee2e6',
+        });
+    }
+});
+
+$('#editOtherRecipient').on('click', function(event){
+    $('#editUploadToText').toggle();
+    $('.editTo').toggle();
+
+    if (!$('#editUploadToText').is(':visible')) {
+        $('#editUploadToText').val('');
+        $('#editUploadToText').css('border', '1px solid #dee2e6');
+        $('#editUploadToText').css('background-color', 'white');
+    }
+
+    if (!$('.editTo').is(':visible')) {
+        $('#editUploadTo').selectpicker('deselectAll');
+        $('#editUploadTo').selectpicker('refresh');
+        $('.uploadTo .btn').css({
+            'background-color': 'white'
+        });
+
+        $('.editTo .border').css({
+            'border': '1px solid #dee2e6'
+        })
     }
 });

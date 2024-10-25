@@ -53,7 +53,12 @@ class DocumentFormSeeder extends Seeder
         }
 
         // Make file extensions
-        FileExtension::factory()->count(5)->create();
+        // Seed file extensions
+        $fileExtensions = FileExtension::factory()->definition(); // Get the predefined array from the factory
+
+        foreach ($fileExtensions as $extension) {
+            FileExtension::create($extension); // Create each extension
+        }
         
     }
 }

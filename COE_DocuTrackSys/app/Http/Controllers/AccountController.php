@@ -197,12 +197,6 @@ class AccountController extends Controller {
         // Log
         Log::channel('daily')->info('All accounts obtained: {accounts}', ['accounts' => $accounts]);
 
-        // Create new log
-        ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Viewed all active accounts'
-        ]);
-
         // Return all accounts
         return response()->json([
             'accounts' => $accounts
@@ -215,12 +209,6 @@ class AccountController extends Controller {
 
         // Log
         Log::channel('daily')->info('Deactivated accounts obtained: {accounts}', ['accounts' => $accounts]);
-        
-        // Create new log
-        ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Viewed all deactivated accounts'
-        ]);
 
         return response()->json([
             'success' => 'Successfully obtained deactivated accounts',

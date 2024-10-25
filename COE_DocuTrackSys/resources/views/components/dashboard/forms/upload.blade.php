@@ -1,4 +1,4 @@
-<div class="container border p-3 rounded w-75">
+<div class="container border p-3 rounded">
     <h6 class="p-0 font-weight-bold">Upload Document Form</h6>
     {{-- Upload Document Form --}}
     <form class="uploadContent w-100" id="uploadDocumentForm" method="post">
@@ -6,7 +6,6 @@
         @method('POST')
         {{-- CSRF Token --}}
         <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-        
         
         <div class="row mb-2">
             <div class="col-4">
