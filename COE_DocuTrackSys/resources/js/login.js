@@ -71,3 +71,17 @@ $('#password').on('input' , function(event){
     $(this).css('border', '2px solid rgba(255, 255, 255, .2)');
     $(this).css('background-color', 'transparent');
 });
+
+$('#showPassword').on('click', function(event){
+    event.preventDefault();
+
+    if ($('#password').prop('type') === "password") {
+        $('#password').prop('type', "text");
+        $(this).addClass('bx-show');
+        $(this).removeClass('bx-hide');
+    } else {
+        $('#password').prop('type', "password");
+        $(this).addClass('bx-hide');
+        $(this).removeClass('bx-show');
+    }
+})

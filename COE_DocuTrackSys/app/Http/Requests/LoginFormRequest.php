@@ -13,7 +13,7 @@ class LoginFormRequest extends FormRequest {
     public function rules(): array {
         return [
             'email' => 'required|string|email|max:255|exists:accounts,email',
-            'password' => 'required|string|exists:accounts,password'
+            'password' => 'required|string'
         ];
     }
 
@@ -21,9 +21,7 @@ class LoginFormRequest extends FormRequest {
         return [
             'email.email' => 'Please enter valid e-mail.',
             'email.max' => 'Email entered must be less than 255 characters.',
-            'email.exists' => 'Email entered is not registered to the system.',
-            
-            'password.exists' => 'Password does not match or exist for the account.',
+            'email.exists' => 'Email entered is not registered to the system.'
         ];
     }
 }

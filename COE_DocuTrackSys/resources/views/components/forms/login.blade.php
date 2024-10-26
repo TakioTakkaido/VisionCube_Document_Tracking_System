@@ -33,6 +33,7 @@ Password
       {{-- Password Input --}}
       <div class="input-box mb-5">
         <input type="password" name="password" id="password" placeholder="Password" required>
+        <i class='bx bx-hide' id="showPassword" style="cursor: pointer;"></i>
         <span class="error" id="error-password" style="display: none"></span>
       </div>
 

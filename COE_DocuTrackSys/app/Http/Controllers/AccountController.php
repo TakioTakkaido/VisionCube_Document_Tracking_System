@@ -64,8 +64,7 @@ class AccountController extends Controller {
         // Authentication failed, redirect back with an error message
         return response()->json([
             'errors' => [
-                'email' => 'Email does not match the given records.',
-                'password' => 'Incorrect password inputted.'
+                'password' => 'Password does not match or exist for the account.'
             ]
         ], 422);
     }
