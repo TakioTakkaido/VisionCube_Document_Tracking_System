@@ -187,6 +187,414 @@ function updateAccountAccess(secretaryAccesses = [], assistantAccesses = [], cle
         }
     });
 }
+
+
+
+//////////////////////////////////////////////////////////////////
+// Sender/recipient\
+// Edit Document Type
+$('#addParticipantBtn').on('click', function(event){
+    // Prevent other events
+    event.preventDefault();
+
+    // Create new form data
+    var formData = new FormData();
+    // Create form data for submission
+    formData = {
+        '_token' : $('#token').val(),
+        'value': $('#addParticipantText').val()
+    }
+
+    // Submit the data form
+    $.ajax({
+        method: "POST",
+        url: window.routes.updateParticipant,
+        data: formData,
+        success: function (data) {
+           // Log success message
+            showNotification('Participant added successfully!  <a href="#" class="reload">Reload</a>');
+            var newParticipantId = data.id;
+            // Update list group
+            // Append a new list item to the list group
+            var newListItem = `
+                <li class="list-group-item p-2 d-flex justify-content-between align-items-center systemParticipant" id="participant${newTypeId}">
+                    <span class="text-left mr-auto p-0">${$('#addParticipantText').val()}</span>
+                    <div class="editParticipantBtn mr-2 p-0" data-id=${newParticipantId} data-value="${$('#addParticipantText').val()}">
+                        <i class='bx bx-edit-alt' style="font-size: 20px;"></i>
+                    </div>
+                    <div class="deleteParticipantBtn p-0" data-id=${newParticipantId} data-value="${$('#addParticipantText').val()}" data-toggle="modal" data-target="#confirmDeleteParticipant">
+                        <i class='bx bx-trash' style="font-size: 20px;"></i>
+                    </div>
+                </li>`;
+            
+            // Append the new item to the list
+            $('.systemParticipantList').append(newListItem);
+
+            // Optionally, clear the input field after adding
+            $('#addParticipantText').val('');
+        },
+        error: function (data) {
+            showNotification('Error made when editing Participant.');
+            // Parse the data from the json response
+            var data = JSON.parse(data.responseText);
+
+            // Log error
+            console.log("Error occurred while editing Participant")
+            console.log(data.errors);
+        }
+    });
+});
+
+// Update Participant Form
+$('.systemParticipantList').on('click', '.saveParticipantBtn' , function(event){
+    // Prevent other events
+    // event.stopPropagation();
+
+    // Create new form data
+    var formData = new FormData();
+    var newParticipantId = $(this).data('id');
+    var newParticipantValue = $('#editParticipantText').val();
+
+    formData = {
+        '_token' : $('#token').val(),
+        'id': newParticipantId,
+        'value': newParticipantValue
+    };
+
+    // Submit the data form
+    $.ajax({
+        method: "POST",
+        url: window.routes.updateParticipant,
+        data: formData,
+        success: function (data) {
+            showNotification('Participant edited successfully! <a href="#" class="reload">Reload</a>');
+
+            // Update the list item with the new value
+            $('#participant' + newParticipantId).html(`
+                <span class="text-left mr-auto p-0">${newParticipantValue}</span>
+                <div class="editParticipantBtn mr-2 p-0" data-id=${newParticipantId} data-value="${newParticipantValue}">
+                    <i class='bx bx-edit-alt' style="font-size: 20px;"></i>
+                </div>
+                <div class="deleteParticipantBtn p-0" data-id=${newParticipantId} data-value="${newParticipantValue}" data-toggle="modal" data-target="#confirmDeleteParticipant">
+                    <i class='bx bx-trash' style="font-size: 20px;"></i>
+                </div>
+            `);
+        },
+        error: function (data) {
+            showNotification('Error editing participant.');
+            console.error("Error occurred while editing participant", data);
+        }
+    });
+});
+
+// DELETE DOCUMENT Participant
+$('.deleteParticipantBtn').on('click', function(event) {
+    event.preventDefault();
+    $('#confirmDeleteParticipantBtn').data('id', $(this).data('id'));
+    $('#confirmDeleteParticipantText').html("Confirm deleting participant: " + $(this).data('value'));
+});
+
+// Confirm Delete Participant
+$('#confirmDeleteParticipantBtn').on('click', function(event) {
+    event.preventDefault();
+
+    var formData = new FormData();
+    var participantId = $(this).data('id');
+    formData = {
+        '_token': $('#token').val(),
+        'id': participantId
+    };
+
+    $.ajax({
+        method: "POST",
+        url: window.routes.deleteParticipant,
+        data: formData,
+        success: function(data) {
+            showNotification('Participant deleted successfully! <a href="#" class="reload">Reload</a>');
+            $('#participant' + participantId).remove();
+            $('#confirmDeleteParticipant').modal('hide');
+        },
+        error: function(data) {
+            showNotification('Error deleting participant.');
+            console.error("Error occurred while deleting participant", data);
+        }
+    });
+});
+
+// Cancel Delete Participant
+$('#cancelDeleteParticipantBtn').on('click', function(event) {
+    event.preventDefault();
+    $('#confirmDeleteParticipant').modal('hide');
+});
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////
+// EDITING Sender and Recipients Group
+//ParticipantGroup
+$('#addParticipantGroupBtn').on('click', function(event){
+    // Prevent other events
+    event.preventDefault();
+
+    // Create new form data
+    var formData = new FormData();
+    // Create form data for submission
+    formData = {
+        '_token' : $('#token').val(),
+        'value': $('#addParticipantGroupText').val()
+    }
+
+    // Submit the data form
+    $.ajax({
+        method: "POST",
+        url: window.routes.updateParticipantGroup,
+        data: formData,
+        success: function (data) {
+           // Log success message
+            showNotification('ParticipantGroup added successfully!  <a href="#" class="reload">Reload</a>');
+            var newParticipantGroupId = data.id;
+            // Update list group
+            // Append a new list item to the list group
+            var newListItem = `
+                <li class="list-group-item p-2 d-flex justify-content-between align-items-center systemParticipantGroup" id="participantGroup${newParticipantGroupId}">
+                    <span class="text-left mr-auto p-0">${$('#addParticipantGroupText').val()}</span>
+                    <div class="editParticantBtn mr-2 p-0" data-id=${newParticipantGroupId} data-value="${$('#addParticipantGroupText').val()}">
+                        <i class='bx bx-edit-alt' style="font-size: 20px;"></i>
+                    </div>
+                    <div class="deleteParticipantGroupBtn p-0" data-id=${newParticipantGroupId} data-value="${$('#addParticipantGroupText').val()}" data-toggle="modal" data-target="#confirmDeleteParticipantGroup">
+                        <i class='bx bx-trash' style="font-size: 20px;"></i>
+                    </div>
+                </li>`;
+            
+            // Append the new item to the list
+            $('.systemParticipantGroupList').append(newListItem);
+
+            // Optionally, clear the input field after adding
+            $('#addParticipantGroupText').val('');
+        },
+        error: function (data) {
+            showNotification('Error made when editing participantGroup.');
+            // Parse the data from the json response
+            var data = JSON.parse(data.responseText);
+
+            // Log error
+            console.log("Error occured while editing participantGroup")
+            console.log(data.errors);
+        }
+    });
+});
+
+// Update participant Group Form
+$('.systemParticipantList').on('click', '.saveParticipantGroupBtn' , function(event){
+    // Prevent other events
+    // event.stopPropagation();
+
+    // Create new form data
+    var formData = new FormData();
+    var saveParticipantGroupBtn = $(this);
+    // Create form data for submission
+    formData = {
+        '_token' : $('#token').val(),
+        'id': saveParticipantGroupBtn.data('id'),
+        'value': $('#editParticipantGroupText').val()
+    }
+
+    // Submit the data form
+    $.ajax({
+        method: "POST",
+        url: window.routes.updateParticipantGroup,
+        data: formData,
+        success: function (data) {
+           // Log success message
+            showNotification('ParticipantGroup edited successfully!  <a href="#" class="reload">Reload</a>');
+
+            // Update list group
+            var newParticipantGroupText = $('#editParticipantGroupText').val();
+
+            // Close edit participantGroup
+            $('#participantGroup' + saveParticipantGroupBtn.data('id') + ' .closeEditBtn').trigger('click', newParticipantGroupText);
+        },
+        error: function (data) {
+            showNotification('Error made when editing participantGroup.');
+            // Parse the data from the json response
+            var data = JSON.parse(data.responseText);
+
+            // Log error
+            console.log("Error occured while editing participantGroup")
+            console.log(data.errors);
+        }
+    });
+});
+
+$('.systemParticipantGroupList').on('click', '.editParticipantGroupBtn', function(event){
+    if (!$(this).hasClass('disabled')){
+        // Prevent other events
+        event.preventDefault();
+
+        // Get participantGroup id and text
+        var participantGroupId = $(this).data('id'); 
+        var participantGroupText = $(this).data('value');
+
+        // Replace body of the list into a form
+        $('#participantGroup' + participantGroupId).html(`
+            <input type="text" class="mr-auto p-0" name="participantGroupText" id="editParticipantGroupText" value="${participantGroupText}">
+            <div class="saveParticipantGroupBtn mr-2 p-0" data-id=${participantGroupId}><i class='bx bx-check' style="font-size: 20px;"></i>
+            </div>
+            <div class="closeEditBtn p-0" id=${"participantGroup" + participantGroupId} data-id=${participantGroupId} data-value="${participantGroupText}"><i class='bx bx-x' style="font-size: 20px;"></i>
+            </div>
+            <div style="display:none" class="participantGroupInfo" data-id=${participantGroupId} data-value="${participantGroupText}"></div>
+        `);
+
+        $('#addParticipantGroupBtn').addClass('disabled');
+        $('#addParticipantGroupText').prop('disabled', true);
+        $('.systemParticipantGroup').each(function () { 
+            var systemParticipantGroup = $(this);
+            var editBtn = systemParticipantGroup.find('.editParticipantGroupBtn');
+            var deleteBtn = systemParticipantGroup.find('.deleteParticipantGroupBtn');
+
+            if (systemParticipantGroup.attr('id') !== ('participantGroup' + participantGroupId)){
+                systemParticipantGroup.addClass('disabled');
+                editBtn.addClass('disabled');
+                deleteBtn.addClass('disabled');
+            }
+        });   
+    }
+});
+
+$('.systemParticipantGroupList').on('click', '.closeEditBtn', function(event, newText = null){
+    event.preventDefault();
+    var participantGroupId = $(this).attr('id');
+    var selectedParticipantGroupId = $(this).data('id'); 
+    var selectedParticipantGroupText = (newText != null) ? newText : $(this).data('value');
+
+    if($('#addParticipantGroupText').val().length !== 0) {
+        $('#addParticipantGroupBtn').removeClass('disabled');
+    }
+
+    $('#addParticipantGroupText').prop('disabled', false);
+
+    $('.systemParticipantGroup').each(function (index) { 
+        var systemParticipantGroup = $(this);
+        var editBtn = systemParticipantGroup.find('.editParticipantGroupBtn');
+        var deleteBtn = systemParticipantGroup.find('.deleteParticipantGroupBtn');
+
+        if (systemParticipantGroup.attr('id') !== participantGroupId){
+            systemParticipantGroup.removeClass('disabled');
+            editBtn.removeClass('disabled');
+            deleteBtn.removeClass('disabled');
+        } else {
+            $(this).html(`
+                <span class="text-left mr-auto">${selectedParticipantGroupText}</span>
+                <div class="editParticipantGroupBtn mr-2" data-id=${selectedParticipantGroupId} data-value="${selectedParticipantGroupText}"><i class='bx bx-edit-alt' style="font-size: 20px;"></i>
+                </div>
+                <div class="deleteParticipantGroupBtn" 
+                    data-id=${selectedParticipantGroupId} data-value="${selectedParticipantGroupText}"
+                    data-toggle="modal" data-target="#confirmDeleteStatus"><i class='bx bx-trash' style="font-size: 20px;"></i>
+                </div>
+            `);
+        }
+    });
+});
+
+$('#addParticipantGroupText').on('input', function(event){
+    event.preventDefault();
+    if($(this).val().length !== 0) {
+        $('#addParticipantGroupBtn').removeClass('disabled');
+    } else {
+        $('#addParticipantGroupBtn').addClass('disabled');
+    }
+});
+
+$('#searchParticipantGroupText').on('input', function(event){
+    event.preventDefault();
+    
+    // Reset the border for all items to ensure consistency
+    $('.systemParticipantGroup').css('border-bottom', '1px solid rgba(0, 0, 0, .125)');
+
+    // Get the search query
+    var query = $(this).val().toLowerCase();
+
+    // Filter the list items based on the search query
+    $('.systemParticipantGroup').each(function(){
+        var participantGroupText = $(this).find('span').html().toLowerCase();
+        if (participantGroupText.includes(query)){
+            $(this).removeClass('hide');
+        } else {
+            $(this).addClass('hide');
+        }
+    });
+
+    // Ensure the last visible item gets the border style
+    var lastVisibleItem = $('.systemParticipantGroup:visible').last();
+    
+    if (lastVisibleItem.length > 0) {
+        lastVisibleItem.css('border-bottom', '2px solid rgba(0, 0, 0, .125)');
+    }
+});
+
+// DELETE DOCUMENT ParticipantGroup
+// To trigger delete ParticipantGroup confirm
+$('.deleteParticipantGroupBtn').on('click', function(event){
+    // Prevent other events
+    event.preventDefault();
+
+    $('#confirmDeleteParticipantGroupBtn').data('id', $(this).data('id'));
+    $('#confirmDeleteParticipantGroupText').html("Confirm deleting participantGroup: " + $(this).data('value'));
+});
+
+// Delete ParticipantGroup
+$('#confirmDeleteParticipantGroupBtn').on('click', function(event){
+    // Prevent other events
+    event.preventDefault();
+
+    var formData = new FormData;
+    var participantGroupId = $(this).data('id');
+    formData = {
+        '_token' : $('#token').val(),
+        'id' : participantGroupId
+    }
+    
+    $.ajax({
+        method: "POST",
+        url: window.routes.deleteParticipantGroup,
+        data: formData,
+        success: function (data) {
+            showNotification('ParticipantGroup deleted successfully! <a href="#" class="reload">Reload</a>');
+
+            // Remove the ParticipantGroup in the front end
+            $('#participantGroup' + participantGroupId).remove();
+
+            $('#confirmDeleteParticipantGroup').modal('hide');
+        },
+        error: function (data) {
+            // Parse the data from the json response
+            var data = JSON.parse(data.responseText);
+
+            // Log error
+            showNotification('Error deleting participantGroup.');
+            console.log(data.errors)
+        }
+    });
+    
+});
+
+// Cancel delete participant
+$('#cancelDeleteParticipantGroupBtn').on('click', function (event) { 
+    // Prevent other events
+    event.preventDefault();
+
+    // Close only the modal of confirm delete Participant
+    $('#confirmDeleteParticipantGroup').modal('hide');
+});
+
+
+
+
 //////////////////////////////////////////////////////////////////
 // EDITING DOCUMENT TYPE
 // Edit Document Type
@@ -445,9 +853,272 @@ $('#cancelDeleteTypeBtn').on('click', function (event) {
     $('#confirmDeleteType').modal('hide');
 });
 
+
+
+//////////////////////////////////////////////////////////////////
+// EDITING DOCUMENT STATUS
+// Edit Document status
+$('#addStatusBtn').on('click', function(event){
+    // Prevent other events
+    event.preventDefault();
+
+    // Create new form data
+    var formData = new FormData();
+    // Create form data for submission
+    formData = {
+        '_token' : $('#token').val(),
+        'value': $('#addStatusText').val()
+    }
+
+    // Submit the data form
+    $.ajax({
+        method: "POST",
+        url: window.routes.updateStatus,
+        data: formData,
+        success: function (data) {
+           // Log success message
+            showNotification('Status added successfully!  <a href="#" class="reload">Reload</a>');
+            var newStatusId = data.id;
+            // Update list group
+            // Append a new list item to the list group
+            var newListItem = `
+                <li class="list-group-item p-2 d-flex justify-content-between align-items-center systemStatus" id="status${newStatusId}">
+                    <span class="text-left mr-auto p-0">${$('#addStatusText').val()}</span>
+                    <div class="editStatusBtn mr-2 p-0" data-id=${newStatusId} data-value="${$('#addStatusText').val()}">
+                        <i class='bx bx-edit-alt' style="font-size: 20px;"></i>
+                    </div>
+                    <div class="deleteStatusBtn p-0" data-id=${newStatusId} data-value="${$('#addStatusText').val()}" data-toggle="modal" data-target="#confirmDeleteStatus">
+                        <i class='bx bx-trash' style="font-size: 20px;"></i>
+                    </div>
+                </li>`;
+            
+            // Append the new item to the list
+            $('.systemStatusList').append(newListItem);
+
+            // Optionally, clear the input field after adding
+            $('#addStatusText').val('');
+        },
+        error: function (data) {
+            showNotification('Error made when editing status.');
+            // Parse the data from the json response
+            var data = JSON.parse(data.responseText);
+
+            // Log error
+            console.log("Error occured while editing status")
+            console.log(data.errors);
+        }
+    });
+});
+
+// Update status Form
+$('.systemStatusList').on('click', '.saveStatusBtn' , function(event){
+    // Prevent other events
+    // event.stopPropagation();
+
+    // Create new form data
+    var formData = new FormData();
+    var saveStatusBtn = $(this);
+    // Create form data for submission
+    formData = {
+        '_token' : $('#token').val(),
+        'id': saveStatusBtn.data('id'),
+        'value': $('#editStatusText').val()
+    }
+
+    // Submit the data form
+    $.ajax({
+        method: "POST",
+        url: window.routes.updateStatus,
+        data: formData,
+        success: function (data) {
+           // Log success message
+            showNotification('Status edited successfully!  <a href="#" class="reload">Reload</a>');
+
+            // Update list group
+            var newStatusText = $('#editStatusText').val();
+
+            // Close edit status
+            $('#status' + saveStatusBtn.data('id') + ' .closeEditBtn').trigger('click', newStatusText);
+        },
+        error: function (data) {
+            showNotification('Error made when editing status.');
+            // Parse the data from the json response
+            var data = JSON.parse(data.responseText);
+
+            // Log error
+            console.log("Error occured while editing status")
+            console.log(data.errors);
+        }
+    });
+});
+
+$('.systemStatusList').on('click', '.editStatusBtn', function(event){
+    if (!$(this).hasClass('disabled')){
+        // Prevent other events
+        event.preventDefault();
+
+        // Get status id and text
+        var statusId = $(this).data('id'); 
+        var statusText = $(this).data('value');
+
+        // Replace body of the list into a form
+        $('#status' + statusId).html(`
+            <input type="text" class="mr-auto p-0" name="statusText" id="editStatusText" value="${statusText}">
+            <div class="saveStatusBtn mr-2 p-0" data-id=${statusId}><i class='bx bx-check' style="font-size: 20px;"></i>
+            </div>
+            <div class="closeEditBtn p-0" id=${"status" + statusId} data-id=${statusId} data-value="${statusText}"><i class='bx bx-x' style="font-size: 20px;"></i>
+            </div>
+            <div style="display:none" class="statusInfo" data-id=${statusId} data-value="${statusText}"></div>
+        `);
+
+        $('#addStatusBtn').addClass('disabled');
+        $('#addStatusText').prop('disabled', true);
+        $('.systemStatus').each(function () { 
+            var systemStatus = $(this);
+            var editBtn = systemStatus.find('.editStatusBtn');
+            var deleteBtn = systemStatus.find('.deleteStatusBtn');
+
+            if (systemStatus.attr('id') !== ('status' + statusId)){
+                systemStatus.addClass('disabled');
+                editBtn.addClass('disabled');
+                deleteBtn.addClass('disabled');
+            }
+        });   
+    }
+});
+
+$('.systemStatusList').on('click', '.closeEditBtn', function(event, newText = null){
+    event.preventDefault();
+    var statusId = $(this).attr('id');
+    var selectedStatusId = $(this).data('id'); 
+    var selectedStatusText = (newText != null) ? newText : $(this).data('value');
+
+    if($('#addStatusText').val().length !== 0) {
+        $('#addStatusBtn').removeClass('disabled');
+    }
+
+    $('#addStatusText').prop('disabled', false);
+
+    $('.systemStatus').each(function (index) { 
+        var systemStatus = $(this);
+        var editBtn = systemStatus.find('.editStatusBtn');
+        var deleteBtn = systemStatus.find('.deleteStatusBtn');
+
+        if (systemStatus.attr('id') !== statusId){
+            systemStatus.removeClass('disabled');
+            editBtn.removeClass('disabled');
+            deleteBtn.removeClass('disabled');
+        } else {
+            $(this).html(`
+                <span class="text-left mr-auto">${selectedStatusText}</span>
+                <div class="editStatusBtn mr-2" data-id=${selectedStatusId} data-value="${selectedStatusText}"><i class='bx bx-edit-alt' style="font-size: 20px;"></i>
+                </div>
+                <div class="deleteStatusBtn" 
+                    data-id=${selectedStatusId} data-value="${selectedStatusText}"
+                    data-toggle="modal" data-target="#confirmDeleteStatus"><i class='bx bx-trash' style="font-size: 20px;"></i>
+                </div>
+            `);
+        }
+    });
+});
+
+$('#addStatusText').on('input', function(event){
+    event.preventDefault();
+    if($(this).val().length !== 0) {
+        $('#addStatusBtn').removeClass('disabled');
+    } else {
+        $('#addStatusBtn').addClass('disabled');
+    }
+});
+
+$('#searchStatusText').on('input', function(event){
+    event.preventDefault();
+    
+    // Reset the border for all items to ensure consistency
+    $('.systemStatus').css('border-bottom', '1px solid rgba(0, 0, 0, .125)');
+
+    // Get the search query
+    var query = $(this).val().toLowerCase();
+
+    // Filter the list items based on the search query
+    $('.systemStatus').each(function(){
+        var statusText = $(this).find('span').html().toLowerCase();
+        if (statusText.includes(query)){
+            $(this).removeClass('hide');
+        } else {
+            $(this).addClass('hide');
+        }
+    });
+
+    // Ensure the last visible item gets the border style
+    var lastVisibleItem = $('.systemStatus:visible').last();
+    
+    if (lastVisibleItem.length > 0) {
+        lastVisibleItem.css('border-bottom', '2px solid rgba(0, 0, 0, .125)');
+    }
+});
+
+// DELETE DOCUMENT STATUS
+// To trigger delete status confirm
+$('.deleteStatusBtn').on('click', function(event){
+    // Prevent other events
+    event.preventDefault();
+
+    $('#confirmDeleteStatusBtn').data('id', $(this).data('id'));
+    $('#confirmDeleteStatusText').html("Confirm deleting status: " + $(this).data('value'));
+});
+
+// Delete status
+$('#confirmDeleteStatusBtn').on('click', function(event){
+    // Prevent other events
+    event.preventDefault();
+
+    var formData = new FormData;
+    var statusId = $(this).data('id');
+    formData = {
+        '_token' : $('#token').val(),
+        'id' : statusId
+    }
+    
+    $.ajax({
+        method: "POST",
+        url: window.routes.deleteStatus,
+        data: formData,
+        success: function (data) {
+            showNotification('Status deleted successfully! <a href="#" class="reload">Reload</a>');
+
+            // Remove the status in the front end
+            $('#status' + statusId).remove();
+
+            $('#confirmDeleteStatus').modal('hide');
+        },
+        error: function (data) {
+            // Parse the data from the json response
+            var data = JSON.parse(data.responseText);
+
+            // Log error
+            showNotification('Error deleting status.');
+            console.log(data.errors)
+        }
+    });
+    
+});
+
+// Cancel delete status
+$('#cancelDeleteStatusBtn').on('click', function (event) { 
+    // Prevent other events
+    event.preventDefault();
+
+    // Close only the modal of confirm delete status
+    $('#confirmDeleteStatus').modal('hide');
+});
+
+
+
 //////////////////////////////////////////////////////////////////
 // EDITING DOCUMENT STATUS
 // For statuses, when clicked
+/*
 $('.editStatusBtn').on('click', function(event){
     // Prevent other events
     event.preventDefault();
@@ -568,6 +1239,8 @@ $('#updateStatusForm').on('submit', function(event){
     });
 });
 
+*/
+
 //////////////////////////////////////////////////////////////////
 // EDITING FILE EXTENSIONS
 // Update File Extensions Form
@@ -628,8 +1301,9 @@ function updateFileExtensions(extensions = []){
         }
     });
 }
+
 //////////////////////////////////////////////////////////////////
-// Update Participants
+/* Update Participants
 $('.editParticipantBtn').on('click', function(event){
     // Prevent other events
     event.preventDefault();
@@ -738,7 +1412,9 @@ $('#updateParticipantForm').on('submit', function(event){
     });
 });
 
+
 //////////////////////////////////////////////////////////////////
+
 // Update Participant List
 $('.editParticipantGroupBtn').on('click', function(event){
     // Prevent other events
@@ -954,7 +1630,7 @@ $('#updateParticipantGroupMembersForm').on('submit', function(event){
 })
 // Sync New Participant Groups to the Selected Participant Group
 
-
+*/
 
 
 
