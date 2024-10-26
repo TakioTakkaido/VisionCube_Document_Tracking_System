@@ -39,7 +39,7 @@ body{
 
 .wrapper{
   width: 420px;
-  background: #990000;
+  background: #a50b0b;
   border: 2px solid rgba(255, 255, 255, .2);
   color: #fff;
   border-radius: 12px;
@@ -136,6 +136,6 @@ body{
 }
 
 .error{
-  font-size: 15px;
+  font-size: 14px;
   margin-left: 15px;
 }

@@ -34,13 +34,6 @@ use Illuminate\Support\Facades\Log;
 class AccountController extends Controller {
     // Show Account
     public function show(Request $request){
-        // 
-
-        // Send log
-        ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Viewed account profile'
-        ]);
     }
 
     // Login Existing User

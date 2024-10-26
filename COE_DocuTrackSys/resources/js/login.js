@@ -11,38 +11,40 @@ $(document).on('submit', '#loginForm', function(event){
         '_token' : $('#token').val()
     };
 
+    $('#loginBtn').prop('disabled', true);
+    
     $.ajax({
         method: "POST",
         url: window.routes.login,
         data: formData,
         success: function (){
-            console.log('Logged in successfully.');
+            $('#loginBtn').prop('disabled', false);
             $('#loginBtn').html('Log In');
             window.location.href = window.routes.dashboard;
         },
         error: function (data) {
-            console.log('Error made in logging in.')
+            $('#loginBtn').prop('disabled', false);
             $('#loginBtn').html('Log In');
+
             // Get errors
             var data = JSON.parse(data.responseText);
-            console.log(data);
+
             // Change the input field, and
             // Add error text
             if (data.errors.email){
-                if ($('#email').hasClass('error-input')) {
-                    $('#email').removeClass('error-input');
-                }
-                $('#email').addClass('error-input');
-                $('<span class="error" id="error-email">'+data.errors.email+'</span>').insertAfter('#email');
+                $('#email').css('border', '1px solid red');
+                $('#email').css('background-color', '#f09d9d');
+
+                $('#error-email').html(data.errors.email);
+                $('#error-email').css('display', 'block');
             }
 
             if (data.errors.password){
-                if ($('#password').hasClass('error-input')) {
-                    $('#password').removeClass('error-input');
-                }
+                $('#password').css('border', '1px solid red');
+                $('#password').css('background-color', '#f09d9d');
 
-                $('#password').addClass('error-input');
-                $('<span class="error" id="error-password">'+data.errors.password+'</span>').insertAfter('#password');
+                $('#error-password').html(data.errors.password);
+                $('#error-password').css('display', 'block');
             }
         }
     });
@@ -54,16 +56,18 @@ $('#email').on('input' , function(event){
     event.preventDefault();
 
     // Remove errors
-    $('#error-email').remove();
-    $(this).removeClass('error-input');
+    $('#error-email').html();
+    $('#error-email').css('display', 'none');
+
+    $(this).css('border', '2px solid rgba(255, 255, 255, .2)');
+    $(this).css('background-color', 'transparent');
 });
 
 $('#password').on('input' , function(event){
     event.preventDefault();
     
     // Remove errors
-    $('#error-password').remove();
-    $(this).removeClass('error-input');
+    $('#error-password').html();
+    $(this).css('border', '2px solid rgba(255, 255, 255, .2)');
+    $(this).css('background-color', 'transparent');
 });
-
-// Message

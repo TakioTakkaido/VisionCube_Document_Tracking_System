@@ -242,7 +242,6 @@ $('#submitDocumentForm').on('click', function(event) {
         formData.append('file', fileInput.files[0]);  // Correct file append
     }
 
-    console.log(formData);
     $.ajax({
         method: 'POST',
         url: window.routes.uploadDocument,
