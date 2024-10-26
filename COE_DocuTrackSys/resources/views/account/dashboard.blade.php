@@ -54,6 +54,9 @@ Sanchez, Shane David U.
 
     {{-- Scripts --}}
     @vite([
+        // Homepage
+        'resources/js/dashboard/homepage.js',
+
         // Panel
         'resources/js/dashboard/topPanel.js',
         'resources/js/dashboard/sidePanel.js',
@@ -74,11 +77,23 @@ Sanchez, Shane David U.
 <body>
 <script>
     $(function(){
+        $.ajax({
+        method: 'GET',
+        url: window.routes.getDocumentStatistics,
+        success: function(response) {
+            $('#incomingBadge').html(response.incoming);
+            $('#outgoingBadge').html(response.outgoing);
+            $('#archivedBadge').html(response.archived);
+        }});
+
         $('#homePageBtn').trigger('click');
         $('#accountAccessTable').DataTable();
     });
-</script>{{-- NOTIFICATION --}}
+</script>
+
+{{-- NOTIFICATION --}}
 <x-notification />
+
 {{-- TOP BAR --}}
 <x-dashboard.top-panel />
 
@@ -106,6 +121,9 @@ Sanchez, Shane David U.
 
 <script>
     window.routes = {
+        // Homepage Routes
+        getDocumentStatistics: "{{route('document.getStatistics')}}",
+
         // Accounts Routes
         create: "{{route('account.create')}}",
         logout: "{{route('account.logout')}}",

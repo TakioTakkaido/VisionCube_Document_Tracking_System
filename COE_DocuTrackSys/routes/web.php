@@ -184,6 +184,10 @@ Route::middleware(NoDirectAccess::class)->group(function(){
                     // Download Document
                     Route::get('download/{id}', 'download')
                     ->name('download');
+
+                    // Document Statistics
+                    Route::get('stats', 'getDocumentStatistics')
+                    ->name('getStatistics');
                 });
 
                 // ROUTE: ALL, EXCEPT ARCHIVIST AND GUEST

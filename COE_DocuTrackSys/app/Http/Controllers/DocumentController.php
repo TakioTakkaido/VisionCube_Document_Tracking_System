@@ -33,8 +33,8 @@ use Illuminate\Validation\Rule;
 class DocumentController extends Controller{
     //Upload Document
     public function upload(Request $request){
-        $series = $request->input('seriesRequired') === 'true' ? 'required|number|max:9999|min:0' : 'nullable|integer';
-        $memo = $request->input('memoRequired') === 'true' ? 'required|number|max:9999|min:0' : 'nullable|integer';
+        $series = $request->input('seriesRequired') === 'true' ? 'required|integer|max:9999|min:0' : 'nullable|integer';
+        $memo = $request->input('memoRequired') === 'true' ? 'required|integer|max:9999|min:0' : 'nullable|integer';
         $request->validate([
             'type' => 'required|string',
             'sender' => 'required|string|max:255',
@@ -42,7 +42,7 @@ class DocumentController extends Controller{
             'memo_number' => $memo,
             'recipient' => 'required|string|max:255',
             'subject' => 'required|string',
-            'file' => 'required|file|mimes:pdf,'.FileExtension::getFileExtensions(),
+            'file' => 'required|file|mimes:'.FileExtension::getFileExtensions(),
             'category' => 'required|string',
             'status' => 'required|string',
             'assignee' => 'required|string',
@@ -68,7 +68,7 @@ class DocumentController extends Controller{
             'subject.required' => 'Document subject is required!',
 
             'file.required' => 'Softcopy file is required!',
-            'file.mimes' => 'Softcopy file must be of types: .pdf, '.FileExtension::getFileExtensions(),
+            'file.mimes' => 'Softcopy file must be of types: '.FileExtension::getFileExtensions(),
 
             'category.required' => 'Document category is required!',
 
@@ -91,8 +91,8 @@ class DocumentController extends Controller{
             'subject' => $request->input('subject'),
             'assignee' => $request->input('assignee'),
             'category' => $request->input('category'),
-            'series_number' => $request->input('seriesNo'),
-            'memo_number' => $request->input('memoNo'),
+            'series_number' => $request->input('series_number'),
+            'memo_number' => $request->input('memo_number'),
             'document_date' => $request->input('document_date'),
             'version' => 1
         ]);
@@ -353,6 +353,15 @@ class DocumentController extends Controller{
         return response()->json([
             'document' => $document,
             'fileLink' => asset($fileLink)
+        ]);
+    }
+
+    // Document Statistics
+    public function getDocumentStatistics(){
+        return response()->json([
+            'incoming' => sizeof(Document::where('category', DocumentCategory::INCOMING->value)->get()),
+            'outgoing' => sizeof(Document::where('category', DocumentCategory::OUTGOING->value)->get()),
+            'archived' => sizeof(Document::where('category', DocumentCategory::ARCHIVED->value)->get()),
         ]);
     }
 }

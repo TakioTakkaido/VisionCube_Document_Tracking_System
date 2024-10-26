@@ -1,4 +1,4 @@
-<div class="container border p-3 rounded">
+<div class="container border p-3 rounded w-75">
     <h6 class="p-0 font-weight-bold">Upload Document Form</h6>
     {{-- Upload Document Form --}}
     <form class="uploadContent w-100" id="uploadDocumentForm" method="post">
@@ -43,8 +43,8 @@
                     <div class="col">
                         <label for="uploadSoftcopy">Document (Softcopy)</label>
                         <div class="custom-file">
-                            <input type="file" id="softcopy" class="custom-file-input" name="file">
-                            <label class="custom-file-label uploadInput" for="softcopy">Choose file</label>
+                            <input type="file" id="softcopy" class="uploadInput custom-file-input" name="file">
+                            <label class="custom-file-label" id="uploadfileText" for="softcopy">Choose file</label>
                             <span class="error" id="fileError" style="display:none;"></span>
                         </div>
                     </div>

@@ -17,11 +17,11 @@ class FileExtensionFactory extends Factory
      */
     public function definition(): array {
         return [
-            ['value' => '.pdf', 'checked' => false],
-            ['value' => '.doc', 'checked' => false],
-            ['value' => '.docx', 'checked' => false],
-            ['value' => '.xls', 'checked' => false],
-            ['value' => '.xlsx', 'checked' => false]
+            ['value' => 'pdf', 'checked' => false],
+            ['value' => 'doc', 'checked' => false],
+            ['value' => 'docx', 'checked' => false],
+            ['value' => 'xls', 'checked' => false],
+            ['value' => 'xlsx', 'checked' => false]
         ];
     }
 }

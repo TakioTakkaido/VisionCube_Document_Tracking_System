@@ -1,12 +1,5 @@
 import { showNotification } from "../notification";
 
-// Open Upload Form
-$('#uploadBtn').on('click', function (event) {
-    event.preventDefault();
-
-    $('#uploadDocument').modal('show');
-});
-
 // Upload Document
 $('#submitDocumentForm').on('click', function(event) {
     $('#submitDocumentForm').prop('disabled', true);
@@ -45,13 +38,14 @@ $('#submitDocumentForm').on('click', function(event) {
     
     var seriesNo;
     var memoNo;
-    if ($('#uploadDocType').val() == 'Type0') {
+    if ($('#uploadDocType').val() === 'Type0') {
         seriesNo = $('#uploadSeriesNo').val();
         memoNo  = $('#uploadMemoNo').val();
     }
-    formData.append('seriesNo', seriesNo);
-    formData.append('memoNo', memoNo);
-
+    formData.append('series_number', seriesNo);
+    formData.append('memo_number', memoNo);
+    console.log(seriesNo);
+    console.log(memoNo);
     formData.append('subject', $('#uploadSubject').val());
 
     formData.append('seriesRequired', seriesRequired);
@@ -248,6 +242,7 @@ $('#submitDocumentForm').on('click', function(event) {
         formData.append('file', fileInput.files[0]);  // Correct file append
     }
 
+    console.log(formData);
     $.ajax({
         method: 'POST',
         url: window.routes.uploadDocument,
@@ -535,6 +530,7 @@ $('#uploadDate').on('input', function(event){
 
 $('#softcopy').on('input', function(event){
     event.preventDefault();
+    $('#uploadfileText').html(this.files[0].name);
     $('#fileError').css('display', 'none');
 });
 
