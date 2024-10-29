@@ -344,7 +344,7 @@
                     <div class="col">
                         {{-- Dropdown List of Categories --}}
                         <ul class="list-group p-0 mb-1" style="max-height: 250px; overflow-y: scroll;">
-                        @foreach ($categories as $status)
+                        @foreach ($statuses as $status)
                             <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
                             {{-- Document Status --}}
                             <span class="text-left mr-auto">{{$status->value}}</span>

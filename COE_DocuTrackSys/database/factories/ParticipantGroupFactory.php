@@ -16,7 +16,17 @@ class ParticipantGroupFactory extends Factory
      */
     public function definition(): array {
         return [
-            'value' => 'Group'
+            ['value' => 'COE Dept. Heads'],
+            ['value' => 'ABE Faculty'],
+            ['value' => 'CE Faculty'],
+            ['value' => 'CPE Faculty'],
+            ['value' => 'ECE Faculty'],
+            ['value' => 'ENE Faculty'],
+            ['value' => 'EE Faculty'],
+            ['value' => 'GE Faculty'],
+            ['value' => 'IE Faculty'],
+            ['value' => 'ME Faculty'],
+            ['value' => 'SE Faculty']
         ];
     }
 }

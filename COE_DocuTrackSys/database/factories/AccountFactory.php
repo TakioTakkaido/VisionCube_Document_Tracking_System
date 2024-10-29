@@ -29,6 +29,12 @@ class AccountFactory extends Factory {
         return $this->state(function (array $attributes) {
             return [
                 'role' => 'Admin',
+                'canUpload' => true,
+                'canEdit' => true,
+                'canMove' => true,
+                'canArchive' => true,
+                'canDownload' => true,
+                'canPrint' => true,
             ];
         });
     }

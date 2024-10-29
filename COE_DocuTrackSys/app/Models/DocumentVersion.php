@@ -18,11 +18,24 @@ class DocumentVersion extends Model
     use HasFactory;
 
     protected $fillable = [
+        // Version Info
         'document_id',
         'version_number',
-        'content',
-        'file',
-        'modified_by'
+        'modified_by',
+
+        // Document Info
+        'type',
+        'status',
+        'sender',
+        'senderArray',
+        'recipient',
+        'recipientArray',
+        'subject',
+        'assignee',
+        'category',
+        'series_number',
+        'memo_number',
+        'document_date'
     ];
 
     // Below are the relationships of Document to other models in the system.
@@ -32,11 +45,21 @@ class DocumentVersion extends Model
         return $this->belongsTo(Document::class);
     }
 
+    public function attachments(){
+        return $this->hasMany(Attachment::class);
+    }
+
     protected function createdAt() : CastsAttribute {
         return CastsAttribute::make(
             get: fn ($value) => (string) Carbon::parse($value)
                 ->setTimezone('Asia/Singapore')
                 ->format('M. d, Y h:i:s a')
         );
+    }
+
+    protected function display_date() : string {
+        return $this->document_date
+            ->setTimezone('Asia/Singapore')
+            ->format('M. d, Y');
     }
 }

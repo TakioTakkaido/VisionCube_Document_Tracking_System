@@ -342,5 +342,6 @@ class AccountController extends Controller {
         // Return all access
         return $access;
 
+
     }
 }

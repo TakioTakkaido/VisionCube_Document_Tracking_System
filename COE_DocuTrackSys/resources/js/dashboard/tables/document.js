@@ -74,36 +74,18 @@ export function showIncoming(){
                     }
                 });
 
-                var incoming, outgoing, archived;
-                switch (data.category) {
-                    case 'Incoming':
-                        incoming = 'disabled';
-                        break;
-                    case 'Outgoing':
-                        outgoing = 'disabled';
-                        break;
-                    case 'Archived':
-                        archived = 'disabled';
-                        break;
-                    default:
-                        break;
-                }
-
                 $(this).popover({
                     content:    `<div class="list-group menu p-0">
-                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="editDocumentBtn${data.id}">
-                                        <i class='bx bx-edit-alt' style="font-size: 15px;"></i>  Edit Document</div>
-                                    <a class="list-group-item py-1 px-2 rightClickListItem list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">
-                                        <i class='bx bxs-download' style="font-size: 15px;"></i>  Download File</a>
-                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="viewDocumentVersionsBtn${data.id}"><i class='bx bx-history' style="font-size: 15px;"></i>  View Document Versions</div>
-                                    <div class="dropright p-0">
-                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="moveDocumentBtn${data.id}"><i class='bx bxs-file-export' style="font-size: 15px;"></i>  Move Document</div>
-                                        <div class="dropdown-menu rightClickDropdown p-0" id="moveDocumentDropdown${data.id}" aria-labelledby="moveDocumentBtn${data.id}">
-                                            <a class="dropdown-item ${incoming} rightClickDropdownItem py-1 pl-3" href="#" id="moveIncoming${data.id}">Incoming</a>
-                                            <a class="dropdown-item ${outgoing} rightClickDropdownItem py-1 pl-3" href="#" id="moveOutgoing${data.id}">Outgoing</a>
-                                            <a class="dropdown-item ${archived} rightClickDropdownItem py-1 pl-3" href="#" id="moveArchived${data.id}">Archived</a>
-                                        </div>
-                                    </div>
+                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="updateDocumentBtn${data.id}">
+                                        <i class='bx bx-edit-alt' style="font-size: 15px;"></i>  Update</div>
+                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="moveOutgoing${data.id}">
+                                        <i class='bx bxs-file-export' style="font-size: 15px;"></i>  Move to Outgoing</div>
+                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="viewAttachments${data.id}">
+                                        <i class='bx bxs-file' style="font-size: 15px;"></i>  View Attachments</div>
+                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="moveArchived${data.id}">
+                                        <i class='bx bxs-file-archive' style="font-size: 15px;"></i>  Archive</div>
+                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="deleteDocument${data.id}">
+                                        <i class='bx bx-trash' style="font-size: 15px;"></i>  Delete</div>
                                 </div>`,
                     html: true,
                     container: 'body',
@@ -115,7 +97,7 @@ export function showIncoming(){
                     trigger: 'manual',
                     animation: false
                 }).on('inserted.bs.popover', function(event) {
-                    $('#editDocumentBtn' + data.id).off('click').on('click', function(event) {
+                    $('#updateDocumentBtn' + data.id).off('click').on('click', function(event) {
                         event.stopPropagation();
                         $(row).popover('toggle');
                         editDocument(data.id);
@@ -158,10 +140,10 @@ export function showIncoming(){
                 $(this).popover('toggle');
 
                 if (!data.canEdit){
-                    $('#editDocumentBtn' + data.id).css({
+                    $('#updateDocumentBtn' + data.id).css({
                         'cursor' : 'not-allowed'
                     });
-                    $('#editDocumentBtn' + data.id).prop('disabled', true);
+                    $('#updateDocumentBtn' + data.id).prop('disabled', true);
                 }
 
                 if (!data.canMove){
@@ -187,10 +169,10 @@ export function showIncoming(){
 
                 if (!data.canPrint){
                     console.log('cannot print');
-                    // $('#editDocumentBtn' + data.id).css({
+                    // $('#updateDocumentBtn' + data.id).css({
                     //     'cursor' : 'not-allowed'
                     // });
-                    // $('#editDocumentBtn' + data.id).prop('disabled', true);
+                    // $('#updateDocumentBtn' + data.id).prop('disabled', true);
                 }
 
                 $(document).off('click.popover').on('click.popover', function(e) {
@@ -301,7 +283,7 @@ export function showOutgoing(){
                 // Create popover
                 $(this).popover({
                     content:    `<div class="list-group menu p-0">
-                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="editDocumentBtn${data.id}">
+                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="updateDocumentBtn${data.id}">
                                         <i class='bx bx-edit-alt' style="font-size: 15px;"></i>  Edit Document</div>
                                     <a class="list-group-item py-1 px-2 rightClickListItem list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">
                                         <i class='bx bxs-download' style="font-size: 15px;"></i>  Download File</a>
@@ -325,7 +307,7 @@ export function showOutgoing(){
                     trigger: 'manual',
                     animation: false
                 }).on('inserted.bs.popover', function(event) {
-                    $('#editDocumentBtn' + data.id).off('click').on('click', function(event) {
+                    $('#updateDocumentBtn' + data.id).off('click').on('click', function(event) {
                         event.stopPropagation();
                         $(row).popover('toggle');
                         editDocument(data.id);
@@ -368,10 +350,10 @@ export function showOutgoing(){
                 $(this).popover('toggle');
 
                 if (!data.canEdit){
-                    $('#editDocumentBtn' + data.id).css({
+                    $('#updateDocumentBtn' + data.id).css({
                         'cursor' : 'not-allowed'
                     });
-                    $('#editDocumentBtn' + data.id).prop('disabled', true);
+                    $('#updateDocumentBtn' + data.id).prop('disabled', true);
                 }
 
                 if (!data.canMove){
@@ -397,10 +379,10 @@ export function showOutgoing(){
 
                 if (!data.canPrint){
                     console.log('cannot print');
-                    // $('#editDocumentBtn' + data.id).css({
+                    // $('#updateDocumentBtn' + data.id).css({
                     //     'cursor' : 'not-allowed'
                     // });
-                    // $('#editDocumentBtn' + data.id).prop('disabled', true);
+                    // $('#updateDocumentBtn' + data.id).prop('disabled', true);
                 }
 
                 $(document).off('click.popover').on('click.popover', function(e) {
@@ -511,7 +493,7 @@ export function showArchived(){
 
                 $(this).popover({
                     content:    `<div class="list-group menu p-0">
-                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="editDocumentBtn${data.id}">
+                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="updateDocumentBtn${data.id}">
                                         <i class='bx bx-edit-alt' style="font-size: 15px;"></i>  Edit Document</div>
                                     <a class="list-group-item py-1 px-2 rightClickListItem list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">
                                         <i class='bx bxs-download' style="font-size: 15px;"></i>  Download File</a>
@@ -535,7 +517,7 @@ export function showArchived(){
                     trigger: 'manual',
                     animation: false
                 }).on('inserted.bs.popover', function(event) {
-                    $('#editDocumentBtn' + data.id).off('click').on('click', function(event) {
+                    $('#updateDocumentBtn' + data.id).off('click').on('click', function(event) {
                         event.stopPropagation();
                         $(row).popover('toggle');
                         editDocument(data.id);
@@ -578,10 +560,10 @@ export function showArchived(){
                 $(this).popover('toggle');
 
                 if (!data.canEdit){
-                    $('#editDocumentBtn' + data.id).css({
+                    $('#updateDocumentBtn' + data.id).css({
                         'cursor' : 'not-allowed'
                     });
-                    $('#editDocumentBtn' + data.id).prop('disabled', true);
+                    $('#updateDocumentBtn' + data.id).prop('disabled', true);
                 }
 
                 if (!data.canMove){
@@ -607,10 +589,10 @@ export function showArchived(){
 
                 if (!data.canPrint){
                     console.log('cannot print');
-                    // $('#editDocumentBtn' + data.id).css({
+                    // $('#updateDocumentBtn' + data.id).css({
                     //     'cursor' : 'not-allowed'
                     // });
-                    // $('#editDocumentBtn' + data.id).prop('disabled', true);
+                    // $('#updateDocumentBtn' + data.id).prop('disabled', true);
                 }
 
                 $(document).off('click.popover').on('click.popover', function(e) {
@@ -658,78 +640,48 @@ function viewDocumentVersions(id, row){
 
     // Ajax request to get document versions
 
-    $('#documentVersionsTable').DataTable({
-        ajax: {
-            url: window.routes.showDocumentVersions.replace(':id', id),
-            dataSrc: 'documentVersions'
-        },
-        columns: [
-            {data: 'version_number'},
-            {data: 'created_at'},
-            {data: 'modified_by'},
-            {
-                data: null,
-                orderable: false,
-                render: function(data, type, row){
-                    var content = JSON.parse(data.content);
-                    return `<a class="viewDocumentVersionContent" 
-                    data-modifiedDate="${data.created_at}"
-                    data-date="${content.document_date}"
-                    data-type="${content.type}"
-                    data-series="${content.series_number}"
-                    data-memo="${content.memo_number}"
-                    data-sender="${content.sender}"
-                    data-recipient="${content.recipient}"
-                    data-subject="${content.subject}"
-                    data-assignee="${content.assignee}"
-                    data-category="${content.category}"
-                    data-status="${content.status}"
-                    data-file="${data.file}"
-                    data-modifiedBy="${data.modified_by}"
-
-                    href="#">View Document</a>`;
-                }
-            }
-        ],
-        destroy: true,
-        pagination: true,
-        language: {
-            emptyTable: "No document versions present."
-        },
-        order: {
-            idx: 0,
-            dir: 'desc'
-        },
-        autoWidth: false
-    })
+    
 }
 // View Document Version Content
-$('#documentVersionsTable tbody').on('click', 'a.viewDocumentVersionContent', function(event){
-    event.preventDefault();
-    $('#documentVersionIFrame').attr('src', $(this).data('file') + `#scrollbar=1&toolbar=0`);
-    $("#documentVersionModifiedDate").html('<strong>Modified At: </strong>'+ $(this).data('modifieddate'));
-    $("#documentVersionModifiedBy").html('<strong>Modified By: </strong>'+ $(this).data('modifiedby'));
-    $("#documentVersionDate").html('<strong>Document Date: </strong>'+ $(this).data('date'));
-    $("#documentVersionType").html('<strong>Document Type: </strong>'+ $(this).data('type'));
+function viewDocumentVersion(
+    created_at,
+    document_date,
+    type,
+    series_number,
+    memo_number,
+    sender,
+    recipient,
+    subject,
+    assignee,
+    category,
+    status,
+    file,
+    modified_by
+){
+    $('#documentVersionIFrame').attr('src', file + `#scrollbar=1&toolbar=0`);
+    $("#documentVersionModifiedDate").html('<strong>Modified At: </strong>'+ created_at);
+    $("#documentVersionModifiedBy").html('<strong>Modified By: </strong>'+ modified_by);
+    $("#documentVersionDate").html('<strong>Document Date: </strong>'+ document_date);
+    $("#documentVersionType").html('<strong>Document Type: </strong>'+ type);
 
     if ($(this).data('type') == 'Type0') {
         $('#documentVersionMemoInfo').css('display', 'block');
-        $('#documentVersionSeriesNo').html('<strong>Series No.: </strong>' + $(this).data('series'));
-        $('#documentVersionMemoNo').html('<strong>Memo No.: </strong>' + $(this).data('memo'));
+        $('#documentVersionSeriesNo').html('<strong>Series No.: </strong>' + series_number);
+        $('#documentVersionMemoNo').html('<strong>Memo No.: </strong>' + memo_number);
     } else {
         $('#documentVersionMemoInfo').css('display', 'hide');
     }
 
-    $("#documentVersionSender").html('<strong>From: </strong>'+ $(this).data('sender'));
-    $("#documentVersionRecipient").html('<strong>To: </strong>'+ $(this).data('recipient'));
-    $("#documentVersionSubject").html('<strong>Subject: </strong>'+ $(this).data('subject'));
-    $("#documentVersionAssignee").html('<strong>Assignee: </strong>'+ $(this).data('assignee'));
-    $("#documentVersionCategory").html('<strong>Category: </strong>'+ $(this).data('category'));
-    $("#documentVersionStatus").html('<strong>Status: </strong>'+ $(this).data('status'));
+    $("#documentVersionSender").html('<strong>From: </strong>'+ sender);
+    $("#documentVersionRecipient").html('<strong>To: </strong>'+ recipient);
+    $("#documentVersionSubject").html('<strong>Subject: </strong>'+ subject);
+    $("#documentVersionAssignee").html('<strong>Assignee: </strong>'+ assignee);
+    $("#documentVersionCategory").html('<strong>Category: </strong>'+ category);
+    $("#documentVersionStatus").html('<strong>Status: </strong>'+ status);
 
-    $('#documentVersions').modal('hide');
+    $('#documentPreview').modal('hide');
     $('#viewDocumentVersion').modal('show');
-});
+};
 
 // Document Preview
 function documentPreview(id, row = null){
@@ -740,7 +692,7 @@ function documentPreview(id, row = null){
             $('#documentPreviewIFrame').attr('src', response.fileLink + `#scrollbar=1&toolbar=0`);
             
             $("#documentDate").html('<strong>Document Date: </strong>'+ response.document.document_date);
-            $("#documentType").html('<strong>Document Type: </strong>'+ response.document.type);
+            $("#documentType").html(response.document.type);
 
             if (response.document.type == 'Type0') {
                 $('#documentMemoInfo').css('display', 'block');
@@ -753,10 +705,160 @@ function documentPreview(id, row = null){
             $("#documentVersion").html('<strong>Current Version: </strong>'+ response.document.version);
             $("#documentSender").html('<strong>From: </strong>'+ response.document.sender);
             $("#documentRecipient").html('<strong>To: </strong>'+ response.document.recipient);
-            $("#documentSubject").html('<strong>Subject: </strong>'+ response.document.subject);
+            $("#documentSubject").html(response.document.subject);
             $("#documentAssignee").html('<strong>Assignee: </strong>'+ response.document.assignee);
-            $("#documentCategory").html('<strong>Category: </strong>'+ response.document.category);
+            $("#documentCategory").html(response.document.category);
             $("#documentStatus").html('<strong>Status: </strong>'+ response.document.status);
+
+            $('#documentLastModifiedDate').html(response.lastModifiedDate);
+            $('#documentLastModifiedBy').html(response.lastModifiedBy);
+
+            $('#documentVersionsTable').DataTable({
+                ajax: {
+                    url: window.routes.showDocumentVersions.replace(':id', id),
+                    dataSrc: 'documentVersions'
+                },
+                columns: [
+                    {data: 'version_number'},
+                    {data: 'created_at'},
+                    {data: 'modified_by'},
+                    {data: null},
+                    {
+                        data: null,
+                        render: function(data, type, row){
+                            var content = JSON.parse(data.content);
+                            return `<span>${content.status}</span>`;
+                        }
+                    }
+                ],
+                destroy: true,
+                language: {
+                    emptyTable: "No document versions present."
+                },
+                order: {
+                    idx: 0,
+                    dir: 'desc'
+                },
+                layout: {
+                    bottom: 'paging',
+                    bottomStart: null,
+                    bottomEnd: null
+                },
+                renderer: 'bootstrap',
+                responsive: true,
+                autoWidth: true,
+                createdRow: function(row, data) {
+                    $(row).on('mouseenter', function(){
+                        document.body.style.cursor = 'pointer';
+                    });
+        
+                    $(row).on('mouseleave', function() {
+                        document.body.style.cursor = 'default';
+                    });
+        
+                    $(row).on('click', function(event) {
+                        event.preventDefault();
+                        $(row).popover('hide');
+                    });
+        
+                    $(row).on('contextmenu', function(event) {
+                        event.preventDefault();
+                        $.each($('.popover'), function () { 
+                            if ($(this).parent() !== $(row)){
+                                $(this).popover('hide');
+                            }
+                        });
+        
+                        $(this).popover({
+                            content:    `<div class="list-group menu p-0">
+                                            <div class="list-group-item py-1 px-2 rightClickListItem" id="viewDocumentVersionBtn${data.id}">
+                                                <i class='bx bx-edit-alt' style="font-size: 15px;"></i>  View Document Version</div>
+                                            <div class="list-group-item py-1 px-2 rightClickListItem" id="viewDocumentVersionAttachments${data.id}">
+                                                <i class='bx bxs-file' style="font-size: 15px;"></i>  View Attachments</div>
+                                        </div>`,
+                            html: true,
+                            placement: 'left',
+                            template:   `<div class="popover p-0 rightClickList rightClickDocuInfo">
+                                            <div class="popover-body p-0">
+                                            </div>
+                                        </div>`,
+                            trigger: 'manual',
+                            animation: false
+                        }).on('inserted.bs.popover', function(event) {
+                            $('#viewDocumentVersionBtn' + data.id).off('click').on('click', function(event) {
+                                event.stopPropagation();
+                                $(row).popover('toggle');
+                                var content = JSON.parse(data.content);
+                                viewDocumentVersion(
+                                    data.created_at,
+                                    content.document_date,
+                                    content.type,
+                                    content.series_number,
+                                    content.memo_number,
+                                    content.sender,
+                                    content.recipient,
+                                    content.subject,
+                                    content.assignee,
+                                    content.category,
+                                    content.status,
+                                    data.file,
+                                    data.modified_by
+                                );
+                            });
+        
+                            $('#viewDocumentVersionAttachments' + data.id).off('click').on('click', function(event) {
+                                event.stopPropagation();
+                                $(row).popover('toggle');
+                                viewDocumentVersionAttachments(data.id);
+                            });
+                        });
+                        
+                        $(this).popover('toggle');
+                        
+                        if (!data.canEdit){
+                            $('#updateDocumentBtn' + data.id).css({
+                                'cursor' : 'not-allowed'
+                            });
+                            $('#updateDocumentBtn' + data.id).prop('disabled', true);
+                        }
+        
+                        if (!data.canMove){
+                            $('#moveDocumentBtn' + data.id).css({
+                                'cursor' : 'not-allowed'
+                            });
+                            $('#moveDocumentBtn' + data.id).prop('disabled', true);
+                        }
+                        
+                        if (!data.canArchive){
+                            $('#moveArchived' + data.id).css({
+                                'cursor' : 'not-allowed'
+                            });
+                            $('#moveArchived' + data.id).prop('disabled', true);
+                        }
+        
+                        if (!data.canDownload){
+                            $('#downloadFileBtn' + data.id).css({
+                                'cursor' : 'not-allowed'
+                            });
+                            $('#downloadFileBtn' + data.id).prop('disabled', true);
+                        }
+        
+                        if (!data.canPrint){
+                            console.log('cannot print');
+                            // $('#updateDocumentBtn' + data.id).css({
+                            //     'cursor' : 'not-allowed'
+                            // });
+                            // $('#updateDocumentBtn' + data.id).prop('disabled', true);
+                        }
+        
+                        $(document).off('click.popover').on('click.popover', function(e) {
+                            if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
+                                $(row).popover('hide');  
+                            }
+                        });
+                    });
+                }
+            })
 
             $(row).popover('hide');
             $('#documentPreview').modal('show');
@@ -764,8 +866,16 @@ function documentPreview(id, row = null){
     });
 }
 
+function viewAttachments(){
+
+}
+
+function viewDocumentVersionAttachments(){
+    
+}
+
 $('#closeDocumentVersion').on('click', function(event){
     event.preventDefault();
-    $('#documentVersions').modal('show');
+    $('#documentPreview').modal('show');
     $('#viewDocumentVersion').modal('hide');
 })

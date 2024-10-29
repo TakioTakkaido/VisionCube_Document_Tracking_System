@@ -19,10 +19,24 @@ return new class extends Migration
     {
         Schema::create('document_versions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('document_id');
-            $table->integer('version_number');
-            $table->text('content');
             $table->timestamps();
+
+            $table->unsignedBigInteger('document_id');
+            $table->unsignedBigInteger('version_number');
+            $table->string('modified_by');
+
+            $table->string('type');
+            $table->string('status');
+            $table->string('sender');
+            $table->json('senderArray')->nullable();
+            $table->string('recipient');
+            $table->json('recipientArray')->nullable();
+            $table->string('subject');
+            $table->string('assignee');
+            $table->string('category');
+            $table->unsignedBigInteger('series_number')->nullable();
+            $table->unsignedBigInteger('memo_number')->nullable();
+            $table->date('document_date');
 
             // Foreign key established with: Document
             $table->foreign('document_id')->references('id')->on('documents')->onDelete('cascade');
@@ -32,8 +46,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('document_versions');
     }
 };

@@ -6,7 +6,6 @@
 
         
         <div class="flex-column w-25 p-0">
-            
             @if($isAdmin)
             <div class="documentStatistics container border rounded p-3 mb-2">
                 <h6 class="p-0 font-weight-bold" style="font-size: 14px;">Document Statistics</h6>

@@ -13,15 +13,14 @@ namespace App\Http\Controllers;
 // Contributor/s: 
 // Calulut, Joshua Miguel C.
 
-use App\AccountRole;
 use App\DocumentCategory;
-use App\DocumentStatus;
-use App\DocumentType;
 
 use App\Models\Document;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\Attachment;
+use App\Models\DocumentVersion;
 use App\Models\FileExtension;
 use App\Models\Log as ModelsLog;
 use Illuminate\Support\Facades\Storage;
@@ -42,7 +41,8 @@ class DocumentController extends Controller{
             'memo_number' => $memo,
             'recipient' => 'required|string|max:255',
             'subject' => 'required|string',
-            'file' => 'required|file|mimes:'.FileExtension::getFileExtensions(),
+            'files.*' => 'required|file|mimes:'.FileExtension::getFileExtensions(),
+            'files' => 'required|array',
             'category' => 'required|string',
             'status' => 'required|string',
             'assignee' => 'required|string',
@@ -67,8 +67,8 @@ class DocumentController extends Controller{
 
             'subject.required' => 'Document subject is required!',
 
-            'file.required' => 'Softcopy file is required!',
-            'file.mimes' => 'Softcopy file must be of types: '.FileExtension::getFileExtensions(),
+            'files.required' => 'Softcopy file is required!',
+            'files.*.mimes' => 'Softcopy file must be of types: '.FileExtension::getFileExtensions(),
 
             'category.required' => 'Document category is required!',
 
@@ -79,11 +79,31 @@ class DocumentController extends Controller{
             'document_date.required' => 'Date is required!'
         ]);
 
-        $document = Document::create([
+        // Create the document
+        $document = Document::create();
+
+        // $filePath = "public/documents/". basename($this->file);
+        // $fileLink = Storage::url($filePath);
+
+        // Create the attachments
+        $attachments = [];
+        foreach($request->file('files') as $file){
+            $attachment = Attachment::create([
+                'name' => 'Default',
+                'file' => $file->store('public/documents')
+            ]);
+
+            array_push($attachments, $attachment);
+        }
+
+        // Create the first version
+        $documentVersion = DocumentVersion::create([
+            'document_id' => $document->id,
+            'version_number' => 1,
+            'modified_by' => Auth::user()->name . ' • ' . Auth::user()->role,
+
             'type' => $request->input('type'),
             'status' => $request->input('status'),
-            'file' => $request->file('file')->store('public/documents'), // Store the file and get the path
-            'owner_id' => Auth::user()->id,
             'sender' => $request->input('sender'),
             'senderArray' => json_encode($request->input('senderArray')),
             'recipient' => $request->input('recipient'),
@@ -93,11 +113,15 @@ class DocumentController extends Controller{
             'category' => $request->input('category'),
             'series_number' => $request->input('series_number'),
             'memo_number' => $request->input('memo_number'),
-            'document_date' => $request->input('document_date'),
-            'version' => 1
+            'document_date' => $request->input('document_date')
         ]);
 
-        $document->createVersion();
+        // Attach the attachments
+        foreach($attachments as $attachment){
+            $documentVersion->attachments()->save($attachment);
+        }
+
+        $document->versions()->save($documentVersion);
 
         // Create log 
         ModelsLog::create([
@@ -113,11 +137,10 @@ class DocumentController extends Controller{
     // Display all incoming documents
     public function showIncoming(){
         // Find all incoming documents
-        $documents = Document::where('category', DocumentCategory::INCOMING->value)->get();
+        $documents = Document::where('category', 'Incoming')->get();
 
         foreach($documents as $document){
             $document_date = strtotime($document->document_date);
-            $document->document_date = date('M. d, Y', $document_date);
             $document->document_date = date('M. d, Y', $document_date);
             $document->canEdit = Auth::user()->canEdit;
             $document->canMove = Auth::user()->canMove;
@@ -137,11 +160,10 @@ class DocumentController extends Controller{
     // Display all outgoing documents
     public function showOutgoing(Request $request){
         // Find outgoing documents
-        $documents = Document::where('category', DocumentCategory::OUTGOING->value)->get();
+        $documents = Document::where('category', 'Outgoing')->get();
 
         foreach($documents as $document){
             $document_date = strtotime($document->document_date);
-            $document->document_date = date('M. d, Y', $document_date);
             $document->document_date = date('M. d, Y', $document_date);
             $document->canEdit = Auth::user()->canEdit;
             $document->canMove = Auth::user()->canMove;
@@ -159,7 +181,7 @@ class DocumentController extends Controller{
     // Display archived documents by type
     public function showArchived(Request $request){
         // Get all archived documents
-        $documents = Document::where('category', DocumentCategory::ARCHIVED->value)->get();
+        $documents = Document::where('category', 'Archived')->get();
 
         foreach($documents as $document){
             $document_date = strtotime($document->document_date);
@@ -350,18 +372,25 @@ class DocumentController extends Controller{
         $filePath = "public/documents/". basename($document->file); // Assuming $document->file contains the filename
         $fileLink = Storage::url($filePath); // This generates the URL for accessing the document
         
+        $lastModified = DocumentVersion::where('document_id', $request->id)->orderBy('version_number', 'desc')->first();
+
+        $lastModifiedDate = $lastModified->created_at;
+        $lastModifiedBy = $lastModified->modified_by;
+        
         return response()->json([
             'document' => $document,
-            'fileLink' => asset($fileLink)
+            'fileLink' => asset($fileLink),
+            'lastModifiedDate' => $lastModifiedDate,
+            'lastModifiedBy' => $lastModifiedBy
         ]);
     }
 
     // Document Statistics
     public function getDocumentStatistics(){
         return response()->json([
-            'incoming' => sizeof(Document::where('category', DocumentCategory::INCOMING->value)->get()),
-            'outgoing' => sizeof(Document::where('category', DocumentCategory::OUTGOING->value)->get()),
-            'archived' => sizeof(Document::where('category', DocumentCategory::ARCHIVED->value)->get()),
+            'incoming' => sizeof(Document::where('category', 'Incoming')->get()),
+            'outgoing' => sizeof(Document::where('category', 'Outgoing')->get()),
+            'archived' => sizeof(Document::where('category', 'Archived')->get()),
         ]);
     }
 }

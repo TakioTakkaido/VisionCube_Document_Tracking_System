@@ -96,12 +96,9 @@
                 <label for="uploadCategory">Category</label>
                     <select id="uploadCategory" class="uploadInput" name="category">
                         <option value="">Select Category</option>
-                        {{-- Obtained document categories using Laravel--}}
-                        @foreach ($docCategories as $docCategory)
-                            @if ($docCategory->value !== 'default')
-                                <option value="{{$docCategory->value}}">{{$docCategory->value}}</option>
-                            @endif
-                        @endforeach
+                        <option value="Incoming">Incoming</option>
+                        <option value="Outgoing">Outgoing</option>
+                        <option value="Archived">Archived</option>
                     </select>
                 <span class="error" id="categoryError" style="display:none;"></span>
             </div>

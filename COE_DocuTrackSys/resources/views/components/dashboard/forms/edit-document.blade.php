@@ -118,11 +118,10 @@
                                     <label for="editUploadCategory">Category</label>
                                     <select id="editUploadCategory" class="editInput" name="category">
                                         <option value="">Select Category</option>
-                                        @foreach ($docCategories as $docCategory)
-                                            @if ($docCategory->value !== 'default')
-                                                <option value="{{$docCategory->value}}">{{$docCategory->value}}</option>
-                                            @endif
-                                        @endforeach
+                                        <option value="">Select Category</option>
+                                        <option value="Incoming">Incoming</option>
+                                        <option value="Outgoing">Outgoing</option>
+                                        <option value="Archived">Archived</option>
                                     </select>
                                     <span class="error" id="editCategoryError" style="display:none;"></span>
                                 </div>

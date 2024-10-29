@@ -498,9 +498,32 @@ label {
     margin: 0px
 }
 
-#dashboardTable {
+.dashboardTable {
     table-layout: fixed;
     width: 100%;
+}
+
+div.dt-container,
+div.dt-layout-row {
+    margin-bottom: 0px !important;
+}
+.documentVersionsTableContents .d-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dataTables_length, .dataTables_filter {
+    display: inline-block;
+    margin: 0;
+}
+
+.dashboardTable th{
+    text-align: left !important;
+}
+
+.dashboardTable td{
+    text-align: left !important;
 }
 
 #documentVersions {
@@ -723,4 +746,24 @@ button:focus {
 
 .hide {
     display: none !important;
+}
+
+#documentVersionsTable_wrapper.dt-layout-row {
+    margin: 0 !important; /* Reduce padding */
+}
+
+.documentPreview {
+    max-width: 1000px !important;
+}
+
+#documentVersionsTable_wrapper .dataTables_wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px; /* Add padding to the wrapper */
+}
+
+.dataTables_wrapper .dataTables_filter {
+    margin: 0; /* Remove default margin */
+    text-align: right;
 }
