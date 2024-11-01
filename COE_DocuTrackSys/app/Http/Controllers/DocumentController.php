@@ -24,16 +24,15 @@ use App\Models\DocumentVersion;
 use App\Models\FileExtension;
 use App\Models\Log as ModelsLog;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule;
 
 class DocumentController extends Controller{
     //Upload Document
     public function upload(Request $request){
-        $series = $request->input('seriesRequired') === 'true' ? 'required|integer|max:9999|min:0' : 'nullable|integer';
-        $memo = $request->input('memoRequired') === 'true' ? 'required|integer|max:9999|min:0' : 'nullable|integer';
+        $series = $request->input('seriesRequired') === true ? 'required|integer|max:9999|min:0' : 'nullable';
+        $memo = $request->input('memoRequired') === true ? 'required|integer|max:9999|min:0' : 'nullable';
+        
         $request->validate([
             'type' => 'required|string',
             'sender' => 'required|string|max:255',
@@ -82,24 +81,13 @@ class DocumentController extends Controller{
         // Create the document
         $document = Document::create();
 
-        // $filePath = "public/documents/". basename($this->file);
-        // $fileLink = Storage::url($filePath);
-
-        // Create the attachments
-        $attachments = [];
-        foreach($request->file('files') as $file){
-            $attachment = Attachment::create([
-                'name' => 'Default',
-                'file' => $file->store('public/documents')
-            ]);
-
-            array_push($attachments, $attachment);
-        }
+        
 
         // Create the first version
         $documentVersion = DocumentVersion::create([
             'document_id' => $document->id,
             'version_number' => 1,
+            'description' => 'Uploaded document',
             'modified_by' => Auth::user()->name . ' • ' . Auth::user()->role,
 
             'type' => $request->input('type'),
@@ -115,6 +103,19 @@ class DocumentController extends Controller{
             'memo_number' => $request->input('memo_number'),
             'document_date' => $request->input('document_date')
         ]);
+
+        // Create the attachments
+        $attachments = [];
+        foreach($request->file('files') as $file){
+            // Log::channel('daily')->info('{fileName}', ['fileName' => $file->originalName]);
+            $attachment = Attachment::create([
+                'name' => $file->getClientOriginalName(),
+                'document_version_id' => $documentVersion->id,
+                'file' => $file->store('public/documents')
+            ]);
+
+            array_push($attachments, $attachment);
+        }
 
         // Attach the attachments
         foreach($attachments as $attachment){
@@ -135,11 +136,20 @@ class DocumentController extends Controller{
     }
 
     // Display all incoming documents
-    public function showIncoming(){
+    public function showAll(Request $request){
         // Find all incoming documents
-        $documents = Document::where('category', 'Incoming')->get();
-
+        $documents = Document::all();
+        $allDocuments = [];
         foreach($documents as $document){
+            $document = $document->latestVersion();
+
+            if($document->category == $request->category){
+                array_push($allDocuments, $document);
+            }
+        }
+
+        
+        foreach($allDocuments as $document){
             $document_date = strtotime($document->document_date);
             $document->document_date = date('M. d, Y', $document_date);
             $document->canEdit = Auth::user()->canEdit;
@@ -150,68 +160,24 @@ class DocumentController extends Controller{
         }
 
         // Log
-        Log::channel('daily')->info('Incoming documents obtained: {documents}', ['documents' => $documents]);
+        Log::channel('daily')->info('Documents obtained: {documents}', ['documents' => $allDocuments]);
 
         return response()->json([
-            'incomingDocuments' => $documents
-        ]);
-    }
-
-    // Display all outgoing documents
-    public function showOutgoing(Request $request){
-        // Find outgoing documents
-        $documents = Document::where('category', 'Outgoing')->get();
-
-        foreach($documents as $document){
-            $document_date = strtotime($document->document_date);
-            $document->document_date = date('M. d, Y', $document_date);
-            $document->canEdit = Auth::user()->canEdit;
-            $document->canMove = Auth::user()->canMove;
-            $document->canArchive = Auth::user()->canArchive;
-            $document->canDownload = Auth::user()->canDownload;
-            $document->canPrint = Auth::user()->canPrint;
-        }
-
-        // Return outgoing documents
-        return response()->json([
-            'outgoingDocuments' => $documents
-        ]);
-    }
-
-    // Display archived documents by type
-    public function showArchived(Request $request){
-        // Get all archived documents
-        $documents = Document::where('category', 'Archived')->get();
-
-        foreach($documents as $document){
-            $document_date = strtotime($document->document_date);
-            $document->document_date = date('M. d, Y', $document_date);
-            $document->canEdit = Auth::user()->canEdit;
-            $document->canMove = Auth::user()->canMove;
-            $document->canArchive = Auth::user()->canArchive;
-            $document->canDownload = Auth::user()->canDownload;
-            $document->canPrint = Auth::user()->canPrint;
-        }
-
-        
-
-        // Return archived documents
-        return response()->json([
-            'archivedDocuments' => $documents
+            'documents' => $allDocuments
         ]);
     }
 
     // Get Document for Editing Document
     public function show(Request $request){
         $document = Document::find($request->id);
-        $filePath = "public/documents/". basename($document->file); // Assuming $document->file contains the filename
-        $fileLink = Storage::url($filePath); // This generates the URL for accessing the document
+
+        // Get the latest version
+        $latestDocumentVersion = $document->latestVersion();
         
         return response()->json([
-            'document' => $document,
-            'senderArray' => json_decode($document->senderArray),
-            'recipientArray' => json_decode($document->recipientArray),
-            'fileLink' => asset($fileLink),
+            'document' => $latestDocumentVersion,
+            'senderArray' => json_decode($latestDocumentVersion->senderArray),
+            'recipientArray' => json_decode($latestDocumentVersion->recipientArray)
         ]);
     }
 
@@ -221,14 +187,60 @@ class DocumentController extends Controller{
         $document = Document::find($request->id);
 
         // Find document versions, related to this document
-        $documentVersions = $document->versions()->get();
-        // foreach($documentVersions as $version){
-        //     $version->content = $version->content);
-        // }
-        // dd($documentVersions);
-        // Return document versions
+        $documentVersions = $document->versions()->orderBy('created_at', 'desc')->get();
+
         return response()->json([
             'documentVersions' => $documentVersions
+        ]);
+    }
+
+    public function showDocumentVersion(Request $request){
+        // Find document version
+        $documentVersion = DocumentVersion::find($request->id);
+        $document_date = strtotime($documentVersion->document_date);
+        $documentVersion->document_date = date('M. d, Y', $document_date);
+
+        if ($documentVersion->previous_document_date != 'N/A'){
+            $document_date = strtotime($documentVersion->previous_document_date);
+            $documentVersion->previous_document_date = date('M. d, Y', $document_date);
+        }
+
+        return response()->json([
+            'version' => $documentVersion
+        ]);
+    }
+
+    // Get Document Attachments
+    public function showAttachments(Request $request){
+        // Find document
+        $document = Document::find($request->id);
+
+        // Get the versions
+        $documentVersions = $document->versions()->orderBy('created_at', 'desc')->get();
+
+        // Get the attachments
+        $attachments = [];
+
+        foreach($documentVersions as $documentVersion){
+            $documentVersionAttachments = $documentVersion->attachments()->get();
+            foreach($documentVersionAttachments as $documentVersionAttachment){
+                $documentVersionAttachment->file = basename($documentVersionAttachment->file);
+                array_push($attachments, $documentVersionAttachment);
+            }
+            
+        }
+
+        return response()->json([
+            'attachments' => $attachments
+        ]);
+    }
+
+    // Get Specific Document Attachment
+    public function showAttachment(Request $request){
+        $attachment = Attachment::find($request->id);
+
+        return response()->json([
+            'fileLink' => $attachment->file(),
         ]);
     }
 
@@ -236,24 +248,27 @@ class DocumentController extends Controller{
     public function edit(Request $request){
         // Find the current document
         $document = Document::find($request->document_id);
+        $latestVersion = $document->latestVersion();
 
         // Validate the response
         $series = $request->input('seriesRequired') === 'true' ? 'required|number|max:9999|min:0' : 'nullable|integer';
         $memo = $request->input('memoRequired') === 'true' ? 'required|number|max:9999|min:0' : 'nullable|integer';
-        $file = $request->file('file') ? 'required|file|mimes:pdf,'.FileExtension::getFileExtensions() : 'nullable';
+        $file = $request->file('file') ? 'required|file|mimes:,'.FileExtension::getFileExtensions() : 'nullable';
         $request->validate([
             'type' => 'required|string',
             'sender' => 'required|string|max:255',
             'series_number' => $series,
             'memo_number' => $memo,
-            'file' => $file,
+            'files.*' => $file,
+            'files' => 'nullable',
             'recipient' => 'required|string|max:255',
             'subject' => 'required|string',
             'category' => 'required|string',
             'status' => 'required|string',
             'assignee' => 'required|string',
-            'document_date' => 'required'
-        ], [
+            'document_date' => 'required',
+            'description' => 'required'
+        ],[
             'type.required' => 'Document type is required!',
 
             'sender.required' => 'Document sender is required!',
@@ -273,8 +288,8 @@ class DocumentController extends Controller{
 
             'subject.required' => 'Document subject is required!',
 
-            'file.required' => 'Softcopy file is required!',
-            'file.mimes' => 'Softcopy file must be of types: .pdf, '.FileExtension::getFileExtensions(),
+            'files.required' => 'Softcopy file is required!',
+            'files.*.mimes' => 'Softcopy file must be of types: '.FileExtension::getFileExtensions(),
 
             'category.required' => 'Document category is required!',
 
@@ -282,37 +297,65 @@ class DocumentController extends Controller{
 
             'assignee.required' => 'Assignee is required!',
 
-            'document_date.required' => 'Date is required!'
+            'document_date.required' => 'Date is required!',
+
+            'description.required' => 'Description of edit is required!'
         ]);
 
-        $document->type = $request->input('type');
-        $document->status = $request->input('status');
-        $document->sender = $request->input('sender');
-        $document->senderArray = json_encode($request->input('senderArray'));
-        $document->recipient = $request->input('recipient');
-        $document->recipientArray = json_encode($request->input('recipientArray'));
-        $document->series_number = $request->input('seriesNo');
-        $document->memo_number = $request->input('memoNo');
-        $document->document_date = $request->input('document_date');
-        $document->subject = $request->input('subject');
-        $document->assignee = $request->input('assignee');
-        $document->category = $request->input('category');
+        // Create a new document version
+        $documentVersion = DocumentVersion::create([
+            'document_id' => $document->id,
+            'version_number' => ($latestVersion->version_number) + 1,
+            'description' => $request->input('description'),
+            'modified_by' => Auth::user()->name . ' • ' . Auth::user()->role,
 
-        // Temporary implementation 
-        if($request->file('file')){
-            if($document->file && Storage::exists("public/documents/". basename($document->file))){
-                Storage::delete("public/documents/". basename($document->file));
+            'type' => $request->input('type'),
+            'status' => $request->input('status'),
+            'sender' => $request->input('sender'),
+            'senderArray' => json_encode($request->input('senderArray')),
+            'recipient' => $request->input('recipient'),
+            'recipientArray' => json_encode($request->input('recipientArray')),
+            'subject' => $request->input('subject'),
+            'assignee' => $request->input('assignee'),
+            'category' => $request->input('category'),
+            'series_number' => $request->input('series_number'),
+            'memo_number' => $request->input('memo_number'),
+            'document_date' => $request->input('document_date'),
+
+            // Previous document information
+            'previous_type' => $latestVersion->type == $request->input('type') ? $latestVersion->previous_type : $latestVersion->type,
+            'previous_status' => $latestVersion->status == $request->input('status') ? $latestVersion->previous_status : $latestVersion->status,
+            'previous_sender' => $latestVersion->sender == $request->input('sender') ? $latestVersion->previous_sender : $latestVersion->sender,
+            'previous_recipient' => $latestVersion->recipient == $request->input('recipient') ? $latestVersion->previous_recipient : $latestVersion->recipient,
+            'previous_subject' => $latestVersion->subject == $request->input('subject') ? $latestVersion->previous_subject : $latestVersion->subject,
+            'previous_assignee' => $latestVersion->assignee == $request->input('assignee') ? $latestVersion->previous_assignee : $latestVersion->assignee,
+            'previous_category' => $latestVersion->category == $request->input('category') ? $latestVersion->previous_category : $latestVersion->category,
+            'previous_series_number' => $latestVersion->series_number == $request->input('series_number') ? $latestVersion->previous_series_number : $latestVersion->series_number,
+            'previous_memo_number' => $latestVersion->memo_number == $request->input('memo_number') ? $latestVersion->previous_memo_number : $latestVersion->memo_number
+        ]);
+
+
+        // Create the attachments
+        $attachments = [];
+        if ($request->file('files') != null){    
+            foreach($request->file('files') as $file){
+                $attachment = Attachment::create([
+                    'name' => $file->getClientOriginalName(),
+                    'document_version_id' => $documentVersion->id,
+                    'file' => $file->store('public/documents')
+                ]);
+
+                array_push($attachments, $attachment);
             }
 
-            $filePath = $request->file('file')->store('public/documents');
-
-            $document->file = $filePath;
+            // Attach the attachments
+            foreach($attachments as $attachment){
+                $documentVersion->attachments()->save($attachment);
+            }
         }
 
-        // Save the new document credentials
-        $document->save();
-
-        $document->createVersion();
+        // Save the new document version
+        $document->versions()->save($documentVersion);
 
         // Create a new log
         ModelsLog::create([
@@ -328,7 +371,9 @@ class DocumentController extends Controller{
 
     // Delete Document
     public function delete(Request $request){
-        // 
+        $document = Document::find($request->id);
+
+        $document->delete();
     }
 
     // Download file from link
@@ -351,46 +396,79 @@ class DocumentController extends Controller{
         // Find the document by id
         $document = Document::find($request->id);
 
-        // Move document to new category
-        $document->category = $request->category;
+        $latestVersion = $document->latestVersion();
 
-        // Save new document credentials
-        $document->save();
+        // Create a new document version
+        $documentVersion = DocumentVersion::create([
+            'document_id' => $document->id,
+            'version_number' => ($latestVersion->version_number) + 1,
+            'description' => "Moved document to " . $request->category,
+            'modified_by' => Auth::user()->name . ' • ' . Auth::user()->role,
+
+            'type' => $latestVersion->type,
+            'status' => $latestVersion->status,
+            'sender' => $latestVersion->sender,
+            'senderArray' => $latestVersion->senderArray,
+            'recipient' => $latestVersion->recipient,
+            'recipientArray' => $latestVersion->recipientArray,
+            'subject' => $latestVersion->subject,
+            'assignee' => $latestVersion->assignee,
+            'category' => $request->input('category'),
+            'series_number' => $latestVersion->series_number,
+            'memo_number' => $latestVersion->memo_number,
+            'document_date' => $latestVersion->document_date,
+
+            // Previous document information
+            'previous_type' => $latestVersion->previous_type,
+            'previous_status' => $latestVersion->previous_status,
+            'previous_sender' => $latestVersion->previous_sender,
+            'previous_recipient' => $latestVersion->previous_recipient,
+            'previous_subject' => $latestVersion->previous_subject,
+            'previous_assignee' => $latestVersion->previous_assignee,
+            'previous_category' => $request->category == $request->input('category') ? $latestVersion->previous_category : $latestVersion->category,
+            'previous_series_number' => $latestVersion->previous_series_number,
+            'previous_memo_number' => $latestVersion->previous_memo_number
+        ]);
+
+        // Save new document version
+        $document->versions()->save($documentVersion);
 
         // Create new log
         ModelsLog::create([
             'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Moved document'
+            'description' => 'Moved document to ' . $request->category
         ]);
     }
 
     // Document preview
     public function preview(Request $request){
         $document = Document::find($request->id);
-        $document_date = strtotime($document->document_date);
-        $document->document_date = date('M. d, Y', $document_date);
-        $filePath = "public/documents/". basename($document->file); // Assuming $document->file contains the filename
-        $fileLink = Storage::url($filePath); // This generates the URL for accessing the document
-        
-        $lastModified = DocumentVersion::where('document_id', $request->id)->orderBy('version_number', 'desc')->first();
-
-        $lastModifiedDate = $lastModified->created_at;
-        $lastModifiedBy = $lastModified->modified_by;
-        
+        $latestDocumentVersion = $document->latestVersion();
         return response()->json([
-            'document' => $document,
-            'fileLink' => asset($fileLink),
-            'lastModifiedDate' => $lastModifiedDate,
-            'lastModifiedBy' => $lastModifiedBy
+            'document' => $latestDocumentVersion
         ]);
     }
 
     // Document Statistics
     public function getDocumentStatistics(){
+        $documents = Document::all();
+        $incoming = 0;
+        $outgoing = 0;
+
+        foreach($documents as $document){
+            $latestVersion = $document->latestVersion();
+
+            if($latestVersion->category == 'Incoming'){
+                $incoming++;
+            } else if ($latestVersion->category == 'Outgoing'){
+                $outgoing++;
+            }
+        }
+
+        
         return response()->json([
-            'incoming' => sizeof(Document::where('category', 'Incoming')->get()),
-            'outgoing' => sizeof(Document::where('category', 'Outgoing')->get()),
-            'archived' => sizeof(Document::where('category', 'Archived')->get()),
+            'incoming' => $incoming,
+            'outgoing' => $outgoing,
         ]);
     }
 }

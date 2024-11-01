@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('attachments', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('version_id');
+            $table->unsignedBigInteger('document_version_id');
             $table->string('name');
             $table->string('file');
 
             // Foreign
-            $table->foreign('version_id')->references('id')->on('document_versions')->onDelete('cascade');
+            $table->foreign('document_version_id')->references('id')->on('document_versions')->onDelete('cascade');
         });
     }
 

@@ -1,9 +1,10 @@
 import { showNotification } from "../../notification";
-import { editDocument } from "../editForm";
+import { updateDocument } from "../editForm";
 
+var update = false;
 // SHOW INCOMING DOCUMENTS
-export function showIncoming(){
-    $('.dashboardTableTitle').html('Incoming Documents');
+export function showDocument(category){
+    $('.dashboardTableTitle').html(category + ' Documents');
     
     if ($.fn.DataTable.isDataTable('#dashboardTable')) {
         $('#dashboardTable').DataTable().clear().destroy();
@@ -11,598 +12,370 @@ export function showIncoming(){
 
     $('#dashboardTable').html("");
 
-    $('#dashboardTable').html(
-        "<thead><tr>" +
-        "<th>Type</th>" +
-        "<th>Subject</th>" +    
-        "<th>Date</th>" +  
-        "<th>Sender</th>" +            
-        "<th>Status</th>" +     
-        "<th>Assignee</th>" +  
-        "</tr></thead>" +            
-        "<tbody></tbody>" +
-        "<tfoot><tr>" + 
-        "<th>Type</th>" +
-        "<th>Subject</th>" +     
-        "<th>Date</th>" + 
-        "<th>Sender</th>" +            
-        "<th>Status</th>" +     
-        "<th>Assignee</th>" + 
-        "</tr></tfoot>"
-    );
+    // Get all documents in AJAX
+    if (category === "Incoming"){
+        $('#dashboardTable').html(
+            "<thead><tr>" +
+            "<th>Type</th>" +
+            "<th>Subject</th>" +    
+            "<th>Date</th>" +  
+            "<th>Sender</th>" +            
+            "<th>Status</th>" +     
+            "<th>Assignee</th>" +  
+            "</tr></thead>" +            
+            "<tbody></tbody>" +
+            "<tfoot><tr>" + 
+            "<th>Type</th>" +
+            "<th>Subject</th>" +     
+            "<th>Date</th>" + 
+            "<th>Sender</th>" +            
+            "<th>Status</th>" +     
+            "<th>Assignee</th>" + 
+            "</tr></tfoot>"
+        );
 
-    // Get all incoming documents in AJAX
-    $('#dashboardTable').DataTable({
-        ajax: {
-            url: window.routes.showIncoming,
-            dataSrc: 'incomingDocuments'
-        },
-        columns: [
-            {data: 'type'},
-            {data: 'subject'},
-            {data: 'document_date'},
-            {data: 'sender'},
-            {data: 'status'},
-            {data: 'assignee'}
-        ],
-        destroy: true,
-        pagination: true,
-        language: {
-            emptyTable: "No incoming documents present."
-        },
-        autoWidth: false,
-        createdRow: function(row, data) {
-            $(row).on('mouseenter', function(){
-                document.body.style.cursor = 'pointer';
-            });
-
-            $(row).on('mouseleave', function() {
-                document.body.style.cursor = 'default';
-            });
-
-            $(row).on('click', function(event) {
-                event.preventDefault();
-                $(row).popover('hide');
-                documentPreview(data.id, row);
-            });
-
-            $(row).on('contextmenu', function(event) {
-                event.preventDefault();
-                $.each($('.popover'), function () { 
-                    if ($(this).parent() !== $(row)){
-                        $(this).popover('hide');
-                    }
+        $('#dashboardTable').DataTable({
+            ajax: {
+                url: window.routes.showDocuments.replace(':id', category),
+                dataSrc: 'documents'
+            },
+            columns: [
+                {data: 'type'},
+                {data: 'subject'},
+                {data: 'document_date'},
+                {data: 'sender'},
+                {data: 'status'},
+                {data: 'assignee'}
+            ],
+            destroy: true,
+            pagination: true,
+            language: {
+                emptyTable: "No documents present."
+            },
+            autoWidth: false,
+            createdRow: function(row, data) {
+                $(row).on('mouseenter', function(){
+                    document.body.style.cursor = 'pointer';
                 });
-
-                $(this).popover({
-                    content:    `<div class="list-group menu p-0">
-                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="updateDocumentBtn${data.id}">
-                                        <i class='bx bx-edit-alt' style="font-size: 15px;"></i>  Update</div>
-                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="moveOutgoing${data.id}">
-                                        <i class='bx bxs-file-export' style="font-size: 15px;"></i>  Move to Outgoing</div>
-                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="viewAttachments${data.id}">
-                                        <i class='bx bxs-file' style="font-size: 15px;"></i>  View Attachments</div>
-                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="moveArchived${data.id}">
-                                        <i class='bx bxs-file-archive' style="font-size: 15px;"></i>  Archive</div>
-                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="deleteDocument${data.id}">
-                                        <i class='bx bx-trash' style="font-size: 15px;"></i>  Delete</div>
-                                </div>`,
-                    html: true,
-                    container: 'body',
-                    placement: 'right',
-                    template:   `<div class="popover p-0 rightClickList">
-                                    <div class="popover-body p-0">
-                                    </div>
-                                </div>`,
-                    trigger: 'manual',
-                    animation: false
-                }).on('inserted.bs.popover', function(event) {
-                    $('#updateDocumentBtn' + data.id).off('click').on('click', function(event) {
-                        event.stopPropagation();
-                        $(row).popover('toggle');
-                        editDocument(data.id);
-                    });
-
-                    $('#viewDocumentVersionsBtn' + data.id).off('click').on('click', function(event) {
-                        event.stopPropagation();
-                        $(row).popover('toggle');
-                        viewDocumentVersions(data.id, row);
-                    });
-
-                    $('#moveDocumentBtn' + data.id).off('mouseenter').on('mouseenter', function(event) {
-                        setTimeout(function() {
-                            $('#moveDocumentDropdown' + data.id).toggleClass('show')
-                        }, 300);
-                    });
-
-                    $('#moveIncoming' + data.id).off('click').on('click', function(event) {
-                        event.preventDefault();
-                        if(!$(this).hasClass('disabled')){
-                            moveDocument(data.id, 'Incoming', row);
-                        }
-                    });
-
-                    $('#moveOutgoing' + data.id).off('click').on('click', function(event) {
-                        event.preventDefault();
-                        if(!$(this).hasClass('disabled')){
-                            moveDocument(data.id, 'Outgoing', row);
-                        }
-                    });
-
-                    $('#moveArchived' + data.id).off('click').on('click', function(event) {
-                        event.preventDefault();
-                        if(!$(this).hasClass('disabled')){
-                            moveDocument(data.id, 'Archived', row);
-                        }
-                    });
-                });
-
-                $(this).popover('toggle');
-
-                if (!data.canEdit){
-                    $('#updateDocumentBtn' + data.id).css({
-                        'cursor' : 'not-allowed'
-                    });
-                    $('#updateDocumentBtn' + data.id).prop('disabled', true);
-                }
-
-                if (!data.canMove){
-                    $('#moveDocumentBtn' + data.id).css({
-                        'cursor' : 'not-allowed'
-                    });
-                    $('#moveDocumentBtn' + data.id).prop('disabled', true);
-                }
-                
-                if (!data.canArchive){
-                    $('#moveArchived' + data.id).css({
-                        'cursor' : 'not-allowed'
-                    });
-                    $('#moveArchived' + data.id).prop('disabled', true);
-                }
-
-                if (!data.canDownload){
-                    $('#downloadFileBtn' + data.id).css({
-                        'cursor' : 'not-allowed'
-                    });
-                    $('#downloadFileBtn' + data.id).prop('disabled', true);
-                }
-
-                if (!data.canPrint){
-                    console.log('cannot print');
-                    // $('#updateDocumentBtn' + data.id).css({
-                    //     'cursor' : 'not-allowed'
-                    // });
-                    // $('#updateDocumentBtn' + data.id).prop('disabled', true);
-                }
-
-                $(document).off('click.popover').on('click.popover', function(e) {
-                    if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
-                        $(row).popover('hide');  
-                    }
-                });
-            });
-        }
-    });
-
-    if (!$('.dashboardTableContents').hasClass('show')) {
-        $('.dashboardTableContents').addClass('show');
-    }
-}
-
-// SHOW OUTGOING DOCUMENTS
-export function showOutgoing(){
-    $('.dashboardTableTitle').html('Outgoing Documents');
-
-    if ($.fn.DataTable.isDataTable('#dashboardTable')) {
-        $('#dashboardTable').DataTable().clear().destroy();
-    }
-
-    $('#dashboardTable').html("");
-
-    $('#dashboardTable').html(
-        "<thead><tr>" +
-        "<th>Type</th>" +
-        "<th>Subject</th>" +
-        "<th>Date</th>" +         
-        "<th>Recipient</th>" +         
-        "<th>Status</th>" +     
-        "<th>Assignee</th>" +  
-        "</tr></thead>" +            
-        "<tbody></tbody>" +
-        "<tfoot><tr>" + 
-        "<th>Type</th>" +
-        "<th>Subject</th>" +
-        "<th>Date</th>" +
-        "<th>Sender</th>" +            
-        "<th>Status</th>" +     
-        "<th>Assignee</th>" + 
-        "</tr></tfoot>"
-    );
-
-    // Get all incoming documents in AJAX
-    $('#dashboardTable').DataTable({
-        ajax: {
-            url: window.routes.showOutgoing,
-            dataSrc: 'outgoingDocuments'
-        },
-        columns: [
-            {data: 'type'},
-            {data: 'subject'},
-            {data: 'document_date'},
-            {data: 'recipient'},
-            {data: 'status'},
-            {data: 'assignee'}
-        ],
-        destroy: true,
-        pagination: true,
-        language: {
-            emptyTable: "No outgoing documents present."
-        },
-        autoWidth: false,
-        createdRow: function(row, data){
-            // Make cursor upon entering the row
-            $(row).on('mouseenter', function(){
-                document.body.style.cursor = 'pointer';
-            });
-
-            $(row).on('mouseleave', function() {
-                document.body.style.cursor = 'default';
-            });
-
-            // Document preview 
-            $(row).on('click', function(event){
-                event.preventDefault();
-                $(row).popover('hide');
-                documentPreview(data.id, row);
-            });
-
-            // Document menu
-            $(row).on('contextmenu', function(event){
-                event.preventDefault();
-                $.each($('.popover'), function () { 
-                    if ($(this).parent() !== $(row)){
-                        $(this).popover('hide');
-                    }
-                });
-
-                var incoming, outgoing, archived;
-                // Determine the status of the document
-                switch (data.category) {
-                    case 'Incoming':
-                        incoming = 'disabled';
-                    break;
-                    case 'Outgoing':
-                        outgoing = 'disabled';
-                    break;
-                    case 'Archived':
-                        archived = 'disabled';
-                    break;
-                    default:
-                        break;
-                }
-                // Create popover
-                $(this).popover({
-                    content:    `<div class="list-group menu p-0">
-                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="updateDocumentBtn${data.id}">
-                                        <i class='bx bx-edit-alt' style="font-size: 15px;"></i>  Edit Document</div>
-                                    <a class="list-group-item py-1 px-2 rightClickListItem list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">
-                                        <i class='bx bxs-download' style="font-size: 15px;"></i>  Download File</a>
-                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="viewDocumentVersionsBtn${data.id}"><i class='bx bx-history' style="font-size: 15px;"></i>  View Document Versions</div>
-                                    <div class="dropright p-0">
-                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="moveDocumentBtn${data.id}"><i class='bx bxs-file-export' style="font-size: 15px;"></i>  Move Document</div>
-                                        <div class="dropdown-menu rightClickDropdown p-0" id="moveDocumentDropdown${data.id}" aria-labelledby="moveDocumentBtn${data.id}">
-                                            <a class="dropdown-item ${incoming} rightClickDropdownItem py-1 pl-3" href="#" id="moveIncoming${data.id}">Incoming</a>
-                                            <a class="dropdown-item ${outgoing} rightClickDropdownItem py-1 pl-3" href="#" id="moveOutgoing${data.id}">Outgoing</a>
-                                            <a class="dropdown-item ${archived} rightClickDropdownItem py-1 pl-3" href="#" id="moveArchived${data.id}">Archived</a>
-                                        </div>
-                                    </div>
-                                </div>`,
-                    html: true,
-                    container: 'body',
-                    placement: 'right',
-                    template:   `<div class="popover p-0 rightClickList">
-                                    <div class="popover-body p-0">
-                                    </div>
-                                </div>`,
-                    trigger: 'manual',
-                    animation: false
-                }).on('inserted.bs.popover', function(event) {
-                    $('#updateDocumentBtn' + data.id).off('click').on('click', function(event) {
-                        event.stopPropagation();
-                        $(row).popover('toggle');
-                        editDocument(data.id);
-                    });
-
-                    $('#viewDocumentVersionsBtn' + data.id).off('click').on('click', function(event) {
-                        event.stopPropagation();
-                        $(row).popover('toggle');
-                        viewDocumentVersions(data.id, row);
-                    });
-
-                    $('#moveDocumentBtn' + data.id).off('mouseenter').on('mouseenter', function(event) {
-                        setTimeout(function() {
-                            $('#moveDocumentDropdown' + data.id).toggleClass('show')
-                        }, 300);
-                    });
-
-                    $('#moveIncoming' + data.id).off('click').on('click', function(event) {
-                        event.preventDefault();
-                        if(!$(this).hasClass('disabled')){
-                            moveDocument(data.id, 'Incoming', row);
-                        }
-                    });
-
-                    $('#moveOutgoing' + data.id).off('click').on('click', function(event) {
-                        event.preventDefault();
-                        if(!$(this).hasClass('disabled')){
-                            moveDocument(data.id, 'Outgoing', row);
-                        }
-                    });
-
-                    $('#moveArchived' + data.id).off('click').on('click', function(event) {
-                        event.preventDefault();
-                        if(!$(this).hasClass('disabled')){
-                            moveDocument(data.id, 'Archived', row);
-                        }
-                    });
-                });
-                
-                $(this).popover('toggle');
-
-                if (!data.canEdit){
-                    $('#updateDocumentBtn' + data.id).css({
-                        'cursor' : 'not-allowed'
-                    });
-                    $('#updateDocumentBtn' + data.id).prop('disabled', true);
-                }
-
-                if (!data.canMove){
-                    $('#moveDocumentBtn' + data.id).css({
-                        'cursor' : 'not-allowed'
-                    });
-                    $('#moveDocumentBtn' + data.id).prop('disabled', true);
-                }
-                
-                if (!data.canArchive){
-                    $('#moveArchived' + data.id).css({
-                        'cursor' : 'not-allowed'
-                    });
-                    $('#moveArchived' + data.id).prop('disabled', true);
-                }
-
-                if (!data.canDownload){
-                    $('#downloadFileBtn' + data.id).css({
-                        'cursor' : 'not-allowed'
-                    });
-                    $('#downloadFileBtn' + data.id).prop('disabled', true);
-                }
-
-                if (!data.canPrint){
-                    console.log('cannot print');
-                    // $('#updateDocumentBtn' + data.id).css({
-                    //     'cursor' : 'not-allowed'
-                    // });
-                    // $('#updateDocumentBtn' + data.id).prop('disabled', true);
-                }
-
-                $(document).off('click.popover').on('click.popover', function(e) {
-                    if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
-                        $(row).popover('hide');  
-                    }
-                });
-            });
-        }
-    });
-
-    if (!$('.dashboardTableContents').hasClass('show')) {
-        $('.dashboardTableContents').addClass('show');
-    }
-}
-
-// SHOW ARCHIVED DOCUMENTS
-export function showArchived(){
-    $('.dashboardTableTitle').html('Archived Documents');
-
-    if ($.fn.DataTable.isDataTable('#dashboardTable')) {
-        $('#dashboardTable').DataTable().clear().destroy();
-    }
-
-    $('#dashboardTable').html("");
     
-    $('#dashboardTable').html(
-        "<thead><tr>" +
-        "<th>Type</th>" +
-        "<th>Subject</th>" +
-        "<th>Sender</th>" +         
-        "<th>Recipient</th>" +         
-        "<th>Status</th>" +     
-        "<th>Assignee</th>" +  
-        "</tr></thead>" +            
-        "<tbody></tbody>" +
-        "<tfoot><tr>" + 
-        "<th>Type</th>" +
-        "<th>Subject</th>" +
-        "<th>Sender</th>" +         
-        "<th>Recipient</th>" +         
-        "<th>Status</th>" +     
-        "<th>Assignee</th>" + 
-        "</tr></tfoot>"
-    );
-
-    // Get all incoming documents in AJAX
-    $('#dashboardTable').DataTable({
-        ajax: {
-            url: window.routes.showArchived,
-            dataSrc: 'archivedDocuments'
-        },
-        columns: [
-            {data: 'type'},
-            {data: 'subject'},
-            {data: 'sender'},
-            {data: 'recipient'},
-            {data: 'status'},
-            {data: 'assignee'}
-        ],
-        destroy: true,
-        pagination: true,
-        language: {
-            emptyTable: "No archived documents present."
-        },
-        autoWidth: false,
-        createdRow: function(row, data) {
-            // Custom behavior: cursor change on hover
-            $(row).on('mouseenter', function(){
-                document.body.style.cursor = 'pointer';
-            });
-
-            $(row).on('mouseleave', function() {
-                document.body.style.cursor = 'default';
-            });
-
-            // Document preview
-            $(row).on('click', function(event) {
-                event.preventDefault();
-                $(row).popover('hide');
-                documentPreview(data.id, row);
-            });
-
-            // Document context menu
-            $(row).on('contextmenu', function(event) {
-                event.preventDefault();
-                $.each($('.popover'), function () { 
-                    if ($(this).parent() !== $(row)){
-                        $(this).popover('hide');
-                    }
-                });$('.popover').popover('hide');
-
-                var incoming, outgoing, archived;
-                // Determine the status of the document
-                switch (data.category) {
-                    case 'Incoming':
-                        incoming = 'disabled';
-                        break;
-                    case 'Outgoing':
-                        outgoing = 'disabled';
-                        break;
-                    case 'Archived':
-                        archived = 'disabled';
-                        break;
-                    default:
-                        break;
-                }
-
-                $(this).popover({
-                    content:    `<div class="list-group menu p-0">
-                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="updateDocumentBtn${data.id}">
-                                        <i class='bx bx-edit-alt' style="font-size: 15px;"></i>  Edit Document</div>
-                                    <a class="list-group-item py-1 px-2 rightClickListItem list-group-item-action" id="downloadFileBtn${data.id}" href="${window.routes.downloadDocument.replace(':id', data.id)}">
-                                        <i class='bx bxs-download' style="font-size: 15px;"></i>  Download File</a>
-                                    <div class="list-group-item py-1 px-2 rightClickListItem" id="viewDocumentVersionsBtn${data.id}"><i class='bx bx-history' style="font-size: 15px;"></i>  View Document Versions</div>
-                                    <div class="dropright p-0">
-                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="moveDocumentBtn${data.id}"><i class='bx bxs-file-export' style="font-size: 15px;"></i>  Move Document</div>
-                                        <div class="dropdown-menu rightClickDropdown p-0" id="moveDocumentDropdown${data.id}" aria-labelledby="moveDocumentBtn${data.id}">
-                                            <a class="dropdown-item ${incoming} rightClickDropdownItem py-1 pl-3" href="#" id="moveIncoming${data.id}">Incoming</a>
-                                            <a class="dropdown-item ${outgoing} rightClickDropdownItem py-1 pl-3" href="#" id="moveOutgoing${data.id}">Outgoing</a>
-                                            <a class="dropdown-item ${archived} rightClickDropdownItem py-1 pl-3" href="#" id="moveArchived${data.id}">Archived</a>
+                $(row).on('mouseleave', function() {
+                    document.body.style.cursor = 'default';
+                });
+    
+                $(row).on('click', function(event) {
+                    event.preventDefault();
+                    $(row).popover('hide');
+                    documentPreview(data.document_id);
+                });
+    
+                $(row).on('contextmenu', function(event) {
+                    event.preventDefault();
+                    $.each($('.popover'), function () { 
+                        if ($(this).parent() !== $(row)){
+                            $(this).popover('hide');
+                        }
+                    });
+    
+                    // Determine the content of the document per the category    
+                    $(this).popover({
+                        content: `<div class="list-group menu p-0">
+                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="updateDocumentBtn${data.document_id}">
+                                            <i class='bx bx-edit-alt' style="font-size: 15px;"></i>  Update</div>
+                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="moveOutgoing${data.document_id}">
+                                            <i class='bx bxs-file-export' style="font-size: 15px;"></i>  Move to Outgoing</div>
+                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="viewAttachments${data.document_id}">
+                                            <i class='bx bx-paperclip' style="font-size: 15px;"></i>  View Attachments</div>
+                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="moveArchived${data.document_id}">
+                                            <i class='bx bxs-file-archive' style="font-size: 15px;"></i>  Archive</div>
+                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="deleteDocument${data.document_id}">
+                                            <i class='bx bx-trash' style="font-size: 15px;"></i>  Delete</div>
+                                    </div>`,
+                        html: true,
+                        container: 'body',
+                        placement: 'right',
+                        template:   `<div class="popover p-0 rightClickList">
+                                        <div class="popover-body p-0">
                                         </div>
-                                    </div>
-                                </div>`,
-                    html: true,
-                    container: 'body',
-                    placement: 'right',
-                    template:   `<div class="popover p-0 rightClickList">
-                                    <div class="popover-body p-0">
-                                    </div>
-                                </div>`,
-                    trigger: 'manual',
-                    animation: false
-                }).on('inserted.bs.popover', function(event) {
-                    $('#updateDocumentBtn' + data.id).off('click').on('click', function(event) {
-                        event.stopPropagation();
-                        $(row).popover('toggle');
-                        editDocument(data.id);
+                                    </div>`,
+                        trigger: 'manual',
+                        animation: false
+                    }).on('inserted.bs.popover', function(event) {
+                        $('#updateDocumentBtn' + data.document_id).off('click').on('click', function(event) {
+                            event.stopPropagation();
+                            $(row).popover('toggle');
+                            documentPreview(data.document_id);
+                            update = true;
+                        });
+                        
+                        $('#viewAttachments' + data.document_id).off('click').on('click', function(event) {
+                            event.stopPropagation();
+                            $(row).popover('toggle');
+                            documentPreview(data.document_id, true);
+                        });
+
+                        $('#viewDocumentVersionsBtn' + data.document_id).off('click').on('click', function(event) {
+                            event.stopPropagation();
+                            $(row).popover('toggle');
+                            viewDocumentVersions(data.document_id, row);
+                        });
+    
+                        $('#moveDocumentBtn' + data.document_id).off('mouseenter').on('mouseenter', function(event) {
+                            setTimeout(function() {
+                                $('#moveDocumentDropdown' + data.document_id).toggleClass('show')
+                            }, 300);
+                        });
+    
+                        $('#moveIncoming' + data.document_id).off('click').on('click', function(event) {
+                            event.preventDefault();
+                            if(!$(this).hasClass('disabled')){
+                                moveDocument(data.document_id, 'Incoming', row);
+                            }
+                        });
+    
+                        $('#moveOutgoing' + data.document_id).off('click').on('click', function(event) {
+                            event.preventDefault();
+                            if(!$(this).hasClass('disabled')){
+                                moveDocument(data.document_id, 'Outgoing', row);
+                            }
+                        });
+    
+                        $('#moveArchived' + data.document_id).off('click').on('click', function(event) {
+                            event.preventDefault();
+                            if(!$(this).hasClass('disabled')){
+                                moveDocument(data.document_id, 'Archived', row);
+                            }
+                        });
                     });
-
-                    $('#viewDocumentVersionsBtn' + data.id).off('click').on('click', function(event) {
-                        event.stopPropagation();
-                        $(row).popover('toggle');
-                        viewDocumentVersions(data.id, row);
-                    });
-
-                    $('#moveDocumentBtn' + data.id).off('mouseenter').on('mouseenter', function(event) {
-                        setTimeout(function() {
-                            $('#moveDocumentDropdown' + data.id).toggleClass('show')
-                        }, 300);
-                    });
-
-                    $('#moveIncoming' + data.id).off('click').on('click', function(event) {
-                        event.preventDefault();
-                        if(!$(this).hasClass('disabled')){
-                            moveDocument(data.id, 'Incoming', row);
-                        }
-                    });
-
-                    $('#moveOutgoing' + data.id).off('click').on('click', function(event) {
-                        event.preventDefault();
-                        if(!$(this).hasClass('disabled')){
-                            moveDocument(data.id, 'Outgoing', row);
-                        }
-                    });
-
-                    $('#moveArchived' + data.id).off('click').on('click', function(event) {
-                        event.preventDefault();
-                        if(!$(this).hasClass('disabled')){
-                            moveDocument(data.id, 'Archived', row);
-                        }
-                    });
-                });
-
-                $(this).popover('toggle');
-
-                if (!data.canEdit){
-                    $('#updateDocumentBtn' + data.id).css({
-                        'cursor' : 'not-allowed'
-                    });
-                    $('#updateDocumentBtn' + data.id).prop('disabled', true);
-                }
-
-                if (!data.canMove){
-                    $('#moveDocumentBtn' + data.id).css({
-                        'cursor' : 'not-allowed'
-                    });
-                    $('#moveDocumentBtn' + data.id).prop('disabled', true);
-                }
-                
-                if (!data.canArchive){
-                    $('#moveArchived' + data.id).css({
-                        'cursor' : 'not-allowed'
-                    });
-                    $('#moveArchived' + data.id).prop('disabled', true);
-                }
-
-                if (!data.canDownload){
-                    $('#downloadFileBtn' + data.id).css({
-                        'cursor' : 'not-allowed'
-                    });
-                    $('#downloadFileBtn' + data.id).prop('disabled', true);
-                }
-
-                if (!data.canPrint){
-                    console.log('cannot print');
-                    // $('#updateDocumentBtn' + data.id).css({
-                    //     'cursor' : 'not-allowed'
-                    // });
-                    // $('#updateDocumentBtn' + data.id).prop('disabled', true);
-                }
-
-                $(document).off('click.popover').on('click.popover', function(e) {
-                    if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
-                        $(row).popover('hide');  
+    
+                    $(this).popover('toggle');
+    
+                    if (!data.canEdit){
+                        $('#updateDocumentMenuBtn' + data.document_id).css({
+                            'cursor' : 'not-allowed'
+                        });
+                        $('#updateDocumentMenuBtn' + data.document_id).prop('disabled', true);
                     }
+    
+                    if (!data.canMove){
+                        $('#moveDocumentBtn' + data.document_id).css({
+                            'cursor' : 'not-allowed'
+                        });
+                        $('#moveDocumentBtn' + data.document_id).prop('disabled', true);
+                    }
+                    
+                    if (!data.canArchive){
+                        $('#moveArchived' + data.document_id).css({
+                            'cursor' : 'not-allowed'
+                        });
+                        $('#moveArchived' + data.document_id).prop('disabled', true);
+                    }
+    
+                    if (!data.canDownload){
+                        $('#downloadFileBtn' + data.document_id).css({
+                            'cursor' : 'not-allowed'
+                        });
+                        $('#downloadFileBtn' + data.document_id).prop('disabled', true);
+                    }
+    
+                    if (!data.canPrint){
+                        console.log('cannot print');
+                        // $('#updateDocumentBtn' + data.document_id).css({
+                        //     'cursor' : 'not-allowed'
+                        // });
+                        // $('#updateDocumentBtn' + data.document_id).prop('disabled', true);
+                    }
+    
+                    $(document).off('click.popover').on('click.popover', function(e) {
+                        if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
+                            $(row).popover('hide');  
+                        }
+                    });
                 });
-            });
-        }
-    });
+            }
+        });
+    } else {
+        $('#dashboardTable').html(
+            "<thead><tr>" +
+            "<th>Type</th>" +
+            "<th>Subject</th>" +    
+            "<th>Date</th>" +  
+            "<th>Recipient</th>" +            
+            "<th>Status</th>" +     
+            "<th>Assignee</th>" +  
+            "</tr></thead>" +            
+            "<tbody></tbody>" +
+            "<tfoot><tr>" + 
+            "<th>Type</th>" +
+            "<th>Subject</th>" +     
+            "<th>Date</th>" + 
+            "<th>Recipient</th>" +            
+            "<th>Status</th>" +     
+            "<th>Assignee</th>" + 
+            "</tr></tfoot>"
+        );
+
+        $('#dashboardTable').DataTable({
+            ajax: {
+                url: window.routes.showDocuments.replace(':id', category),
+                dataSrc: 'documents'
+            },
+            columns: [
+                {data: 'type'},
+                {data: 'subject'},
+                {data: 'document_date'},
+                {data: 'recipient'},
+                {data: 'status'},
+                {data: 'assignee'}
+            ],
+            destroy: true,
+            pagination: true,
+            language: {
+                emptyTable: "No documents present."
+            },
+            autoWidth: false,
+            createdRow: function(row, data) {
+                $(row).on('mouseenter', function(){
+                    document.body.style.cursor = 'pointer';
+                });
+    
+                $(row).on('mouseleave', function() {
+                    document.body.style.cursor = 'default';
+                });
+    
+                $(row).on('click', function(event) {
+                    event.preventDefault();
+                    $(row).popover('hide');
+                    documentPreview(data.document_id);
+                });
+    
+                $(row).on('contextmenu', function(event) {
+                    event.preventDefault();
+                    $.each($('.popover'), function () { 
+                        if ($(this).parent() !== $(row)){
+                            $(this).popover('hide');
+                        }
+                    });
+    
+                    // Determine the content of the document per the category
+                    
+    
+                    $(this).popover({
+                        content: `<div class="list-group menu p-0">
+                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="updateDocumentBtn${data.document_id}">
+                                            <i class='bx bx-edit-alt' style="font-size: 15px;"></i>  Update</div>
+                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="moveIncoming${data.document_id}">
+                                            <i class='bx bxs-file-export' style="font-size: 15px;"></i>  Move to Incoming</div>
+                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="viewAttachments${data.document_id}">
+                                            <i class='bx bx-paperclip' style="font-size: 15px;"></i>  View Attachments</div>
+                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="moveArchived${data.document_id}">
+                                            <i class='bx bxs-file-archive' style="font-size: 15px;"></i>  Archive</div>
+                                        <div class="list-group-item py-1 px-2 rightClickListItem" id="deleteDocument${data.document_id}">
+                                            <i class='bx bx-trash' style="font-size: 15px;"></i>  Delete</div>
+                                    </div>`,
+                        html: true,
+                        container: 'body',
+                        placement: 'right',
+                        template:   `<div class="popover p-0 rightClickList">
+                                        <div class="popover-body p-0">
+                                        </div>
+                                    </div>`,
+                        trigger: 'manual',
+                        animation: false
+                    }).on('inserted.bs.popover', function(event) {
+                        $('#updateDocumentBtn' + data.document_id).off('click').on('click', function(event) {
+                            event.stopPropagation();
+                            $(row).popover('toggle');
+                            documentPreview(data.document_id);
+                            update = true;
+                        });
+    
+                        $('#viewAttachments' + data.document_id).off('click').on('click', function(event) {
+                            event.stopPropagation();
+                            $(row).popover('toggle');
+                            documentPreview(data.document_id, true);
+                        });
+
+                        $('#viewDocumentVersionsBtn' + data.document_id).off('click').on('click', function(event) {
+                            event.stopPropagation();
+                            $(row).popover('toggle');
+                            viewDocumentVersions(data.document_id, row);
+                        });
+    
+                        $('#moveDocumentBtn' + data.document_id).off('mouseenter').on('mouseenter', function(event) {
+                            setTimeout(function() {
+                                $('#moveDocumentDropdown' + data.document_id).toggleClass('show')
+                            }, 300);
+                        });
+    
+                        $('#moveIncoming' + data.document_id).off('click').on('click', function(event) {
+                            event.preventDefault();
+                            if(!$(this).hasClass('disabled')){
+                                moveDocument(data.document_id, 'Incoming', row);
+                            }
+                        });
+    
+                        $('#moveOutgoing' + data.document_id).off('click').on('click', function(event) {
+                            event.preventDefault();
+                            if(!$(this).hasClass('disabled')){
+                                moveDocument(data.document_id, 'Outgoing', row);
+                            }
+                        });
+    
+                        $('#moveArchived' + data.document_id).off('click').on('click', function(event) {
+                            event.preventDefault();
+                            if(!$(this).hasClass('disabled')){
+                                moveDocument(data.document_id, 'Archived', row);
+                            }
+                        });
+                    });
+    
+                    $(this).popover('toggle');
+    
+                    if (!data.canEdit){
+                        $('#updateDocumentMenuBtn' + data.document_id).css({
+                            'cursor' : 'not-allowed'
+                        });
+                        $('#updateDocumentMenuBtn' + data.document_id).prop('disabled', true);
+                    }
+    
+                    if (!data.canMove){
+                        $('#moveDocumentBtn' + data.document_id).css({
+                            'cursor' : 'not-allowed'
+                        });
+                        $('#moveDocumentBtn' + data.document_id).prop('disabled', true);
+                    }
+                    
+                    if (!data.canArchive){
+                        $('#moveArchived' + data.document_id).css({
+                            'cursor' : 'not-allowed'
+                        });
+                        $('#moveArchived' + data.document_id).prop('disabled', true);
+                    }
+    
+                    if (!data.canDownload){
+                        $('#downloadFileBtn' + data.document_id).css({
+                            'cursor' : 'not-allowed'
+                        });
+                        $('#downloadFileBtn' + data.document_id).prop('disabled', true);
+                    }
+    
+                    if (!data.canPrint){
+                        console.log('cannot print');
+                        // $('#updateDocumentBtn' + data.document_id).css({
+                        //     'cursor' : 'not-allowed'
+                        // });
+                        // $('#updateDocumentBtn' + data.document_id).prop('disabled', true);
+                    }
+    
+                    $(document).off('click.popover').on('click.popover', function(e) {
+                        if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
+                            $(row).popover('hide');  
+                        }
+                    });
+                });
+            }
+        });
+    }
 
     if (!$('.dashboardTableContents').hasClass('show')) {
         $('.dashboardTableContents').addClass('show');
@@ -630,71 +403,18 @@ function moveDocument(id, location, row){
     });
 }
 
-// View Document Versions
-function viewDocumentVersions(id, row){
-    // Hide the popover first
-    $(row).popover('hide');
-
-    // Show the modal
-    $('#documentVersions').modal('show');
-
-    // Ajax request to get document versions
-
-    
-}
-// View Document Version Content
-function viewDocumentVersion(
-    created_at,
-    document_date,
-    type,
-    series_number,
-    memo_number,
-    sender,
-    recipient,
-    subject,
-    assignee,
-    category,
-    status,
-    file,
-    modified_by
-){
-    $('#documentVersionIFrame').attr('src', file + `#scrollbar=1&toolbar=0`);
-    $("#documentVersionModifiedDate").html('<strong>Modified At: </strong>'+ created_at);
-    $("#documentVersionModifiedBy").html('<strong>Modified By: </strong>'+ modified_by);
-    $("#documentVersionDate").html('<strong>Document Date: </strong>'+ document_date);
-    $("#documentVersionType").html('<strong>Document Type: </strong>'+ type);
-
-    if ($(this).data('type') == 'Type0') {
-        $('#documentVersionMemoInfo').css('display', 'block');
-        $('#documentVersionSeriesNo').html('<strong>Series No.: </strong>' + series_number);
-        $('#documentVersionMemoNo').html('<strong>Memo No.: </strong>' + memo_number);
-    } else {
-        $('#documentVersionMemoInfo').css('display', 'hide');
-    }
-
-    $("#documentVersionSender").html('<strong>From: </strong>'+ sender);
-    $("#documentVersionRecipient").html('<strong>To: </strong>'+ recipient);
-    $("#documentVersionSubject").html('<strong>Subject: </strong>'+ subject);
-    $("#documentVersionAssignee").html('<strong>Assignee: </strong>'+ assignee);
-    $("#documentVersionCategory").html('<strong>Category: </strong>'+ category);
-    $("#documentVersionStatus").html('<strong>Status: </strong>'+ status);
-
-    $('#documentPreview').modal('hide');
-    $('#viewDocumentVersion').modal('show');
-};
-
 // Document Preview
-function documentPreview(id, row = null){
+export function documentPreview(id, attachment = false){
     $.ajax({
         method: "GET",
         url: window.routes.previewDocument.replace(':id', id),
         success: function (response) {
             $('#documentPreviewIFrame').attr('src', response.fileLink + `#scrollbar=1&toolbar=0`);
             
-            $("#documentDate").html('<strong>Document Date: </strong>'+ response.document.document_date);
+            $("#documentDate").html('<strong>Document Date: </strong>'+ response.document.created_at);
             $("#documentType").html(response.document.type);
 
-            if (response.document.type == 'Type0') {
+            if (response.document.type == 'Memoranda') {
                 $('#documentMemoInfo').css('display', 'block');
                 $('#documentSeriesNo').html('<strong>Series No.: </strong>' + response.document.series_number);
                 $('#documentMemoNo').html('<strong>Memo No.: </strong>' + response.document.memo_number);
@@ -710,172 +430,294 @@ function documentPreview(id, row = null){
             $("#documentCategory").html(response.document.category);
             $("#documentStatus").html('<strong>Status: </strong>'+ response.document.status);
 
-            $('#documentLastModifiedDate').html(response.lastModifiedDate);
-            $('#documentLastModifiedBy').html(response.lastModifiedBy);
+            $('#documentLastModifiedDate').html(response.document.created_at);
+            $('#documentLastModifiedBy').html(response.document.modified_by);
 
-            $('#documentVersionsTable').DataTable({
-                ajax: {
-                    url: window.routes.showDocumentVersions.replace(':id', id),
-                    dataSrc: 'documentVersions'
-                },
-                columns: [
-                    {data: 'version_number'},
-                    {data: 'created_at'},
-                    {data: 'modified_by'},
-                    {data: null},
-                    {
-                        data: null,
-                        render: function(data, type, row){
-                            var content = JSON.parse(data.content);
-                            return `<span>${content.status}</span>`;
-                        }
-                    }
-                ],
-                destroy: true,
-                language: {
-                    emptyTable: "No document versions present."
-                },
-                order: {
-                    idx: 0,
-                    dir: 'desc'
-                },
-                layout: {
-                    bottom: 'paging',
-                    bottomStart: null,
-                    bottomEnd: null
-                },
-                renderer: 'bootstrap',
-                responsive: true,
-                autoWidth: true,
-                createdRow: function(row, data) {
-                    $(row).on('mouseenter', function(){
-                        document.body.style.cursor = 'pointer';
-                    });
-        
-                    $(row).on('mouseleave', function() {
-                        document.body.style.cursor = 'default';
-                    });
-        
-                    $(row).on('click', function(event) {
-                        event.preventDefault();
-                        $(row).popover('hide');
-                    });
-        
-                    $(row).on('contextmenu', function(event) {
-                        event.preventDefault();
-                        $.each($('.popover'), function () { 
-                            if ($(this).parent() !== $(row)){
-                                $(this).popover('hide');
-                            }
-                        });
-        
-                        $(this).popover({
-                            content:    `<div class="list-group menu p-0">
-                                            <div class="list-group-item py-1 px-2 rightClickListItem" id="viewDocumentVersionBtn${data.id}">
-                                                <i class='bx bx-edit-alt' style="font-size: 15px;"></i>  View Document Version</div>
-                                            <div class="list-group-item py-1 px-2 rightClickListItem" id="viewDocumentVersionAttachments${data.id}">
-                                                <i class='bx bxs-file' style="font-size: 15px;"></i>  View Attachments</div>
-                                        </div>`,
-                            html: true,
-                            placement: 'left',
-                            template:   `<div class="popover p-0 rightClickList rightClickDocuInfo">
-                                            <div class="popover-body p-0">
-                                            </div>
-                                        </div>`,
-                            trigger: 'manual',
-                            animation: false
-                        }).on('inserted.bs.popover', function(event) {
-                            $('#viewDocumentVersionBtn' + data.id).off('click').on('click', function(event) {
-                                event.stopPropagation();
-                                $(row).popover('toggle');
-                                var content = JSON.parse(data.content);
-                                viewDocumentVersion(
-                                    data.created_at,
-                                    content.document_date,
-                                    content.type,
-                                    content.series_number,
-                                    content.memo_number,
-                                    content.sender,
-                                    content.recipient,
-                                    content.subject,
-                                    content.assignee,
-                                    content.category,
-                                    content.status,
-                                    data.file,
-                                    data.modified_by
-                                );
-                            });
-        
-                            $('#viewDocumentVersionAttachments' + data.id).off('click').on('click', function(event) {
-                                event.stopPropagation();
-                                $(row).popover('toggle');
-                                viewDocumentVersionAttachments(data.id);
-                            });
-                        });
-                        
-                        $(this).popover('toggle');
-                        
-                        if (!data.canEdit){
-                            $('#updateDocumentBtn' + data.id).css({
-                                'cursor' : 'not-allowed'
-                            });
-                            $('#updateDocumentBtn' + data.id).prop('disabled', true);
-                        }
-        
-                        if (!data.canMove){
-                            $('#moveDocumentBtn' + data.id).css({
-                                'cursor' : 'not-allowed'
-                            });
-                            $('#moveDocumentBtn' + data.id).prop('disabled', true);
-                        }
-                        
-                        if (!data.canArchive){
-                            $('#moveArchived' + data.id).css({
-                                'cursor' : 'not-allowed'
-                            });
-                            $('#moveArchived' + data.id).prop('disabled', true);
-                        }
-        
-                        if (!data.canDownload){
-                            $('#downloadFileBtn' + data.id).css({
-                                'cursor' : 'not-allowed'
-                            });
-                            $('#downloadFileBtn' + data.id).prop('disabled', true);
-                        }
-        
-                        if (!data.canPrint){
-                            console.log('cannot print');
-                            // $('#updateDocumentBtn' + data.id).css({
-                            //     'cursor' : 'not-allowed'
-                            // });
-                            // $('#updateDocumentBtn' + data.id).prop('disabled', true);
-                        }
-        
-                        $(document).off('click.popover').on('click.popover', function(e) {
-                            if (!$(e.target).closest(row).length && !$(e.target).closest('.popover').length) {
-                                $(row).popover('hide');  
-                            }
-                        });
-                    });
-                }
-            })
+            $('#updateDocumentMenuBtn').data('id', response.document.document_id);
+            $('#viewDocumentHistoryBtn').data('id', response.document.document_id);
+            $('#viewDocumentAttachmentsBtn').data('id', response.document.document_id);
 
-            $(row).popover('hide');
             $('#documentPreview').modal('show');
+
+            $('#updateDocumentMenuBtn').prop('disabled', true);
+            $('#viewDocumentHistoryBtn').prop('disabled', true);
+            $('#viewDocumentAttachmentsBtn').prop('disabled', true);
+            
+            if(attachment == true){
+                $('#viewDocumentAttachmentsBtn').trigger('click');
+            } else {
+                $('#viewDocumentHistoryBtn').trigger('click');
+            }
+            
         }
     });
 }
 
-function viewAttachments(){
-
-}
-
-function viewDocumentVersionAttachments(){
-    
-}
-
-$('#closeDocumentVersion').on('click', function(event){
+// Document Info Button Event Listeners
+$('#updateDocumentMenuBtn').on('click', function(event){
     event.preventDefault();
-    $('#documentPreview').modal('show');
-    $('#viewDocumentVersion').modal('hide');
+    var id = $(this).data('id');
+    $('#updateDocumentMenuBtn').prop('disabled', true);
+    $('#viewDocumentHistoryBtn').prop('disabled', true);
+    $('#viewDocumentAttachmentsBtn').prop('disabled', true);
+    
+    updateDocument(id);
+});
+
+$('#viewDocumentHistoryBtn').on('click', function(event){
+    event.preventDefault();
+    var id = $(this).data('id');
+    $('#updateDocumentMenuBtn').prop('disabled', true);
+    $('#viewDocumentHistoryBtn').prop('disabled', true);
+    $('#viewDocumentAttachmentsBtn').prop('disabled', true);
+    viewDocumentVersions(id);
+});
+
+$('#viewDocumentAttachmentsBtn').on('click', function(event){
+    event.preventDefault();
+    var id = $(this).data('id');
+    $('#updateDocumentMenuBtn').prop('disabled', true);
+    $('#viewDocumentHistoryBtn').prop('disabled', true);
+    $('#viewDocumentAttachmentsBtn').prop('disabled', true);
+    viewAttachments(id);
+});
+
+// View Document Versions
+function viewDocumentVersions(id){
+    $('.documentVersion').removeClass('disabled');
+
+    $.ajax({
+        type: "GET",
+        url: window.routes.showDocumentVersions.replace(':id', id),
+        success: function (response) {
+            // Clear document info list
+            $('#documentInfoTitle').html(`Version History`);
+            $('#documentInfoList').html('');
+            // Had new entries
+            for (var i = 0; i < response.documentVersions.length; i++) {
+                const version = response.documentVersions[i];
+                // Add version description
+                $('#documentInfoList').append(`
+                    <li class="list-group-item container justify-content-between align-items-center border-bottom documentVersion" id="viewDocumentVersion${version.id}" data-id=${version.id}>
+                        <div class="row">
+                            <div class="col">
+                                <span class="text-left mr-auto"><strong>${version.created_at}</strong></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <span class="text-left mr-auto">• <i>${version.description}</i></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <span class="text-left mr-auto">${version.modified_by}</span>
+                            </div>
+                        </div>
+                    </li>
+                    `);
+            }
+            if (update == true){
+                $('#updateDocumentMenuBtn').trigger('click');
+            } else {
+                $('.documentVersion').first().trigger('click');
+            }
+        },
+        error: function(response){
+            console.log(response);
+        }
+    });
+}
+
+$(document).on('click', '.documentVersion', function(event){
+    event.preventDefault();
+
+    $('.documentInfo-active').removeClass('documentInfo-active');
+    $(this).addClass('documentInfo-active');
+    
+    var id = $(this).data('id');
+    
+    $('#updateDocumentMenuBtn').prop('disabled', true);
+    $('#viewDocumentHistoryBtn').prop('disabled', true);
+    $('#viewDocumentAttachmentsBtn').prop('disabled', true);
+
+    $.ajax({
+        type: "GET",
+        url: window.routes.showDocumentVersion.replace(':id', id),
+        success: function (response) {
+            console.log(response);
+            if (response.version.series_number === "undefined" || response.version.series_number === null){
+                response.version.series_number = "N/A";
+                response.version.previous_series_number = "N/A";
+            }
+
+            if (response.version.memo_number === "undefined" || response.version.memo_number === null){
+                response.version.memo_number = "N/A";
+                response.version.previous_memo_number = "N/A";
+            }
+
+            $('#documentInfoContainer').html(`
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="font-weight-bold">Subject:</label>
+                                <input type="text" class="form-control" disabled value="${response.version.subject}">
+                                <span class="mb-3">Previous: ${response.version.previous_subject}</span>
+                            </div>
+                            <div class="col-12">
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <label class="font-weight-bold">Series Number:</label>
+                                        <input type="text" class="form-control" disabled value="${response.version.series_number}">
+                                        <span>Previous: ${response.version.previous_series_number}</span>
+                                    </div>
+                                    <div class="col">
+                                        <label class="font-weight-bold">Memo Number:</label>
+                                        <input type="text" class="form-control" disabled value="${response.version.memo_number}">
+                                        <span>Previous: ${response.version.previous_memo_number}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="font-weight-bold">Document Type:</label>
+                                <input type="text" class="form-control" disabled value="${response.version.type}">
+                                <span>Previous: ${response.version.previous_type}</span>
+                            </div>
+
+                            <div class="col">
+                                <label class="font-weight-bold">Document Date:</label>
+                                <input type="text" class="form-control" disabled value="${response.version.document_date}">
+                                <span>Previous: ${response.version.previous_document_date}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="font-weight-bold">From:</label>
+                                <input type="text" class="form-control" disabled value="${response.version.sender}">
+                                <span>Previous: ${response.version.previous_sender}</span>
+                            </div>
+                            
+                            <div class="col">
+                                <label class="font-weight-bold">To:</label>
+                                <input type="text" class="form-control" disabled value="${response.version.recipient}">
+                                <span>Previous: ${response.version.previous_recipient}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="font-weight-bold">Category:</label>
+                                <input type="text" class="form-control" disabled value="${response.version.category}">
+                                <span>Previous: ${response.version.previous_category}</span>
+                            </div>
+
+                            <div class="col">
+                                <label class="font-weight-bold">Status:</label>
+                                <input type="text" class="form-control" disabled value="${response.version.status}">
+                                <span>Previous: ${response.version.previous_status}</span>
+                            </div>
+
+                            <div class="col">
+                                <label class="font-weight-bold">Assignee:</label>
+                                <input type="text" class="form-control" disabled value="${response.version.assignee}">
+                                <span>Previous: ${response.version.previous_assignee}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `);
+            
+            $('#documentInfoContainer').show();
+            $('#updateDocument').hide();
+
+            $('#updateDocumentMenuBtn').prop('disabled', false);
+            $('#viewDocumentHistoryBtn').prop('disabled', false);
+            $('#viewDocumentAttachmentsBtn').prop('disabled', false);
+        },
+        error: function(response){
+            console.log(response);
+        }
+    });
+})
+
+// View Attachments
+function viewAttachments(id){
+    $('.documentAttachment').removeClass('disabled');
+
+    $.ajax({
+        type: "GET",
+        url: window.routes.showAttachments.replace(':id', id),
+        success: function (response) {
+            // Clear document info list
+            $('#documentInfoTitle').html(`Attachments`);
+            $('#documentInfoList').html('');
+            // Had new entries
+            for (var i = 0; i < response.attachments.length; i++) {
+                const attachment = response.attachments[i];
+                // Add version description
+                $('#documentInfoList').append(`
+                    <li class="list-group-item container justify-content-between align-items-center border-bottom documentAttachment" id="viewAttachment${attachment.id}" data-id=${attachment.id}>
+                        <div class="row">
+                            <div class="col">
+                                <span class="text-left mr-auto"><strong>${attachment.name}</strong></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <span class="text-left mr-auto" style="overflow-x: hidden">• <i>${attachment.created_at}</i></span>
+                            </div>
+                        </div>
+                    </li>
+                    `);
+            }
+
+            $('.documentAttachment').first().trigger('click');
+        },
+        error: function(response){
+            console.log(response);
+        }
+    });
+}
+
+$(document).on('click', '.documentAttachment', function(event){
+    event.preventDefault();
+
+    $('.documentInfo-active').removeClass('documentInfo-active');
+    $(this).addClass('documentInfo-active');
+
+    var id = $(this).data('id');
+    
+    $('#updateDocumentMenuBtn').prop('disabled', true);
+    $('#viewDocumentHistoryBtn').prop('disabled', true);
+    $('#viewDocumentAttachmentsBtn').prop('disabled', true);
+
+    $.ajax({
+        type: "GET",
+        url: window.routes.showAttachment.replace(':id', id),
+        success: function (response) {
+            $('#documentInfoContainer').html(`
+                <iframe 
+                    id="documentInfoIframe"
+                    src=""
+                    style="width: 100%; height: 100%; border:none;"> 
+                </iframe>`);
+
+            $('#documentInfoIframe').attr('src', response.fileLink);
+
+            $('#documentInfoContainer').show();
+            $('#updateDocument').hide();
+
+            $('#updateDocumentMenuBtn').prop('disabled', false);
+            $('#viewDocumentHistoryBtn').prop('disabled', false);
+            $('#viewDocumentAttachmentsBtn').prop('disabled', false);
+        },
+        error: function(response){
+            console.log(response);
+        }
+    });
 })

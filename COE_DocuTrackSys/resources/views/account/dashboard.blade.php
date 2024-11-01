@@ -135,11 +135,12 @@ Sanchez, Shane David U.
         reactivateAccount: "{{route('account.reactivate', ':id')}}",
         
         // Document Routes
-        showIncoming: "{{route('document.showIncoming')}}",
-        showOutgoing: "{{route('document.showOutgoing')}}",
-        showArchived: "{{route('document.showArchived')}}",
+        showDocuments: "{{route('document.showAll', ':id')}}",
         showDocument: "{{route('document.show', ':id')}}",
         showDocumentVersions: "{{route('document.showDocumentVersions', ':id')}}",
+        showDocumentVersion: "{{route('document.showDocumentVersion', ':id')}}",
+        showAttachments: "{{route('document.showAttachments', ':id')}}",
+        showAttachment: "{{route('document.showAttachment', ':id')}}",
         downloadDocument: "{{route('document.download', ':id')}}",
         editDocument: "{{route('document.edit', ':id')}}",
         moveDocument: "{{route('document.move')}}",

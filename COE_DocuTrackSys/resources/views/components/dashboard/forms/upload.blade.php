@@ -9,6 +9,7 @@
         
         <div class="row mb-2">
             <div class="col-4">
+                {{-- Document Type --}}
                 <div class="row mb-2">
                     <div class="col">
                         <label for="uploadDocType">Document Type</label>
@@ -25,6 +26,7 @@
                     </div>
                 </div>
 
+                {{-- Series Number and Memo Number --}}
                 <div class="row mb-2" id="memoInfo" style="display: none;">
                     <div class="col">
                         <label for="uploadSeriesNo">Series No.</label>
@@ -39,18 +41,56 @@
                     </div>
                 </div>
 
+                {{-- Document Status --}}
+                <div class="row mb-2">
+                    <div class="col">
+                        <label for="uploadStatus">Status</label>
+                        <select id="uploadStatus" class="uploadInput" name="status">
+                            <option value="">Select Document Status</option>
+                            {{-- Obtained document statuses using Laravel--}}
+                            @foreach ($docStatuses as $docStatus)
+                                @if ($docStatus->value !== 'default')
+                                    <option value="{{$docStatus->value}}">{{$docStatus->value}}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                        <span class="error" id="statusError" style="display:none;"></span>
+                    </div>
+                </div>
+
+                {{-- Assignee --}}
+                <div class="row mb-2">
+                    <div class="col">
+                        <label for="uploadAssignee">Assignee</label>
+                        <select id="uploadAssignee" class="uploadInput" name="assignee">
+                            <option value="">Select Assignee</option>
+                            {{-- Obtained assignees through account roles using Laravel--}}
+                            @foreach ($roles as  $role)
+                                @if ($role->value !== 'default' && $role->value !== 'Admin')
+                                    <option value="{{$role->value}}">{{$role->value}}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                        <span class="error" id="assigneeError" style="display:none;"></span>
+                    </div>
+                </div>
+
+                {{-- Document Category --}}
                 <div class="row">
                     <div class="col">
-                        <label for="uploadSoftcopy">Document (Softcopy)</label>
-                        <div class="custom-file">
-                            <input type="file" id="softcopy" class="uploadInput custom-file-input" name="file">
-                            <label class="custom-file-label" id="uploadfileText" for="softcopy">Choose file</label>
-                            <span class="error" id="fileError" style="display:none;"></span>
-                        </div>
+                        <label for="uploadCategory">Category</label>
+                            <select id="uploadCategory" class="uploadInput" name="category">
+                                <option value="">Select Category</option>
+                                <option value="Incoming">Incoming</option>
+                                <option value="Outgoing">Outgoing</option>
+                                <option value="Archived">Archived</option>
+                            </select>
+                        <span class="error" id="categoryError" style="display:none;"></span>
                     </div>
                 </div>
             </div>
             
+            {{-- Document Sender and Recipient --}}
             <div class="col-8">
                 <div class="row mb-2">
                     <div class="col">
@@ -92,58 +132,36 @@
         </div>
 
         <div class="row mb-2">
-            <div class="col">
-                <label for="uploadCategory">Category</label>
-                    <select id="uploadCategory" class="uploadInput" name="category">
-                        <option value="">Select Category</option>
-                        <option value="Incoming">Incoming</option>
-                        <option value="Outgoing">Outgoing</option>
-                        <option value="Archived">Archived</option>
-                    </select>
-                <span class="error" id="categoryError" style="display:none;"></span>
-            </div>
-
-            <div class="col">
-                <label for="uploadStatus">Status</label>
-                <select id="uploadStatus" class="uploadInput" name="status">
-                    <option value="">Select Document Status</option>
-                    {{-- Obtained document statuses using Laravel--}}
-                    @foreach ($docStatuses as $docStatus)
-                        @if ($docStatus->value !== 'default')
-                            <option value="{{$docStatus->value}}">{{$docStatus->value}}</option>
-                        @endif
-                    @endforeach
-                </select>
-                <span class="error" id="statusError" style="display:none;"></span>
-            </div>
-
-            <div class="col">
-                <label for="uploadAssignee">Assignee</label>
-                <select id="uploadAssignee" class="uploadInput" name="assignee">
-                    <option value="">Select Assignee</option>
-                    {{-- Obtained assignees through account roles using Laravel--}}
-                    @foreach ($roles as  $role)
-                        @if ($role->value !== 'default' && $role->value !== 'Admin')
-                            <option value="{{$role->value}}">{{$role->value}}</option>
-                        @endif
-                    @endforeach
-                </select>
-                <span class="error" id="assigneeError" style="display:none;"></span>
-            </div>
-        </div>
-        
-        
-        <div class="row"> 
+            {{-- Document Subject --}}
             <div class="col">
                 <label for="uploadSubject">Subject</label>
                 <textarea id="uploadSubject" class="uploadInput"  name="subject" rows="2" placeholder="Enter the Subject of the Document"></textarea>
                 <span class="error" id="subjectError" style="margin-top: -8px; display:none;"></span>
             </div>
-
+            
+            {{-- Document Date --}}
             <div class="col">
                 <label for="uploadDate">Date</label>
                 <input id="uploadDate" type="date" class="uploadInput"  name="date">
                 <span class="error" id="dateError" style="display:none;"></span>
+            </div>
+        </div>
+
+        {{-- Document Attachments --}}
+        <div class="row mb-2">
+            <div class="col">
+                <label for="uploadSoftcopy">Document Attachment/s: </label>
+                <div class="container rounded border p-2 d-flex justify-content-center align-items-center uploadFiles" data-value="none" style="flex-wrap: wrap; height: 200px;">
+                    <div>No files added</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="custom-file">
+                        <label class="custom-file-label uploadInput" for="softcopy" id="fileLink">Add file/s to the document</label>
+                        <input type="file" id="softcopy" class="uploadInput custom-file-input" placeholder="Choose File" name="files[]" multiple>
+                    </label>
+                </div>
+                <span class="error" id="fileError" style="display:none;"></span>
             </div>
         </div>
 
@@ -154,8 +172,8 @@
                 <button type="button" id="clearUploadBtn"       class="btn btn-warning"><i class='bx bxs-eraser'></i>  Clear</button>
             </div>
         </div>
-
     </form>
 </div>
+
 
 

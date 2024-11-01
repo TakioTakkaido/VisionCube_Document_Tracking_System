@@ -753,7 +753,7 @@ button:focus {
 }
 
 .documentPreview {
-    max-width: 1000px !important;
+    max-width: 1500px !important;
 }
 
 #documentVersionsTable_wrapper .dataTables_wrapper {
@@ -766,4 +766,9 @@ button:focus {
 .dataTables_wrapper .dataTables_filter {
     margin: 0; /* Remove default margin */
     text-align: right;
+}
+
+.documentInfo-active {
+    background-color: #a50b0b;
+    color: white;
 }

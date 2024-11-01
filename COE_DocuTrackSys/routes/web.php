@@ -161,17 +161,9 @@ Route::middleware(NoDirectAccess::class)->group(function(){
             Route::prefix('/document')->group(function(){
                 // ROLES: ALL, EXCEPT GUEST
                 Route::middleware(VerifyAccountRole::class.':Admin,Secretary,Clerk,Assistant')->group(function(){
-                    // Get Incoming Documents
-                    Route::get('view/incoming', 'showIncoming')
-                    ->name('showIncoming');
-
-                    // Get Outgoing Documents
-                    Route::get('view/outgoing', 'showOutgoing')
-                    ->name('showOutgoing');
-
-                    // Get Archived Documents, by Document Type
-                    Route::get('view/archived', 'showArchived')
-                    ->name('showArchived');
+                    // Get All Documents
+                    Route::get('view/all/{category}', 'showAll')
+                    ->name('showAll');
 
                     // Get Document View
                     Route::get('view/{id}', 'show')
@@ -180,6 +172,18 @@ Route::middleware(NoDirectAccess::class)->group(function(){
                     // Get Document Versions
                     Route::get('view/{id}/versions', 'showDocumentVersions')
                     ->name('showDocumentVersions');
+
+                    // Show Specific Document Version
+                    Route::get('view/{id}/version', 'showDocumentVersion')
+                    ->name('showDocumentVersion');
+
+                    // Get Document Attachments
+                    Route::get('view/{id}/attachments', 'showAttachments')
+                    ->name('showAttachments');
+
+                    // Show Specific Attachment
+                    Route::get('view/{id}/attachment', 'showAttachment')
+                    ->name('showAttachment');
 
                     // Download Document
                     Route::get('download/{id}', 'download')
@@ -252,12 +256,6 @@ Route::post('/type/update', [TypeController::class, 'update'])
 
 Route::post('/type/delete', [TypeController::class, 'delete'])
 ->name('type.delete');
-
-Route::post('/category/update', [CategoryController::class, 'update'])
-->name('category.update');
-
-Route::post('/category/delete', [CategoryController::class, 'delete'])
-->name('category.delete');
 
 Route::post('/fileExtensions/update', [FileExtensionController::class, 'update'])
 ->name('fileExtension.update');

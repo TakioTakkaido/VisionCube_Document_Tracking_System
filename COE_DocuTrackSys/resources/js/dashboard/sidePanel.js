@@ -1,5 +1,5 @@
 import { showActive, showDeactivated } from "./tables/account";
-import { showArchived, showIncoming, showOutgoing } from "./tables/document";
+import { showDocument } from "./tables/document";
 import { showLogs } from "./tables/log";
 
 // Event listener for the side panel buttons
@@ -78,7 +78,7 @@ $('#incomingBtn').on('click', function(event){
         $('.system-settings').removeClass('active'); 
     }
 
-    showIncoming();
+    showDocument("Incoming");
 });
 
 // Outgoing Document
@@ -95,7 +95,7 @@ $('#outgoingBtn').on('click', function(event){
 
     // AJAX Request to get outgoing documents into
     // the system
-    showOutgoing();
+    showDocument("Outgoing");
 });
 
 // Archived Button 
@@ -111,7 +111,7 @@ $('#archivedBtn').on('click', function(event){
     }
 
     // Show the dropdown
-    showArchived();
+    showDocument("Archived");
 });
 
 // Log Button

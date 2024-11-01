@@ -12,7 +12,6 @@
                 <ul class="list-group p-0" style="font-size: 14px;">
                     <li class="p-2 list-group-item d-flex justify-content-between">Incoming <span class="badge badge-secondary " id="incomingBadge"></span></li>
                     <li class="p-2 list-group-item d-flex justify-content-between">Outgoing <span class="badge badge-secondary" id="outgoingBadge"></span></li>
-                    <li class="p-2 list-group-item d-flex justify-content-between">Archived <span class="badge badge-secondary" id="archivedBadge"></span></li>
                 </ul>
             </div>
             @endif

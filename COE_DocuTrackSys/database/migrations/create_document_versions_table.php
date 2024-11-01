@@ -23,6 +23,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('document_id');
             $table->unsignedBigInteger('version_number');
+            $table->string('description');
             $table->string('modified_by');
 
             $table->string('type');
@@ -37,6 +38,17 @@ return new class extends Migration
             $table->unsignedBigInteger('series_number')->nullable();
             $table->unsignedBigInteger('memo_number')->nullable();
             $table->date('document_date');
+
+            $table->string('previous_type')->default('N/A');
+            $table->string('previous_status')->default('N/A');
+            $table->string('previous_sender')->default('N/A');
+            $table->string('previous_recipient')->default('N/A');
+            $table->string('previous_subject')->default('N/A');
+            $table->string('previous_assignee')->default('N/A');
+            $table->string('previous_category')->default('N/A');
+            $table->date('previous_document_date')->default('N/A');
+            $table->unsignedBigInteger('previous_series_number')->nullable();
+            $table->unsignedBigInteger('previous_memo_number')->nullable();
 
             // Foreign key established with: Document
             $table->foreign('document_id')->references('id')->on('documents')->onDelete('cascade');

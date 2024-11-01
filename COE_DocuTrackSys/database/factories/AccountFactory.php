@@ -18,16 +18,15 @@ class AccountFactory extends Factory {
     public function definition(): array {
         $str = random_int(100,999);
         return [
-            'name' => 'joshua'.$str,
-            'email' => 'joshua'.$str.'@gmail.com',
             'password' => Hash::make('12345678'),
-            'role' => 'Admin'
         ];
     }
 
     public function admin(): Factory {
         return $this->state(function (array $attributes) {
             return [
+                'name' => 'joshua1008',
+                'email' => 'joshua1008@gmail.com',
                 'role' => 'Admin',
                 'canUpload' => true,
                 'canEdit' => true,
@@ -42,6 +41,8 @@ class AccountFactory extends Factory {
     public function secretary(): Factory {
         return $this->state(function (array $attributes) {
             return [
+                'name' => 'joshua8001',
+                'email' => 'joshua8001@gmail.com',
                 'role' => 'Secretary',
             ];
         });
