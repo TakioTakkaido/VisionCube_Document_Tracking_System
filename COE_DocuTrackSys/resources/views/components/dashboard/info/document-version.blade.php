@@ -1,6 +1,6 @@
 {{-- Document Preview    --}}
 <div class="modal fade" id="viewDocumentVersion" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="documentVersion">
+    <div class="modal-dialog modal-lg" role="documentVersion" style="max-width: 600px !important;">
         <div class="modal-content" style="height: 90vh">
             <div class="modal-body flex-row">
                 <div id="pdfPreview">

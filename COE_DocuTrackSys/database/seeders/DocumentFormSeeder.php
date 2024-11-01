@@ -18,42 +18,40 @@ class DocumentFormSeeder extends Seeder
      */
     public function run(): void {
         // Make participants
-        for ($i=0; $i < 10; $i++) { 
-            Participant::factory()->state([
-                'value' => 'Participant'.$i
-            ])->create();
+        $participants = Participant::factory()->definition();
+
+        foreach($participants as $participant){
+            Participant::create($participant);
         }
         
         // Make participant groups
-        for ($i=0; $i < 10; $i++) { 
-            ParticipantGroup::factory()->state([
-                'value' => 'Group'.$i
-            ])->create();
+        $groups = ParticipantGroup::factory()->definition();
+
+        foreach ($groups as $group) {
+            ParticipantGroup::create($group);
         }
 
         // Make types
-        for ($i=0; $i < 10; $i++) { 
-            Type::factory()->state([
-                'value' => 'Type'.$i
-            ])->create();
+        $types = Type::factory()->definition();
+
+        foreach($types as $type){
+            Type::create($type);
         }
 
         // Make status
-        for ($i=0; $i < 10; $i++) { 
-            Status::factory()->state([
-                'value' => 'Status'.$i
-            ])->create();
-        }
+        $statuses = Status::factory()->definition();
 
-        // Make categories
-        for ($i=0; $i < 10; $i++) { 
-            Category::factory()->state([
-                'value' => 'Category'.$i
-            ])->create();
+        foreach ($statuses as $status){
+            Status::create($status);
         }
 
         // Make file extensions
-        FileExtension::factory()->count(5)->create();
+        // Seed file extensions
+        $fileExtensions = FileExtension::factory()->definition(); // Get the predefined array from the factory
+
+        foreach ($fileExtensions as $extension) {
+            FileExtension::create($extension); // Create each extension
+        }
         
     }
 }

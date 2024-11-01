@@ -1,19 +1,29 @@
+import { showNotification } from "../notification";
+import { getDocumentStatistics } from "./homepage/documentStatistics";
+import { documentPreview } from "./tables/document";
+
 // Edit Document Btn
 var senderName = '';
 var recipientName = '';
 
-export function editDocument(id){
+export function updateDocument(id){
+    $('.documentVersion').addClass('disabled');
+    $('.documentAttachment').addClass('disabled');
+
     $.ajax({
         method: 'GET',
         url: window.routes.showDocument.replace(':id', id),
         success: function (response) {
-            $('#documentId').val(response.document.id);
-            $('#ownerId').val(response.document.owner_id);
+            console.log(response.document);
+            $('#documentInfoContainer').hide();
+            $('#updateDocument').show();
+
+            $('#documentId').val(response.document.document_id);
             $('#editUploadDocType').val(response.document.type);
             $('#editUploadSeriesNo').val(response.document.series_number);
             $('#editUploadMemoNo').val(response.document.memo_number);
 
-            if (response.document.type != 'Type0'){
+            if (response.document.type != 'Memoranda'){
                 $('#editMemoInfo').css('display', 'none');
             } else {
                 $('#editMemoInfo').css('display', 'block');
@@ -43,8 +53,6 @@ export function editDocument(id){
                 const recipient = recipientArray[index];
                 for (var index2 = 0; index2 < $('#editUploadTo option').length; index2++) {
                     var element = $('#editUploadTo option')[index2];
-                    console.log($(element).data('name'));
-                    console.log($(element).val())
                     if ($(element).data('parent') === recipient['parent'] &&
                         $(element).data('name') === recipient['value'] && 
                         $(element).data('level') == recipient['level']){
@@ -61,13 +69,14 @@ export function editDocument(id){
             $('#editUploadDate').val(response.document.document_date);
 
             $('#editUploadSubject').val(response.document.subject);
-            $('#fileLink').html(response.document.file);
             $('#editUploadCategory').val(response.document.category);
             $('#editUploadStatus').val(response.document.status);
             $('#editUploadAssignee').val(response.document.assignee);
-            $('#pdfIframe').attr('src', response.fileLink + `#scrollbar=1&toolbar=0`);
 
-            $('#editDocument').modal('show');
+
+            $('#updateDocumentMenuBtn').prop('disabled', false);
+            $('#viewDocumentHistoryBtn').prop('disabled', false);
+            $('#viewDocumentAttachmentsBtn').prop('disabled', false);
         },
         error: function (xhr){  
             console.log(xhr.responseJSON);
@@ -75,7 +84,7 @@ export function editDocument(id){
     });
 }
 
-$('#submitEditDocumentBtn').on('click', function(event) {
+$('#submitEditDocumentBtn').off('click').on('click', function(event) {
     $('#submitEditDocumentBtn').prop('disabled', true);
     $('#clearEditBtn').prop('disabled', true);
     event.preventDefault();
@@ -115,7 +124,7 @@ $('#submitEditDocumentBtn').on('click', function(event) {
 
     var seriesNo;
     var memoNo;
-    if ($('#editUploadDocType').val() == 'Type0') {
+    if ($('#editUploadDocType').val() == 'Memoranda') {
         seriesNo = $('#editUploadSeriesNo').val();
         memoNo  = $('#editUploadMemoNo').val();
     }
@@ -309,24 +318,35 @@ $('#submitEditDocumentBtn').on('click', function(event) {
     formData.append('category', $('#editUploadCategory').val());
 
     var fileInput = $('#editSoftcopy')[0];
-    if (fileInput.files.length > 0) {
-        console.log('hasfile');
-        console.log(fileInput.files[0])
-        formData.append('file', fileInput.files[0]);
+    for(var i = 0; i < fileInput.files.length; i++){
+        formData.append('files[]', fileInput.files[i]);  // Correct file append
     }
 
+    formData.append('description', $('#editDescription').val());
+
+    $('#updateDocumentMenuBtn').prop('disabled', true);
+    $('#viewDocumentHistoryBtn').prop('disabled', true);
+    $('#viewDocumentAttachmentsBtn').prop('disabled', true);
+
+    var documentId = $('#documentId').val();
+    console.log(documentId);
     $.ajax({
         method: 'POST',
-        url: window.routes.editDocument.replace(':id', $('#documentId').val()),
+        url: window.routes.editDocument.replace(':id', documentId),
         data: formData,
         processData: false,
         contentType: false,
         success: function(response) {
-            alert('Document updated successfully');
-            $('#editDocument').modal('hide');
+            showNotification('Document updated successfully!');
+            
+            getDocumentStatistics();
+            documentPreview(documentId);
+             
             $('#dashboardTable').DataTable().ajax.reload();
         },
         error: function(data) {
+            showNotification('Error in updating document.');
+
             if (data.responseJSON.errors.type){
                 $('#editTypeError').html(data.responseJSON.errors.type);
                 $('#editUploadDocType').css('border', '1px solid red');
@@ -383,6 +403,13 @@ $('#submitEditDocumentBtn').on('click', function(event) {
                 $('#editSoftcopy').css('background-color', 'pink');
             }
 
+            if (data.responseJSON.errors.description){
+                $('#editDescriptionError').html(data.responseJSON.errors.description);
+                $('#editDescriptionError').css('display', 'block');
+                $('#editDescription').css('border', '1px solid red');
+                $('#editDescription').css('background-color', 'pink');
+            }
+
             if (data.responseJSON.errors.category){
                 $('#editCategoryError').html(data.responseJSON.errors.category);
                 $('#editCategoryError').css('display', 'block');
@@ -403,7 +430,11 @@ $('#submitEditDocumentBtn').on('click', function(event) {
                 $('#editUploadAssignee').css('border', '1px solid red');
                 $('#editUploadAssignee').css('background-color', 'pink');
             }
-            
+
+            $('#updateDocumentMenuBtn').prop('disabled', false);
+            $('#viewDocumentHistoryBtn').prop('disabled', false);
+            $('#viewDocumentAttachmentsBtn').prop('disabled', false);
+
             $('#submitEditDocumentBtn').prop('disabled', false);
             $('#clearEditBtn').prop('disabled', false);
         }
@@ -584,14 +615,60 @@ $('#editUploadDate').on('input', function(event){
     $('#editDateError').css('display', 'none');
 })
 
-$('#editSoftcopy').on('input', function(event){
+$('#editSoftcopy').off('input').on('input', function(event){
     event.preventDefault();
+    event.stopPropagation();
+    var files = this.files;
+
+    var editUploadFilesList = `<ul class="list-group editUploadFilesList" style="width:100%;">
+                            </ul>`
+    if($('.editUploadFiles').data('value') == 'none'){
+        $('.editUploadFiles').html('');
+        $('.editUploadFiles').append(editUploadFilesList);
+    };
+
+    Array.from(files).forEach((file, index) => {
+        $('.editUploadFilesList').append(`<li class="list-group-item d-flex justify-content-between align-items-center" data-id=${index}>
+            <span class="text-left mr-auto">${file.name}</span >
+            <button class="btn btn-primary deleteEditUploadFileBtn" data-id=${index} data-name=${file.name}>
+                <i class='bx bx-trash' style="font-size: 20px;"></i></button>
+            </li>`);
+    });
+
+    $('.editUploadFiles').data('value', '');
+
+    $('.editUploadFiles').css('overflow-y', 'scroll');
     $('#editFileError').css('display', 'none');
+});
+
+$(document).on('click', '.deleteEditUploadFileBtn', function(event){
+    event.preventDefault();
+    event.stopPropagation();
+    var deleteId = $(this).data('id');
+    var fileName = $(this).data('name');
+    Array.from($('.editUploadFilesList .list-group-item')).forEach((file, index) => {
+        if ($(file).data('id') == deleteId){
+            $(file).remove();
+        }
+    });
+
+    Array.from($('#editSoftcopy').get(0).files).forEach(file => {
+        console.log(file.name);
+        console.log(fileName);
+        if (file.name == fileName){
+            file.remove();
+        }
+    })
 });
 
 $('#editUploadCategory').on('input', function(event){
     event.preventDefault();
     $('#editCategoryError').css('display', 'none');
+});
+
+$('#editDescription').on('input', function(event){
+    event.preventDefault();
+    $('#editDescriptionError').css('display', 'none');
 });
 
 $('#editUploadStatus').on('input', function(event){
@@ -620,7 +697,7 @@ $('#editUploadToText').on('input', function(event){
 $('#editUploadDocType').on('input', function(event){
     event.preventDefault();
 
-    if($(this).val() == 'Type0'){
+    if($(this).val() == 'Memoranda'){
         $('#editMemoInfo').css('display', 'block');
         $('#editUploadSeriesNo').prop('required', true);
         $('#editUploadMemoNo').prop('required', true);
@@ -628,5 +705,51 @@ $('#editUploadDocType').on('input', function(event){
         $('#editMemoInfo').css('display', 'none');
         $('#editUploadSeriesNo').prop('required', false);
         $('#editUploadMemoNo').prop('required', false);
+    }
+});
+
+$('#editOtherSender').on('click', function(event){
+    $('#editUploadFromText').toggle();
+    $('.editFrom').toggle();
+
+    if (!$('#editUploadFromText').is(':visible')) {
+        $('#editUploadFromText').val('');
+        $('#editUploadFromText').css('border', '1px solid #dee2e6');
+        $('#editUploadFromText').css('background-color', 'white');
+    }
+
+    if (!$('.editFrom').is(':visible')) {
+        $('#editUploadFrom').selectpicker('deselectAll');
+        $('#editUploadFrom').selectpicker('refresh');
+        $('.editFrom .btn').css({
+            'background-color': 'white'
+        });
+
+        $('.editFrom .btn .border').css({
+            'border': '1px solid #dee2e6',
+        });
+    }
+});
+
+$('#editOtherRecipient').on('click', function(event){
+    $('#editUploadToText').toggle();
+    $('.editTo').toggle();
+
+    if (!$('#editUploadToText').is(':visible')) {
+        $('#editUploadToText').val('');
+        $('#editUploadToText').css('border', '1px solid #dee2e6');
+        $('#editUploadToText').css('background-color', 'white');
+    }
+
+    if (!$('.editTo').is(':visible')) {
+        $('#editUploadTo').selectpicker('deselectAll');
+        $('#editUploadTo').selectpicker('refresh');
+        $('.uploadTo .btn').css({
+            'background-color': 'white'
+        });
+
+        $('.editTo .border').css({
+            'border': '1px solid #dee2e6'
+        })
     }
 });

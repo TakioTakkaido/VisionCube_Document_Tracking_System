@@ -34,13 +34,6 @@ use Illuminate\Support\Facades\Log;
 class AccountController extends Controller {
     // Show Account
     public function show(Request $request){
-        // 
-
-        // Send log
-        ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Viewed account profile'
-        ]);
     }
 
     // Login Existing User
@@ -71,8 +64,7 @@ class AccountController extends Controller {
         // Authentication failed, redirect back with an error message
         return response()->json([
             'errors' => [
-                'email' => 'Email does not match the given records.',
-                'password' => 'Incorrect password inputted.'
+                'password' => 'Password does not match or exist for the account.'
             ]
         ], 422);
     }
@@ -197,12 +189,6 @@ class AccountController extends Controller {
         // Log
         Log::channel('daily')->info('All accounts obtained: {accounts}', ['accounts' => $accounts]);
 
-        // Create new log
-        ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Viewed all active accounts'
-        ]);
-
         // Return all accounts
         return response()->json([
             'accounts' => $accounts
@@ -215,12 +201,6 @@ class AccountController extends Controller {
 
         // Log
         Log::channel('daily')->info('Deactivated accounts obtained: {accounts}', ['accounts' => $accounts]);
-        
-        // Create new log
-        ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Viewed all deactivated accounts'
-        ]);
 
         return response()->json([
             'success' => 'Successfully obtained deactivated accounts',
@@ -361,6 +341,7 @@ class AccountController extends Controller {
         
         // Return all access
         return $access;
+
 
     }
 }

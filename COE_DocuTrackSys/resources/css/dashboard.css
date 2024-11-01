@@ -79,6 +79,7 @@ body {
 
 .account-info {
     display: block;
+    font-size: 15px;
 }
 
 .account-name {
@@ -212,10 +213,18 @@ body {
 
 /** FOR JS, FORM POPUP**/
 
-.editDocument {
+.editContent {
     padding-bottom: 0.5rem;
+    font-size: 15px;
 }
 
+#editDocument{
+    font-size: 14px !important;
+}
+
+.editContent input,
+.editContent select,
+.editContent textarea,
 .uploadContent input, 
 .uploadContent select, 
 .uploadContent textarea{
@@ -224,8 +233,10 @@ body {
     border-radius: 4px;
     border: 1px solid #ccc;
     cursor: pointer;
+    font-size: 14px;
 }
 
+.editContent textarea,
 .uploadContent textarea {
     resize: none;
 }
@@ -272,6 +283,9 @@ body {
 
 /* EDIT ACCOUNT MODAL */
 
+.modal-lg {
+    max-width: 1000px;
+}
 /* Custom modal header */
 .custom-modal-header {
     background-color: #b22222; /* Change header background */
@@ -282,9 +296,13 @@ body {
 /* Custom modal body */
 .custom-modal-body {
     background-color: #f8f9fc; /* Light background */
-    font-size: 16px; /* Increase font size */
+    font-size: 15px; /* Increase font size */
     color: #5a5c69; /* Text color */
     border-radius: 10px;
+}
+
+.custom-modal-body.input{
+    font-size: 15px; /* Increase font size */
 }
 
 /* Custom modal footer */
@@ -370,8 +388,6 @@ body {
 #fileLink {
     overflow: hidden;
     text-overflow: ellipsis;
-    display: inline-block;
-    max-width: 200px; /* Adjust this based on how much width you want to give */
 }
 
 .show {
@@ -482,9 +498,32 @@ label {
     margin: 0px
 }
 
-#dashboardTable {
+.dashboardTable {
     table-layout: fixed;
     width: 100%;
+}
+
+div.dt-container,
+div.dt-layout-row {
+    margin-bottom: 0px !important;
+}
+.documentVersionsTableContents .d-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dataTables_length, .dataTables_filter {
+    display: inline-block;
+    margin: 0;
+}
+
+.dashboardTable th{
+    text-align: left !important;
+}
+
+.dashboardTable td{
+    text-align: left !important;
 }
 
 #documentVersions {
@@ -495,11 +534,13 @@ button:focus {
     outline: none !important;
 }
 
-.uploadInput:focus{
+.uploadInput:focus,
+.editInput:focus {
     outline: none;
 }
 
-#uploadAssignee select {
+#uploadAssignee select,
+#editUploadAssignee select {
     border: 1px solid red;
 }
 
@@ -705,4 +746,29 @@ button:focus {
 
 .hide {
     display: none !important;
+}
+
+#documentVersionsTable_wrapper.dt-layout-row {
+    margin: 0 !important; /* Reduce padding */
+}
+
+.documentPreview {
+    max-width: 1500px !important;
+}
+
+#documentVersionsTable_wrapper .dataTables_wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px; /* Add padding to the wrapper */
+}
+
+.dataTables_wrapper .dataTables_filter {
+    margin: 0; /* Remove default margin */
+    text-align: right;
+}
+
+.documentInfo-active {
+    background-color: #a50b0b;
+    color: white;
 }

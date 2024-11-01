@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components\Dashboard\Table;
+namespace App\View\Components\Dashboard;
 
 use Closure;
 use Illuminate\View\Component;
 use Illuminate\Contracts\View\View;
 
-class DocumentVersion extends Component
+class ViewDocumentVersionAttachments extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class DocumentVersion extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.dashboard.table.document-version');
+        return view('components.dashboard.view-document-version-attachments');
     }
 }

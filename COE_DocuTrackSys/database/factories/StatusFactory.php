@@ -17,7 +17,14 @@ class StatusFactory extends Factory
      */
     public function definition(): array {
         return [
-            'value' => 'Status'
+            ['value' => 'Accepted'],
+            ['value' => 'To be Revised'],
+            ['value' => 'In Progress'],
+            ['value' => 'On Hold'],
+            ['value' => 'To be Followed Up'],
+            ['value' => 'Deferred'],
+            ['value' => 'Pending'],
+            ['value' => 'Voided'],
         ];
     }
 }

@@ -17,7 +17,19 @@ class ParticipantFactory extends Factory
      */
     public function definition(): array {
         return [
-            'value' => 'Participant'
+            ['value' => 'WMSU President'],
+            ['value' => 'VPAA'],
+            ['value' => 'Dean - College of Engr.'],
+            ['value' => 'Dept. Head - ABE'],
+            ['value' => 'Dept. Head - CE'],
+            ['value' => 'Dept. Head - CPE'],
+            ['value' => 'Dept. Head - ECE'],
+            ['value' => 'Dept. Head - ENE'],
+            ['value' => 'Dept. Head - EE'],
+            ['value' => 'Dept. Head - GE'],
+            ['value' => 'Dept. Head - IE'],
+            ['value' => 'Dept. Head - ME'],
+            ['value' => 'Dept. Head - SE'],
         ];
     }
 }

@@ -18,11 +18,37 @@ class DocumentVersion extends Model
     use HasFactory;
 
     protected $fillable = [
+        // Version Info
         'document_id',
         'version_number',
-        'content',
-        'file',
-        'modified_by'
+        'description',
+        'modified_by',
+
+        // Document Info
+        'type',
+        'status',
+        'sender',
+        'senderArray',
+        'recipient',
+        'recipientArray',
+        'subject',
+        'assignee',
+        'category',
+        'series_number',
+        'memo_number',
+        'document_date',
+
+        // Previous Document Info
+        'previous_type',
+        'previous_status',
+        'previous_sender',
+        'previous_recipient',
+        'previous_subject',
+        'previous_assignee',
+        'previous_category',
+        'previous_series_number',
+        'previous_memo_number',
+        'previous_document_date'
     ];
 
     // Below are the relationships of Document to other models in the system.
@@ -32,11 +58,31 @@ class DocumentVersion extends Model
         return $this->belongsTo(Document::class);
     }
 
+    public function attachments(){
+        return $this->hasMany(Attachment::class);
+    }
+
     protected function createdAt() : CastsAttribute {
         return CastsAttribute::make(
             get: fn ($value) => (string) Carbon::parse($value)
                 ->setTimezone('Asia/Singapore')
                 ->format('M. d, Y h:i:s a')
         );
+    }
+
+    protected function display_date() : string {
+        return $this->document_date
+            ->setTimezone('Asia/Singapore')
+            ->format('M. d, Y');
+    }
+
+    protected function display_previous_date() : string {
+        if ($this->previous_document_date === "N/A"){
+            return "N/A";
+        } else {
+            return $this->previous_document_date
+                ->setTimezone('Asia/Singapore')
+                ->format('M. d, Y');
+        }
     }
 }

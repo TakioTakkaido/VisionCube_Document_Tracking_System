@@ -22,19 +22,27 @@ return new class extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('role')->default(AccountRole::ADMIN->value);
-            $table->timestamps();
+            $table->string('role');
+            $table->boolean('deactivated')->default(false);
+            $table->rememberToken();
+
+            $table->boolean('canUpload')->default(false);
+            $table->boolean('canEdit')->default(false);
+            $table->boolean('canMove')->default(false);
+            $table->boolean('canArchive')->default(false);
+            $table->boolean('canDownload')->default(false);
+            $table->boolean('canPrint')->default(false);
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('accounts');
     }
 };

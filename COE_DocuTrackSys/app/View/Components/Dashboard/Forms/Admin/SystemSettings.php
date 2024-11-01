@@ -2,12 +2,6 @@
 
 namespace App\View\Components\Dashboard\Forms\Admin;
 
-use App\Http\Controllers\AccountController;
-use App\Models\Category;
-use App\Models\FileExtension;
-use App\Models\Participant;
-use App\Models\Status;
-use App\Models\Type;
 use Closure;
 use Illuminate\View\Component;
 use Illuminate\Contracts\View\View;

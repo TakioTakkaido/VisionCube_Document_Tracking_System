@@ -1,11 +1,5 @@
 import { showNotification } from "../notification";
-
-// Open Upload Form
-$('#uploadBtn').on('click', function (event) {
-    event.preventDefault();
-
-    $('#uploadDocument').modal('show');
-});
+import { getDocumentStatistics } from "./homepage/documentStatistics";
 
 // Upload Document
 $('#submitDocumentForm').on('click', function(event) {
@@ -45,13 +39,12 @@ $('#submitDocumentForm').on('click', function(event) {
     
     var seriesNo;
     var memoNo;
-    if ($('#uploadDocType').val() == 'Type0') {
+    if ($('#uploadDocType').val() === 'Memoranda') {
         seriesNo = $('#uploadSeriesNo').val();
         memoNo  = $('#uploadMemoNo').val();
     }
-    formData.append('seriesNo', seriesNo);
-    formData.append('memoNo', memoNo);
-
+    formData.append('series_number', seriesNo);
+    formData.append('memo_number', memoNo);
     formData.append('subject', $('#uploadSubject').val());
 
     formData.append('seriesRequired', seriesRequired);
@@ -244,8 +237,8 @@ $('#submitDocumentForm').on('click', function(event) {
     formData.append('status', $('#uploadStatus').val());
 
     var fileInput = $('#softcopy')[0];
-    if (fileInput.files.length > 0) {
-        formData.append('file', fileInput.files[0]);  // Correct file append
+    for(var i = 0; i < fileInput.files.length; i++){
+        formData.append('files[]', fileInput.files[i]);  // Correct file append
     }
 
     $.ajax({
@@ -255,9 +248,10 @@ $('#submitDocumentForm').on('click', function(event) {
         processData: false,  // Prevent jQuery from converting the data
         contentType: false,  // Prevent jQuery from overriding the content type
         success: function(response) {
-            
-            $('#uploadDocument').modal('hide');
+            getDocumentStatistics();
+
             $('#documentTable').DataTable().ajax.reload();
+
             $('#submitDocumentForm').prop('disabled', false);
             $('#clearUploadBtn').prop('disabled', false);
 
@@ -535,7 +529,39 @@ $('#uploadDate').on('input', function(event){
 
 $('#softcopy').on('input', function(event){
     event.preventDefault();
+    var files = this.files;
+
+    var uploadFilesList = `<ul class="list-group uploadFilesList" style="width:100%;">
+                            </ul>`
+    if($('.uploadFiles').data('value') == 'none'){
+        $('.uploadFiles').html('');
+        $('.uploadFiles').append(uploadFilesList);
+    };
+
+    Array.from(files).forEach((file, index) => {
+        $('.uploadFilesList').append(`<li class="list-group-item d-flex justify-content-between align-items-center" data-id=${index}>
+            <span class="text-left mr-auto">${file.name}</span >
+            <button class="btn btn-primary deleteUploadFileBtn" data-id=${index}>
+                <i class='bx bx-trash' style="font-size: 20px;"></i></button>
+            </li>`);
+    });
+
+    $('.uploadFiles').data('value', '');
+
+    $('.uploadFiles').css('overflow-y', 'scroll');
     $('#fileError').css('display', 'none');
+});
+
+$(document).on('click', '.deleteUploadFileBtn', function(event){
+    event.preventDefault();
+    event.stopPropagation();
+    var deleteId = $(this).data('id');
+    Array.from($('.uploadFilesList .list-group-item')).forEach((file, index) => {
+        console.log($(file).data('id'));
+        if ($(file).data('id') == deleteId){
+            $(file).remove();
+        }
+    });
 });
 
 $('#uploadCategory').on('input', function(event){
@@ -578,7 +604,7 @@ $('#uploadToText').on('input', function(event){
 $('#uploadDocType').on('input', function(event){
     event.preventDefault();
 
-    if($(this).val() == 'Type0'){
+    if($(this).val() == 'Memoranda'){
         $('#memoInfo').css('display', 'flex');
         $('#uploadSeriesNo').prop('required', true);
         $('#uploadMemoNo').prop('required', true);

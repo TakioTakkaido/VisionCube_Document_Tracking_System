@@ -57,18 +57,35 @@
 
         {{-- Documents Dropdown --}}
         <div class="dropdown-container" id="documentsDropdown">
-            <a id="incomingBtn"><i class='bx bx-archive-in'></i>Incoming</a>
-            <a id="outgoingBtn"><i class='bx bx-archive-out'></i>Outgoing</a>
-            <a id="archivedBtn"><i class='bx bx-archive'></i>Archived</a>
+            <a id="incomingBtn" data-id="Incoming"><i class='bx bx-archive-in'></i>Incoming</a>
+            <a id="outgoingBtn" data-id="Outgoing"><i class='bx bx-archive-out'></i>Outgoing</a>
+            {{-- Recycle Bin --}}
+            @if($isAdmin)
+            <a id="recycleBinBtn">
+                <span class="dropdown-arrow"><i class='bx bx-trash'></i>
+                </span> Trash
+            </a>
         </div>
 
+        {{-- Archives --}}
+        <a class="sidepanel-btn" id="archivedBtn">
+            <span class="dropdown-arrow" data-id="Archived"><i class='bx bx-archive'></i>
+            </span> Archives
+        </a>
+
+        {{-- Reports --}}
+        <a class="sidepanel-btn" id="recycleBinBtn">
+            <span class="dropdown-arrow"><i class='bx bxs-report'></i>
+            </span> Reports
+        </a>
+
         {{-- Logs --}}
-        @if($isAdmin)
         <a class="sidepanel-btn" id="logBtn">
             <span class="dropdown-arrow"><i class='bx bx-history'></i>
             </span> Logs
         </a>
         @endif
+
         {{-- System Settings --}}
         <a class="sidepanel-btn" id="systemSettingsBtn">
             <span class="dropdown-arrow"><i class='bx bx-cog'></i>
