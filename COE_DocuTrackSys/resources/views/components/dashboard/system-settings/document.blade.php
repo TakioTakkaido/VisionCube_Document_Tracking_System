@@ -6,19 +6,19 @@
     {{-- participant --}}
     <div class="container border p-3 rounded mb-5">
         <div class="row">
-            <div class="col">
+            <div class="col participantSettings">
                 <h6 class="p-0 font-weight-bold mb-0">Edit Sender and Recipients</h6>
             </div>
-            <div class="col">
+            <div class="col participantSettings">
                 <h6 class="p-0 font-weight-bold mb-0">Edit Sender and Recipients of Selected Group</h6>
             </div>
         </div>
         
         <div class="row">
-            <div class="col">
+            <div class="col participantSettings">
                 <p>Add, remove or delete senders and recipients for the document tracking system.</p>
             </div>
-            <div class="col">
+            <div class="col participantSettings">
                 <p>Manage participants that belong in your selected participant group.</p>
             </div>
         </div>
@@ -64,45 +64,51 @@
         <!-- 4th row -->
         <div class="row">
             <div class="col">
-                {{-- Form for editing --}}
-                    <form id="updateParticipantForm" method="POST" autocomplete="off" style="display:none;">
-                             @csrf
-                            @method('POST')
-                        <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-                        <input type="hidden" name="id" id="participantId" >
-                    </form>
-                                
-                {{-- Dropdown List of Categories --}}
-                {{-- Participant List --}}
-                    <ul class="list-group p-0 mb-4" style="max-height: 250px; overflow-y: scroll;">
-                        @foreach ($participants as $participant)
-                            <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
-                                {{-- Document Participant --}}
-                                <span class="text-left mr-auto">{{$participant->value}}</span>
-                                {{-- Edit and Delete Buttons --}}
-                                <div class="editParticipantBtn mr-2" 
-                                    id={{$participant->id}} data-id={{$participant->id}} value={{$participant->value}}><i class='bx bx-edit-alt' style="font-size: 20px;"></i></div>
-                                <div class="deleteParticipantBtn" 
-                                    id={{$participant->id}} data-id={{$participant->id}} value={{$participant->value}}
-                                    data-toggle="modal" data-target="#confirmDeleteParticipant"><i class='bx bx-trash' style="font-size: 20px;"></i></button>
-                            </li>
-                        @endforeach
-                    </ul>
 
-                {{-- Popup Confirmation of Deletion --}}
-                <div class="modal fade" id="confirmDeleteParticipant" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteParticipant" style="z-index: 1060;" aria-hidden="true">
-                    <div class="modal-dialog" role="participant">
+            <!--
+            {{-- Form for editing --}}
+                <form id="updateParticipantForm" method="POST" autocomplete="off" style="display:none;">
+                        @csrf
+                        @method('POST')
+                    <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="id" id="participantId" >
+                </form>
+            -->         
+
+            {{-- Sender/Recipient List --}}
+                <ul class="list-group p-0 mb-1 systemParticipantList" style="max-height: 250px; overflow-y: scroll;">
+                    @foreach ($participants as $participant)
+                        <li class="list-group-item p-2 d-flex justify-content-between align-items-center systemParticipant" id="{{"participant".$participant->id}}">
+                            {{-- Document Status --}}
+                            <span class="text-left mr-auto p-0">{{$participant->value}}</span>
+                            {{-- Edit and Delete Buttons --}}
+                            <div class="editParticipantBtn mr-2 p-0" 
+                                data-id={{$participant->id}} data-value="{{$participant->value}}"><i class='bx bx-edit-alt' style="font-size: 20px;"></i>
+                            </div>
+                            <div class="deleteParticipantBtn p-0" 
+                                data-id={{$participant->id}} data-value="{{$participant->value}}"
+                                data-toggle="modal" data-target="#confirmDeleteParticipant"><i class='bx bx-trash' style="font-size: 20px;"></i>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+                <!-- </div>
+                </div>
+                -->
+            {{-- Popup Confirmation of Deletion --}}
+                <div class="modal fade" id="confirmDeleteParticipant" tabindex="-1" aria-labelledby="confirmDeleteParticipantLabel" aria-hidden="true" style="z-index: 1060;">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-body" id="confirmDeleteParticipantText">
-                                Confirm deleting participant: .{{$participant->value}}
+                                <!-- Your confirmation text here -->
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" id="confirmDeleteParticipantBtn" data-id="">Yes</button>
-                                <button type="button" class="btn btn-secondary" id="cancelDeleteParticipantBtn">No</button>
+                            <div class="modal-footer"> 
+                                <button type="button" class="btn btn-primary" id="confirmDeleteParticipantBtn" data-id="">Delete</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> 
             </div>
 
 
@@ -179,52 +185,38 @@
         <!-- 7th row -->
         <div class="row">
             <div class="col">
-                <form id="updateParticipantGroupForm" method="POST" autocomplete="off" style="display:none;">
-                    @csrf
-                    @method('POST')
-                    <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="id" id="participantGroupId" >
-                </form>     
-
-                {{-- Dropdown List of Participants --}}
-                {{-- Participant Group List --}}
-                <ul class="list-group p-0 mb-2" style="max-height: 250px; overflow-y: scroll;">
+            {{-- ParticipantGroup List --}}
+                <ul class="list-group p-0 mb-1 systemParticipantGroupList" style="max-height: 250px; overflow-y: scroll;">
                     @foreach ($participantGroups as $participantGroup)
-                    <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
+                        <li class="list-group-item p-2 d-flex justify-content-between align-items-center systemParticipantGroup" id="{{"participantGroup".$participantGroup->id}}">
                         {{-- Document ParticipantGroup --}}
-                        <span class="text-left mr-auto">{{$participantGroup->value}}</span>
+                        <span class="text-left mr-auto p-0">{{$participantGroup->value}}</span>
                         {{-- Edit and Delete Buttons --}}
-                        <div class="editParticipantGroupMemberBtn mr-2"
-                            id={{$participantGroup->id}} data-id={{$participantGroup->id}} value={{$participantGroup->value}}><i class='bx bxs-user-detail' style="font-size: 20px;"></i></div>
-                        <div class="editParticipantGroupBtn mr-2" 
-                            id={{$participantGroup->id}} data-id={{$participantGroup->id}} value={{$participantGroup->value}}><i class='bx bx-edit-alt' style="font-size: 20px;"></i></div>
-                        <div class="deleteParticipantGroupBtn" 
-                            id={{$participantGroup->id}} data-id={{$participantGroup->id}} value={{$participantGroup->value}}
-                            data-toggle="modal" data-target="#confirmDeleteParticipantGroup"><i class='bx bx-trash' style="font-size: 20px;"></i></div>
-                    </li>
+                        <div class="editParticipantGroupBtn mr-2 p-0" 
+                            data-id={{$participantGroup->id}} data-value="{{$participantGroup->value}}"><i class='bx bx-edit-alt' style="font-size: 20px;"></i>
+                        </div>
+                        <div class="deleteParticipantGroupBtn p-0" 
+                            data-id={{$participantGroup->id}} data-value="{{$participantGroup->value}}"
+                            data-toggle="modal" data-target="#confirmDeleteParticipantGroup"><i class='bx bx-trash' style="font-size: 20px;"></i>
+                        </div>
+                        </li>
                     @endforeach
-                    {{-- <input type="text" class="form-control" name="text" id="participantGroupText" placeholder="Add Document Participant">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary"    id="participantGroupSaveBtn">Save Changes</button>        
-                        <button type="button" class="btn btn-secondary"  id="participantGroupCancelBtn">Cancel</button>
-                    </div> --}}
                 </ul>
-
-                    
-                {{-- Popup Confirmation of Deletion --}}
-                <div class="modal fade" id="confirmDeleteParticipantGroup" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteParticipantGroup" style="z-index: 1060;" aria-hidden="true">
-                        <div class="modal-dialog" role="participantGroup">
-                            <div class="modal-content">
+  
+            {{-- Popup Confirmation of Deletion --}}
+                <div class="modal fade" id="confirmDeleteParticipantGroup" tabindex="-1" aria-labelledby="confirmDeleteParticipantGroupLabel" aria-hidden="true" style="z-index: 1060;">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
                             <div class="modal-body" id="confirmDeleteParticipantGroupText">
-                                Confirm deleting participantGroup: .{{$participantGroup->value}}
+                                <!-- Your confirmation text here -->
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" id="confirmDeleteParticipantGroupBtn" data-id="">Yes</button>
-                                <button type="button" class="btn btn-secondary" id="cancelDeleteParticipantGroupBtn">No</button>
+                            <div class="modal-footer"> 
+                                <button type="button" class="btn btn-primary" id="confirmDeleteParticipantGroupBtn" data-id="">Delete</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             </div>
                         </div>
-                    </div>                                        
-                </div>
+                    </div>
+                </div> 
             </div>
 
 
@@ -293,35 +285,36 @@
                                 </li>
                             @endforeach
                         </ul>
-                    </div>
+                <!-- </div>
                 </div>
-
-                {{-- Popup Confirmation of Deletion --}}
-                <div class="modal fade" id="confirmDeleteType" tabindex="-1" aria-labelledby="confirmDeleteTypeLabel" aria-hidden="true" style="z-index: 1060;">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-body" id="confirmDeleteTypeText">
-                                <!-- Your confirmation text here -->
+                -->
+                        {{-- Popup Confirmation of Deletion --}}
+                        <div class="modal fade" id="confirmDeleteType" tabindex="-1" aria-labelledby="confirmDeleteTypeLabel" aria-hidden="true" style="z-index: 1060;">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body" id="confirmDeleteTypeText">
+                                        <!-- Your confirmation text here -->
+                                    </div>
+                                    <div class="modal-footer"> 
+                                        <button type="button" class="btn btn-primary" id="confirmDeleteTypeBtn" data-id="">Delete</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="modal-footer"> 
-                                <button type="button" class="btn btn-primary" id="confirmDeleteTypeBtn" data-id="">Delete</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            </div>
-                        </div>
+                        </div>  
                     </div>
-                </div>
-                
+                </div>               
             </div>
 
 
 
     <!-- EDIT DOCUMENT STATUS -->
-    <div class="col statusSettings">
-        <h6 class="p-0 font-weight-bold mb-0">Edit Document Status</h6>
-        <p>Add, remove or delete statuses for the document tracking system.</p>
-            
+            <div class="col statusSettings">                    
+                <h6 class="p-0 font-weight-bold mb-0">Edit Document Status</h6>
+                <p>Add, remove or delete statuses for the document tracking system.</p>
+                            
                 <div class="row mb-2">
-                    <div class="col statusSettings"> 
+                    <div class="col">
                         <div class="input-group">    
                             <input type="text" class="form-control" name="text" id="addStatusText" placeholder="Add New Document Status">
                             <div class="input-group-append">
@@ -338,52 +331,45 @@
                             </div>
                         </div>
                     </div>
-                </div>    
-
+                </div>  
+                               
                 <div class="row">
                     <div class="col">
-                        {{-- Dropdown List of Categories --}}
-                        <ul class="list-group p-0 mb-1" style="max-height: 250px; overflow-y: scroll;">
-                        @foreach ($categories as $status)
-                            <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
-                            {{-- Document Status --}}
-                            <span class="text-left mr-auto">{{$status->value}}</span>
-                            {{-- Edit and Delete Buttons --}}
-                                <div class="editStatusBtn statusBtn mr-2" 
-                                    id={{$status->id}} data-id={{$status->id}} value={{$status->value}}><i class='bx bx-edit-alt' style="font-size: 20px;"></i></div>
-                                <div class="deleteStatusBtn statusBtn" 
-                                    id={{$status->id}} data-id={{$status->id}} value={{$status->value}}
-                                    data-toggle="modal" data-target="#confirmDeleteStatus"><i class='bx bx-trash' style="font-size: 20px;"></i></div>
-                            </li>
-                        @endforeach
+                    {{-- Status List --}}
+                        <ul class="list-group p-0 mb-1 systemStatusList" style="max-height: 250px; overflow-y: scroll;">
+                            @foreach ($statuses as $status)
+                                <li class="list-group-item p-2 d-flex justify-content-between align-items-center systemStatus" id="{{"status".$status->id}}">
+                                    {{-- Document Status --}}
+                                    <span class="text-left mr-auto p-0">{{$status->value}}</span>
+                                    {{-- Edit and Delete Buttons --}}
+                                    <div class="editStatusBtn mr-2 p-0" 
+                                        data-id={{$status->id}} data-value="{{$status->value}}"><i class='bx bx-edit-alt' style="font-size: 20px;"></i>
+                                    </div>
+                                    <div class="deleteStatusBtn p-0" 
+                                        data-id={{$status->id}} data-value="{{$status->value}}"
+                                        data-toggle="modal" data-target="#confirmDeleteStatus"><i class='bx bx-trash' style="font-size: 20px;"></i>
+                                    </div>
+                                </li>
+                            @endforeach
                         </ul>
-
-                        {{-- Form for editing --}}
-                        <form id="updateStatusForm" style="display:none;" method="POST" autocomplete="off">
-                            @csrf
-                            @method('POST')
-                            <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-                            <input type="hidden" name="id" id="statusId">
-                            <input type="hidden" name="text" id="statusValue">
-                        </form>
-                    
-            
-                        {{-- Popup Confirmation of Deletion --}}
-                        <div class="modal fade" id="confirmDeleteStatus" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteStatus" style="z-index: 1060;" aria-hidden="true">
-                            <div class="modal-dialog" role="status">
+  
+                    {{-- Popup Confirmation of Deletion --}}
+                        <div class="modal fade" id="confirmDeleteStatus" tabindex="-1" aria-labelledby="confirmDeleteStatusLabel" aria-hidden="true" style="z-index: 1060;">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-body" id="confirmDeleteStatusText">
-                                        Confirm deleting status: .{{$status->value}}
+                                        <!-- Your confirmation text here -->
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" id="confirmDeleteStatusBtn" data-id="">Yes</button>
-                                        <button type="button" class="btn btn-secondary" id="cancelDeleteStatusBtn">No</button>
+                                    <div class="modal-footer"> 
+                                        <button type="button" class="btn btn-primary" id="confirmDeleteStatusBtn" data-id="">Delete</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>        
+                        </div>  
+                    </div>                   
+                </div>   
+            </div>           
         </div>
     </div>
 
