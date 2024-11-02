@@ -3,7 +3,6 @@
 
     {{-- ////////////////////////////////////////////////////////////////// --}}
     {{-- Edit Sender and Recipients --}}
-    {{-- participant --}}
     <div class="container border p-3 rounded mb-5">
         <div class="row">
             <div class="col participantSettings">
@@ -25,32 +24,30 @@
 
         <!-- 3rd row -->
         <div class="row"> 
-            <!-- column 1  -->
+            <!-- Add, Search Participant -->
             <div class="col">
                 <div class="row">
                     <div class="col">
                         <div class="input-group mb-2">    
-                            <input type="text" class="form-control" name="text" placeholder="Add New Sender/Recipient">
+                            <input type="text" class="form-control" name="text" id="addParticipantText" placeholder="Add New Sender/Recipient">
                             <div class="input-group-append">
-                                <button class="btn btn-primary" id="addParticipantBtn">Add</button>
+                                <button class="btn btn-primary input-group-text addSettings disabled" id="addParticipantBtn">Add</button>
                             </div>
                         </div>
                     </div>
                 
                     <div class="col">
                         <div class="input-group mb-2">    
-                            <input type="text" class="form-control" name="text" placeholder="Search Sender/Recipient">
+                            <input type="text" class="form-control" name="text" id="searchParticipantText" placeholder="Search Sender/Recipient">
                             <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary" id="searchParticipantBtn"><i class='bx bx-search' style="text-align: center;"></i></button>
+                                <span class="input-group-text search"><i class='bx bx-search' style="text-align: center;"></i></span>
                             </div>
                         </div>
                     </div>               
                 </div>
             </div>
-                   
 
-
-            <!--  column 2  -->
+            <!-- Add, Search Selected Sender/Recipient Group  -->
             <div class="col">
                 <div class="input-group mb-2">    
                     <input type="text" class="form-control" name="text" placeholder="Search Child Sender/Recipient Group in this Group">
@@ -61,22 +58,10 @@
             </div>
         </div>
 
-        <!-- 4th row -->
-        <div class="row">
-            <div class="col">
-
-            <!--
-            {{-- Form for editing --}}
-                <form id="updateParticipantForm" method="POST" autocomplete="off" style="display:none;">
-                        @csrf
-                        @method('POST')
-                    <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="id" id="participantId" >
-                </form>
-            -->         
-
-            {{-- Sender/Recipient List --}}
-                <ul class="list-group p-0 mb-1 systemParticipantList" style="max-height: 250px; overflow-y: scroll;">
+        {{-- Sender/Recipient List --}}
+        <div class="row mb-2">
+            <div class="col">   
+                <ul class="list-group p-0 mb-1 systemParticipantList container border rounded list-group-flush" style="height: 250px; max-height: 250px; overflow-y: scroll;">
                     @foreach ($participants as $participant)
                         <li class="list-group-item p-2 d-flex justify-content-between align-items-center systemParticipant" id="{{"participant".$participant->id}}">
                             {{-- Document Status --}}
@@ -92,10 +77,8 @@
                         </li>
                     @endforeach
                 </ul>
-                <!-- </div>
-                </div>
-                -->
-            {{-- Popup Confirmation of Deletion --}}
+
+                {{-- Popup Confirmation of Deletion --}}
                 <div class="modal fade" id="confirmDeleteParticipant" tabindex="-1" aria-labelledby="confirmDeleteParticipantLabel" aria-hidden="true" style="z-index: 1060;">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
@@ -112,6 +95,7 @@
             </div>
 
 
+            {{-- Participant Members --}}
             <div class="col">
                 {{-- Form for editing --}}
                 <form id="updateParticipantMembersForm" method="POST" autocomplete="off" class="flex-grow-1">
@@ -129,48 +113,38 @@
                 </ul>
             </div>
         </div>
-      
-
         
-        {{-- participantGroup--}}
-        <!-- 5th row -->
         <div class="row">
             <div class="col-6">
                 <p>You can manage the senders and recipient for the document tracking system using groups.</p>
             </div>
         </div>
 
-        <!-- 6th row -->
+        {{-- Edit Participant Group--}}
         <div class="row">
-            <!-- column 1 -->
-            <div class="col">
-                <div class="row">
+            <div class="col participantGroupSettings">
+                {{-- Add, Search Participant Group --}}
+                <div class="row mb-2">
                     <div class="col">
                         <div class="input-group mb-2">    
-                            <input type="text" class="form-control" name="text" placeholder="Add New Sender/Recipient Groups">
+                            <input type="text" class="form-control" name="text" id="addParticipantGroupText" placeholder="Add New Sender/Recipient Groups">
                             <div class="input-group-append">
-                                <button class="btn btn-primary" id="addParticipantGroupBtn">Add</button>
+                                <button class="btn btn-primary addSettings disabled" id="addParticipantGroupBtn">Add</button>
                             </div>
                         </div>
                     </div>
-
-
                     <div class="col">
-                        {{-- ////////////////////////////////////////////////////////////////// --}}
-                        {{-- GROUPS --}}
-                        {{-- Form for editing --}}
                         <div class="input-group mb-2">    
-                            <input type="text" class="form-control" name="text" placeholder="Search Sender/Recipient Groups">
+                            <input type="text" class="form-control" name="text" id="searchParticipantGroupText" placeholder="Search Sender/Recipient Groups">
                             <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary" id="participantGroupSaveBtn"><i class='bx bx-search' style="text-align: center;"></i></button>
+                                <span class="input-group-text search"><i class='bx bx-search' style="text-align: center;"></i></span>
                             </div>
                         </div>
                     </div>               
                 </div>
             </div>
 
-           
-            <!-- column 2 -->   
+            {{-- Add, Search Participant Group Participant --}} 
             <div class="col">
                 <div class="input-group mb-2">    
                     <input type="text" class="form-control" name="text" placeholder="Search Sender/Recipient in this Group">
@@ -181,12 +155,10 @@
             </div>
         </div>
 
-
-        <!-- 7th row -->
         <div class="row">
-            <div class="col">
             {{-- ParticipantGroup List --}}
-                <ul class="list-group p-0 mb-1 systemParticipantGroupList" style="max-height: 250px; overflow-y: scroll;">
+            <div class="col">
+                <ul class="list-group p-0 mb-1 systemParticipantGroupList container border rounded list-group-flush" style="height: 250px; max-height: 250px; overflow-y: scroll;">
                     @foreach ($participantGroups as $participantGroup)
                         <li class="list-group-item p-2 d-flex justify-content-between align-items-center systemParticipantGroup" id="{{"participantGroup".$participantGroup->id}}">
                         {{-- Document ParticipantGroup --}}
@@ -203,7 +175,7 @@
                     @endforeach
                 </ul>
   
-            {{-- Popup Confirmation of Deletion --}}
+                {{-- Popup Confirmation of Deletion --}}
                 <div class="modal fade" id="confirmDeleteParticipantGroup" tabindex="-1" aria-labelledby="confirmDeleteParticipantGroupLabel" aria-hidden="true" style="z-index: 1060;">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
@@ -219,34 +191,27 @@
                 </div> 
             </div>
 
-
+            {{-- Dropdown List of Participants from Selected Group --}}
             <div class="col">
-                {{-- Dropdown List of Participants from Selected Group --}}
                 <ul class="list-group p-0 mb-1" style="max-height: 250px; overflow-y: scroll;">
                     <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
                         No participant in this group.
                     </li>
                 </ul>
-
-                {{--<div class="input-group-append">
-                        <button type="submit" class="btn btn-primary"    id="participantGroupMembersSaveBtn">Save Changes</button>        
-                        <button type="button" class="btn btn-secondary"  id="participantGroupMembersCancelBtn">Cancel</button>
-                    </div>                        --}}
-                </div>
             </div>
         </div>
-    
+    </div>
 
     {{-- ////////////////////////////////////////////////////////////////// --}}
     {{-- Edit Document Types and Categories --}}
-    <!-- EDIT DOCUMENT TYPE -->
     <div class="container border p-3 rounded mb-5">
         <div class="row">
+            {{-- Edit Document Type --}}
             <div class="col typeSettings">
-                {{-- Edit Document Type --}}
                 <h6 class="p-0 font-weight-bold mb-0">Edit Document Type</h6>
                 <p>Add, remove or delete types for the document tracking system.</p>
 
+                {{-- Add, Search Document Type --}}
                 <div class="row mb-2">
                     <div class="col">
                         <div class="input-group">    
@@ -266,10 +231,10 @@
                     </div>
                 </div>
                 
+                {{-- Type List --}}
                 <div class="row">
                     <div class="col">
-                        {{-- Type List --}}
-                        <ul class="list-group p-0 mb-1 systemTypeList" style="max-height: 250px; overflow-y: scroll;">
+                        <ul class="list-group p-0 mb-1 systemTypeList container border rounded list-group-flush" style="height: 250px; max-height: 250px; overflow-y: scroll;">
                             @foreach ($types as $type)
                                 <li class="list-group-item p-2 d-flex justify-content-between align-items-center systemType" id="{{"type".$type->id}}">
                                     {{-- Document Status --}}
@@ -285,9 +250,7 @@
                                 </li>
                             @endforeach
                         </ul>
-                <!-- </div>
-                </div>
-                -->
+
                         {{-- Popup Confirmation of Deletion --}}
                         <div class="modal fade" id="confirmDeleteType" tabindex="-1" aria-labelledby="confirmDeleteTypeLabel" aria-hidden="true" style="z-index: 1060;">
                             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -306,13 +269,12 @@
                 </div>               
             </div>
 
-
-
-    <!-- EDIT DOCUMENT STATUS -->
+            <!-- EDIT DOCUMENT STATUS -->
             <div class="col statusSettings">                    
                 <h6 class="p-0 font-weight-bold mb-0">Edit Document Status</h6>
                 <p>Add, remove or delete statuses for the document tracking system.</p>
-                            
+                
+                {{-- Add, Search Document Status --}}
                 <div class="row mb-2">
                     <div class="col">
                         <div class="input-group">    
@@ -333,10 +295,10 @@
                     </div>
                 </div>  
                                
+                {{-- Status List --}}
                 <div class="row">
                     <div class="col">
-                    {{-- Status List --}}
-                        <ul class="list-group p-0 mb-1 systemStatusList" style="max-height: 250px; overflow-y: scroll;">
+                        <ul class="list-group p-0 mb-1 systemStatusList container border rounded list-group-flush" style="height: 250px; max-height: 250px; overflow-y: scroll;">
                             @foreach ($statuses as $status)
                                 <li class="list-group-item p-2 d-flex justify-content-between align-items-center systemStatus" id="{{"status".$status->id}}">
                                     {{-- Document Status --}}
@@ -353,7 +315,7 @@
                             @endforeach
                         </ul>
   
-                    {{-- Popup Confirmation of Deletion --}}
+                        {{-- Popup Confirmation of Deletion --}}
                         <div class="modal fade" id="confirmDeleteStatus" tabindex="-1" aria-labelledby="confirmDeleteStatusLabel" aria-hidden="true" style="z-index: 1060;">
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
@@ -373,12 +335,6 @@
         </div>
     </div>
 
-
-
-                
-                
-                
-    
     {{-- ////////////////////////////////////////////////////////////////// --}}
     {{-- Edit File Extensions --}}
     <div class="container border p-3 rounded mb-5">    

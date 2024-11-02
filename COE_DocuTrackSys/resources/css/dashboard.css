@@ -46,6 +46,9 @@ body {
     justify-content: space-between;
 }
 
+
+
+
 .header-logo{
     width: 80px;
     height: auto;
@@ -339,7 +342,9 @@ body {
     color: black !important;
 }
 
+.btn-primary.focus,
 .btn-primary:focus {
+    background-color: #810505 !important;
     border-color: transparent !important;
     outline: none !important;
     box-shadow: none !important;
@@ -690,10 +695,16 @@ button:focus {
     font-size: 15px;
 }
 
+.systemParticipant.disabled
+.systemParticipantGroup.disabled,
+.systemStatus.disabled,
 .systemType.disabled {
     pointer-events: auto;
 }
 
+.systemParticipant div:hover,
+.systemParticipantGroup div:hover,
+.systemStatus div:hover,
 .systemType div:hover {
     color:#a50b0b;
     cursor: pointer;
@@ -739,6 +750,9 @@ button:focus {
     cursor: not-allowed !important;
 }
 
+.systemParticipant input,
+.systemParticipantGroup input,
+.systemStatus input,
 .systemType input {
     border: transparent;
     cursor: text;
@@ -771,4 +785,8 @@ button:focus {
 .documentInfo-active {
     background-color: #a50b0b;
     color: white;
+}
+
+.documentPreview {
+    font-size: 15px !important;   
 }
