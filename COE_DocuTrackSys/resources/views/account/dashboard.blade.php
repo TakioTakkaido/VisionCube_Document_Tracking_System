@@ -32,12 +32,10 @@ Sanchez, Shane David U.
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     {{-- Bootstrap --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" 
-    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" 
-    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" 
-    integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" 
+    integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 
     {{-- Bootstrap Select --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
@@ -68,7 +66,16 @@ Sanchez, Shane David U.
         'resources/js/dashboard/editForm.js',
 
         // System Settings
-        'resources/js/dashboard/systemSettings.js',
+        // Account
+        'resources/js/dashboard/systemSettings/account/access.js',
+        'resources/js/dashboard/systemSettings/account/addAccount.js',
+
+        // Document
+        'resources/js/dashboard/systemSettings/document/participant.js',
+        'resources/js/dashboard/systemSettings/document/group.js',
+        'resources/js/dashboard/systemSettings/document/type.js',
+        'resources/js/dashboard/systemSettings/document/status.js',
+        'resources/js/dashboard/systemSettings/document/fileExtension.js',
 
         // Notifications
         'resources/js/notification.js'
@@ -107,9 +114,6 @@ Sanchez, Shane David U.
 
 {{-- DOCUMENT VERSIONS --}}
 <x-dashboard.tables.document-version />
-
-{{-- EDIT DOCUMENT FORM --}}
-<x-dashboard.forms.edit-document />
 
 {{-- DOCUMENT PREVIEW --}}
 <x-dashboard.document-preview />
