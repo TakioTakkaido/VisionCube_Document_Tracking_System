@@ -232,6 +232,8 @@ $('#submitDocumentForm').on('click', function(event) {
     formData.append('document_date', $('#uploadDate').val());
 
     formData.append('assignee', $('#uploadAssignee').val());
+    
+    formData.append('color', $('#uploadStatus').data('color'));
 
     formData.append('category', $('#uploadCategory').val());
     formData.append('status', $('#uploadStatus').val());
@@ -571,6 +573,9 @@ $('#uploadCategory').on('input', function(event){
 
 $('#uploadStatus').on('input', function(event){
     event.preventDefault();
+    console.log($($('#uploadStatus')[0].options[($(this)[0].selectedIndex)]).data('color'));
+    $(this).data('color', $($('#uploadStatus')[0].options[($(this)[0].selectedIndex)]).data('color'));
+    $(this).css('background-color', $($('#uploadStatus')[0].options[($(this)[0].selectedIndex)]).data('color'));
     $('#statusError').css('display', 'none');
 });
 
@@ -660,3 +665,22 @@ $('#otherRecipient').on('click', function(event){
         })
     }
 });
+
+export function (){
+    var formData = new FormData;
+    formData = {
+        '_token' : $("#token").val()
+    }
+    $.ajax({
+        type: "POST",
+        data: formData,
+        url: window.routes.,
+        success: function (response) {
+            showNotification('Success', 'Upload Form updated!');
+            $('#upload').html(response);
+        },
+        error: function (response)  {
+            showNotification('Error', 'Error updating Upload Form.');
+        }
+    });
+}

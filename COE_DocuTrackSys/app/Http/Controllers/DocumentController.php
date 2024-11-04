@@ -101,7 +101,8 @@ class DocumentController extends Controller{
             'category' => $request->input('category'),
             'series_number' => $request->input('series_number'),
             'memo_number' => $request->input('memo_number'),
-            'document_date' => $request->input('document_date')
+            'document_date' => $request->input('document_date'),
+            'color' => $request->input('color')
         ]);
 
         // Create the attachments
@@ -321,6 +322,7 @@ class DocumentController extends Controller{
             'series_number' => $request->input('series_number'),
             'memo_number' => $request->input('memo_number'),
             'document_date' => $request->input('document_date'),
+            'color' => $request->input('color'),
 
             // Previous document information
             'previous_type' => $latestVersion->type == $request->input('type') ? $latestVersion->previous_type : $latestVersion->type,
@@ -417,6 +419,7 @@ class DocumentController extends Controller{
             'series_number' => $latestVersion->series_number,
             'memo_number' => $latestVersion->memo_number,
             'document_date' => $latestVersion->document_date,
+            'color' => $latestVersion->color,
 
             // Previous document information
             'previous_type' => $latestVersion->previous_type,

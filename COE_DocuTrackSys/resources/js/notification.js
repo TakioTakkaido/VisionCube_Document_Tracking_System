@@ -4,7 +4,6 @@ $('.notification').on('click', '.reload', function(event){
 })
 
 export function showNotification(header="Notification", message){
-    $('.notification .close').trigger('click');
     $('#notifHeader').html('');
     $('.toast-body').html('');
     

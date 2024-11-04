@@ -1,9 +1,28 @@
 <div>
-    <h5>Document Settings</h5>
+    <div class="container p-0 mb-2">
+        <div class="row d-flex justify-content-between align-items-center">
+            <div class="col-auto text-left">
+                <h5>Document Settings</h5>
+            </div>
+            <div class="col-auto text-right">
+                <button type="button" class="btn btn-primary maintenanceBtn" data-maintenance="{{ $maintenance ? 'true' : 'false' }}">
+                    @if ($maintenance == true)
+                        Maintenance Mode: On   
+                    @else
+                        Maintenance Mode: Off
+                    @endif
+                    </button>
+            </div>
+        </div>
+    </div>
+    
 
     {{-- ////////////////////////////////////////////////////////////////// --}}
     {{-- Edit Sender and Recipients --}}
-    <div class="container border p-3 rounded mb-5">
+    <div class="container border p-3 rounded mb-5 position-relative">
+        @if ($maintenance != true)
+            <div class="overlay"></div>  
+        @endif
         <div class="row">
             <div class="col participantSettings">
                 <h6 class="p-0 font-weight-bold mb-0">Edit Sender and Recipients</h6>
@@ -204,7 +223,10 @@
 
     {{-- ////////////////////////////////////////////////////////////////// --}}
     {{-- Edit Document Types and Categories --}}
-    <div class="container border p-3 rounded mb-5">
+    <div class="container border p-3 rounded mb-5 position-relative">
+        @if ($maintenance != true)
+            <div class="overlay"></div>  
+        @endif
         <div class="row">
             {{-- Edit Document Type --}}
             <div class="col typeSettings">
@@ -271,15 +293,16 @@
 
             <!-- EDIT DOCUMENT STATUS -->
             <div class="col statusSettings">                    
-                <h6 class="p-0 font-weight-bold mb-0">Edit Document Status</h6>
+                <h6 class="p-0 font-weight-bold mb-0">Edit Status</h6>
                 <p>Add, remove or delete statuses for the document tracking system.</p>
                 
                 {{-- Add, Search Document Status --}}
                 <div class="row mb-2">
                     <div class="col">
                         <div class="input-group">    
-                            <input type="text" class="form-control" name="text" id="addStatusText" placeholder="Add New Document Status">
+                            <input type="text" class="form-control" name="text" id="addStatusText" placeholder="Add New Status">
                             <div class="input-group-append">
+                                <input type="color" class="form-control p-0" id="addStatusColor" title="Choose a color" style="width: 40px; cursor: pointer;" value="#ffffff">
                                 <button class="btn btn-primary input-group-text addSettings disabled" id="addStatusBtn">Add</button>
                             </div>
                         </div>
@@ -303,12 +326,14 @@
                                 <li class="list-group-item p-2 d-flex justify-content-between align-items-center systemStatus" id="{{"status".$status->id}}">
                                     {{-- Document Status --}}
                                     <span class="text-left mr-auto p-0">{{$status->value}}</span>
+                                    {{-- Status Color --}}
+                                    <div class="mr-2 p-0" id="{{"statusColor".$status->id}}" style="height: 20px; width: 20px; border-radius: 50%; background-color: {{$status->color}};"></div>
                                     {{-- Edit and Delete Buttons --}}
                                     <div class="editStatusBtn mr-2 p-0" 
-                                        data-id={{$status->id}} data-value="{{$status->value}}"><i class='bx bx-edit-alt' style="font-size: 20px;"></i>
+                                        data-id={{$status->id}} data-value="{{$status->value}}" data-color="{{$status->color}}" title="Edit status"><i class='bx bx-edit-alt' style="font-size: 20px;"></i>
                                     </div>
                                     <div class="deleteStatusBtn p-0" 
-                                        data-id={{$status->id}} data-value="{{$status->value}}"
+                                        data-id={{$status->id}} data-value="{{$status->value}}" data-color="{{$status->color}}"
                                         data-toggle="modal" data-target="#confirmDeleteStatus"><i class='bx bx-trash' style="font-size: 20px;"></i>
                                     </div>
                                 </li>
@@ -337,7 +362,10 @@
 
     {{-- ////////////////////////////////////////////////////////////////// --}}
     {{-- Edit File Extensions --}}
-    <div class="container border p-3 rounded mb-5">    
+    <div class="container border p-3 rounded mb-5 position-relative">   
+        @if ($maintenance != true)
+            <div class="overlay"></div>  
+        @endif
         <div class="row">
             <div class="col">
                 <h6 class="p-0 font-weight-bold mb-0">Edit File Extensions</h6>

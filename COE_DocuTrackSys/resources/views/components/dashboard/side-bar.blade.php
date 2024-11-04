@@ -7,33 +7,6 @@
         <i class='bx bx-home'></i>
         <span>Home</span>
     </button>
-    
-    {{-- Side Panel Buttons 
-        -It would be different depending if the role is the admin or just a verified account
-        Layout Admin, with number:
-            Accounts - Total
-                Verified
-                Guest
-                Deactivated
-            Documents - Total of Active
-                Incoming
-                Outgoing
-                Archived
-                    Memoranda
-                    Letters
-                    Requisitions
-            Logs
-                
-        
-        Layout Verified User, with number:
-            Incoming
-            Outgoing
-            Archived
-                Letters
-                Memoranda
-                Requisitions
-                
-    --}}
 
     <div class="side-panel-section" id="dropdown-arrow">
         @if($isAdmin)
@@ -94,8 +67,9 @@
 
         {{-- System Settings Dropdown --}}
         <div class="dropdown-container" id="systemSettingsDropdown">
-            <a id="accountSettingsBtn"><i class='bx bx-user'></i>Account</a>
+            <a id="profileSettingsBtn"><i class='bx bxs-user-circle'></i>Profile</a>        
             @if($isAdmin)
+                <a id="accountSettingsBtn"><i class='bx bx-user'></i>Account</a>
                 <a id="documentSettingsBtn"><i class='bx bx-file'></i>Document</a>
             @endif
         </div>

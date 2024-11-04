@@ -1,5 +1,8 @@
 //////////////////////////////////////////////////////////////////
 // EDITING Sender and Recipients Group
+
+import { showNotification } from "../../../notification";
+
 //ParticipantGroup
 $('#addParticipantGroupBtn').on('click', function(event){
     // Prevent other events
@@ -40,6 +43,8 @@ $('#addParticipantGroupBtn').on('click', function(event){
 
             // Optionally, clear the input field after adding
             $('#addParticipantGroupText').val('');
+
+            
         },
         error: function (data) {
             showNotification('Error', 'Error made when editing group.');
@@ -83,6 +88,8 @@ $('.systemParticipantGroupList').on('click', '.saveParticipantGroupBtn' , functi
 
             // Close edit participantGroup
             $('#participantGroup' + saveParticipantGroupBtn.data('id') + ' .closeEditBtn').trigger('click', newParticipantGroupText);
+
+            
         },
         error: function (data) {
             showNotification('Error', 'Error made when editing group.');
@@ -225,6 +232,8 @@ $('#confirmDeleteParticipantGroupBtn').on('click', function(event){
             $('#participantGroup' + participantGroupId).remove();
 
             $('#confirmDeleteParticipantGroup').modal('hide');
+
+            
         },
         error: function (data) {
             // Parse the data from the json response

@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Dashboard\SystemSettings;
 
+use App\Http\Controllers\SettingsController;
 use App\Models\FileExtension;
 use App\Models\Participant;
 use App\Models\ParticipantGroup;
@@ -30,6 +31,7 @@ class Document extends Component
             'participantGroups' => ParticipantGroup::all(),
             'statuses' => Status::all(),
             'fileExtensions' => FileExtension::all(),
+            'maintenance' => SettingsController::getMaintenanceStatus()
         ]);
     }
 }

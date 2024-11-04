@@ -790,3 +790,23 @@ button:focus {
 .documentPreview {
     font-size: 15px !important;   
 }
+
+.sidepanel-btn.disabled{
+    opacity: 0.5;
+}
+
+.sidepanel-btn.disabled,
+.sidepanel-btn.disabled:hover {
+    cursor: not-allowed !important;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.15); /* Adjust opacity as needed */
+    z-index: 10;
+    cursor: not-allowed;
+}

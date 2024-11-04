@@ -6,35 +6,28 @@
 // Contributor/s: 
 // Calulut, Joshua Miguel C.
 
-use App\AccountRole;
-use App\DocumentCategory;
-use App\DocumentStatus;
-use App\DocumentType;
-
+// Controllers
 use App\Http\Controllers\AccountController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FileExtensionController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\ParticipantGroupController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TypeController;
-use App\Http\Middleware\NoCache;
+
+// Middlewares
 use App\Http\Middleware\NoDirectAccess;
+use App\Http\Middleware\UnderMaintenance;
 use App\Http\Middleware\VerifyAccount;
-use App\Http\Middleware\VerifyAccountRole;
-use Illuminate\Database\Console\Migrations\StatusCommand;
-use Illuminate\Http\Client\Request;
-use Illuminate\Http\Request as HttpRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request as FacadesRequest;
+use App\Http\Middleware\VerifyDeactivated;
+
 use Illuminate\Support\Facades\Route;
 
-// All accounts here shall undergo the middleware to check
-// whether the the user is logged in or not
+// DISPLAY ROUTES
 // Middleware: Check Login Token
-Route::middleware([VerifyAccount::class])->group(function() {
+Route::middleware([VerifyAccount::class])->group(function(){
     // Display Routes
     Route::name('show.')->group(function(){
         // Display: Login, Landing Page
@@ -42,11 +35,20 @@ Route::middleware([VerifyAccount::class])->group(function() {
             return view('account.login');
         })->name('login');
 
-        // Display: Create Account
-        Route::get('/create', function(){
-            return view('account.create');
-        })->name('create');
+        // Middleware: Check if Under Maintenance, Check if Account is Deactivated
+        Route::middleware([UnderMaintenance::class, VerifyDeactivated::class])->group(function(){
+            // Display Dashboard
+            Route::get('/dashboard', function(){
+                return view('account.dashboard');
+            })->name('dashboard');
+        });
+    });
+});
 
+// Middleware: No Direct Access
+Route::middleware([NoDirectAccess::class])->group(function() {
+    // Display Routes
+    Route::name('show.')->group(function(){
         // Display: Forgot Password
         Route::get('/password/forgot', function(){
             return view('account.forgotPassword');
@@ -57,29 +59,23 @@ Route::middleware([VerifyAccount::class])->group(function() {
             return view('account.resetPassword');
         })->name('resetPassword');
 
-        // Display: Login Admin
-        Route::get('/admin', function () {
-            return view('account.admin.login');
-        })->name('login-admin');
+        // Under Maintenance
+        Route::get('/maintenance', function(){
+            return view('account.underMaintenance');
+        })->name('underMaintenance');        
 
-        // Display Dashboard
-        Route::get('/dashboard', function(){
-            return view('account.dashboard');
-        })->name('dashboard');
+        // Deactivated Account Page
+        Route::get('/deactivated', function(){
+            return view('account.deactivated');
+        })->name('deactivated'); 
     });
-});
 
-// Middleware: No Direct Access
-// Checks if the user directly access the functions using the link
-// If yes, dont redirect or perform the functions and send an error event
-Route::middleware([NoDirectAccess::class, VerifyAccountRole::class.':Admin'])->group(function(){
-    // Account Routes ('/account')
+    // DASHBOARD ROUTES
+    // Account Routes
     Route::name('account.')->group(function(){
         Route::controller(AccountController::class)->group(function(){
             Route::prefix('/account')->group(function(){
-                // ROLES: ADMIN
-                // Admin Functions
-                // View All Accounts
+                // Show All Active Accounts
                 Route::get('/show/all', 'showAllActiveAccounts')
                 ->name('showAllActiveAccounts');
                 
@@ -98,32 +94,7 @@ Route::middleware([NoDirectAccess::class, VerifyAccountRole::class.':Admin'])->g
                 // Deactivate Account
                 Route::post('/deactivate/{id}', 'deactivate')
                 ->name('deactivate');
-            });
-        });
-    });
-});
 
-Route::middleware([NoDirectAccess::class, VerifyAccountRole::class.':Admin'])->group(function(){
-    // Account Routes ('/account')
-    Route::name('log.')->group(function(){
-        Route::controller(LogController::class)->group(function(){
-            Route::prefix('/log')->group(function(){
-                // ROLES: ADMIN
-                // Admin Functions
-                // View All Logs
-                Route::get('/show/all', 'showAllLogs')
-                ->name('showAll');
-            });
-        });
-    });
-});
-
-Route::middleware(NoDirectAccess::class)->group(function(){
-    // Account Routes ('/account')
-    Route::name('account.')->group(function(){
-        Route::controller(AccountController::class)->group(function(){
-            Route::prefix('/account')->group(function(){
-                // ROLES: NOT REQUIRED
                 // View Account
                 Route::get('/show/{id}', 'show')
                 ->name('show');
@@ -151,123 +122,166 @@ Route::middleware(NoDirectAccess::class)->group(function(){
                 // Log Out
                 Route::post('/logout', 'logout')
                 ->name('logout');
+
+                // Edit Account Accesses
+                Route::post('/update/access', 'editAccess')
+                ->name('editAccess');
             });
         });
     });
 
-    // Document Routes ('/document')
+    // Document Routes
     Route::name('document.')->group(function(){
         Route::controller(DocumentController::class)->group(function(){
             Route::prefix('/document')->group(function(){
-                // ROLES: ALL, EXCEPT GUEST
-                Route::middleware(VerifyAccountRole::class.':Admin,Secretary,Clerk,Assistant')->group(function(){
-                    // Get All Documents
-                    Route::get('view/all/{category}', 'showAll')
-                    ->name('showAll');
+                // Get All Documents
+                Route::get('view/all/{category}', 'showAll')
+                ->name('showAll');
 
-                    // Get Document View
-                    Route::get('view/{id}', 'show')
-                    ->name('show');
+                // Get Document View
+                Route::get('view/{id}', 'show')
+                ->name('show');
 
-                    // Get Document Versions
-                    Route::get('view/{id}/versions', 'showDocumentVersions')
-                    ->name('showDocumentVersions');
+                // Get Document Versions
+                Route::get('view/{id}/versions', 'showDocumentVersions')
+                ->name('showDocumentVersions');
 
-                    // Show Specific Document Version
-                    Route::get('view/{id}/version', 'showDocumentVersion')
-                    ->name('showDocumentVersion');
+                // Show Specific Document Version
+                Route::get('view/{id}/version', 'showDocumentVersion')
+                ->name('showDocumentVersion');
 
-                    // Get Document Attachments
-                    Route::get('view/{id}/attachments', 'showAttachments')
-                    ->name('showAttachments');
+                // Get Document Attachments
+                Route::get('view/{id}/attachments', 'showAttachments')
+                ->name('showAttachments');
 
-                    // Show Specific Attachment
-                    Route::get('view/{id}/attachment', 'showAttachment')
-                    ->name('showAttachment');
+                // Show Specific Attachment
+                Route::get('view/{id}/attachment', 'showAttachment')
+                ->name('showAttachment');
 
-                    // Download Document
-                    Route::get('download/{id}', 'download')
-                    ->name('download');
+                // Download Document
+                Route::get('download/{id}', 'download')
+                ->name('download');
 
-                    // Document Statistics
-                    Route::get('stats', 'getDocumentStatistics')
-                    ->name('getStatistics');
-                });
+                // Document Statistics
+                Route::get('stats', 'getDocumentStatistics')
+                ->name('getStatistics');
 
-                // ROUTE: ALL, EXCEPT ARCHIVIST AND GUEST
-                Route::middleware(VerifyAccountRole::class.':Admin,Secretary,Clerk')->group(function(){
-                    // Edit Document
-                    Route::post('edit/{id}', 'edit')
-                    ->name('edit');
+                // Edit Document
+                Route::post('edit/{id}', 'edit')
+                ->name('edit');
 
-                    // Move Document
-                    Route::post('move', 'move')
-                    ->name('move');
-                });
+                // Move Document
+                Route::post('move', 'move')
+                ->name('move');
 
+                // Upload Document
+                Route::post('upload', 'upload')
+                ->name('upload');
 
-                // ROLE: ADMIN AND SECRETARY ONLY
-                Route::middleware(VerifyAccountRole::class.':Admin,Secretary')->group(function(){
-                    // Upload Document
-                    Route::post('upload', 'upload')
-                    ->name('upload');
-                });
+                // Document Preview
+                Route::get('/preview/{id}', 'preview')
+                ->name('preview');
             });
         }); 
     });
-});
 
-Route::middleware(NoDirectAccess::class)->group(function(){
-    Route::name('display.')->group(function(){
-        Route::get('/display/table', function(){
-            return view('components.dashboard.table');
-        })
-        ->name('table');
+    // Log Routes
+    Route::name('log.')->group(function(){
+        Route::controller(LogController::class)->group(function(){
+            Route::prefix('/log')->group(function(){
+                // View All Logs
+                Route::get('/show/all', 'showAllLogs')
+                ->name('showAll');
+
+                Route::get('/view/{id}', 'show')
+                ->name('show');
+            });
+        });
+    });
+
+    // Settings Routes
+    Route::name('settings.')->group(function(){
+        Route::controller(SettingsController::class)->group(function(){
+            Route::prefix('/setings')->group(function(){
+                // Update Settings
+                Route::post('update', 'updateMaintenanceStatus')
+                ->name('update');
+
+                // Get Maintenance Status
+                Route::get('maintenance', 'getMaintenanceStatus')
+                ->name('getMaintenance');
+            });
+        });
+    });
+
+    // System Settings Routes
+    // Participants
+    Route::name('participant.')->group(function(){
+        Route::controller(ParticipantController::class)->group(function(){
+            Route::prefix('/participant')->group(function(){
+                Route::post('/update', 'update')
+                ->name('update');
+
+                Route::post('/delete', 'delete')
+                ->name('delete');
+            });
+        });
+    });
+
+    // Participant Groups
+    Route::name('participantGroup.')->group(function(){
+        Route::controller(ParticipantGroupController::class)->group(function(){
+            Route::prefix('/participantGroup')->group(function(){
+                Route::post('/update', 'update')
+                ->name('update');
+
+                Route::post('/delete', 'delete')
+                ->name('delete');
+
+                Route::post('updateParticipantGroupMembers', 'updateParticipantGroupMembers')
+                ->name('updateParticipantGroupMembers');
+
+                Route::get('getParticipantGroupMembers/{id}', 'getParticipantGroupMembers')
+                ->name('getParticipantGroupMembers');
+            });
+        });
+    });
+
+    // Type
+    Route::name('type.')->group(function(){
+        Route::controller(TypeController::class)->group(function(){
+            Route::prefix('/type')->group(function(){
+                Route::post('/update', 'update')
+                ->name('update');
+
+                Route::post('/delete', 'delete')
+                ->name('delete');
+            });
+        });
+    });
+
+    // Status
+    Route::name('status.')->group(function(){
+        Route::controller(StatusController::class)->group(function(){
+            Route::prefix('/status')->group(function(){
+                Route::post('/update', 'update')
+                ->name('update');
+
+                Route::post('/delete', 'delete')
+                ->name('delete');
+            });
+        });
+    });
+
+    // File Extension
+    Route::name('fileExtension.')->group(function(){
+        Route::controller(FileExtensionController::class)->group(function(){
+            Route::prefix('/fileExtension')->group(function(){
+                Route::post('/update', 'update')
+                ->name('update');
+            });
+        });
     });
 });
-
-// System Settings Route for AJAX Requests
-Route::post('/participant/update', [ParticipantController::class, 'update'])
-->name('participant.update');
-
-Route::post('/participant/delete', [ParticipantController::class, 'delete'])
-->name('participant.delete');
-
-Route::post('/participantGroup/update', [ParticipantGroupController::class, 'update'])
-->name('participantGroup.update');
-
-Route::post('/participantGroup/delete', [ParticipantGroupController::class, 'delete'])
-->name('participantGroup.delete');
-
-Route::post('/participantGroup/updateParticipantGroupMembers', [ParticipantGroupController::class, 'updateParticipantGroupMembers'])
-->name('participantGroup.updateParticipantGroupMembers');;
-
-Route::get('/participantGroup/getParticipantGroupMembers/{id}', [ParticipantGroupController::class, 'getParticipantGroupMembers'])
-->name('participantGroup.getParticipantGroupMembers');
-
-Route::post('/status/update', [StatusController::class, 'update'])
-->name('status.update');
-
-Route::post('/status/delete', [StatusController::class, 'delete'])
-->name('status.delete');
-
-Route::post('/type/update', [TypeController::class, 'update'])
-->name('type.update');
-
-Route::post('/type/delete', [TypeController::class, 'delete'])
-->name('type.delete');
-
-Route::post('/fileExtensions/update', [FileExtensionController::class, 'update'])
-->name('fileExtension.update');
-
-Route::post('/account/update/access', [AccountController::class, 'editAccess'])
-->name('account.editAccess');
-
-Route::get('/document/preview/{id}', [DocumentController::class, 'preview'])
-->name('document.preview');
-
-// Log Routes
-Route::get('/log/view/{id}', [LogController::class, 'show'])
-->name('log.show');
 
 require __DIR__.'/auth.php';

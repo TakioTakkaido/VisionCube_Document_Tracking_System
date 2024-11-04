@@ -44,7 +44,12 @@ export function showDocument(category){
                 {data: 'subject'},
                 {data: 'document_date'},
                 {data: 'sender'},
-                {data: 'status'},
+                {
+                    data: 'status',
+                    render: function(data, type, row) {
+                        return `<span style="background-color: ${row.color}; padding: 5px; border-radius: 4px;">${data}</span>`;
+                    }
+                },
                 {data: 'assignee'}
             ],
             destroy: true,

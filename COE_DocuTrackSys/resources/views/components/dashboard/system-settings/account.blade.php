@@ -1,7 +1,24 @@
 <div>
+    <div class="container p-0 mb-2">
+        <div class="row d-flex justify-content-between align-items-center">
+            <div class="col-auto text-left">
+                <h5>Account Settings</h5>
+            </div>
+            <div class="col-auto text-right">
+                <button type="button" class="btn btn-primary maintenanceBtn" data-maintenance="{{ $maintenance ? 'true' : 'false' }}">
+                    @if ($maintenance == true)Maintenance Mode: On   
+                    @else Maintenance Mode: Off
+                    @endif
+                </button>
+            </div>
+        </div>
+    </div>
+
     {{-- Account Settings --}}
-    <h5>Account Settings</h5>
-    <div class="container border p-3 rounded mb-5">
+    <div class="container border p-3 rounded mb-5 position-relative">
+        @if ($maintenance != true)
+            <div class="overlay"></div>  
+        @endif
         <div class="row mb-2 justify-content-end align-items-end">
             <div class="col">
                 {{-- Add Account --}}
@@ -53,7 +70,10 @@
         </div>
     </div>
 
-    <div class="container border p-3 rounded w-100">    
+    <div class="container border p-3 rounded w-100 position-relative">  
+        @if ($maintenance != true)
+            <div class="overlay"></div>  
+        @endif
         <div class="row">
             <div class="col">
                 {{-- Change Access of Account Roles --}}
