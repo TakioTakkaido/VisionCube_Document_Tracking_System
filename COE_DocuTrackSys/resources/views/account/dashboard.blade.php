@@ -71,8 +71,10 @@ Sanchez, Shane David U.
         'resources/js/dashboard/systemSettings/account/addAccount.js',
 
         // Document
+        'resources/js/dashboard/systemSettings/document/maintenance.js',
         'resources/js/dashboard/systemSettings/document/participant.js',
         'resources/js/dashboard/systemSettings/document/group.js',
+        'resources/js/dashboard/systemSettings/document/member.js',
         'resources/js/dashboard/systemSettings/document/type.js',
         'resources/js/dashboard/systemSettings/document/status.js',
         'resources/js/dashboard/systemSettings/document/fileExtension.js',
@@ -83,8 +85,9 @@ Sanchez, Shane David U.
 </head>
 <body>
 <script>
-    $(function(){
-        $.ajax({
+    $(document).ready(function(){
+        $('body').css('pointer-events', 'none');
+        var documentStatistics = $.ajax({
         method: 'GET',
         url: window.routes.getDocumentStatistics,
         success: function(response) {
@@ -93,8 +96,15 @@ Sanchez, Shane David U.
             $('#archivedBadge').html(response.archived);
         }});
 
+        $.when(documentStatistics).then(function() {
+            // Re-enable pointer events once loading is complete
+            $('body').css('pointer-events', 'all');
+            
+            // Initialize the DataTable after AJAX completes
+            $('#accountAccessTable').DataTable();
+        });
+
         $('#homePageBtn').trigger('click');
-        $('#accountAccessTable').DataTable();
     });
 </script>
 
@@ -127,6 +137,9 @@ Sanchez, Shane David U.
     window.routes = {
         // Homepage Routes
         getDocumentStatistics: "{{route('document.getStatistics')}}",
+
+        // Maintenance
+        updateMaintenance: "{{route('settings.update')}}",
 
         // Accounts Routes
         create: "{{route('account.create')}}",
@@ -174,7 +187,6 @@ Sanchez, Shane David U.
 
         updateRoleAccess: "{{route('account.editAccess')}}",
 
-        displayTable: "{{route('display.table')}}"
     };
 </script>
 

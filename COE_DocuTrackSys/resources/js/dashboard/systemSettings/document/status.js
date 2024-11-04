@@ -1,5 +1,9 @@
 //////////////////////////////////////////////////////////////////
 // EDITING DOCUMENT STATUS
+
+import { showNotification } from "../../../notification";
+import {  } from "../../uploadForm";
+
 // Edit Document status
 $('#addStatusBtn').on('click', function(event){
     // Prevent other events
@@ -10,7 +14,8 @@ $('#addStatusBtn').on('click', function(event){
     // Create form data for submission
     formData = {
         '_token' : $('#token').val(),
-        'value': $('#addStatusText').val()
+        'value': $('#addStatusText').val(),
+        'color': $('#addStatusColor').val()
     }
 
     // Submit the data form
@@ -27,7 +32,8 @@ $('#addStatusBtn').on('click', function(event){
             var newListItem = `
                 <li class="list-group-item p-2 d-flex justify-content-between align-items-center systemStatus" id="status${newStatusId}">
                     <span class="text-left mr-auto p-0">${$('#addStatusText').val()}</span>
-                    <div class="editStatusBtn mr-2 p-0" data-id=${newStatusId} data-value="${$('#addStatusText').val()}">
+                    <div class="mr-2 p-0" id="${"statusColor" + $('#addStatusColor').val()}" style="height: 20px; width: 20px; border-radius: 50%; background-color: ${$('#addStatusColor').val()};"></div>
+                    <div class="editStatusBtn mr-2 p-0" data-id=${newStatusId} data-color="${$('#addStatusColor').val()}" data-value="${$('#addStatusText').val()}">
                         <i class='bx bx-edit-alt' style="font-size: 20px;"></i>
                     </div>
                     <div class="deleteStatusBtn p-0" data-id=${newStatusId} data-value="${$('#addStatusText').val()}" data-toggle="modal" data-target="#confirmDeleteStatus">
@@ -40,6 +46,8 @@ $('#addStatusBtn').on('click', function(event){
 
             // Optionally, clear the input field after adding
             $('#addStatusText').val('');
+
+            ();
         },
         error: function (data) {
             showNotification('Error', 'Error made when editing status.');
@@ -65,7 +73,8 @@ $('.systemStatusList').on('click', '.saveStatusBtn' , function(event){
     formData = {
         '_token' : $('#token').val(),
         'id': saveStatusBtn.data('id'),
-        'value': $('#editStatusText').val()
+        'value': $('#editStatusText').val(),
+        'color': $('#editStatusColor').val()
     }
 
     // Submit the data form
@@ -79,9 +88,16 @@ $('.systemStatusList').on('click', '.saveStatusBtn' , function(event){
 
             // Update list group
             var newStatusText = $('#editStatusText').val();
+            var newStatusColor = $('#editStatusColor').val();
 
+            console.log(newStatusColor)
             // Close edit status
-            $('#status' + saveStatusBtn.data('id') + ' .closeEditBtn').trigger('click', newStatusText);
+            $('#status' + saveStatusBtn.data('id') + ' .closeEditBtn')
+                .data('newText', newStatusText)
+                .data('newColor', newStatusColor)
+                .trigger('click');
+
+            ();
         },
         error: function (data) {
             showNotification('Error', 'Error made when editing status.');
@@ -103,19 +119,23 @@ $('.systemStatusList').on('click', '.editStatusBtn', function(event){
         // Get status id and text
         var statusId = $(this).data('id'); 
         var statusText = $(this).data('value');
+        var statusColor = $(this).data('color');
 
         // Replace body of the list into a form
         $('#status' + statusId).html(`
             <input type="text" class="mr-auto p-0" name="statusText" id="editStatusText" value="${statusText}">
+            <input type="color" class="mr-2 p-0" id="editStatusColor" style="height: 20px; width: 20px;" value="${statusColor}"></div>
             <div class="saveStatusBtn mr-2 p-0" data-id=${statusId}><i class='bx bx-check' style="font-size: 20px;"></i>
             </div>
-            <div class="closeEditBtn p-0" id=${"status" + statusId} data-id=${statusId} data-value="${statusText}"><i class='bx bx-x' style="font-size: 20px;"></i>
+            <div class="closeEditBtn p-0" id=${"status" + statusId} data-id=${statusId} data-color="${$('#addStatusColor').val()}" data-value="${statusText}"><i class='bx bx-x' style="font-size: 20px;"></i>
             </div>
             <div style="display:none" class="statusInfo" data-id=${statusId} data-value="${statusText}"></div>
         `);
 
         $('#addStatusBtn').addClass('disabled');
         $('#addStatusText').prop('disabled', true);
+        $('#addStatusColor').prop('disabled', true);
+
         $('.systemStatus').each(function () { 
             var systemStatus = $(this);
             var editBtn = systemStatus.find('.editStatusBtn');
@@ -130,17 +150,19 @@ $('.systemStatusList').on('click', '.editStatusBtn', function(event){
     }
 });
 
-$('.systemStatusList').on('click', '.closeEditBtn', function(event, newText = null){
+$('.systemStatusList').on('click', '.closeEditBtn', function(event){
     event.preventDefault();
     var statusId = $(this).attr('id');
     var selectedStatusId = $(this).data('id'); 
-    var selectedStatusText = (newText != null) ? newText : $(this).data('value');
+    var selectedStatusText =  $('#editStatusText').val();
+    var selectedStatusColor = $('#editStatusColor').val();
 
     if($('#addStatusText').val().length !== 0) {
         $('#addStatusBtn').removeClass('disabled');
     }
 
     $('#addStatusText').prop('disabled', false);
+    $('#addStatusColor').prop('disabled', false);
 
     $('.systemStatus').each(function (index) { 
         var systemStatus = $(this);
@@ -154,7 +176,8 @@ $('.systemStatusList').on('click', '.closeEditBtn', function(event, newText = nu
         } else {
             $(this).html(`
                 <span class="text-left mr-auto">${selectedStatusText}</span>
-                <div class="editStatusBtn mr-2" data-id=${selectedStatusId} data-value="${selectedStatusText}"><i class='bx bx-edit-alt' style="font-size: 20px;"></i>
+                <div class="mr-2 p-0" id="${"statusColor" + selectedStatusColor}" style="height: 20px; width: 20px; border-radius: 50%; background-color: ${selectedStatusColor};"></div>
+                <div class="editStatusBtn mr-2" data-id=${selectedStatusId} data-color="${selectedStatusColor}" data-value="${selectedStatusText}"><i class='bx bx-edit-alt' style="font-size: 20px;"></i>
                 </div>
                 <div class="deleteStatusBtn" 
                     data-id=${selectedStatusId} data-value="${selectedStatusText}"
@@ -224,6 +247,8 @@ $('#confirmDeleteStatusBtn').on('click', function(event){
             $('#status' + statusId).remove();
 
             $('#confirmDeleteStatus').modal('hide');
+
+            ();
         },
         error: function (data) {
             // Parse the data from the json response

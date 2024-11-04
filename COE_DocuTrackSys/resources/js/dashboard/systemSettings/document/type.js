@@ -1,5 +1,9 @@
 //////////////////////////////////////////////////////////////////
 // EDITING DOCUMENT TYPE
+
+import { showNotification } from "../../../notification";
+import {  } from "../../uploadForm";
+
 // Edit Document Type
 $('#addTypeBtn').on('click', function(event){
     // Prevent other events
@@ -40,6 +44,8 @@ $('#addTypeBtn').on('click', function(event){
 
             // Optionally, clear the input field after adding
             $('#addTypeText').val('');
+
+            ();
         },
         error: function (data) {
             showNotification('Error', 'Error made when editing type.');
@@ -82,6 +88,8 @@ $('.systemTypeList').on('click', '.saveTypeBtn' , function(event){
 
             // Close edit type
             $('#type' + saveTypeBtn.data('id') + ' .closeEditBtn').trigger('click', newTypeText);
+
+            ();
         },
         error: function (data) {
             showNotification('Error', 'Error made when editing type.');
@@ -224,6 +232,8 @@ $('#confirmDeleteTypeBtn').on('click', function(event){
             $('#type' + typeId).remove();
 
             $('#confirmDeleteType').modal('hide');
+
+            ();
         },
         error: function (data) {
             // Parse the data from the json response

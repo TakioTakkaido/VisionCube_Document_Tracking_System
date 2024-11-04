@@ -4,6 +4,7 @@ namespace App\View\Components\Dashboard\SystemSettings;
 
 use App\AccountRole;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\SettingsController;
 use Closure;
 use Illuminate\View\Component;
 use Illuminate\Contracts\View\View;
@@ -23,7 +24,8 @@ class Account extends Component
             'roles' => AccountRole::cases(),
             'secretary' => AccountController::getSecretaryAccesses(),
             'clerk' => AccountController::getClerkAccesses(),
-            'assistant' => AccountController::getAssistantAccesses()
+            'assistant' => AccountController::getAssistantAccesses(),
+            'maintenance' => SettingsController::getMaintenanceStatus()
         ]);
     }
 }

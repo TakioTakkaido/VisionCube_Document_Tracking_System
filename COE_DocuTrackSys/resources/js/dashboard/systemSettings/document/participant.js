@@ -1,5 +1,9 @@
 //////////////////////////////////////////////////////////////////
 // Sender/recipient
+
+import { showNotification } from "../../../notification";
+import {  } from "../../uploadForm";
+
 // Edit Document Participant
 $('#addParticipantBtn').on('click', function(event){
     // Prevent other events
@@ -40,6 +44,8 @@ $('#addParticipantBtn').on('click', function(event){
 
             // Optionally, clear the input field after adding
             $('#addParticipantText').val('');
+
+            ();
         },
         error: function (data) {
             showNotification('Error made when editing Participant.');
@@ -81,6 +87,8 @@ $('.systemParticipantList').on('click', '.saveParticipantBtn' , function(event){
 
             // Close edit participant
             $('#participant' + saveParticipantBtn.data('id') + ' .closeEditBtn').trigger('click', newParticipantText);
+
+            ();
         },
         error: function (data) {
             showNotification('Error', 'Error editing participant.');
@@ -211,6 +219,8 @@ $('#confirmDeleteParticipantBtn').on('click', function(event) {
             showNotification('Success', 'Participant deleted successfully! <a href="#" class="reload">Reload</a>');
             $('#participant' + participantId).remove();
             $('#confirmDeleteParticipant').modal('hide');
+
+            ();
         },
         error: function(data) {
             showNotification('Error', 'Error deleting participant.');

@@ -1,4 +1,4 @@
-<div class="container border p-3 rounded w-75">
+<div class="container border p-3 rounded">
     <h6 class="p-0 font-weight-bold">Upload Document Form</h6>
     {{-- Upload Document Form --}}
     <form class="uploadContent w-100" id="uploadDocumentForm" method="post">
@@ -50,7 +50,7 @@
                             {{-- Obtained document statuses using Laravel--}}
                             @foreach ($docStatuses as $docStatus)
                                 @if ($docStatus->value !== 'default')
-                                    <option value="{{$docStatus->value}}">{{$docStatus->value}}</option>
+                                    <option value="{{$docStatus->value}}" data-color="{{$docStatus->color}}" style="background-color: {{$docStatus->color}}">{{$docStatus->value}}</option>
                                 @endif
                             @endforeach
                         </select>

@@ -37,6 +37,7 @@ class DocumentVersion extends Model
         'series_number',
         'memo_number',
         'document_date',
+        'color', // Status color
 
         // Previous Document Info
         'previous_type',

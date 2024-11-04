@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Status;
 use App\Http\Controllers\Controller;
+use App\View\Components\Dashboard\Forms\Upload;
 use Illuminate\Http\Request;
 
 class StatusController extends Controller {
@@ -20,6 +21,7 @@ class StatusController extends Controller {
 
             // Change value
             $status->value = $request->value;
+            $status->color = $request->color;
 
             // Save
             $status->save();
@@ -29,13 +31,12 @@ class StatusController extends Controller {
             // Status doesn't exist
             // Create status
             Status::create([
-                'value' => $request->input('value')
+                'value' => $request->input('value'),
+                'color' => $request->input('color')
             ]);
 
             // Log
         }
-
-        
 
         // Return success
         return response()->json([

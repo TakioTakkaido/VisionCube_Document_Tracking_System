@@ -1,6 +1,4 @@
 <div class="systemSettings">
-    {{-- Title --}}
-    <h3 id="systemSettingsTitle">System Settings</h3>
     {{-- Settings, Place all components here --}}
     {{-- Account Settings --}}
     <div class="account-settings">

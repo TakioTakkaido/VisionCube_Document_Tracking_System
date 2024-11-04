@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Dashboard;
 
+use App\Http\Controllers\SettingsController;
 use Closure;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\View\Component;

@@ -38,6 +38,7 @@ return new class extends Migration
             $table->unsignedBigInteger('series_number')->nullable();
             $table->unsignedBigInteger('memo_number')->nullable();
             $table->date('document_date');
+            $table->string('color');
 
             $table->string('previous_type')->default('N/A');
             $table->string('previous_status')->default('N/A');
