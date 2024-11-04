@@ -8,7 +8,9 @@
 
 // Controllers
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\DocumentVersionController;
 use App\Http\Controllers\FileExtensionController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\ParticipantController;
@@ -146,17 +148,9 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 Route::get('view/{id}/versions', 'showDocumentVersions')
                 ->name('showDocumentVersions');
 
-                // Show Specific Document Version
-                Route::get('view/{id}/version', 'showDocumentVersion')
-                ->name('showDocumentVersion');
-
                 // Get Document Attachments
                 Route::get('view/{id}/attachments', 'showAttachments')
                 ->name('showAttachments');
-
-                // Show Specific Attachment
-                Route::get('view/{id}/attachment', 'showAttachment')
-                ->name('showAttachment');
 
                 // Download Document
                 Route::get('download/{id}', 'download')
@@ -183,6 +177,26 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 ->name('preview');
             });
         }); 
+    });
+
+    // Document Version Routes
+    Route::name('version.')->group(function(){
+        Route::controller(DocumentVersionController::class)->group(function(){
+            Route::prefix('/version')->group(function(){
+                Route::get('show/{id}', 'show')
+                ->name('show');
+            });
+        });
+    });
+            
+    // Attachment Routes
+    Route::name('attachment.')->group(function(){
+        Route::controller(AttachmentController::class)->group(function(){
+            Route::prefix('/attachment')->group(function(){
+                Route::get('show/{id}', 'show')
+                ->name('show');
+            });
+        });
     });
 
     // Log Routes

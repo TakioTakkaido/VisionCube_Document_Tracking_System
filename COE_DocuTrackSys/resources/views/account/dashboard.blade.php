@@ -142,7 +142,6 @@ Sanchez, Shane David U.
         updateMaintenance: "{{route('settings.update')}}",
 
         // Accounts Routes
-        create: "{{route('account.create')}}",
         logout: "{{route('account.logout')}}",
         showAccount: "{{route('account.show', ':id')}}",
         showAllActiveAccounts: "{{route('account.showAllActiveAccounts')}}",
@@ -150,43 +149,50 @@ Sanchez, Shane David U.
         showAllDeactivatedAccounts: "{{route('account.showAllDeactivatedAccounts')}}",
         deactivateAccount: "{{route('account.deactivate', ':id')}}",
         reactivateAccount: "{{route('account.reactivate', ':id')}}",
+        updateRoleAccess: "{{route('account.editAccess')}}",
         
         // Document Routes
         showDocuments: "{{route('document.showAll', ':id')}}",
         showDocument: "{{route('document.show', ':id')}}",
         showDocumentVersions: "{{route('document.showDocumentVersions', ':id')}}",
-        showDocumentVersion: "{{route('document.showDocumentVersion', ':id')}}",
         showAttachments: "{{route('document.showAttachments', ':id')}}",
-        showAttachment: "{{route('document.showAttachment', ':id')}}",
         downloadDocument: "{{route('document.download', ':id')}}",
         editDocument: "{{route('document.edit', ':id')}}",
         moveDocument: "{{route('document.move')}}",
         uploadDocument: "{{route('document.upload')}}",
         previewDocument: "{{route('document.preview', ':id')}}",
 
+        // Document Version Routes
+        showDocumentVersion: "{{route('version.show', ':id')}}",
+
+        // Attachment Routes
+        showAttachment: "{{route('attachment.show', ':id')}}",
+
         // Logs
         showAllLogs: "{{route('log.showAll')}}",
         logInfo: "{{route('log.show', ':id')}}",
         
         // System Settings
-        updateStatus: "{{route('status.update')}}",
-        deleteStatus: "{{route('status.delete')}}",
-        updateFileExtensions: "{{route('fileExtension.update')}}",
-
-        updateType: "{{route('type.update')}}",
-        deleteType: "{{route('type.delete')}}",
-
+        // Participant
         updateParticipant: "{{route('participant.update')}}",
         deleteParticipant: "{{route('participant.delete')}}",
 
+        // Participant Group
         updateParticipantGroup: "{{route('participantGroup.update')}}",
         deleteParticipantGroup: "{{route('participantGroup.delete')}}",
-
         getParticipantGroupMembers : "{{route('participantGroup.getParticipantGroupMembers', ':id')}}",
         updateParticipantGroupMembers: "{{route('participantGroup.updateParticipantGroupMembers')}}",
 
-        updateRoleAccess: "{{route('account.editAccess')}}",
+        // Status
+        updateStatus: "{{route('status.update')}}",
+        deleteStatus: "{{route('status.delete')}}",
 
+        // Type
+        updateType: "{{route('type.update')}}",
+        deleteType: "{{route('type.delete')}}",
+
+        // File Extensions
+        updateFileExtensions: "{{route('fileExtension.update')}}",
     };
 </script>
 
