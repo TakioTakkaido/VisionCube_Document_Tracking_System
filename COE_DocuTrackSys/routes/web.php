@@ -18,7 +18,8 @@ use App\Http\Controllers\ParticipantGroupController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TypeController;
-
+use App\Http\Middleware\NoBack;
+use App\Http\Middleware\NoCache;
 // Middlewares
 use App\Http\Middleware\NoDirectAccess;
 use App\Http\Middleware\UnderMaintenance;
@@ -29,7 +30,7 @@ use Illuminate\Support\Facades\Route;
 
 // DISPLAY ROUTES
 // Middleware: Check Login Token
-Route::middleware([VerifyAccount::class])->group(function(){
+Route::middleware([NoCache::class, VerifyAccount::class])->group(function(){
     // Display Routes
     Route::name('show.')->group(function(){
         // Display: Login, Landing Page
@@ -38,7 +39,7 @@ Route::middleware([VerifyAccount::class])->group(function(){
         })->name('login');
 
         // Middleware: Check if Under Maintenance, Check if Account is Deactivated
-        Route::middleware([UnderMaintenance::class, VerifyDeactivated::class])->group(function(){
+        Route::middleware([VerifyDeactivated::class, UnderMaintenance::class])->group(function(){
             // Display Dashboard
             Route::get('/dashboard', function(){
                 return view('account.dashboard');
@@ -47,8 +48,7 @@ Route::middleware([VerifyAccount::class])->group(function(){
     });
 });
 
-// Middleware: No Direct Access
-Route::middleware([NoDirectAccess::class])->group(function() {
+Route::middleware([NoCache::class, NoDirectAccess::class])->group(function() {
     // Display Routes
     Route::name('show.')->group(function(){
         // Display: Forgot Password
@@ -62,16 +62,23 @@ Route::middleware([NoDirectAccess::class])->group(function() {
         })->name('resetPassword');
 
         // Under Maintenance
-        Route::get('/maintenance', function(){
-            return view('account.underMaintenance');
-        })->name('underMaintenance');        
+        Route::middleware([UnderMaintenance::class])->group(function(){
+            Route::get('/maintenance', function(){
+                return view('account.underMaintenance');
+            })->name('underMaintenance');        
+        });
 
-        // Deactivated Account Page
-        Route::get('/deactivated', function(){
-            return view('account.deactivated');
-        })->name('deactivated'); 
+        Route::middleware([VerifyDeactivated::class])->group(function(){
+            // Deactivated Account Page
+            Route::get('/deactivated', function(){
+                return view('account.deactivated');
+            })->name('deactivated');   
+        }); 
     });
+});
 
+// Middleware: No Direct Access
+Route::middleware([NoDirectAccess::class])->group(function() {
     // DASHBOARD ROUTES
     // Account Routes
     Route::name('account.')->group(function(){

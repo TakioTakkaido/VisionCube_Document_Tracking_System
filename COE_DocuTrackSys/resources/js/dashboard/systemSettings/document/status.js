@@ -13,7 +13,7 @@ $('#addStatusBtn').on('click', function(event){
     var formData = new FormData();
     // Create form data for submission
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'value': $('#addStatusText').val(),
         'color': $('#addStatusColor').val()
     }
@@ -46,8 +46,6 @@ $('#addStatusBtn').on('click', function(event){
 
             // Optionally, clear the input field after adding
             $('#addStatusText').val('');
-
-            ();
         },
         error: function (data) {
             showNotification('Error', 'Error made when editing status.');
@@ -71,7 +69,7 @@ $('.systemStatusList').on('click', '.saveStatusBtn' , function(event){
     var saveStatusBtn = $(this);
     // Create form data for submission
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'id': saveStatusBtn.data('id'),
         'value': $('#editStatusText').val(),
         'color': $('#editStatusColor').val()
@@ -96,8 +94,6 @@ $('.systemStatusList').on('click', '.saveStatusBtn' , function(event){
                 .data('newText', newStatusText)
                 .data('newColor', newStatusColor)
                 .trigger('click');
-
-            ();
         },
         error: function (data) {
             showNotification('Error', 'Error made when editing status.');
@@ -232,7 +228,7 @@ $('#confirmDeleteStatusBtn').on('click', function(event){
     var formData = new FormData;
     var statusId = $(this).data('id');
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'id' : statusId
     }
     
@@ -247,8 +243,6 @@ $('#confirmDeleteStatusBtn').on('click', function(event){
             $('#status' + statusId).remove();
 
             $('#confirmDeleteStatus').modal('hide');
-
-            ();
         },
         error: function (data) {
             // Parse the data from the json response

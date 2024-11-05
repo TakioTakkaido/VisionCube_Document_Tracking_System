@@ -13,7 +13,7 @@ $('#addTypeBtn').on('click', function(event){
     var formData = new FormData();
     // Create form data for submission
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'value': $('#addTypeText').val()
     }
 
@@ -44,8 +44,6 @@ $('#addTypeBtn').on('click', function(event){
 
             // Optionally, clear the input field after adding
             $('#addTypeText').val('');
-
-            ();
         },
         error: function (data) {
             showNotification('Error', 'Error made when editing type.');
@@ -69,7 +67,7 @@ $('.systemTypeList').on('click', '.saveTypeBtn' , function(event){
     var saveTypeBtn = $(this);
     // Create form data for submission
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'id': saveTypeBtn.data('id'),
         'value': $('#editTypeText').val()
     }
@@ -88,8 +86,6 @@ $('.systemTypeList').on('click', '.saveTypeBtn' , function(event){
 
             // Close edit type
             $('#type' + saveTypeBtn.data('id') + ' .closeEditBtn').trigger('click', newTypeText);
-
-            ();
         },
         error: function (data) {
             showNotification('Error', 'Error made when editing type.');
@@ -217,7 +213,7 @@ $('#confirmDeleteTypeBtn').on('click', function(event){
     var formData = new FormData;
     var typeId = $(this).data('id');
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'id' : typeId
     }
     
@@ -232,8 +228,6 @@ $('#confirmDeleteTypeBtn').on('click', function(event){
             $('#type' + typeId).remove();
 
             $('#confirmDeleteType').modal('hide');
-
-            ();
         },
         error: function (data) {
             // Parse the data from the json response

@@ -8,7 +8,7 @@ $(document).on('submit', '#createAccountForm', function(event){
         'email' : $('#email').val(),
         'password' : $('#password').val(),
         'password_confirmation' : $('#password_confirmation').val(),
-        '_token' : $('#token').val()
+        '_token' : $('meta[name="csrf-token"]').attr('content')
     }
 
     $.ajax({    

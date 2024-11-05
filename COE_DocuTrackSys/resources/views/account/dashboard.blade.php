@@ -134,6 +134,8 @@ Sanchez, Shane David U.
 
 
 <script>
+
+
     window.routes = {
         // Homepage Routes
         getDocumentStatistics: "{{route('document.getStatistics')}}",

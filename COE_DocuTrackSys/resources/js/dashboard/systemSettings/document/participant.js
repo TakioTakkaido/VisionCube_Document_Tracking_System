@@ -13,7 +13,7 @@ $('#addParticipantBtn').on('click', function(event){
     var formData = new FormData();
     // Create form data for submission
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'value': $('#addParticipantText').val()
     }
 
@@ -44,8 +44,6 @@ $('#addParticipantBtn').on('click', function(event){
 
             // Optionally, clear the input field after adding
             $('#addParticipantText').val('');
-
-            ();
         },
         error: function (data) {
             showNotification('Error made when editing Participant.');
@@ -69,7 +67,7 @@ $('.systemParticipantList').on('click', '.saveParticipantBtn' , function(event){
     var saveParticipantBtn = $(this);
 
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'id': saveParticipantBtn.data('id'),
         'value': $('#editParticipantText').val()
     };
@@ -87,8 +85,6 @@ $('.systemParticipantList').on('click', '.saveParticipantBtn' , function(event){
 
             // Close edit participant
             $('#participant' + saveParticipantBtn.data('id') + ' .closeEditBtn').trigger('click', newParticipantText);
-
-            ();
         },
         error: function (data) {
             showNotification('Error', 'Error editing participant.');
@@ -207,7 +203,7 @@ $('#confirmDeleteParticipantBtn').on('click', function(event) {
     var formData = new FormData();
     var participantId = $(this).data('id');
     formData = {
-        '_token': $('#token').val(),
+        '_token': $('meta[name="csrf-token"]').attr('content'),
         'id': participantId
     };
 
@@ -219,8 +215,6 @@ $('#confirmDeleteParticipantBtn').on('click', function(event) {
             showNotification('Success', 'Participant deleted successfully! <a href="#" class="reload">Reload</a>');
             $('#participant' + participantId).remove();
             $('#confirmDeleteParticipant').modal('hide');
-
-            ();
         },
         error: function(data) {
             showNotification('Error', 'Error deleting participant.');

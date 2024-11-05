@@ -50,6 +50,7 @@ Sanchez, Shane David U.
 
 {{-- Routes for AJAX --}}
 <script>
+
   window.routes = {
     login : "{{route('account.login')}}",
     dashboard : "{{route('show.dashboard')}}"

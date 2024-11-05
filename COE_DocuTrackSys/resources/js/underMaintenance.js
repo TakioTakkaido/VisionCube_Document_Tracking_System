@@ -1,17 +1,19 @@
-// LOGOUT
-$('#logoutBtn').on('click', function(event){
+$('#underMaintenanceBackBtn').on('click', function(event){
     event.preventDefault();
     var formData = new FormData();
     formData = {
         '_token' : $('meta[name="csrf-token"]').attr('content'),
     }
 
+    $('#underMaintenanceBackBtn').prop('disabled', true);
+    $('#underMaintenanceBackBtn').html(`<i class='bx bx-arrow-back' style="font-size: 17px;"></i>Returning to Homepage...`);
+
     $.ajax({    
         method: "POST",
         url: window.routes.logout,
         data: formData,
         success: function (data) {
-            console.log('Logged out');
+            $('#underMaintenanceBackBtn').prop('disabled', false);
             window.location.href = data.redirect;
         },
         error: function (data) {

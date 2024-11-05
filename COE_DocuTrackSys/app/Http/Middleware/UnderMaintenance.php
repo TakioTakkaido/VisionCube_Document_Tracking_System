@@ -25,6 +25,10 @@ class UnderMaintenance
         // If logged in and not admin -> maintenance page
 
         // Go only to the login page
+        if (!Auth::check() && $request->route()->getName() !== 'show.login') {
+            return redirect()->route('show.login');
+        }
+
         if (SettingsController::getMaintenanceStatus() && $request->route()->getName() !== 'show.underMaintenance'){
             // Check if login page -> stay in login page
             if (Auth::user()->role !== 'Admin'){

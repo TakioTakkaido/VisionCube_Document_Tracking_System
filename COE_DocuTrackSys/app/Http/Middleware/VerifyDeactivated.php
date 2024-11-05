@@ -15,7 +15,12 @@ class VerifyDeactivated
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
+    
     public function handle(Request $request, Closure $next): Response {
+        if (!Auth::check() && $request->route()->getName() !== 'show.login') {
+            return redirect()->route('show.login');
+        }
+        
         if (Auth::user()->deactivated == true && $request->route()->getName() !== 'show.deactivated'){
             Log::channel('daily')->info('Account deactivated');
             return redirect()->route('show.deactivated');
