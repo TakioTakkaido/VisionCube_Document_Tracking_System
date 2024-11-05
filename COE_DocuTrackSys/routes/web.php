@@ -231,6 +231,10 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 // Get Maintenance Status
                 Route::get('maintenance', 'getMaintenanceStatus')
                 ->name('getMaintenance');
+
+                // Get Maintenance Status for Frontend Update
+                Route::get('maintenance/frontend', 'getMaintenanceStatusFrontend')
+                ->name('getMaintenanceStatus');
             });
         });
     });

@@ -223,7 +223,7 @@ class DocumentController extends Controller{
             'previous_recipient' => $latestVersion->previous_recipient,
             'previous_subject' => $latestVersion->previous_subject,
             'previous_assignee' => $latestVersion->previous_assignee,
-            'previous_category' => $request->category == $request->input('category') ? $latestVersion->previous_category : $latestVersion->category,
+            'previous_category' => $latestVersion->category == $request->input('category') ? $latestVersion->previous_category : $latestVersion->category,
             'previous_series_number' => $latestVersion->previous_series_number,
             'previous_memo_number' => $latestVersion->previous_memo_number
         ]);

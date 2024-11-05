@@ -27,8 +27,7 @@
                 <form id="addNewAccount" method="post" autocomplete="off">
                     @csrf
                     @method('POST')
-                    <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-            
+                    
                     <div class="row mb-2">
                         <div class="col">
                             <input type="name" name="name" id="name" placeholder="Username">

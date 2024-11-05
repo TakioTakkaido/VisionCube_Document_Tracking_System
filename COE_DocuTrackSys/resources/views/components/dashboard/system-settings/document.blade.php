@@ -27,7 +27,7 @@
             <div class="col participantSettings">
                 <h6 class="p-0 font-weight-bold mb-0">Edit Sender and Recipients</h6>
             </div>
-            <div class="col participantSettings">
+            <div class="col participantSettings" id="editParticipantGroupMemberTitle">
                 <h6 class="p-0 font-weight-bold mb-0">Edit Sender and Recipients of Selected Group</h6>
             </div>
         </div>
@@ -69,11 +69,11 @@
             <!-- Add, Search Selected Sender/Recipient Group  -->
             <div class="col">
                 <div class="input-group mb-2">    
-                    <input type="text" class="form-control" name="text" placeholder="Search Child Sender/Recipient Group in this Group">
+                    <input type="text" class="form-control" name="text" id="searchParticipantGroupParticipantGroupText" placeholder="Search Sender/Recipient Groups" disabled>
                     <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary" id="participantSaveBtn"><i class='bx bx-search' style="text-align: center;"></i></button>
+                        <span class="input-group-text search"><i class='bx bx-search' style="text-align: center;"></i></span>
                     </div>
-                </div>          
+                </div>
             </div>
         </div>
 
@@ -116,16 +116,8 @@
 
             {{-- Participant Members --}}
             <div class="col">
-                {{-- Form for editing --}}
-                <form id="updateParticipantMembersForm" method="POST" autocomplete="off" class="flex-grow-1">
-                    @csrf
-                    @method('POST')
-                    <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="id" id="selectedParticipantId" >
-                </form>
-        
                 {{-- Dropdown List of Group from Selected Group --}}
-                <ul class="list-group p-0 mb-1" style="max-height: 250px; overflow-y: scroll;">
+                <ul class="list-group p-0 mb-1 systemParticipantGroupParticipantGroupList container border rounded list-group-flush" style="height: 250px; max-height: 250px; overflow-y: scroll;">
                     <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
                         No child group in this group.
                     </li>
@@ -163,12 +155,12 @@
                 </div>
             </div>
 
-            {{-- Add, Search Participant Group Participant --}} 
+            {{-- Add, Search Selected Participant Group Participant --}} 
             <div class="col">
                 <div class="input-group mb-2">    
-                    <input type="text" class="form-control" name="text" placeholder="Search Sender/Recipient in this Group">
+                    <input type="text" class="form-control" name="text" id="searchParticipantGroupParticipantText" placeholder="Search Sender/Recipient Groups" disabled>
                     <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary" id="participantGroupSaveBtn"><i class='bx bx-search' style="text-align: center;"></i></button>
+                        <span class="input-group-text search"><i class='bx bx-search' style="text-align: center;"></i></span>
                     </div>
                 </div>
             </div>
@@ -182,7 +174,12 @@
                         <li class="list-group-item p-2 d-flex justify-content-between align-items-center systemParticipantGroup" id="{{"participantGroup".$participantGroup->id}}">
                         {{-- Document ParticipantGroup --}}
                         <span class="text-left mr-auto p-0">{{$participantGroup->value}}</span>
+
                         {{-- Edit and Delete Buttons --}}
+                        <div class="editParticipantGroupMemberBtn mr-2 p-0" 
+                            data-id={{$participantGroup->id}} data-value="{{$participantGroup->value}}"><i class='bx bxs-user-detail' style="font-size: 20px;"></i>
+                        </div>
+
                         <div class="editParticipantGroupBtn mr-2 p-0" 
                             data-id={{$participantGroup->id}} data-value="{{$participantGroup->value}}"><i class='bx bx-edit-alt' style="font-size: 20px;"></i>
                         </div>
@@ -212,9 +209,9 @@
 
             {{-- Dropdown List of Participants from Selected Group --}}
             <div class="col">
-                <ul class="list-group p-0 mb-1" style="max-height: 250px; overflow-y: scroll;">
+                <ul class="list-group p-0 mb-1 systemParticipantGroupParticipantList container border rounded list-group-flush" style="height: 250px; max-height: 250px; overflow-y: scroll;">
                     <li class="list-group-item p-2 d-flex justify-content-between align-items-center">
-                        No participant in this group.
+                        No participants in this group.
                     </li>
                 </ul>
             </div>

@@ -791,14 +791,20 @@ button:focus {
     font-size: 15px !important;   
 }
 
-.sidepanel-btn.disabled{
-    opacity: 0.5;
-}
-
+.home-btn.disabled,
+.home-btn.disabled:hover,
 .sidepanel-btn.disabled,
 .sidepanel-btn.disabled:hover {
-    cursor: not-allowed !important;
+    cursor: not-allowed;
 }
+
+.home-btn.disabled,
+.sidepanel-btn.disabled{
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+
 
 .overlay {
     position: absolute;

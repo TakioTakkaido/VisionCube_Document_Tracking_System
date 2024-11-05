@@ -12,6 +12,13 @@ class SettingsController extends Controller {
         return filter_var($settings->maintenance, FILTER_VALIDATE_BOOLEAN);
     }
 
+    public function getMaintenanceStatusFrontend(){
+        $settings = Settings::all()->first();
+        return response()->json([
+            'maintenance' => filter_var($settings->maintenance, FILTER_VALIDATE_BOOLEAN)
+        ]);
+    }
+
     public function updateMaintenanceStatus(Request $request){
         $settings = Settings::all()->first();
         $settings->maintenance = $request->input('maintenance');

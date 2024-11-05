@@ -4,19 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Type;
 use App\Http\Controllers\Controller;
+use App\Models\Document;
+use App\Models\DocumentVersion;
 use Illuminate\Http\Request;
 
 class TypeController extends Controller {
     // Edit type
     public function update(Request $request){
-        $id = 0;
-        // Validate the request
-
         // Get type by id
         // Check whether the status already exists or not
         if ($request->id != null){
             // Status exists, find the status
             $type = Type::find($request->id);
+
+            // Get value
+            $typeText = $type->value;
 
             // Change value
             $type->value = $request->value;
@@ -24,22 +26,67 @@ class TypeController extends Controller {
             // Save
             $type->save();
 
-            // Log
+            // Get all latest document versions
+            $documents = Document::all();
+
+            $latestVersions = [];
+            foreach($documents as $document){
+                array_push($latestVersions, $document->version());
+            }
+            
+            // If it contains that type, update it
+            foreach($latestVersions as $version){
+                if($version->type == $typeText) {
+                    // Create a new document version
+                    $documentVersion = DocumentVersion::create([
+                        'document_id'       =>      $version->document_id,
+                        'version_number'    =>      ($version->version_number) + 1,
+                        'description'       =>      'Updated document type',
+                        'modified_by'       =>      'System Settings',
+
+                        'type'              =>      $request->value,
+                        'status'            =>      $version->status,
+                        'sender'            =>      $version->sender,
+                        'senderArray'       =>      $version->senderArray,
+                        'recipient'         =>      $version->recipient,
+                        'recipientArray'    =>      $version->recipientArray,
+                        'subject'           =>      $version->subject,
+                        'assignee'          =>      $version->assignee,
+                        'category'          =>      $version->category,
+                        'series_number'     =>      $version->series_number,
+                        'memo_number'       =>      $version->memo_number,
+                        'document_date'     =>      $version->document_date,
+                        'color'             =>      $version->color,
+
+                        // Previous document information
+                        'previous_type'             =>      $version->type,
+                        'previous_status'           =>      $version->previous_status,
+                        'previous_sender'           =>      $version->previous_sender,
+                        'previous_recipient'        =>      $version->previous_recipient,
+                        'previous_subject'          =>      $version->previous_subject,
+                        'previous_assignee'         =>      $version->previous_assignee,
+                        'previous_category'         =>      $version->previous_category,
+                        'previous_series_number'    =>      $version->previous_series_number,
+                        'previous_memo_number'      =>      $version->previous_memo_number
+                    ]);
+
+                    $document = Document::find($version->document_id);
+
+                    $document->versions()->save($documentVersion);
+                }
+            }
         } else {
             // Type doesn't exist
             // Create type
             $type = Type::create([
                 'value' => $request->input('value')
             ]);
-            $id = $type->id;
         }
-
-        
 
         // Return success
         return response()->json([
             'success' => 'Type edited successfully.',
-            'id' => $id
+            'id' => $type->id
         ]);
     }
 
@@ -53,7 +100,7 @@ class TypeController extends Controller {
 
         // Return success
         return response()->json([
-            'success' => 'Type delete successfully.'
+            'success' => 'Type deleted successfully.'
         ]);
     }
 }

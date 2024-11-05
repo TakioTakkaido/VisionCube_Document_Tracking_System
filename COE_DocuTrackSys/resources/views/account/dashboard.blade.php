@@ -96,6 +96,18 @@ Sanchez, Shane David U.
             $('#archivedBadge').html(response.archived);
         }});
 
+        var getMaintenanceStatus = $.ajax({
+        method: 'GET',
+        url: window.routes.getMaintenanceStatus,
+        success: function(response) {
+            if (response.maintenance == true){
+                $('#accountSettingsBtn').trigger('click');
+            } else {
+                
+                $('#homePageBtn').trigger('click');
+            }
+        }});
+
         $.when(documentStatistics).then(function() {
             // Re-enable pointer events once loading is complete
             $('body').css('pointer-events', 'all');
@@ -103,8 +115,6 @@ Sanchez, Shane David U.
             // Initialize the DataTable after AJAX completes
             $('#accountAccessTable').DataTable();
         });
-
-        $('#homePageBtn').trigger('click');
     });
 </script>
 
@@ -142,6 +152,7 @@ Sanchez, Shane David U.
 
         // Maintenance
         updateMaintenance: "{{route('settings.update')}}",
+        getMaintenanceStatus: "{{route('settings.getMaintenanceStatus')}}",
 
         // Accounts Routes
         logout: "{{route('account.logout')}}",
