@@ -118,7 +118,7 @@ $('#submitEditDocumentBtn').off('click').on('click', function(event) {
     }
 
     // Manually append fields from the form to the FormData object
-    formData.append('_token', $('#token').val());
+    formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
     formData.append('document_id', $('#documentId').val());
     formData.append('type', $('#editUploadDocType').val());
 

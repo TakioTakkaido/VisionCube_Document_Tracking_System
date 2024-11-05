@@ -8,7 +8,9 @@
 
 // Controllers
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\DocumentVersionController;
 use App\Http\Controllers\FileExtensionController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\ParticipantController;
@@ -16,7 +18,8 @@ use App\Http\Controllers\ParticipantGroupController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TypeController;
-
+use App\Http\Middleware\NoBack;
+use App\Http\Middleware\NoCache;
 // Middlewares
 use App\Http\Middleware\NoDirectAccess;
 use App\Http\Middleware\UnderMaintenance;
@@ -27,7 +30,7 @@ use Illuminate\Support\Facades\Route;
 
 // DISPLAY ROUTES
 // Middleware: Check Login Token
-Route::middleware([VerifyAccount::class])->group(function(){
+Route::middleware([NoCache::class, VerifyAccount::class])->group(function(){
     // Display Routes
     Route::name('show.')->group(function(){
         // Display: Login, Landing Page
@@ -36,7 +39,7 @@ Route::middleware([VerifyAccount::class])->group(function(){
         })->name('login');
 
         // Middleware: Check if Under Maintenance, Check if Account is Deactivated
-        Route::middleware([UnderMaintenance::class, VerifyDeactivated::class])->group(function(){
+        Route::middleware([VerifyDeactivated::class, UnderMaintenance::class])->group(function(){
             // Display Dashboard
             Route::get('/dashboard', function(){
                 return view('account.dashboard');
@@ -45,8 +48,7 @@ Route::middleware([VerifyAccount::class])->group(function(){
     });
 });
 
-// Middleware: No Direct Access
-Route::middleware([NoDirectAccess::class])->group(function() {
+Route::middleware([NoCache::class, NoDirectAccess::class])->group(function() {
     // Display Routes
     Route::name('show.')->group(function(){
         // Display: Forgot Password
@@ -60,16 +62,23 @@ Route::middleware([NoDirectAccess::class])->group(function() {
         })->name('resetPassword');
 
         // Under Maintenance
-        Route::get('/maintenance', function(){
-            return view('account.underMaintenance');
-        })->name('underMaintenance');        
+        Route::middleware([UnderMaintenance::class])->group(function(){
+            Route::get('/maintenance', function(){
+                return view('account.underMaintenance');
+            })->name('underMaintenance');        
+        });
 
-        // Deactivated Account Page
-        Route::get('/deactivated', function(){
-            return view('account.deactivated');
-        })->name('deactivated'); 
+        Route::middleware([VerifyDeactivated::class])->group(function(){
+            // Deactivated Account Page
+            Route::get('/deactivated', function(){
+                return view('account.deactivated');
+            })->name('deactivated');   
+        }); 
     });
+});
 
+// Middleware: No Direct Access
+Route::middleware([NoDirectAccess::class])->group(function() {
     // DASHBOARD ROUTES
     // Account Routes
     Route::name('account.')->group(function(){
@@ -146,17 +155,9 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 Route::get('view/{id}/versions', 'showDocumentVersions')
                 ->name('showDocumentVersions');
 
-                // Show Specific Document Version
-                Route::get('view/{id}/version', 'showDocumentVersion')
-                ->name('showDocumentVersion');
-
                 // Get Document Attachments
                 Route::get('view/{id}/attachments', 'showAttachments')
                 ->name('showAttachments');
-
-                // Show Specific Attachment
-                Route::get('view/{id}/attachment', 'showAttachment')
-                ->name('showAttachment');
 
                 // Download Document
                 Route::get('download/{id}', 'download')
@@ -183,6 +184,26 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 ->name('preview');
             });
         }); 
+    });
+
+    // Document Version Routes
+    Route::name('version.')->group(function(){
+        Route::controller(DocumentVersionController::class)->group(function(){
+            Route::prefix('/version')->group(function(){
+                Route::get('show/{id}', 'show')
+                ->name('show');
+            });
+        });
+    });
+            
+    // Attachment Routes
+    Route::name('attachment.')->group(function(){
+        Route::controller(AttachmentController::class)->group(function(){
+            Route::prefix('/attachment')->group(function(){
+                Route::get('show/{id}', 'show')
+                ->name('show');
+            });
+        });
     });
 
     // Log Routes

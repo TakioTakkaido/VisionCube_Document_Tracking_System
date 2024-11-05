@@ -391,7 +391,7 @@ export function showDocument(category){
 function moveDocument(id, location, row){
     var formData = new FormData();
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'id' : id,
         'category' : location
     }

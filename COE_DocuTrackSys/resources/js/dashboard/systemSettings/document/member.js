@@ -74,7 +74,7 @@ $('#updateParticipantGroupMembersForm').on('submit', function(event){
     
     var formData = new FormData();
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'id' : $('#selectedParticipantGroupId').val(),
         'participantGroupsIDs': participantGroupsIDs,
         'participantIDs' : participantIDs

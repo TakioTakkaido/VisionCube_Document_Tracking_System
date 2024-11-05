@@ -273,7 +273,7 @@ export function showDeactivated() {
 function deactivateAccount(accountId, row) {
     var formData = new FormData();
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
     }
 
     $.ajax({
@@ -291,7 +291,7 @@ function deactivateAccount(accountId, row) {
 function reactivateAccount(accountId, row) {
     var formData = new FormData();
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
     }
 
     $.ajax({
@@ -310,7 +310,7 @@ function reactivateAccount(accountId, row) {
 function changeRole(accountId, newRole, row) {
     var formData = new FormData();
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
     }
 
     $.ajax({

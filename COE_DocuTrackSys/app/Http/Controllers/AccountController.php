@@ -152,15 +152,20 @@ class AccountController extends Controller {
     }
 
     // Logout
-    public function logout(){
-        // Create new log
-        ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Logged out to the system'
-        ]);
-
-        // Logout
-        Auth::logout();
+    public function logout(Request $request){
+        if (Auth::check()){
+            // Create new log
+            ModelsLog::create([
+                'account' => Auth::user()->name . " • " . Auth::user()->role,
+                'description' => 'Logged out to the system'
+            ]);
+    
+            // Logout
+            Auth::logout();
+            
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
 
         return response()->json(['redirect' => route('show.login')]);
     }

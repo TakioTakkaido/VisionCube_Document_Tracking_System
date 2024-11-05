@@ -50,6 +50,14 @@ Sanchez, Shane David U.
 
 {{-- Routes for AJAX --}}
 <script>
+  window.onload = function() {
+      history.pushState(null, '', location.href);
+  };
+
+  window.addEventListener('popstate', function(event) {
+      history.pushState(null, '', location.href);
+  });
+
   window.routes = {
     forgotPassword : "{{route('account.forgotPassword')}}"
   }

@@ -11,7 +11,7 @@ $('#addAccountBtn').on('click', function(event){
         'password' : $('#password').val(),
         'password_confirmation' : $('#password_confirmation').val(),
         'role' : $('#role').val(),
-        '_token' : $('#token').val()
+        '_token' : $('meta[name="csrf-token"]').attr('content')
     }
 
     $.ajax({    

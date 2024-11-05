@@ -12,7 +12,7 @@ $('#addParticipantGroupBtn').on('click', function(event){
     var formData = new FormData();
     // Create form data for submission
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'value': $('#addParticipantGroupText').val()
     }
 
@@ -69,7 +69,7 @@ $('.systemParticipantGroupList').on('click', '.saveParticipantGroupBtn' , functi
 
     // Create form data for submission
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'id': saveParticipantGroupBtn.data('id'),
         'value': $('#editParticipantGroupText').val()
     }
@@ -217,7 +217,7 @@ $('#confirmDeleteParticipantGroupBtn').on('click', function(event){
     var formData = new FormData;
     var participantGroupId = $(this).data('id');
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'id' : participantGroupId
     }
     

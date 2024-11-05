@@ -10,7 +10,7 @@ $('.maintenanceBtn').on('click', function(event){
 
 function updateMaintenance(maintenance){
     var formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'maintenance': maintenance
     }
     $.ajax({

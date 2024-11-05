@@ -122,7 +122,7 @@ function viewLogInformation(logId) {
 
     // Ajax request
     formData = {
-        '_token' : $('#token').val()
+        '_token' : $('meta[name="csrf-token"]').attr('content')
     }
 
     $.ajax({

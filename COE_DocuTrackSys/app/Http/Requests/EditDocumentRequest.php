@@ -5,29 +5,31 @@ namespace App\Http\Requests;
 use App\Models\FileExtension;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UploadDocumentRequest extends FormRequest {
+class EditDocumentRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array {
-        $series = $this->input('seriesRequired') === true ? 'required|integer|max:9999|min:0' : 'nullable';
-        $memo = $this->input('memoRequired') === true ? 'required|integer|max:9999|min:0' : 'nullable';
+        $series = $this->input('seriesRequired') === 'true' ? 'required|number|max:9999|min:0' : 'nullable|integer';
+        $memo = $this->input('memoRequired') === 'true' ? 'required|number|max:9999|min:0' : 'nullable|integer';
+        $file = $this->file('file') ? 'required|file|mimes:,'.FileExtension::getFileExtensions() : 'nullable';
 
         return [
             'type' => 'required|string',
             'sender' => 'required|string|max:255',
             'series_number' => $series,
             'memo_number' => $memo,
+            'files.*' => $file,
+            'files' => 'nullable',
             'recipient' => 'required|string|max:255',
             'subject' => 'required|string',
-            'files.*' => 'required|file|mimes:'.FileExtension::getFileExtensions(),
-            'files' => 'required|array',
             'category' => 'required|string',
             'status' => 'required|string',
             'assignee' => 'required|string',
-            'document_date' => 'required'
+            'document_date' => 'required',
+            'description' => 'required'
         ];
     }
 
@@ -61,7 +63,9 @@ class UploadDocumentRequest extends FormRequest {
 
             'assignee.required' => 'Assignee is required!',
 
-            'document_date.required' => 'Date is required!'
+            'document_date.required' => 'Date is required!',
+
+            'description.required' => 'Description of edit is required!'
         ];
     }
 }

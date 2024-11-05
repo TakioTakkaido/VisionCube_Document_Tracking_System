@@ -21,10 +21,10 @@ class FileExtension extends Model {
         for ($i=0; $i < sizeof($fileExtensions); $i++) { 
             if($fileExtensions[$i]->checked == true) {
                 $fileExtensionsStr .= $fileExtensions[$i]->value;
-            }
 
-            if($i + 1 != sizeof($fileExtensions)){
-                $fileExtensionsStr .= ',';
+                if($i + 1 != sizeof($fileExtensions)){
+                    $fileExtensionsStr .= ',';
+                }
             }
         }
         return $fileExtensionsStr;

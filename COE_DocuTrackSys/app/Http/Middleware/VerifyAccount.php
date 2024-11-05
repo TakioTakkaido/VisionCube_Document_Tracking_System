@@ -16,7 +16,6 @@ class VerifyAccount {
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response {
-        
         // Logged in, not in the dashboard
         if (Auth::check() && $request->route()->getName() !== 'show.dashboard') {
             Log::channel('daily')->info('Your account is logged in to access this functionality.'); 

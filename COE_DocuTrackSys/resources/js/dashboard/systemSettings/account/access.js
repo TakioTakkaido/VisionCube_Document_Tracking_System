@@ -75,7 +75,7 @@ function updateAccountAccess(secretaryAccesses = [], assistantAccesses = [], cle
     var formData = new FormData();
     
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'secretaryAccesses' : secretaryAccesses,
         'assistantAccesses' : assistantAccesses,
         'clerkAccesses' : clerkAccesses,

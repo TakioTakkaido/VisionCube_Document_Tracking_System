@@ -44,7 +44,10 @@ Password
         </label>
 
         {{-- Redirect the user to forget password when password is forgotten --}}
-        <a href="{{route('show.forgotPassword')}}">Forgot Password?</a>
+        <a href="{{ $maintenance ? '#' :  route('show.forgotPassword')}}" class="{{ $maintenance ? 'disabled' : '' }}" title="{{ $maintenance ? 'System maintenance in progress. Try resetting your password later.' : '' }}">
+          Forgot Password?
+        </a>
+
       </div>
 
       {{-- Submit Button --}}

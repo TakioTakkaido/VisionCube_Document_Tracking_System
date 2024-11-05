@@ -8,7 +8,7 @@ $(document).on('submit', '#loginForm', function(event){
     formData = {
         'email' : $('#email').val(),
         'password' : $('#password').val(),
-        '_token' : $('#token').val()
+        '_token' : $('meta[name="csrf-token"]').attr('content')
     };
 
     $('#loginBtn').prop('disabled', true);

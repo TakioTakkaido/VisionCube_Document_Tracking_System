@@ -5,7 +5,7 @@ $(document).on('submit', '#forgotPasswordForm', function(event){
     var formData = new FormData();
     formData = {
         'email' : $('#email').val(),
-        '_token' : $('#token').val()
+        '_token' : $('meta[name="csrf-token"]').attr('content')
     }
 
     $.ajax({    

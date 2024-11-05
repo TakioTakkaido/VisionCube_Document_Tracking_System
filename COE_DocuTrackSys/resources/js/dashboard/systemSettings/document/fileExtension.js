@@ -36,7 +36,7 @@ function updateFileExtensions(extensions = []){
     var formData = new FormData;
 
     formData = {
-        '_token' : $('#token').val(),
+        '_token' : $('meta[name="csrf-token"]').attr('content'),
         'extensions' : extensions   
     }
 

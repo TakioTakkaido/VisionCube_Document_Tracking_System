@@ -34,7 +34,7 @@ $('#submitDocumentForm').on('click', function(event) {
         }
     }
 
-    formData.append('_token', $('#token').val());
+    formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
     formData.append('type', $('#uploadDocType').val());
     
     var seriesNo;
@@ -665,22 +665,3 @@ $('#otherRecipient').on('click', function(event){
         })
     }
 });
-
-export function (){
-    var formData = new FormData;
-    formData = {
-        '_token' : $("#token").val()
-    }
-    $.ajax({
-        type: "POST",
-        data: formData,
-        url: window.routes.,
-        success: function (response) {
-            showNotification('Success', 'Upload Form updated!');
-            $('#upload').html(response);
-        },
-        error: function (response)  {
-            showNotification('Error', 'Error updating Upload Form.');
-        }
-    });
-}
