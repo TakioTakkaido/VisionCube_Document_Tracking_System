@@ -12,6 +12,11 @@
             <x-dashboard.table/>
         </div>
 
+        {{-- Profile Settings --}}
+        <div class="profile-settings">
+            <x-dashboard.system-settings.profile />
+        </div>
+
         {{-- Account Settings --}}
         <div class="account-settings">
             <x-dashboard.system-settings.account />

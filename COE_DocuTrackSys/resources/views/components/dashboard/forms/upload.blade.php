@@ -5,7 +5,6 @@
         @csrf
         @method('POST')
         {{-- CSRF Token --}}
-        <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
         
         <div class="row mb-2">
             <div class="col-4">

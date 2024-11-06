@@ -47,10 +47,10 @@
         </a>
 
         {{-- Reports --}}
-        <a class="{{$maintenance == true ? 'sidepanel-btn disabled' : 'sidepanel-btn'}}" id="recycleBinBtn">
+        {{-- <a class="{{$maintenance == true ? 'sidepanel-btn disabled' : 'sidepanel-btn'}}" id="recycleBinBtn">
             <span class="dropdown-arrow"><i class='bx bxs-report'></i>
             </span> Reports
-        </a>
+        </a> --}}
 
         {{-- Logs --}}
         <a class="{{$maintenance == true ? 'sidepanel-btn disabled' : 'sidepanel-btn'}}" id="logBtn">

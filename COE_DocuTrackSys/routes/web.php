@@ -18,14 +18,15 @@ use App\Http\Controllers\ParticipantGroupController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TypeController;
-use App\Http\Middleware\NoBack;
-use App\Http\Middleware\NoCache;
+
 // Middlewares
+use App\Http\Middleware\NoCache;
 use App\Http\Middleware\NoDirectAccess;
 use App\Http\Middleware\UnderMaintenance;
 use App\Http\Middleware\VerifyAccount;
 use App\Http\Middleware\VerifyDeactivated;
-
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // DISPLAY ROUTES
@@ -76,6 +77,23 @@ Route::middleware([NoCache::class, NoDirectAccess::class])->group(function() {
         }); 
     });
 });
+
+Route::get('/verify-email/{id}/{hash}', function ($id, $hash) {
+    // $user = User::findOrFail($id);
+
+    // // Manually check if the hash matches (basic validation)
+    // if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+    //     return response()->json(['error' => 'Invalid or expired verification link.'], 422);
+    // }
+
+    // // Mark email as verified if not already verified
+    // if (!$user->hasVerifiedEmail()) {
+    //     $user->email_verified_at = now();
+    //     $user->save();
+    // }
+
+    return response()->json(['message' => 'Email verified successfully!']);
+})->name('verify.email');
 
 // Middleware: No Direct Access
 Route::middleware([NoDirectAccess::class])->group(function() {
@@ -135,6 +153,17 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 // Edit Account Accesses
                 Route::post('/update/access', 'editAccess')
                 ->name('editAccess');
+
+                // Edit Profile Name
+                Route::post('/edit/name', 'editName')
+                ->name('editName');
+
+                // Edit Profile Email
+                Route::post('/edit/email', 'editEmail')
+                ->name('editEmail');
+
+                Route::get('/sendVerificationLink', 'verifyEmail')
+                ->name('verifyEmail');
             });
         });
     });
@@ -175,6 +204,10 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 Route::post('move', 'move')
                 ->name('move');
 
+                // Move All Documents
+                Route::post('moveAll', 'moveAll')
+                ->name('moveAll');
+
                 // Upload Document
                 Route::post('upload', 'upload')
                 ->name('upload');
@@ -182,6 +215,22 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 // Document Preview
                 Route::get('/preview/{id}', 'preview')
                 ->name('preview');
+
+                // Restore Document
+                Route::post('/restore/{id}', 'restore')
+                ->name('restore');
+
+                // Restore All Documents
+                Route::post('/restoreAll', 'restoreAll')
+                ->name('restoreAll');
+
+                // Delete Document
+                Route::post('/delete/{id}', 'delete')
+                ->name('delete');
+
+                // Delete All Documents
+                Route::post('/deleteAll', 'deleteAll')
+                ->name('deleteAll');
             });
         }); 
     });

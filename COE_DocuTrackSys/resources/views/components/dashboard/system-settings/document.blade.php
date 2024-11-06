@@ -373,15 +373,13 @@
                     @method('POST')
                     <div class="row mb-2">
                         <div class="col">
-                            <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-                            {{-- <p>{{$fileExtensions}}</p> --}}
                             <table>
                                 @for ($i = 0; $i < sizeof($fileExtensions); $i++)
                                     @if (($i % 3 == 0))
                                         <tr class="p-2">
                                     @endif
                                         <td class="pr-5">
-                                            <input type="checkbox" class="editExtension" name="extensions[]" id="{{$fileExtensions[$i]->id}}" {{$fileExtensions[$i]->checked == 'true' ? 'checked' : ''}}>
+                                            <input type="checkbox" class="editExtension" name="extensions[]" id="{{$fileExtensions[$i]->id}}" {{$fileExtensions[$i]->checked === true || $fileExtensions[$i]->checked === 1 ? 'checked' : ''}}>
                                             <label for="{{$fileExtensions[$i]->id}}" class="form-check-label">
                                                 {{$fileExtensions[$i]->value}}
                                             </label>

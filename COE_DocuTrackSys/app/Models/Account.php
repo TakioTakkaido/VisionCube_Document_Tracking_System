@@ -12,13 +12,14 @@ namespace App\Models;
 // Calulut, Joshua Miguel C.
 
 use App\AccountRole;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Account extends Authenticatable
-{
+class Account extends Authenticatable implements MustVerifyEmail {
     use HasFactory, Notifiable;
 
     /**
@@ -33,6 +34,7 @@ class Account extends Authenticatable
         'password',
         'role',
         'deactivated',
+        
 
         // Access Functions
         'canUpload',
@@ -68,6 +70,15 @@ class Account extends Authenticatable
 
     protected function isAdmin() : bool{
         return $this->role == 'Admin';
+    }
+
+
+    public function sendEmailVerificationNotification() {
+        $this->notify(new VerifyEmail);
+    }
+
+    public function isVerified() : bool {
+        return $this->email_verified_at !== null;
     }
 }
 

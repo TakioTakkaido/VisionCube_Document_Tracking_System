@@ -39,34 +39,33 @@ class DocumentController extends Controller{
 
         // Create the first version
         $documentVersion = DocumentVersion::create([
-            'document_id' => $document->id,
-            'version_number' => 1,
-            'description' => 'Uploaded document',
-            'modified_by' => Auth::user()->name . ' • ' . Auth::user()->role,
+            'document_id'           => $document->id,
+            'version_number'        => 1,
+            'description'           => 'Uploaded document',
+            'modified_by'           => Auth::user()->name . ' • ' . Auth::user()->role,
 
-            'type' => $request->input('type'),
-            'status' => $request->input('status'),
-            'sender' => $request->input('sender'),
-            'senderArray' => json_encode($request->input('senderArray')),
-            'recipient' => $request->input('recipient'),
-            'recipientArray' => json_encode($request->input('recipientArray')),
-            'subject' => $request->input('subject'),
-            'assignee' => $request->input('assignee'),
-            'category' => $request->input('category'),
-            'series_number' => $request->input('series_number'),
-            'memo_number' => $request->input('memo_number'),
-            'document_date' => $request->input('document_date'),
-            'color' => $request->input('color')
+            'type'                  => $request->input('type'),
+            'status'                => $request->input('status'),
+            'sender'                => $request->input('sender'),
+            'senderArray'           => json_encode($request->input('senderArray')),
+            'recipient'             => $request->input('recipient'),
+            'recipientArray'        => json_encode($request->input('recipientArray')),
+            'subject'               => $request->input('subject'),
+            'assignee'              => $request->input('assignee'),
+            'category'              => $request->input('category'),
+            'series_number'         => $request->input('series_number'),
+            'memo_number'           => $request->input('memo_number'),
+            'document_date'         => $request->input('document_date'),
+            'color'                 => $request->input('color')
         ]);
 
         // Create the attachments
         $attachments = [];
         foreach($request->file('files') as $file){
-            // Log::channel('daily')->info('{fileName}', ['fileName' => $file->originalName]);
             $attachment = Attachment::create([
-                'name' => $file->getClientOriginalName(),
-                'document_version_id' => $documentVersion->id,
-                'file' => $file->store('public/documents')
+                'name'                  => $file->getClientOriginalName(),
+                'document_version_id'   => $documentVersion->id,
+                'file'                  => $file->store('public/documents')
             ]);
 
             array_push($attachments, $attachment);
@@ -101,35 +100,35 @@ class DocumentController extends Controller{
 
         // Create a new document version
         $documentVersion = DocumentVersion::create([
-            'document_id' => $document->id,
-            'version_number' => ($latestVersion->version_number) + 1,
-            'description' => $request->input('description'),
-            'modified_by' => Auth::user()->name . ' • ' . Auth::user()->role,
+            'document_id'               => $document->id,
+            'version_number'            => ($latestVersion->version_number) + 1,
+            'description'               => $request->input('description'),
+            'modified_by'               => Auth::user()->name . ' • ' . Auth::user()->role,
 
-            'type' => $request->input('type'),
-            'status' => $request->input('status'),
-            'sender' => $request->input('sender'),
-            'senderArray' => json_encode($request->input('senderArray')),
-            'recipient' => $request->input('recipient'),
-            'recipientArray' => json_encode($request->input('recipientArray')),
-            'subject' => $request->input('subject'),
-            'assignee' => $request->input('assignee'),
-            'category' => $request->input('category'),
-            'series_number' => $request->input('series_number'),
-            'memo_number' => $request->input('memo_number'),
-            'document_date' => $request->input('document_date'),
-            'color' => $request->input('color'),
+            'type'                      => $request->input('type'),
+            'status'                    => $request->input('status'),
+            'sender'                    => $request->input('sender'),
+            'senderArray'               => json_encode($request->input('senderArray')),
+            'recipient'                 => $request->input('recipient'),
+            'recipientArray'            => json_encode($request->input('recipientArray')),
+            'subject'                   => $request->input('subject'),
+            'assignee'                  => $request->input('assignee'),
+            'category'                  => $request->input('category'),
+            'series_number'             => $request->input('series_number'),
+            'memo_number'               => $request->input('memo_number'),
+            'document_date'             => $request->input('document_date'),
+            'color'                     => $request->input('color'),
 
             // Previous document information
-            'previous_type' => $latestVersion->type == $request->input('type') ? $latestVersion->previous_type : $latestVersion->type,
-            'previous_status' => $latestVersion->status == $request->input('status') ? $latestVersion->previous_status : $latestVersion->status,
-            'previous_sender' => $latestVersion->sender == $request->input('sender') ? $latestVersion->previous_sender : $latestVersion->sender,
-            'previous_recipient' => $latestVersion->recipient == $request->input('recipient') ? $latestVersion->previous_recipient : $latestVersion->recipient,
-            'previous_subject' => $latestVersion->subject == $request->input('subject') ? $latestVersion->previous_subject : $latestVersion->subject,
-            'previous_assignee' => $latestVersion->assignee == $request->input('assignee') ? $latestVersion->previous_assignee : $latestVersion->assignee,
-            'previous_category' => $latestVersion->category == $request->input('category') ? $latestVersion->previous_category : $latestVersion->category,
-            'previous_series_number' => $latestVersion->series_number == $request->input('series_number') ? $latestVersion->previous_series_number : $latestVersion->series_number,
-            'previous_memo_number' => $latestVersion->memo_number == $request->input('memo_number') ? $latestVersion->previous_memo_number : $latestVersion->memo_number
+            'previous_type'             => $latestVersion->type == $request->input('type') ? $latestVersion->previous_type : $latestVersion->type,
+            'previous_status'           => $latestVersion->status == $request->input('status') ? $latestVersion->previous_status : $latestVersion->status,
+            'previous_sender'           => $latestVersion->sender == $request->input('sender') ? $latestVersion->previous_sender : $latestVersion->sender,
+            'previous_recipient'        => $latestVersion->recipient == $request->input('recipient') ? $latestVersion->previous_recipient : $latestVersion->recipient,
+            'previous_subject'          => $latestVersion->subject == $request->input('subject') ? $latestVersion->previous_subject : $latestVersion->subject,
+            'previous_assignee'         => $latestVersion->assignee == $request->input('assignee') ? $latestVersion->previous_assignee : $latestVersion->assignee,
+            'previous_category'         => $latestVersion->category == $request->input('category') ? $latestVersion->previous_category : $latestVersion->category,
+            'previous_series_number'    => $latestVersion->series_number == $request->input('series_number') ? $latestVersion->previous_series_number : $latestVersion->series_number,
+            'previous_memo_number'      => $latestVersion->memo_number == $request->input('memo_number') ? $latestVersion->previous_memo_number : $latestVersion->memo_number
         ]);
 
         // Create the attachments
@@ -137,9 +136,9 @@ class DocumentController extends Controller{
         if ($request->file('files') != null){    
             foreach($request->file('files') as $file){
                 $attachment = Attachment::create([
-                    'name' => $file->getClientOriginalName(),
-                    'document_version_id' => $documentVersion->id,
-                    'file' => $file->store('public/documents')
+                    'name'                  => $file->getClientOriginalName(),
+                    'document_version_id'   => $documentVersion->id,
+                    'file'                  => $file->store('public/documents')
                 ]);
 
                 array_push($attachments, $attachment);
@@ -156,8 +155,8 @@ class DocumentController extends Controller{
 
         // Create a new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Edited document'
+            'account'       => Auth::user()->name . " • " . Auth::user()->role,
+            'description'   => 'Edited document'
         ]);
 
         // Return success message
@@ -173,6 +172,16 @@ class DocumentController extends Controller{
         $document->delete();
     }
 
+    // Delete All Documents
+    public function deleteAll(Request $request){
+        $ids = $request->ids;
+        foreach($ids as $id){    
+            $document = Document::find($id);
+
+            $document->delete();
+        }
+    }
+
     // Download Document File
     public function download(Request $request){
         // Get file URL
@@ -180,8 +189,8 @@ class DocumentController extends Controller{
 
         // Create new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Obtained document file URL for download'
+            'account'       => Auth::user()->name . " • " . Auth::user()->role,
+            'description'   => 'Obtained document file URL for download'
         ]);
 
         // Return download document file link
@@ -197,35 +206,35 @@ class DocumentController extends Controller{
 
         // Create a new document version
         $documentVersion = DocumentVersion::create([
-            'document_id' => $document->id,
-            'version_number' => ($latestVersion->version_number) + 1,
-            'description' => "Moved document to " . $request->category,
-            'modified_by' => Auth::user()->name . ' • ' . Auth::user()->role,
+            'document_id'       => $document->id,
+            'version_number'    => ($latestVersion->version_number) + 1,
+            'description'       => "Moved document to " . $request->input('category'),
+            'modified_by'       => Auth::user()->name . ' • ' . Auth::user()->role,
 
-            'type' => $latestVersion->type,
-            'status' => $latestVersion->status,
-            'sender' => $latestVersion->sender,
-            'senderArray' => $latestVersion->senderArray,
-            'recipient' => $latestVersion->recipient,
-            'recipientArray' => $latestVersion->recipientArray,
-            'subject' => $latestVersion->subject,
-            'assignee' => $latestVersion->assignee,
-            'category' => $request->input('category'),
-            'series_number' => $latestVersion->series_number,
-            'memo_number' => $latestVersion->memo_number,
-            'document_date' => $latestVersion->document_date,
-            'color' => $latestVersion->color,
+            'type'              => $latestVersion->type,
+            'status'            => $latestVersion->status,
+            'sender'            => $latestVersion->sender,
+            'senderArray'       => $latestVersion->senderArray,
+            'recipient'         => $latestVersion->recipient,
+            'recipientArray'    => $latestVersion->recipientArray,
+            'subject'           => $latestVersion->subject,
+            'assignee'          => $latestVersion->assignee,
+            'category'          => $request->input('category'),
+            'series_number'     => $latestVersion->series_number,
+            'memo_number'       => $latestVersion->memo_number,
+            'document_date'     => $latestVersion->document_date,
+            'color'             => $latestVersion->color,
 
             // Previous document information
-            'previous_type' => $latestVersion->previous_type,
-            'previous_status' => $latestVersion->previous_status,
-            'previous_sender' => $latestVersion->previous_sender,
-            'previous_recipient' => $latestVersion->previous_recipient,
-            'previous_subject' => $latestVersion->previous_subject,
-            'previous_assignee' => $latestVersion->previous_assignee,
-            'previous_category' => $latestVersion->category == $request->input('category') ? $latestVersion->previous_category : $latestVersion->category,
-            'previous_series_number' => $latestVersion->previous_series_number,
-            'previous_memo_number' => $latestVersion->previous_memo_number
+            'previous_type'             => $latestVersion->previous_type,
+            'previous_status'           => $latestVersion->previous_status,
+            'previous_sender'           => $latestVersion->previous_sender,
+            'previous_recipient'        => $latestVersion->previous_recipient,
+            'previous_subject'          => $latestVersion->previous_subject,
+            'previous_assignee'         => $latestVersion->previous_assignee,
+            'previous_category'         => $latestVersion->category == $request->input('category') ? $latestVersion->previous_category : $latestVersion->category,
+            'previous_series_number'    => $latestVersion->previous_series_number,
+            'previous_memo_number'      => $latestVersion->previous_memo_number
         ]);
 
         // Save new document version
@@ -233,8 +242,165 @@ class DocumentController extends Controller{
 
         // Create new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Moved document to ' . $request->category
+            'account'       => Auth::user()->name . " • " . Auth::user()->role,
+            'description'   => 'Moved document to ' . $request->category
+        ]);
+    }
+
+    // Move All Documents From One Category to Another
+    public function moveAll(Request $request){
+        $ids = $request->ids;
+        foreach($ids as $id){
+            // Find the document by id
+            $document = Document::find($id);
+
+            $latestVersion = $document->latestVersion();
+
+            // Create a new document version
+            $documentVersion = DocumentVersion::create([
+                'document_id'       => $document->id,
+                'version_number'    => ($latestVersion->version_number) + 1,
+                'description'       => "Moved document to " . $request->input('category'),
+                'modified_by'       => Auth::user()->name . ' • ' . Auth::user()->role,
+
+                'type'              => $latestVersion->type,
+                'status'            => $latestVersion->status,
+                'sender'            => $latestVersion->sender,
+                'senderArray'       => $latestVersion->senderArray,
+                'recipient'         => $latestVersion->recipient,
+                'recipientArray'    => $latestVersion->recipientArray,
+                'subject'           => $latestVersion->subject,
+                'assignee'          => $latestVersion->assignee,
+                'category'          => $request->input('category'),
+                'series_number'     => $latestVersion->series_number,
+                'memo_number'       => $latestVersion->memo_number,
+                'document_date'     => $latestVersion->document_date,
+                'color'             => $latestVersion->color,
+
+                // Previous document information
+                'previous_type'             => $latestVersion->previous_type,
+                'previous_status'           => $latestVersion->previous_status,
+                'previous_sender'           => $latestVersion->previous_sender,
+                'previous_recipient'        => $latestVersion->previous_recipient,
+                'previous_subject'          => $latestVersion->previous_subject,
+                'previous_assignee'         => $latestVersion->previous_assignee,
+                'previous_category'         => $latestVersion->category == $request->input('category') ? $latestVersion->previous_category : $latestVersion->category,
+                'previous_series_number'    => $latestVersion->previous_series_number,
+                'previous_memo_number'      => $latestVersion->previous_memo_number
+            ]);
+
+            // Save new document version
+            $document->versions()->save($documentVersion);
+        }
+        
+
+        // Create new log
+        ModelsLog::create([
+            'account'       => Auth::user()->name . " • " . Auth::user()->role,
+            'description'   => 'Moved document to ' . $request->category
+        ]);
+    }
+
+    // Restore Document
+    public function restore(Request $request){
+        // Find the document by id
+        $document = Document::find($request->id);
+
+        $latestVersion = $document->latestVersion();
+
+        // Create a new document version
+        $documentVersion = DocumentVersion::create([
+            'document_id'       => $document->id,
+            'version_number'    => ($latestVersion->version_number) + 1,
+            'description'       => "Restored document",
+            'modified_by'       => Auth::user()->name . ' • ' . Auth::user()->role,
+
+            'type'              => $latestVersion->type,
+            'status'            => $latestVersion->status,
+            'sender'            => $latestVersion->sender,
+            'senderArray'       => $latestVersion->senderArray,
+            'recipient'         => $latestVersion->recipient,
+            'recipientArray'    => $latestVersion->recipientArray,
+            'subject'           => $latestVersion->subject,
+            'assignee'          => $latestVersion->assignee,
+            'category'          => $latestVersion->previous_category,
+            'series_number'     => $latestVersion->series_number,
+            'memo_number'       => $latestVersion->memo_number,
+            'document_date'     => $latestVersion->document_date,
+            'color'             => $latestVersion->color,
+
+            // Previous document information
+            'previous_type'             => $latestVersion->previous_type,
+            'previous_status'           => $latestVersion->previous_status,
+            'previous_sender'           => $latestVersion->previous_sender,
+            'previous_recipient'        => $latestVersion->previous_recipient,
+            'previous_subject'          => $latestVersion->previous_subject,
+            'previous_assignee'         => $latestVersion->previous_assignee,
+            'previous_category'         => $latestVersion->category,
+            'previous_series_number'    => $latestVersion->previous_series_number,
+            'previous_memo_number'      => $latestVersion->previous_memo_number
+        ]);
+
+        // Save new document version
+        $document->versions()->save($documentVersion);
+
+        // Create new log
+        ModelsLog::create([
+            'account'       => Auth::user()->name . " • " . Auth::user()->role,
+            'description'   => 'Restored document'
+        ]);
+    }
+
+    // Restore All Documents
+    public function restoreAll(Request $request){
+        $ids = $request->ids;
+        foreach($ids as $id){
+            // Find the document by id
+            $document = Document::find($id);
+
+            $latestVersion = $document->latestVersion();
+
+            // Create a new document version
+            $documentVersion = DocumentVersion::create([
+                'document_id'       => $document->id,
+                'version_number'    => ($latestVersion->version_number) + 1,
+                'description'       => "Restored document",
+                'modified_by'       => Auth::user()->name . ' • ' . Auth::user()->role,
+
+                'type'              => $latestVersion->type,
+                'status'            => $latestVersion->status,
+                'sender'            => $latestVersion->sender,
+                'senderArray'       => $latestVersion->senderArray,
+                'recipient'         => $latestVersion->recipient,
+                'recipientArray'    => $latestVersion->recipientArray,
+                'subject'           => $latestVersion->subject,
+                'assignee'          => $latestVersion->assignee,
+                'category'          => $latestVersion->previous_category,
+                'series_number'     => $latestVersion->series_number,
+                'memo_number'       => $latestVersion->memo_number,
+                'document_date'     => $latestVersion->document_date,
+                'color'             => $latestVersion->color,
+
+                // Previous document information
+                'previous_type'             => $latestVersion->previous_type,
+                'previous_status'           => $latestVersion->previous_status,
+                'previous_sender'           => $latestVersion->previous_sender,
+                'previous_recipient'        => $latestVersion->previous_recipient,
+                'previous_subject'          => $latestVersion->previous_subject,
+                'previous_assignee'         => $latestVersion->previous_assignee,
+                'previous_category'         => $latestVersion->category,
+                'previous_series_number'    => $latestVersion->previous_series_number,
+                'previous_memo_number'      => $latestVersion->previous_memo_number
+            ]);
+
+            // Save new document version
+            $document->versions()->save($documentVersion);
+        }
+        
+        // Create new log
+        ModelsLog::create([
+            'account'       => Auth::user()->name . " • " . Auth::user()->role,
+            'description'   => 'Restored document'
         ]);
     }
 

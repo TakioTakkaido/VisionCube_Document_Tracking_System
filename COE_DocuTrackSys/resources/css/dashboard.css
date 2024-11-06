@@ -816,3 +816,15 @@ button:focus {
     z-index: 10;
     cursor: not-allowed;
 }
+
+.editProfile.btn-primary.disabled {
+    background-color: #a50b0b !important;
+    border: transparent;
+    cursor: not-allowed !important;
+}
+
+.editProfile.btn-warning.disabled {
+    opacity: 0.5;
+    border: transparent;
+    cursor: not-allowed !important;
+}

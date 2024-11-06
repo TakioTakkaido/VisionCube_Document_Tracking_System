@@ -349,4 +349,68 @@ class AccountController extends Controller {
 
 
     }
+
+
+    // Edit Functions
+    // Edit Profile Name
+    public function editName(Request $request){
+        $request->validate([
+            'name' => 'required|string'
+        ],[
+            'name.required' => 'Profile name empty!'
+        ]);
+
+        $user = Auth::user();
+
+        $name = $user->name;
+        $user->name = $request->input('name');
+
+        $user->save();
+
+        ModelsLog::create([
+            'account' => Auth::user()->name.' • '.Auth::user()->role,
+            'description' => 'Change profile name from'.$name.' to '.Auth::user(),
+        ]);
+
+        return response()->json([
+            'name' => Auth::user()->name.' • '.Auth::user()->role
+        ]);
+    }
+
+    // Edit Email
+    public function editEmail(Request $request){
+        $request->validate([
+            'email' => 'required|email|max:255|unique:accounts'
+        ],[
+            'email.required' => 'Email empty!',
+            'email.email' => 'Email inputted is not an email address!',
+        ]);
+
+        $user = Auth::user();
+        $user->email = $request->input('email');
+
+        // Unverify the user
+        $user->email_verified_at = null;
+
+        $user->save();
+
+        ModelsLog::create([
+            'account' => Auth::user()->name.' • '.Auth::user()->role,
+            'description' => 'Changed email',
+        ]);
+
+        return response()->json([
+            'email' => Auth::user()->name.' • '.Auth::user()->role
+        ]);
+    }
+
+    public function verifyEmail(Request $request){
+        $user = Auth::user();
+        
+        $user->sendEmailVerificationNotification();
+
+        return response()->json([
+            'success' => 'Verification link successfully!'
+        ]);
+    }
 }

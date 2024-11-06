@@ -46,6 +46,7 @@
                         <div class="row mb-2">
                             <div class="col-auto">
                                 <button type="button" class="btn btn-primary" id="updateDocumentMenuBtn" data-id=""><i class='bx bx-edit-alt' style="font-size: 15px;"></i> Update Document</button>
+                                <button type="button" class="btn btn-primary" id="restoreDocumentMenuBtn" data-id=""><i class='bx bx-edit-alt' style="font-size: 15px;"></i> Restore Document</button>
                                 <button type="button" class="btn btn-primary" id="viewDocumentHistoryBtn" data-id=""><i class='bx bx-history' style="font-size: 15px;"></i> View Document History</button>
                                 <button type="button" class="btn btn-primary" id="viewDocumentAttachmentsBtn" data-id=""><i class='bx bx-paperclip bx-rotate-90' style="font-size: 15px;"></i> View Attachments</button>
                             </div>
