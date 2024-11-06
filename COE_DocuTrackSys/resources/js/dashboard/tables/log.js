@@ -94,7 +94,6 @@ export function showLogs(){
                 // console.log($(element));
                 // console.log($($(this).popover()).attr('id'));
                 // console.log($(this).popover());
-                console.log($(element));
                 if ($(element).attr('id') != $($(this).popover()).attr('id')) {
                     $(element).popover('hide');
                     
@@ -117,22 +116,61 @@ export function showLogs(){
 
 
 function viewLogInformation(logId) {
-    // New formdata
-    var formData = new FormData();
-
-    // Ajax request
-    formData = {
-        '_token' : $('meta[name="csrf-token"]').attr('content')
-    }
 
     $.ajax({
         method: "GET",
         url: window.routes.logInfo.replace(':id', logId),
-        data: formData,
         success: function (response) {
             $('#logDate').html(`<strong>Timestamp: </strong>${response.log.created_at}`);
+            $('#logDescription').html(`<strong>Description: </strong>${response.log.description}`);
             $('#logAccount').html(`<strong>Account: </strong>${response.log.account}`);
-            $('#logDescription').html(`<strong>Details: </strong>${response.log.description}`);
+            if(response.log.type == 'Account'){
+                $('#logDetailTitle').html('Account Details');
+                var account = JSON.parse(response.log.detail);
+                $('#logDetails').html(`
+                    <span><strong>Name: </strong>${account.name}</span><br>
+                    <span><strong>Email: </strong>${account.email}</span><br>
+                    <span><strong>Role: </strong>${account.role}</span><br>
+                `);
+            } else if(response.log.type == 'Document'){
+                $('#logDetailTitle').html('Document Details');
+                var document = JSON.parse(response.log.detail);
+                var logDetail = "";
+                if (document.length === undefined){
+                    logDetail += `
+                        <span><strong>Subject: </strong>${document.subject}</span><br>
+                        <span><strong>Version: </strong>${document.version_number}</span><br>
+                        <span><strong>Date: </strong>${document.document_date}</span><br>
+                        <span><strong>Type: </strong>${document.type}</span><br>
+                        <span><strong>Sender: </strong>${document.sender}</span><br>
+                        <span><strong>Recipient: </strong>${document.recipient}</span><br>
+                        <span><strong>Assignee: </strong>${document.assignee}</span><br>
+                        <span><strong>Category: </strong>${document.category}</span><br>
+                        <span><strong>Series Number: </strong>${document.series_number}</span><br>
+                        <span><strong>Memo Number: </strong>${document.memo_number}</span><br>
+                        <br>
+                    `
+                } else {
+                    for(var i = 0; i < document.length; i++){
+                        logDetail += `
+                            <span><strong>Subject: </strong>${document[i].subject}</span><br>
+                            <span><strong>Version: </strong>${document[i].version_number}</span><br>
+                            <span><strong>Date: </strong>${document[i].document_date}</span><br>
+                            <span><strong>Type: </strong>${document[i].type}</span><br>
+                            <span><strong>Sender: </strong>${document[i].sender}</span><br>
+                            <span><strong>Recipient: </strong>${document[i].recipient}</span><br>
+                            <span><strong>Assignee: </strong>${document[i].assignee}</span><br>
+                            <span><strong>Category: </strong>${document[i].category}</span><br>
+                            <span><strong>Series Number: </strong>${document[i].series_number}</span><br>
+                            <span><strong>Memo Number: </strong>${document[i].memo_number}</span><br>
+                            <br>
+                        `
+                    }
+                }
+                $('#logDetails').html(logDetail);
+            } else {
+                $('#logDetailTitle').html('Maintenance Details');
+            }
             $('#logInfo').modal('show');
         }
     });

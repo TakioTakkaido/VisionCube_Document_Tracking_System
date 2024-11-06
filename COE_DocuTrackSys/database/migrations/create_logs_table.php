@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('account');
             $table->string('description');
+            $table->string('type');
+            $table->json('detail');
             $table->timestamps();
         });
     }

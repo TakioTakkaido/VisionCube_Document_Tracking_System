@@ -81,7 +81,9 @@ class DocumentController extends Controller{
         // Create log 
         ModelsLog::create([
             'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Uploaded a new document'
+            'description' => 'Uploaded a new document: '. $request->input('subject'),
+            'type' => 'Document',
+            'detail' => $documentVersion->toJson()
         ]);
 
         return response()->json([
@@ -156,7 +158,9 @@ class DocumentController extends Controller{
         // Create a new log
         ModelsLog::create([
             'account'       => Auth::user()->name . " • " . Auth::user()->role,
-            'description'   => 'Edited document'
+            'description'   => 'Updated document: '.$documentVersion->previous_subject,
+            'type' => 'Document',
+            'detail' => $documentVersion->toJson()
         ]);
 
         // Return success message
@@ -169,17 +173,32 @@ class DocumentController extends Controller{
     public function delete(Request $request){
         $document = Document::find($request->id);
 
+        ModelsLog::create([
+            'account'       => Auth::user()->name . " • " . Auth::user()->role,
+            'description'   => 'Deleted document: '.$document->previous_subject,
+            'type' => 'Document',
+            'detail' => $document->toJson()
+        ]);
+        
         $document->delete();
     }
 
     // Delete All Documents
     public function deleteAll(Request $request){
         $ids = $request->ids;
+        $documents = [];
         foreach($ids as $id){    
             $document = Document::find($id);
-
+            $documents[] = $document->toArray();
             $document->delete();
         }
+
+        ModelsLog::create([
+            'account'       => Auth::user()->name . " • " . Auth::user()->role,
+            'description'   => 'Deleted '.count($ids).' documents',
+            'type' => 'Document',
+            'detail' => json_encode($documents)
+        ]);
     }
 
     // Download Document File
@@ -190,7 +209,9 @@ class DocumentController extends Controller{
         // Create new log
         ModelsLog::create([
             'account'       => Auth::user()->name . " • " . Auth::user()->role,
-            'description'   => 'Obtained document file URL for download'
+            'description'   => 'Obtained document file URL for download',
+            'type' => 'Document',
+            'detail' => Document::where('id', $request->id)->toJson()
         ]);
 
         // Return download document file link
@@ -243,13 +264,16 @@ class DocumentController extends Controller{
         // Create new log
         ModelsLog::create([
             'account'       => Auth::user()->name . " • " . Auth::user()->role,
-            'description'   => 'Moved document to ' . $request->category
+            'description'   => 'Moved document: '.$documentVersion->subject.' to ' . $request->category,
+            'type' => 'Document',
+            'detail' => $documentVersion->toJson()
         ]);
     }
 
     // Move All Documents From One Category to Another
     public function moveAll(Request $request){
         $ids = $request->ids;
+        $documents = [];
         foreach($ids as $id){
             // Find the document by id
             $document = Document::find($id);
@@ -289,6 +313,7 @@ class DocumentController extends Controller{
                 'previous_memo_number'      => $latestVersion->previous_memo_number
             ]);
 
+            $documents[] = $documentVersion->toArray();
             // Save new document version
             $document->versions()->save($documentVersion);
         }
@@ -297,7 +322,9 @@ class DocumentController extends Controller{
         // Create new log
         ModelsLog::create([
             'account'       => Auth::user()->name . " • " . Auth::user()->role,
-            'description'   => 'Moved document to ' . $request->category
+            'description'   => 'Moved '.count($ids).' document to ' . $request->category,
+            'type' => 'Document',
+            'detail' => json_encode($documents)
         ]);
     }
 
@@ -347,13 +374,16 @@ class DocumentController extends Controller{
         // Create new log
         ModelsLog::create([
             'account'       => Auth::user()->name . " • " . Auth::user()->role,
-            'description'   => 'Restored document'
+            'description'   => 'Restored document: '.$documentVersion->subject,
+            'type' => 'Document',
+            'detail' => $documentVersion->toJson()
         ]);
     }
 
     // Restore All Documents
     public function restoreAll(Request $request){
         $ids = $request->ids;
+        $documents = [];
         foreach($ids as $id){
             // Find the document by id
             $document = Document::find($id);
@@ -395,12 +425,16 @@ class DocumentController extends Controller{
 
             // Save new document version
             $document->versions()->save($documentVersion);
+
+            $documents[] = $documentVersion->toArray();
         }
         
         // Create new log
         ModelsLog::create([
             'account'       => Auth::user()->name . " • " . Auth::user()->role,
-            'description'   => 'Restored document'
+            'description'   => 'Restored '.count($ids).' documents',
+            'type' => 'Document',
+            'detail' => json_encode($documents)
         ]);
     }
 
