@@ -25,6 +25,7 @@ use App\Http\Requests\CreateAccountFormRequest;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginFormRequest;
 use App\Models\Log as ModelsLog;
+use App\Models\Settings;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Hash;
@@ -239,6 +240,10 @@ class AccountController extends Controller {
     }
 
     public function editAccess(Request $request){
+        // Get the settings
+        $settings = Settings::all()->first();
+        $access = [];
+
         // Find all accounts of that role
         $secretaries = Account::where('role', "Secretary")->get();
         $assistants = Account::where('role', "Assistant")->get();
@@ -252,9 +257,10 @@ class AccountController extends Controller {
             $secretary->canArchive    = filter_var($request->secretaryAccesses[3], FILTER_VALIDATE_BOOLEAN);
             $secretary->canDownload   = filter_var($request->secretaryAccesses[4], FILTER_VALIDATE_BOOLEAN);
             $secretary->canPrint      = filter_var($request->secretaryAccesses[5], FILTER_VALIDATE_BOOLEAN);
-            dd($secretary);
             $secretary->save();
         }   
+
+        $access['secretary'] = $request->secretaryAccesses;
 
         foreach ($assistants as $assistant) {
             $assistant->canUpload     = filter_var($request->assistantAccesses[0], FILTER_VALIDATE_BOOLEAN);
@@ -268,6 +274,8 @@ class AccountController extends Controller {
 
         }   
 
+        $access['assistant'] = $request->assistantAccesses;
+
         foreach ($clerks as $clerk) {
             $clerk->canUpload     = filter_var($request->clerkAccesses[0], FILTER_VALIDATE_BOOLEAN);
             $clerk->canEdit       = filter_var($request->clerkAccesses[1], FILTER_VALIDATE_BOOLEAN);
@@ -279,14 +287,10 @@ class AccountController extends Controller {
             $clerk->save();
         }   
 
-        // Create new log
-        ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Edited access of roles',
-            'type' => 'Account',
-            'detail' => $account->toJson()
-        ]);
-
+        $access['clerk'] = $request->clerkAccesses;
+        
+        $settings->access = $access;
+        $settings->save();
         return response()->json([
             'success' => 'Edited roles successfully'
         ]);

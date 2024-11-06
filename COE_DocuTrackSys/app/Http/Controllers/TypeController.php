@@ -6,15 +6,19 @@ use App\Models\Type;
 use App\Http\Controllers\Controller;
 use App\Models\Document;
 use App\Models\DocumentVersion;
+use App\Models\Settings;
 use Illuminate\Http\Request;
 
 class TypeController extends Controller {
     // Edit type
     public function update(Request $request){
-        // Get type by id
+        // Get the settings
+        $settings = Settings::all()->first();
+
         // Check whether the status already exists or not
         if ($request->id != null){
             // Status exists, find the status
+            // Get type by id
             $type = Type::find($request->id);
 
             // Get value
@@ -75,12 +79,24 @@ class TypeController extends Controller {
                     $document->versions()->save($documentVersion);
                 }
             }
+
+            // Log the newly updated type
+            $types = $settings->addedType ?? [];
+            $types[] = $type->value;
+            $settings->addedType = $types;
+            $settings->save();
         } else {
             // Type doesn't exist
             // Create type
             $type = Type::create([
                 'value' => $request->input('value')
             ]);
+
+            // Log the newly updated type
+            $types = $settings->addedType ?? [];
+            $types[] = $type->value;
+            $settings->addedType = $types;
+            $settings->save();
         }
 
         // Return success
@@ -92,11 +108,20 @@ class TypeController extends Controller {
 
     // Delete type
     public function delete(Request $request){
+        // Get the settings
+        $settings = Settings::all()->first();
+
+        // Find the type
         $type = Type::find($request->id);
 
-        $type->delete();
+        // Log the deleted type
+        $types = $settings->deletedType ?? [];
+        $types[] = $type->value;
+        $settings->deletedType = $types;
+        $settings->save();
 
-        // Log
+        // Delete the type
+        $type->delete();
 
         // Return success
         return response()->json([

@@ -116,7 +116,6 @@ export function showLogs(){
 
 
 function viewLogInformation(logId) {
-
     $.ajax({
         method: "GET",
         url: window.routes.logInfo.replace(':id', logId),
@@ -170,7 +169,125 @@ function viewLogInformation(logId) {
                 $('#logDetails').html(logDetail);
             } else {
                 $('#logDetailTitle').html('Maintenance Details');
+                const settings = JSON.parse(response.log.detail);
+                let logDetail = "";
+            
+                // Account Accesses
+                logDetail += `<span><strong>Updated Account Accesses: </strong></span><br>`;
+            
+                const accountRoles = ["secretary", "assistant", "clerk"];
+                accountRoles.forEach(role => {
+                    const accessList = settings.accesses[role] || [];
+                    
+                    logDetail += `<span class="text-left mb-1"><strong>${role.charAt(0).toUpperCase() + role.slice(1)}: </strong></span><ul>`;
+                    if (accessList.length > 0) {
+                        accessList.forEach(item => {
+                            logDetail += `<li><span>${item}</span></li>`;
+                        });
+                    } else {
+                        logDetail += `<li><span>None</span></li>`;
+                    }
+                    logDetail += `</ul><br>`;
+                });
+            
+                // Document Form - Participants
+                const participantTypes = [
+                    { key: "addedParticipant", label: "Added/Updated Sender/Recipients" },
+                    { key: "deletedParticipant", label: "Deleted Sender/Recipients" },
+                    { key: "addedParticipantGroup", label: "Added/Updated Sender/Recipients Group" },
+                    { key: "deletedParticipantGroup", label: "Deleted Sender/Recipients Group" }
+                ];
+            
+                participantTypes.forEach(type => {
+                    const participants = settings[type.key] || [];
+                    if (participants.length > 0) {
+                        logDetail += `<span><strong>${type.label}: </strong><span><ul>`;
+                        participants.forEach(participant => {
+                            logDetail += `<span><li>${participant}</li></span>`;
+                        });
+                        logDetail += `</ul><br>`;
+                    }
+                });
+            
+                // Updated Sender/Recipient Group Members of Participant Groups
+                const updatedGroups = settings.updatedParticipantGroup || {};
+                if (Object.keys(updatedGroups).length > 0) {
+                    logDetail += `<span><strong>Updated Sender/Recipient Group Members of Participant Groups: </strong></span><ul>`;
+                    for (const groupId in updatedGroups) {
+                        if (updatedGroups.hasOwnProperty(groupId)) {
+                            logDetail += `<li><strong>Group ${groupId}</strong><ul>`;
+                            updatedGroups[groupId].forEach(member => {
+                                logDetail += `<li><span>${member}</span></li>`;
+                            });
+                            logDetail += `</li></ul><br>`;
+                        }
+                    }
+                    logDetail += `</ul>`;
+                }
+            
+                // Updated Participant Members
+                const updatedParticipants = settings.updatedParticipant || {};
+                if (Object.keys(updatedParticipants).length > 0) {
+                    logDetail += `<span><strong>Updated Sender/Recipient Members of Participant Groups: </strong></span><ul>`;
+                    for (const participantId in updatedParticipants) {
+                        if (updatedParticipants.hasOwnProperty(participantId)) {
+                            logDetail += `<li><strong>Participant Group ${participantId}</strong><ul>`;
+                            updatedParticipants[participantId].forEach(member => {
+                                logDetail += `<li><span>${member}</span></li>`;
+                            });
+                            logDetail += `</li></ul><br>`;
+                        }
+                        logDetail += `</ul>`;
+                    }
+                }
+                
+                // Types
+                const typeActions = [
+                    { key: "addedType", label: "Added/Updated Types" },
+                    { key: "deletedType", label: "Deleted Types" }
+                ];
+            
+                typeActions.forEach(type => {
+                    const types = settings[type.key] || [];
+                    if (types.length > 0) {
+                        logDetail += `<span><strong>${type.label}: </strong><ul>`;
+                        types.forEach(item => {
+                            logDetail += `<li><span>${item}</span></li>`;
+                        });
+                        logDetail += `</ul><br>`;
+                    }
+                });
+            
+                // Statuses
+                const statusActions = [
+                    { key: "addedStatus", label: "Added/Updated Statuses" },
+                    { key: "deletedStatus", label: "Deleted Statuses" }
+                ];
+            
+                statusActions.forEach(status => {
+                    const statuses = settings[status.key] || [];
+                    if (statuses.length > 0) {
+                        logDetail += `<span><strong>${status.label}: </strong><ul>`;
+                        statuses.forEach(item => {
+                            logDetail += `<li><span>${item}</span></li>`;
+                        });
+                        logDetail += `</ul><br>`;
+                    }
+                });
+            
+                // Allowed File Extensions
+                const extensions = settings.fileExtensions || [];
+                if (extensions.length > 0) {
+                    logDetail += `<span><strong>Allowed File Extensions: </strong></span><ul>`;
+                    extensions.forEach(ext => {
+                        logDetail += `<li><span>.${ext}</span></li>`;
+                    });
+                    logDetail += `</ul><br>`;
+                }
+            
+                $('#logDetails').html(logDetail);
             }
+            
             $('#logInfo').modal('show');
         }
     });
