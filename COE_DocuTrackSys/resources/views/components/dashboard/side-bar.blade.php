@@ -3,7 +3,7 @@
     {{-- Upload Button
         Disabled for anyone not permitted to use it.
     --}}
-    <button class="home-btn" id="homePageBtn">
+    <button class="{{$maintenance == true ? 'home-btn disabled' : 'home-btn'}}" id="homePageBtn" >
         <i class='bx bx-home'></i>
         <span>Home</span>
     </button>
@@ -11,7 +11,7 @@
     <div class="side-panel-section" id="dropdown-arrow">
         @if($isAdmin)
         {{-- Accounts --}}
-        <a class="sidepanel-btn" id="accountBtn">
+        <a class="sidepanel-btn" id="accountBtn" >
             <span class="dropdown-arrow"><i class='bx bx-user'></i>
             </span> Accounts
         </a>
@@ -23,7 +23,7 @@
         @endif
         
         {{-- Documents --}}
-        <a class="sidepanel-btn" id="documentBtn">
+        <a class="{{$maintenance == true ? 'sidepanel-btn disabled' : 'sidepanel-btn'}}" id="documentBtn" >
             <span class="dropdown-arrow"><i class='bx bx-file'></i>
             </span> Documents
         </a>
@@ -41,19 +41,19 @@
         </div>
 
         {{-- Archives --}}
-        <a class="sidepanel-btn" id="archivedBtn">
+        <a class="{{$maintenance == true ? 'sidepanel-btn disabled' : 'sidepanel-btn'}}" id="archivedBtn">
             <span class="dropdown-arrow" data-id="Archived"><i class='bx bx-archive'></i>
             </span> Archives
         </a>
 
         {{-- Reports --}}
-        <a class="sidepanel-btn" id="recycleBinBtn">
+        {{-- <a class="{{$maintenance == true ? 'sidepanel-btn disabled' : 'sidepanel-btn'}}" id="recycleBinBtn">
             <span class="dropdown-arrow"><i class='bx bxs-report'></i>
             </span> Reports
-        </a>
+        </a> --}}
 
         {{-- Logs --}}
-        <a class="sidepanel-btn" id="logBtn">
+        <a class="{{$maintenance == true ? 'sidepanel-btn disabled' : 'sidepanel-btn'}}" id="logBtn">
             <span class="dropdown-arrow"><i class='bx bx-history'></i>
             </span> Logs
         </a>

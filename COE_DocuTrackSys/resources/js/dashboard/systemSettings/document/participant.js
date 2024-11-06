@@ -114,6 +114,7 @@ $('.systemParticipantList').on('click', '.editParticipantBtn', function(event){
 
         $('#addParticipantBtn').addClass('disabled');
         $('#addParticipantText').prop('disabled', true);
+        
         $('.systemParticipant').each(function () { 
             var systemParticipant = $(this);
             var editBtn = systemParticipant.find('.editParticipantBtn');

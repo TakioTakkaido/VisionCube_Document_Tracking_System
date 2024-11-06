@@ -337,7 +337,7 @@ $('#submitEditDocumentBtn').off('click').on('click', function(event) {
         processData: false,
         contentType: false,
         success: function(response) {
-            showNotification('Document updated successfully!');
+            showNotification('Success', 'Document updated successfully!');
             
             getDocumentStatistics();
             documentPreview(documentId);

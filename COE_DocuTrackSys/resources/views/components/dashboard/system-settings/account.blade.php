@@ -25,10 +25,6 @@
                 <h6 class="p-0 font-weight-bold mb-0">Add New Account</h6>
                 <p>Add new account that shall be used by other users in the system.</p>
                 <form id="addNewAccount" method="post" autocomplete="off">
-                    @csrf
-                    @method('POST')
-                    <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-            
                     <div class="row mb-2">
                         <div class="col">
                             <input type="name" name="name" id="name" placeholder="Username">
@@ -85,7 +81,6 @@
                 <form id="updateAccountAccess" method="post" autocomplete="off">
                     @csrf
                     @method('POST')
-                    <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
                     <table class="accountAccessTable table cell-border table-bordered hover pt-1">
                         <thead>
                             <tr>

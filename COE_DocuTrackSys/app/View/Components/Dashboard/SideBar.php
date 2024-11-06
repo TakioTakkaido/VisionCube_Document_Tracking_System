@@ -28,7 +28,8 @@ class SideBar extends Component
         $user = FacadesAuth::user();
         return view('components.dashboard.side-bar', [
             'canUpload' => FacadesAuth::user()->canUpload,
-            'isAdmin' => $user->role == 'Admin'
+            'isAdmin' => $user->role == 'Admin',
+            'maintenance' => SettingsController::getMaintenanceStatus()
         ]);
     }
 }

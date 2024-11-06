@@ -791,14 +791,20 @@ button:focus {
     font-size: 15px !important;   
 }
 
-.sidepanel-btn.disabled{
-    opacity: 0.5;
-}
-
+.home-btn.disabled,
+.home-btn.disabled:hover,
 .sidepanel-btn.disabled,
 .sidepanel-btn.disabled:hover {
-    cursor: not-allowed !important;
+    cursor: not-allowed;
 }
+
+.home-btn.disabled,
+.sidepanel-btn.disabled{
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+
 
 .overlay {
     position: absolute;
@@ -809,4 +815,16 @@ button:focus {
     background: rgba(0, 0, 0, 0.15); /* Adjust opacity as needed */
     z-index: 10;
     cursor: not-allowed;
+}
+
+.editProfile.btn-primary.disabled {
+    background-color: #a50b0b !important;
+    border: transparent;
+    cursor: not-allowed !important;
+}
+
+.editProfile.btn-warning.disabled {
+    opacity: 0.5;
+    border: transparent;
+    cursor: not-allowed !important;
 }

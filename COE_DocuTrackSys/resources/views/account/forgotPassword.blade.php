@@ -20,7 +20,7 @@ Sanchez, Shane David U.
   <meta name="csrf-token" content="{{ csrf_token() }}">
   
   {{-- Title --}}
-  <title>Create Account | Document Tracking System</title>
+  <title>Forgot Password | Document Tracking System</title>
 
   {{-- Boxicons --}}
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>

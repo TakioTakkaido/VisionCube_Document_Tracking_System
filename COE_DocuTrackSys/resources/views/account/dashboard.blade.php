@@ -42,9 +42,13 @@ Sanchez, Shane David U.
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
 
-    {{-- Datatable --}}
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <!-- DataTables CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+
+    <!-- DataTables Select Extension CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/2.1.0/css/select.dataTables.min.css">
+    <script src="https://cdn.datatables.net/select/2.1.0/js/dataTables.select.min.js"></script>
 
     {{-- Assets --}}
     <link rel="icon" href="{{Vite::asset('resources/img/COE.png')}}" type="image/x-icon">
@@ -66,6 +70,11 @@ Sanchez, Shane David U.
         'resources/js/dashboard/editForm.js',
 
         // System Settings
+        // Profile
+        'resources/js/dashboard/systemSettings/profile/name.js',
+        'resources/js/dashboard/systemSettings/profile/email.js',
+        'resources/js/dashboard/systemSettings/profile/password.js',
+        
         // Account
         'resources/js/dashboard/systemSettings/account/access.js',
         'resources/js/dashboard/systemSettings/account/addAccount.js',
@@ -96,15 +105,25 @@ Sanchez, Shane David U.
             $('#archivedBadge').html(response.archived);
         }});
 
-        $.when(documentStatistics).then(function() {
+        var getMaintenanceStatus = $.ajax({
+        method: 'GET',
+        url: window.routes.getMaintenanceStatus,
+        success: function(response) {
+            if (response.maintenance == true){
+                $('#accountSettingsBtn').trigger('click');
+            } else {
+                
+                $('#homePageBtn').trigger('click');
+            }
+        }});
+
+        $.when(documentStatistics, getMaintenanceStatus).then(function() {
             // Re-enable pointer events once loading is complete
             $('body').css('pointer-events', 'all');
             
             // Initialize the DataTable after AJAX completes
             $('#accountAccessTable').DataTable();
         });
-
-        $('#homePageBtn').trigger('click');
     });
 </script>
 
@@ -142,8 +161,9 @@ Sanchez, Shane David U.
 
         // Maintenance
         updateMaintenance: "{{route('settings.update')}}",
+        getMaintenanceStatus: "{{route('settings.getMaintenanceStatus')}}",
 
-        // Accounts Routes
+        // Account Routes
         logout: "{{route('account.logout')}}",
         showAccount: "{{route('account.show', ':id')}}",
         showAllActiveAccounts: "{{route('account.showAllActiveAccounts')}}",
@@ -152,6 +172,9 @@ Sanchez, Shane David U.
         deactivateAccount: "{{route('account.deactivate', ':id')}}",
         reactivateAccount: "{{route('account.reactivate', ':id')}}",
         updateRoleAccess: "{{route('account.editAccess')}}",
+        editProfileName: "{{route('account.editName')}}",
+        editProfileEmail: "{{route('account.editEmail')}}",
+        verifyEmail: "{{route('account.verifyEmail')}}",
         
         // Document Routes
         showDocuments: "{{route('document.showAll', ':id')}}",
@@ -161,8 +184,13 @@ Sanchez, Shane David U.
         downloadDocument: "{{route('document.download', ':id')}}",
         editDocument: "{{route('document.edit', ':id')}}",
         moveDocument: "{{route('document.move')}}",
+        moveAllDocuments: "{{route('document.moveAll')}}",
         uploadDocument: "{{route('document.upload')}}",
         previewDocument: "{{route('document.preview', ':id')}}",
+        restoreDocument: "{{route('document.restore', ':id')}}",
+        restoreAllDocument: "{{route('document.restoreAll')}}",
+        deleteDocument: "{{route('document.delete', ':id')}}",
+        deleteAllDocument: "{{route('document.deleteAll')}}",
 
         // Document Version Routes
         showDocumentVersion: "{{route('version.show', ':id')}}",

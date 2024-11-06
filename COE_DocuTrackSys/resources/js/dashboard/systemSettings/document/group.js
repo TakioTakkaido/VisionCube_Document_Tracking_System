@@ -162,6 +162,9 @@ $('.systemParticipantGroupList').on('click', '.closeEditBtn', function(event, ne
         } else {
             $(this).html(`
                 <span class="text-left mr-auto">${selectedParticipantGroupText}</span>
+                <div class="editParticipantGroupMemberBtn mr-2 p-0" 
+                    data-id=${selectedParticipantGroupId} data-value="${selectedParticipantGroupText}"><i class='bx bxs-user-detail' style="font-size: 20px;"></i>
+                </div>
                 <div class="editParticipantGroupBtn mr-2" data-id=${selectedParticipantGroupId} data-value="${selectedParticipantGroupText}"><i class='bx bx-edit-alt' style="font-size: 20px;"></i>
                 </div>
                 <div class="deleteParticipantGroupBtn" 
