@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\ParticipantGroup;
 use App\Http\Controllers\Controller;
 use App\Models\Participant;
+use App\Models\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
 class ParticipantGroupController extends Controller {
     public function update(Request $request){
-        // Validate the request
+        $settings = Settings::all()->first();
 
         // Get participant by id
         // Check whether the participant already exists or not
@@ -25,15 +26,23 @@ class ParticipantGroupController extends Controller {
             // Save
             $participantGroup->save();
 
-            // Log
+            // Log the group
+            $groups = $settings->addedParticipantGroup ?? [];
+            $groups[] = $participantGroup->value;
+            $settings->addedParticipantGroup = $groups;
+            $settings->save();
         } else {
             // Participant doesn't exist
             // Create participantGroup
-            ParticipantGroup::create([
+            $participantGroup = ParticipantGroup::create([
                 'value' => $request->input('value')
             ]);
 
-            // Log
+            // Log the group
+            $groups = $settings->addedParticipantGroup ?? [];
+            $groups[] = $participantGroup->value;
+            $settings->addedParticipantGroup = $groups;
+            $settings->save();
         } 
 
         // Return success
@@ -43,8 +52,15 @@ class ParticipantGroupController extends Controller {
     }
 
     public function delete(Request $request) {
+        $settings = Settings::all()->first();
         // Find group by id
         $participantGroup = ParticipantGroup::find($request->id);
+
+        // Log the group
+        $groups = $settings->deletedParticipantGroup ?? [];
+        $groups[] = $participantGroup->value;
+        $settings->deletedParticipantGroup = $groups;
+        $settings->save();
 
         // Delete
         $participantGroup->delete();
@@ -99,6 +115,9 @@ class ParticipantGroupController extends Controller {
     }
 
     public function updateParticipantGroupMembers(Request $request) {
+        // Get the settings
+        $settings = Settings::all()->first();
+
         // Validate the incoming request
         
         // Find the parent participant group
@@ -107,6 +126,32 @@ class ParticipantGroupController extends Controller {
         // Sync participant groups
         $participantGroup->groups()->sync($request->participantGroupsIDs);
         $participantGroup->participants()->sync($request->participantIDs);
+
+        // Clear the participant group's members' log
+        $participants = $settings->updatedParticipant ?? [];
+
+        $groups = $settings->updatedParticipantGroup ?? [];
+
+        // Log the updated groups and participants
+        foreach($request->participantGroupsIDs as $groupID){
+            // Get the value of the group
+            $group = ParticipantGroup::find($groupID);
+
+            $groups[$participantGroup->id][] = $group->value;
+        }
+
+        foreach($request->participantIDs as $participantID){
+            // Get the value of the group
+            $participant = Participant::find($participantID);
+
+            $participants[$participantGroup->id][] = $participant->value;
+        }
+
+        
+        $settings->updatedParticipant = $participants;
+        $settings->updatedParticipantGroup = $groups;
+
+        $settings->save();
 
         return response()->json([
             'success' => 'Groups under the participant group updated successfully'

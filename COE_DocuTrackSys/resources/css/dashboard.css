@@ -828,3 +828,11 @@ button:focus {
     border: transparent;
     cursor: not-allowed !important;
 }
+
+#logInfo {
+    font-size: 15px;
+}
+
+#logInfo ul {
+    padding-left: 15px;
+}

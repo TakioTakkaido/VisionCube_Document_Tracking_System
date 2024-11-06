@@ -6,14 +6,16 @@ use App\Models\Status;
 use App\Http\Controllers\Controller;
 use App\Models\Document;
 use App\Models\DocumentVersion;
+use App\Models\Settings;
 use App\View\Components\Dashboard\Forms\Upload;
 use Illuminate\Http\Request;
 
 class StatusController extends Controller {
-
     // Edit status
     public function update(Request $request){
-        // Get status by id
+        // Get the settings
+        $settings = Settings::all()->first();
+
         // Check whether the status already exists or not
         if ($request->id != null){
             // Status exists, find the status
@@ -79,6 +81,12 @@ class StatusController extends Controller {
                     $document->versions()->save($documentVersion);
                 }
             }
+
+            // Log the status
+            $statuses = $settings->addedStatus ?? [];
+            $statuses[] = $status->value;
+            $settings->addedStatus = $statuses;
+            $settings->save();
         } else {
             // Status doesn't exist
             // Create status
@@ -86,8 +94,12 @@ class StatusController extends Controller {
                 'value' => $request->input('value'),
                 'color' => $request->input('color')
             ]);
-
-            // Log
+    
+            // Log the status
+            $statuses = $settings->addedStatus ?? [];
+            $statuses[] = $status->value;
+            $settings->addedStatus = $statuses;
+            $settings->save();
         }
 
         // Return success
@@ -99,8 +111,19 @@ class StatusController extends Controller {
 
     // Delete status
     public function delete(Request $request){
+        // Get the settings
+        $settings = Settings::all()->first();
+
+        // Find the status
         $status = Status::find($request->id);
 
+        // Log the status
+        $statuses = $settings->deletedStatus ?? [];
+        $statuses[] = $status->value;
+        $settings->deletedStatus = $statuses;
+        $settings->save();
+
+        // Delete status
         $status->delete();
 
         // Return success

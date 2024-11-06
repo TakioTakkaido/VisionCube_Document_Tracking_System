@@ -1188,7 +1188,6 @@ function deleteAllDocument(ids){
             showNotification('Success', "Documents deleted successfully!");
         },
         error: function(response) {
-            $(row).popover('hide');
             showNotification('Error', "Documents deleted successfully!");
         }
     });

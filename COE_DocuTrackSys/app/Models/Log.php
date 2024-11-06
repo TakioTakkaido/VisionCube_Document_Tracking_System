@@ -14,7 +14,9 @@ class Log extends Model
 
     protected $fillable = [
         'account',
-        'description'
+        'description',
+        'type',
+        'detail'
     ];
 
     protected function createdAt() : CastsAttribute {

@@ -15,6 +15,19 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->boolean('maintenance')->default(false);
+            $table->string('detail')->nullable();
+            $table->json('access')->nullable();
+            $table->json('addedParticipant')->nullable();
+            $table->json('deletedParticipant')->nullable();
+            $table->json('addedParticipantGroup')->nullable();
+            $table->json('deletedParticipantGroup')->nullable();
+            $table->json('updatedParticipant')->nullable();
+            $table->json('updatedParticipantGroup')->nullable();
+            $table->json('addedType')->nullable();
+            $table->json('deletedType')->nullable();
+            $table->json('addedStatus')->nullable();
+            $table->json('deletedStatus')->nullable();
+            $table->string('fileExtensions')->nullable();
         });
     }
 

@@ -25,6 +25,7 @@ use App\Http\Requests\CreateAccountFormRequest;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginFormRequest;
 use App\Models\Log as ModelsLog;
+use App\Models\Settings;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Hash;
@@ -34,6 +35,11 @@ use Illuminate\Support\Facades\Log;
 class AccountController extends Controller {
     // Show Account
     public function show(Request $request){
+        $account = Account::find($request->id);
+
+        return response()->json([
+            'account' => $account
+        ]);
     }
 
     // Login Existing User
@@ -52,7 +58,9 @@ class AccountController extends Controller {
             // Send log
             ModelsLog::create([
                 'account' => Auth::user()->name . " • " . Auth::user()->role,
-                'description' => 'Logged in to the system'
+                'description' => 'Logged in to the system',
+                'type' => 'Account',
+                'detail' => Auth::user()->toJson()
             ]);
             
             // Authentication passed, to dashboard
@@ -75,7 +83,7 @@ class AccountController extends Controller {
         $request->validated();
         
         // Make new account
-        Account::create([
+        $account = Account::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
@@ -85,13 +93,14 @@ class AccountController extends Controller {
         // Create new log file
         ModelsLog::create([
             'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Added new user to the system'
+            'description' => 'Added new user to the system: '.$request->input('name'),
+            'type' => 'Account',
+            'detail' => $account->toJson()
         ]);
 
         return response()->json([
             'success' => 'Account created successfully'
         ]);
-
     }
 
     // Forgot Password
@@ -106,7 +115,9 @@ class AccountController extends Controller {
         // Create new log
         ModelsLog::create([
             'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Requested to change password'
+            'description' => 'Requested to change password',
+            'type' => 'Account',
+            'detail' => Auth::user()->toJson()
         ]);
 
         // Temporary fix: redirect to login for now
@@ -120,35 +131,10 @@ class AccountController extends Controller {
         // Create new log
         ModelsLog::create([
             'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Resetted password'
+            'description' => 'Resetted password',
+            'type' => 'Account',
+            'detail' => Auth::user()->toJson
         ]);
-
-    }
-
-    // Log In Admin User
-    public function loginAdmin(Request $request){
-         // Validate the login credentials
-         $credentials = $request->only('email', 'password');
-         $remember = $request->has('remember');
- 
-         if (Auth::guard('web')->attempt($credentials, $remember)) {
-
-            // Create new log
-            ModelsLog::create([
-                'account' => Auth::user()->name . " • " . Auth::user()->role,
-                'description' => 'Logged in to the system'
-            ]);
-
-             // Authentication passed, redirect to dashboard
-             return redirect()->intended(route('show.dashboard'))->with([
-                 'success' => 'Login Successful'
-             ]);
-         }
-         
-         // Authentication failed, redirect back with an error message
-         return redirect()->route('account.showLogInAdmin')->withErrors([
-             'email' => 'The provided credentials do not match our records.',
-         ]);
     }
 
     // Logout
@@ -157,7 +143,9 @@ class AccountController extends Controller {
             // Create new log
             ModelsLog::create([
                 'account' => Auth::user()->name . " • " . Auth::user()->role,
-                'description' => 'Logged out to the system'
+                'description' => 'Logged out to the system',
+                'type' => 'Account',
+                'detail' => Auth::user()->toJson()
             ]);
     
             // Logout
@@ -182,7 +170,9 @@ class AccountController extends Controller {
         // Create new log
         ModelsLog::create([
             'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Account deactivated'
+            'description' => 'Deactivated account: '.$account->name,
+            'type' => 'Account',
+            'detail' => $account->toJson()
         ]);
     }
 
@@ -226,7 +216,9 @@ class AccountController extends Controller {
         // Create new log
         ModelsLog::create([
             'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Edited account role'
+            'description' => 'Edited account role of '.$account->name.' to '.$account->role,
+            'type' => 'Account',
+            'detail' => $account->toJson()
         ]);
     }
 
@@ -241,11 +233,17 @@ class AccountController extends Controller {
         // Create new log
         ModelsLog::create([
             'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Reactivated account'
+            'description' => 'Reactivated account: '.$account->name,
+            'type' => 'Account',
+            'detail' => $account->toJson()
         ]);
     }
 
     public function editAccess(Request $request){
+        // Get the settings
+        $settings = Settings::all()->first();
+        $access = [];
+
         // Find all accounts of that role
         $secretaries = Account::where('role', "Secretary")->get();
         $assistants = Account::where('role', "Assistant")->get();
@@ -259,9 +257,10 @@ class AccountController extends Controller {
             $secretary->canArchive    = filter_var($request->secretaryAccesses[3], FILTER_VALIDATE_BOOLEAN);
             $secretary->canDownload   = filter_var($request->secretaryAccesses[4], FILTER_VALIDATE_BOOLEAN);
             $secretary->canPrint      = filter_var($request->secretaryAccesses[5], FILTER_VALIDATE_BOOLEAN);
-            dd($secretary);
             $secretary->save();
         }   
+
+        $access['secretary'] = $request->secretaryAccesses;
 
         foreach ($assistants as $assistant) {
             $assistant->canUpload     = filter_var($request->assistantAccesses[0], FILTER_VALIDATE_BOOLEAN);
@@ -275,6 +274,8 @@ class AccountController extends Controller {
 
         }   
 
+        $access['assistant'] = $request->assistantAccesses;
+
         foreach ($clerks as $clerk) {
             $clerk->canUpload     = filter_var($request->clerkAccesses[0], FILTER_VALIDATE_BOOLEAN);
             $clerk->canEdit       = filter_var($request->clerkAccesses[1], FILTER_VALIDATE_BOOLEAN);
@@ -286,12 +287,10 @@ class AccountController extends Controller {
             $clerk->save();
         }   
 
-        // Create new log
-        ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Edited access of roles'
-        ]);
-
+        $access['clerk'] = $request->clerkAccesses;
+        
+        $settings->access = $access;
+        $settings->save();
         return response()->json([
             'success' => 'Edited roles successfully'
         ]);
@@ -350,7 +349,6 @@ class AccountController extends Controller {
 
     }
 
-
     // Edit Functions
     // Edit Profile Name
     public function editName(Request $request){
@@ -370,6 +368,8 @@ class AccountController extends Controller {
         ModelsLog::create([
             'account' => Auth::user()->name.' • '.Auth::user()->role,
             'description' => 'Change profile name from'.$name.' to '.Auth::user(),
+            'type' => 'Account',
+            'detail' => $account->toJson()
         ]);
 
         return response()->json([
@@ -387,6 +387,7 @@ class AccountController extends Controller {
         ]);
 
         $user = Auth::user();
+        $email = $user->email;
         $user->email = $request->input('email');
 
         // Unverify the user
@@ -396,7 +397,9 @@ class AccountController extends Controller {
 
         ModelsLog::create([
             'account' => Auth::user()->name.' • '.Auth::user()->role,
-            'description' => 'Changed email',
+            'description' => 'Changed email from '.$email.'to'.Auth::user()->email,
+            'type' => 'Account',
+            'detail' => $account->toJson()
         ]);
 
         return response()->json([
@@ -404,10 +407,17 @@ class AccountController extends Controller {
         ]);
     }
 
-    public function verifyEmail(Request $request){
+    public function verifyEmail(){
         $user = Auth::user();
         
         $user->sendEmailVerificationNotification();
+
+        ModelsLog::create([
+            'account' => Auth::user()->name.' • '.Auth::user()->role,
+            'description' => 'Sent verification to email with address: '.Auth::user()->email,
+            'type' => 'Account',
+            'detail' => $account->toJson()
+        ]);
 
         return response()->json([
             'success' => 'Verification link successfully!'
