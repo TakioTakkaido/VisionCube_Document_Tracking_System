@@ -1,4 +1,6 @@
 export function showLogs(){
+    $('#archivedTitle').hide();
+    $('#archivedDatePicker').hide();
     $('.dashboardTableTitle').html('System Logs');
 
     if ($.fn.DataTable.isDataTable('#dashboardTable')) {
