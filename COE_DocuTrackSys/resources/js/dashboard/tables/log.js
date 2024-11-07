@@ -27,14 +27,23 @@ export function showLogs(){
     $('#dashboardTable').DataTable({
         ajax: {
             url: window.routes.showAllLogs,
-            dataSrc: 'logs'
+            dataSrc: 'logs',
+            beforeSend: function(){
+                $('.loading').show();
+            },
+            complete: function(){
+                $('.loading').hide();
+            }
         }
         ,
         columnDefs: [
             { type: "datetime", targets : 0 }
         ],
         columns: [
-            {data: 'created_at'},
+            {
+                data: 'created_at',
+                render: function (data){ return moment(data.created_at).format('MMM DD,YYYY hh:kk a')}
+            },
             {data: 'account'},
             {data: 'description'},
         ],

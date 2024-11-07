@@ -103,7 +103,6 @@ Sanchez, Shane David U.
 <body>
 <script>
     $(document).ready(function(){
-        $('body').css('pointer-events', 'none');
         var documentStatistics = $.ajax({
         method: 'GET',
         url: window.routes.getDocumentStatistics,
@@ -114,27 +113,28 @@ Sanchez, Shane David U.
         }});
 
         var getMaintenanceStatus = $.ajax({
-        method: 'GET',
-        url: window.routes.getMaintenanceStatus,
-        success: function(response) {
-            if (response.maintenance == true){
-                $('#accountSettingsBtn').trigger('click');
-            } else {
-                
-                $('#homePageBtn').trigger('click');
+            method: 'GET',
+            url: window.routes.getMaintenanceStatus,
+            success: function(response) {
+                if (response.maintenance == true){
+                    $('#accountSettingsBtn').trigger('click');
+                } else {
+                    
+                    $('#homePageBtn').trigger('click');
+                }
             }
-        }});
+        });
 
         $.when(documentStatistics, getMaintenanceStatus).then(function() {
-            // Re-enable pointer events once loading is complete
-            $('body').css('pointer-events', 'all');
-            
             // Initialize the DataTable after AJAX completes
             $('#accountAccessTable').DataTable();
+
+            $('.loading').hide();
         });
     });
 </script>
 
+<div class="loading"></div>
 {{-- NOTIFICATION --}}
 <x-notification />
 
@@ -147,22 +147,11 @@ Sanchez, Shane David U.
 {{-- INFORMATION TABLES --}}
 <x-dashboard.info.log />
 
-<x-dashboard.info.document-version />
-
-{{-- DOCUMENT VERSIONS --}}
-<x-dashboard.tables.document-version />
-
 {{-- DOCUMENT PREVIEW --}}
 <x-dashboard.document-preview />
 
-
-
 {{-- Routes retrieving document, since AJAX cannot get this as a link, when inserted directly --}}
-
-
 <script>
-
-
     window.routes = {
         // Homepage Routes
         getDocumentStatistics: "{{route('document.getStatistics')}}",

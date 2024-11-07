@@ -6,6 +6,10 @@ import { showLogs } from "./tables/log";
 // Upload button for uploading documents
 $('#homePageBtn').on('click', function(event){
     event.preventDefault();
+    $('.side-panel-section a').removeClass('active');
+    $(this).addClass('active');
+    $('#loadingHomepage').removeClass('active');
+    $('#loadingHomepage').css('display', 'none');
     if (!$('.homepage').hasClass('active')){
         $('.homepage').addClass('active');
         $('.dashboard-table').removeClass('active');
@@ -27,6 +31,9 @@ $('#accountBtn').on('click', function(event){
 // Active Accounts
 $('#activeBtn').on('click', function(event){
     event.preventDefault();
+    $('.home-btn').removeClass('active');
+    $('.side-panel-section a').removeClass('active');
+    $(this).addClass('active');
 
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
@@ -44,7 +51,10 @@ $('#activeBtn').on('click', function(event){
 // Deactivated Accounts
 $('#deactivatedBtn').on('click', function(event){
     event.preventDefault();
-    
+    $('.home-btn').removeClass('active');
+    $('.side-panel-section a').removeClass('active');
+    $(this).addClass('active');
+
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
         $('.homepage').removeClass('active');
@@ -61,7 +71,6 @@ $('#deactivatedBtn').on('click', function(event){
 // Document Button
 $('#documentBtn').on('click', function(event){
     event.preventDefault();
-
     // Show the dropdown
     $('#documentsDropdown').toggleClass('show');
 });
@@ -70,8 +79,9 @@ $('#documentBtn').on('click', function(event){
 // Incoming Document
 $('#incomingBtn').on('click', function(event){
     event.preventDefault();
-    // AJAX Request to get incoming documents into
-    // the system
+    $('.home-btn').removeClass('active');
+    $('.side-panel-section a').removeClass('active');
+    $(this).addClass('active');
 
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
@@ -88,6 +98,9 @@ $('#incomingBtn').on('click', function(event){
 // Outgoing Document
 $('#outgoingBtn').on('click', function(event){
     event.preventDefault();
+    $('.home-btn').removeClass('active');
+    $('.side-panel-section a').removeClass('active');
+    $(this).addClass('active');
 
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
@@ -106,6 +119,9 @@ $('#outgoingBtn').on('click', function(event){
 // Trash Button 
 $('#recycleBinBtn').on('click', function(event){
     event.preventDefault();
+    $('.home-btn').removeClass('active');
+    $('.side-panel-section a').removeClass('active');
+    $(this).addClass('active');
 
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
@@ -123,6 +139,9 @@ $('#recycleBinBtn').on('click', function(event){
 // Archived Button 
 $('#archivedBtn').on('click', function(event){
     event.preventDefault();
+    $('.home-btn').removeClass('active');
+    $('.side-panel-section a').removeClass('active');
+    $(this).addClass('active');
 
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
@@ -140,6 +159,9 @@ $('#archivedBtn').on('click', function(event){
 // Log Button
 $('#logBtn').on('click', function(event){
     event.preventDefault();
+    $('.home-btn').removeClass('active');
+    $('.side-panel-section a').removeClass('active');
+    $(this).addClass('active');
 
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
@@ -168,6 +190,9 @@ $('#systemSettingsBtn').on('click', function (event) {
 // Document Setting
 $('#profileSettingsBtn').on('click', function (event) {
     event.preventDefault();
+    $('.home-btn').removeClass('active');
+    $('.side-panel-section a').removeClass('active');
+    $(this).addClass('active');
 
     if (!$('.profile-settings').hasClass('active')){
         $('.system-settings').addClass('active');
@@ -181,6 +206,9 @@ $('#profileSettingsBtn').on('click', function (event) {
 
 $('#accountSettingsBtn').on('click', function (event) {
     event.preventDefault();
+    $('.home-btn').removeClass('active');
+    $('.side-panel-section a').removeClass('active');
+    $(this).addClass('active');
 
     if (!$('.account-settings').hasClass('active')){
         $('.system-settings').addClass('active');
@@ -194,6 +222,9 @@ $('#accountSettingsBtn').on('click', function (event) {
 
 $('#documentSettingsBtn').on('click', function (event) {
     event.preventDefault();
+    $('.home-btn').removeClass('active');
+    $('.side-panel-section a').removeClass('active');
+    $(this).addClass('active');
 
     if (!$('.document-settings').hasClass('active')){
         $('.system-settings').addClass('active');

@@ -20,7 +20,43 @@ body {
     flex-direction: column;
 }
 
+.loading {
+    position: fixed;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: transparent;
+    z-index: 10000;
+    cursor: wait;
+}
 
+#loadingDocument{
+    display:flex;
+}
+
+.dashboardTable td.dt-empty {
+    text-align: center !important;
+}
+.dashboardTable td.dt-empty:hover {
+    text-align: center !important;
+    background-color: transparent !important;
+}
+
+table.dataTable>tbody>tr.selected>*{
+    box-shadow: none;
+    background-color: #a50b0b;
+}
+
+table.dataTable.hover>tbody>tr.selected:hover>*{
+    box-shadow: none !important;
+    background-color: #810505;
+}
+
+table.dataTable.hover>tbody>tr:hover>*{
+    box-shadow: none !important;
+    background-color: #e4c934;
+}
 /************************TOP PANEL*************************/
 .top-panel {
     height: 10%; 
@@ -45,8 +81,67 @@ body {
     flex-direction: row;
     justify-content: space-between;
 }
+/* General Scrollbar Styling for Multiple Selectors */
+::-webkit-scrollbar {
+    width: 8px; /* Width of the vertical scrollbar */
+    height: 10px; /* Height of the horizontal scrollbar */
+}
 
+/* Scrollbar Thumb Styling */
+::-webkit-scrollbar-thumb {
+    background-color: #a50b0b57; 
+    background-clip: content-box;
+    border-radius: 10px;
+}
 
+/* Thumb Hover Effect */
+::-webkit-scrollbar-thumb:hover {
+    background-color: #a50b0b; 
+}
+
+/* Scrollbar Track Styling */
+::-webkit-scrollbar-track {
+    background-color: rgba(255, 255, 255, 0.26);
+}
+
+/* Specific Containers */
+.table-panel::-webkit-scrollbar,
+#updateDocument::-webkit-scrollbar,
+.logDetails .container::-webkit-scrollbar,
+#documentPreview::-webkit-scrollbar {
+    width: 8px; /* Width of the vertical scrollbar */
+    height: 10px;
+}
+
+/* Specific Thumb Styling */
+.table-panel::-webkit-scrollbar-thumb,
+#updateDocument::-webkit-scrollbar-thumb,
+.logDetails .container::-webkit-scrollbar-thumb,
+#documentPreview::-webkit-scrollbar-thumb {
+    background-color: #a50b0b57; 
+    background-clip: content-box;
+    border-radius: 10px;
+}
+
+/* Specific Thumb Hover Effect */
+.table-panel::-webkit-scrollbar-thumb:hover,
+#updateDocument::-webkit-scrollbar-thumb:hover,
+.logDetails .container::-webkit-scrollbar-thumb:hover,
+#documentPreview::-webkit-scrollbar-thumb:hover {
+    background-color: #a50b0b; 
+}
+
+/* Specific Track Styling */
+.logDetails .container::-webkit-scrollbar-track,
+#documentPreview::-webkit-scrollbar-track {
+    background-color: rgba(255, 255, 255, 0.26);
+}
+
+/* For the UpdateDocument Section */
+#updateDocument::-webkit-scrollbar-thumb,
+#updateDocument::-webkit-scrollbar-thumb:hover {
+    background-color: #a50b0b57; 
+}
 
 
 .header-logo{
@@ -113,6 +208,12 @@ body {
     background-color: #a50b0b;
     overflow-x: hidden;
     padding-top: 10px;
+    scrollbar-width: none;
+}
+
+
+.side-panel::-webkit-scrollbar{
+    display: none;
 }
 
 .sidepanel-btn{
@@ -152,10 +253,13 @@ body {
     cursor: pointer;
 }
 
-.sidepanel-btn.active{ 
-    background-color: black;
+.side-panel-section a.active{ 
+    height: auto;
+    color: black;
+    background-color: #e4c309;
+    box-shadow: 0 0 10px rgba(33, 33, 33, 0.5);
+    cursor: pointer;
 }
-
 
 .dropdown-container { 
     display: none;
@@ -212,6 +316,12 @@ body {
     padding: 20px 25px 20px 20px;
     font-size: 20px;   
     transition: 0.45s ease;
+}
+
+.home-btn.active{
+    box-shadow: 0 0 20px rgba(33, 33, 33, 0.5);
+    padding: 20px 25px 20px 20px;
+    font-size: 20px;
 }
 
 /** FOR JS, FORM POPUP**/
@@ -474,6 +584,15 @@ body {
     width: 100%;
 }
 
+.documentVersion {
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smoother transition */
+}
+
+.documentVersion:not(.documentInfo-active):hover {
+    background-color: #a50b0ba4;
+    color: white;
+}
+
 .modal-content {
     width: 100%;
 }
@@ -587,6 +706,21 @@ button:focus {
     background-color: #a50b0b;
     color: white;
     font-size: 15px;
+}
+
+#notifTitle {
+    background-color: #810505;
+    color: white;
+}
+
+#notifTitle .close {
+    color: white;
+    opacity: 1;
+    text-shadow: none;
+}
+
+#notifMessage {
+    background-color: #c21f1f;
 }
 
 .accountAccessTable th,

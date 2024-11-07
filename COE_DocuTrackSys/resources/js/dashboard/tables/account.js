@@ -2,6 +2,8 @@ import { showNotification } from "../../notification";
 
 // SHOW ACTIVE ACCOUNTS
 export function showActive() {
+    $('#archivedTitle').hide();
+    $('#archivedDatePicker').hide();
     $('.dashboardTableTitle').html('Active Accounts');
 
     if ($.fn.DataTable.isDataTable('#dashboardTable')) {
@@ -28,13 +30,23 @@ export function showActive() {
     $('#dashboardTable').DataTable({
         ajax: {
             url: window.routes.showAllActiveAccounts,
-            dataSrc: 'accounts'
+            dataSrc: 'accounts',
+            beforeSend: function(){
+                $('.loading').show();
+            },
+            complete: function(){
+                $('.loading').hide();
+            }
         },
         columns: [
             {data: 'name'},
             {data: 'email'},
             {data: 'role'}
         ],
+        order: {
+            idx: 2,
+            dir: 'asc'
+        },
         language: {
             emptyTable: "No active accounts present."
         },
@@ -151,6 +163,12 @@ export function showActive() {
                     });
                 }
             });
+
+            if (data.role === 'Admin') {
+                $(row)
+                    .addClass('non-clickable')
+                    .attr('title', 'Admin account cannot be reconfigured.');
+            }
         },
         autoWidth: false
     });
@@ -163,6 +181,8 @@ export function showActive() {
 
 // SHOW DEACTIVATED ACCOUNTS
 export function showDeactivated() {
+    $('#archivedTitle').hide();
+    $('#archivedDatePicker').hide();
     $('.dashboardTableTitle').html('Deactivated Accounts');
 
     if ($.fn.DataTable.isDataTable('#dashboardTable')) {
@@ -188,7 +208,13 @@ export function showDeactivated() {
     $('#dashboardTable').DataTable({
         ajax: {
             url: window.routes.showAllDeactivatedAccounts,
-            dataSrc: 'accounts'
+            dataSrc: 'accounts',
+            beforeSend: function(){
+                $('.loading').show();
+            },
+            complete: function(){
+                $('.loading').hide();
+            }
         },
         columns: [
             {data: 'name'},
@@ -281,8 +307,17 @@ function deactivateAccount(accountId, row) {
         url: window.routes.deactivateAccount.replace(':id', accountId),
         data: formData,
         success: function (response) {
-            $('#dashboardTable').DataTable().ajax.reload();
-            showNotification("Account deactivated successfully!");
+            $('#dashboardTable').DataTable().ajax.reloasd();
+            showNotification('Success', "Account deactivated successfully!");
+        },
+        error: function (response) {    
+            showNotification('Error', "Account cannot be deactivated, or is not found.");
+        },
+        beforeSend: function(){
+            $('.loading').show();
+        },
+        complete: function(){
+            $('.loading').hide();
         }
     });
 }
@@ -301,7 +336,18 @@ function reactivateAccount(accountId, row) {
         success: function (response) {
             $('#dashboardTable').DataTable().ajax.reload();
             $(row).popover('toggle');
-            showNotification("Account reactivated successfully!");
+            showNotification('Success',"Account reactivated successfully!");
+        },
+        error: function (response) {
+            $('#dashboardTable').DataTable().ajax.reload();
+            $(row).popover('toggle');
+            showNotification('Error',"Account cannot be reactivated, or is not found.");
+        },
+        beforeSend: function(){
+            $('.loading').show();
+        },
+        complete: function(){
+            $('.loading').hide();
         }
     });
 }
@@ -320,9 +366,19 @@ function changeRole(accountId, newRole, row) {
             .replace(':role', newRole),
         data: formData,
         success: function (response) {
-            showNotification('Account changed to ' + newRole + ' successfully!')
+            showNotification('Success', 'Account changed to ' + newRole + ' successfully!')
             $('#dashboardTable').DataTable().ajax.reload();
             $(row).popover('hide');
+        },
+        error: function (response) {
+            showNotification('Error', 'Account cannot be changed to ' + newRole + ' or is not found.')
+            $(row).popover('hide');
+        },
+        beforeSend: function(){
+            $('.loading').show();
+        },
+        complete: function(){
+            $('.loading').hide();
         }
     });
 }

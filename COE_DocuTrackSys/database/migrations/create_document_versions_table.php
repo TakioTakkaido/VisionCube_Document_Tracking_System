@@ -40,14 +40,14 @@ return new class extends Migration
             $table->date('document_date');
             $table->string('color');
 
-            $table->string('previous_type')->default('N/A');
-            $table->string('previous_status')->default('N/A');
-            $table->string('previous_sender')->default('N/A');
-            $table->string('previous_recipient')->default('N/A');
-            $table->string('previous_subject')->default('N/A');
-            $table->string('previous_assignee')->default('N/A');
-            $table->string('previous_category')->default('N/A');
-            $table->date('previous_document_date')->default('N/A');
+            $table->string('previous_type')->default('None');
+            $table->string('previous_status')->default('None');
+            $table->string('previous_sender')->default('None');
+            $table->string('previous_recipient')->default('None');
+            $table->string('previous_subject')->default('None');
+            $table->string('previous_assignee')->default('None');
+            $table->string('previous_category')->default('None');
+            $table->date('previous_document_date')->default('None');
             $table->unsignedBigInteger('previous_series_number')->nullable();
             $table->unsignedBigInteger('previous_memo_number')->nullable();
 

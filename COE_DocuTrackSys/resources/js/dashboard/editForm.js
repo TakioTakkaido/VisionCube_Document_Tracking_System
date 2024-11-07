@@ -10,11 +10,14 @@ export function updateDocument(id){
     $('.documentVersion').addClass('disabled');
     $('.documentAttachment').addClass('disabled');
 
+    // Load the document
+    $('.documentPreviewInfo').hide();
+    $('#loadingDocument').show();
+
     $.ajax({
         method: 'GET',
         url: window.routes.showDocument.replace(':id', id),
         success: function (response) {
-            console.log(response.document);
             $('#documentInfoContainer').hide();
             $('#updateDocument').show();
 
@@ -80,6 +83,13 @@ export function updateDocument(id){
         },
         error: function (xhr){  
             console.log(xhr.responseJSON);
+        },
+        beforeSend: function(){
+            $('.loading').show();
+        },
+        complete: function(){
+            $('.loading').hide();
+            $('#loadingDocument').hide();
         }
     });
 }
@@ -315,6 +325,7 @@ $('#submitEditDocumentBtn').off('click').on('click', function(event) {
 
     formData.append('status', $('#editUploadStatus').val());
     formData.append('assignee', $('#editUploadAssignee').val());
+    formData.append('color', $('#editUploadStatus').data('color'));
     formData.append('category', $('#editUploadCategory').val());
 
     var fileInput = $('#editSoftcopy')[0];
@@ -329,7 +340,6 @@ $('#submitEditDocumentBtn').off('click').on('click', function(event) {
     $('#viewDocumentAttachmentsBtn').prop('disabled', true);
 
     var documentId = $('#documentId').val();
-    console.log(documentId);
     $.ajax({
         method: 'POST',
         url: window.routes.editDocument.replace(':id', documentId),
@@ -345,7 +355,7 @@ $('#submitEditDocumentBtn').off('click').on('click', function(event) {
             $('#dashboardTable').DataTable().ajax.reload();
         },
         error: function(data) {
-            showNotification('Error in updating document.');
+            showNotification('Error', 'Error in updating document.');
 
             if (data.responseJSON.errors.type){
                 $('#editTypeError').html(data.responseJSON.errors.type);
@@ -396,8 +406,8 @@ $('#submitEditDocumentBtn').off('click').on('click', function(event) {
                 $('#editUploadDate').css('background-color', 'pink');
             }
 
-            if (data.responseJSON.errors.file){
-                $('#editFileError').html(data.responseJSON.errors.file);
+            if (data.responseJSON.errors.file || data.responseJSON.errors["files.0"]){
+                $('#editFileError').html(data.responseJSON.errors.file || data.responseJSON.errors["files.0"]);
                 $('#editFileError').css('display', 'block');
                 $('#editSoftcopy').css('border', '1px solid red');
                 $('#editSoftcopy').css('background-color', 'pink');
@@ -437,6 +447,12 @@ $('#submitEditDocumentBtn').off('click').on('click', function(event) {
 
             $('#submitEditDocumentBtn').prop('disabled', false);
             $('#clearEditBtn').prop('disabled', false);
+        },
+        beforeSend: function(){
+            $('.loading').show();
+        },
+        complete: function(){
+            $('.loading').hide();
         }
     });
 });
@@ -648,17 +664,19 @@ $(document).on('click', '.deleteEditUploadFileBtn', function(event){
     var fileName = $(this).data('name');
     Array.from($('.editUploadFilesList .list-group-item')).forEach((file, index) => {
         if ($(file).data('id') == deleteId){
+            var dataTransfer = new DataTransfer();
+            var deletedFileName = $(file).find('span').html();
+            var files = $('#editSoftcopy')[0].files;
+            Array.from(files).forEach(function(file) {
+                if (file.name !== deletedFileName) {
+                    dataTransfer.items.add(file); // Add file to the DataTransfer object if it's not the deleted file
+                }
+            });
+
+            $('#editSoftcopy')[0].files = dataTransfer.files;
             $(file).remove();
         }
     });
-
-    Array.from($('#editSoftcopy').get(0).files).forEach(file => {
-        console.log(file.name);
-        console.log(fileName);
-        if (file.name == fileName){
-            file.remove();
-        }
-    })
 });
 
 $('#editUploadCategory').on('input', function(event){
@@ -673,6 +691,8 @@ $('#editDescription').on('input', function(event){
 
 $('#editUploadStatus').on('input', function(event){
     event.preventDefault();
+    $(this).data('color', $($('#editUploadStatus')[0].options[($(this)[0].selectedIndex)]).data('color'));
+    $(this).css('background-color', $($('#editUploadStatus')[0].options[($(this)[0].selectedIndex)]).data('color'));
     $('#editStatusError').css('display', 'none');
 });
 

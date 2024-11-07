@@ -55,7 +55,7 @@ class EditDocumentRequest extends FormRequest {
             'subject.required' => 'Document subject is required!',
 
             'files.required' => 'Softcopy file is required!',
-            'files.*.mimes' => 'Softcopy file must be of types: '.FileExtension::getFileExtensions(),
+            'files.*.mimes' => 'Softcopy file/s must be of types: '.FileExtension::getFileExtensions(),
 
             'category.required' => 'Document category is required!',
 

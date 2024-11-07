@@ -5,6 +5,9 @@ import { getDocumentStatistics } from "../homepage/documentStatistics";
 var update = false;
 // SHOW INCOMING DOCUMENTS
 export function showDocument(category){
+    $('#archivedTitle').hide();
+    $('#archivedDatePicker').hide();
+
     $('.dashboardTableTitle').html(category + ' Documents');
     
     if ($.fn.DataTable.isDataTable('#dashboardTable')) {
@@ -42,7 +45,13 @@ export function showDocument(category){
         var table = $('#dashboardTable').DataTable({
             ajax: {
                 url: window.routes.showDocuments.replace(':id', category),
-                dataSrc: 'documents'
+                dataSrc: 'documents',
+                beforeSend: function(){
+                    $('.loading').show();
+                },
+                complete: function(){
+                    $('.loading').hide();
+                }
             },
             columns: [
                 {data: null, orderable: false, searchable: false, render: DataTable.render.select()},
@@ -281,7 +290,13 @@ export function showDocument(category){
         $('#dashboardTable').DataTable({
             ajax: {
                 url: window.routes.showDocuments.replace(':id', category),
-                dataSrc: 'documents'
+                dataSrc: 'documents',
+                beforeSend: function(){
+                    $('.loading').show();
+                },
+                complete: function(){
+                    $('.loading').hide();
+                }
             },
             columns: [
                 {data: null, orderable: false, searchable: false, render: DataTable.render.select()},
@@ -493,8 +508,6 @@ export function showDocument(category){
             }
         });
     } else if (category === "Trash") {
-        $('#archivedTitle').hide();
-        $('#archivedDatePicker').hide();
         $('#dashboardTable').html(
             "<thead><tr>" +
             "<th></th>" +    
@@ -520,7 +533,13 @@ export function showDocument(category){
         $('#dashboardTable').DataTable({
             ajax: {
                 url: window.routes.showDocuments.replace(':id', category),
-                dataSrc: 'documents'
+                dataSrc: 'documents',
+                beforeSend: function(){
+                    $('.loading').show();
+                },
+                complete: function(){
+                    $('.loading').hide();
+                }
             },
             columns: [
                 {data: null, orderable: false, searchable: false, render: DataTable.render.select()},
@@ -632,13 +651,18 @@ export function showDocument(category){
                         $('#deleteDocument' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
-                            deleteDocument(data.document_id);
+                            $('#confirmDeleteDocumentModal').modal('show');
+                            $('#confirmDeleteDocumentModal').data('ids', data.document_id);
+                            
+                            // deleteDocument(data.document_id);
                         });
 
                         $('#deleteDocumentAll' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
-                            deleteAllDocument(selectedRows);
+                            $('#confirmDeleteDocumentModal').modal('show');
+                            $('#confirmDeleteDocumentModal').data('ids', selectedRows);
+                            // deleteAllDocument(selectedRows);
                         });
 
                         $('#viewAttachments' + data.document_id).off('click').on('click', function(event) {
@@ -726,17 +750,25 @@ export function showDocument(category){
         );
 
         // Custom filtering function for DataTable
-        DataTable.ext.search.push(function (settings, data, dataIndex) {
-            // Get the selected date from the archivedDatePicker
+        // Define the date filter as a separate function
+        function dateFilter(settings, data, dataIndex) {
             var min = $('#archivedDatePicker').datepicker('getDate');
             var date = new Date(data[1]);
 
-            // Format both dates as 'MMMM YYYY' for comparison
-            var minFormatted = moment(min).format('MMMM YYYY');  
-            var tableFormatted = moment(date).format('MMMM YYYY'); 
+            if (!min) return true;
 
-            // Compare the selected date and the table date
+            var minFormatted = moment(min).format('MMMM YYYY');
+            var tableFormatted = moment(date).format('MMMM YYYY');
+
             return minFormatted === tableFormatted;
+        }
+
+        // Add the filter when needed
+        DataTable.ext.search.push(dateFilter);
+
+        // Remove the filter when needed
+        DataTable.ext.search = DataTable.ext.search.filter(function(f) {
+            return f !== dateFilter;
         });
         
         // Custom filtering function which will search data in column four between two values
@@ -752,7 +784,13 @@ export function showDocument(category){
         var table = $('#dashboardTable').DataTable({
             ajax: {
                 url: window.routes.showDocuments.replace(':id', category),
-                dataSrc: 'documents'
+                dataSrc: 'documents',
+                beforeSend: function(){
+                    $('.loading').show();
+                },
+                complete: function(){
+                    $('.loading').hide();
+                }
             },
             columns: [
                 {data: null, orderable: false, searchable: false, render: DataTable.render.select()},
@@ -786,7 +824,7 @@ export function showDocument(category){
                 idx: 1,
                 dir: 'desc'
             },
-
+            
             autoWidth: false,
             createdRow: function(row, data) {
                 $(row).on('mouseenter', function(){
@@ -965,7 +1003,17 @@ function moveDocument(id, location, row){
         success: function (response) {
             $('#dashboardTable').DataTable().ajax.reload();
             $(row).popover('hide');
-            showNotification("Document moved to " + location + " successfully!");
+            showNotification('Success', "Document moved to " + location + " successfully!");
+        },
+        error: function(response){
+            console.log(response);
+            showNotification('Error', "Document cannot be moved to "+location+", or not found.");
+        },
+        beforeSend: function(){
+            $('.loading').show();
+        },
+        complete: function(){
+            $('.loading').hide();
         }
     });
 }
@@ -979,8 +1027,6 @@ function moveAllDocument(ids, location, row){
         'category' : location
     }
 
-    console.log(formData);
-
     $.ajax({
         method: "POST",
         url: window.routes.moveAllDocuments,
@@ -992,7 +1038,13 @@ function moveAllDocument(ids, location, row){
         },
         error: function(response) {
             $(row).popover('hide');
-            showNotification('Error', "Documents moved to " + location + " successfully!");
+            showNotification('Error', "Documents cannot be moved to "+location+", or not found.");
+        },
+        beforeSend: function(){
+            $('.loading').show();
+        },
+        complete: function(){
+            $('.loading').hide();
         }
     });
 }
@@ -1003,7 +1055,6 @@ export function documentPreview(id, attachment = false){
         method: "GET",
         url: window.routes.previewDocument.replace(':id', id),
         success: function (response) {
-            console.log(response.document.category);
             if (response.document.category === "Trash" || response.document.category === "Archived"){
                 $('#updateDocumentMenuBtn').css('display', 'none');
                 $('#restoreDocumentMenuBtn').css('display', 'inline-block');
@@ -1054,6 +1105,9 @@ export function documentPreview(id, attachment = false){
                 $('#viewDocumentHistoryBtn').trigger('click');
             }
             
+        },
+        beforeSend: function(){
+            $('.loading').show();
         }
     });
 }
@@ -1062,59 +1116,83 @@ export function documentPreview(id, attachment = false){
 $('#restoreDocumentMenuBtn').on('click', function(event){
     event.preventDefault();
     var id = $(this).data('id');
-
+    $('.loading').show();
     $('#restoreDocumentMenuBtn').prop('disabled', true);
     $('#updateDocumentMenuBtn').prop('disabled', true);
     $('#viewDocumentHistoryBtn').prop('disabled', true);
     $('#viewDocumentAttachmentsBtn').prop('disabled', true);
-    
+    $('#documentInfoTitle').html(`
+        <h5 class="text-left m-0 ml-2">Version History</h5>
+            <div class="spinner-border spinner-border-sm text-muted ml-2" role="status">
+        </div>
+    `);
     restoreDocument(id);
 });
 
 $('#updateDocumentMenuBtn').on('click', function(event){
     event.preventDefault();
     var id = $(this).data('id');
-
+    $('.loading').show();
+    $('.documentPreviewInfo').hide();
     $('#restoreDocumentMenuBtn').prop('disabled', true);
     $('#updateDocumentMenuBtn').prop('disabled', true);
     $('#viewDocumentHistoryBtn').prop('disabled', true);
     $('#viewDocumentAttachmentsBtn').prop('disabled', true);
-    
+    $('#documentInfoTitle').html(`
+        <h5 class="text-left m-0 ml-2">Version History</h5>
+    `);
     updateDocument(id);
 });
 
 $('#viewDocumentHistoryBtn').on('click', function(event){
     event.preventDefault();
     var id = $(this).data('id');
-
+    $('.loading').show();
+    $('.documentPreviewInfo').hide();
     $('#restoreDocumentMenuBtn').prop('disabled', true);
     $('#updateDocumentMenuBtn').prop('disabled', true);
     $('#viewDocumentHistoryBtn').prop('disabled', true);
     $('#viewDocumentAttachmentsBtn').prop('disabled', true);
+    $('#documentInfoTitle').html(`
+        <h5 class="text-left m-0 ml-2">Version History</h5>
+            <div class="spinner-border spinner-border-sm text-muted ml-2" role="status">
+        </div>
+    `);
     viewDocumentVersions(id);
 });
 
 $('#viewDocumentAttachmentsBtn').on('click', function(event){
     event.preventDefault();
     var id = $(this).data('id');
-
+    $('.loading').show();
+    $('.documentPreviewInfo').hide();
     $('#restoreDocumentMenuBtn').prop('disabled', true);
     $('#updateDocumentMenuBtn').prop('disabled', true);
     $('#viewDocumentHistoryBtn').prop('disabled', true);
     $('#viewDocumentAttachmentsBtn').prop('disabled', true);
+    $('#documentInfoTitle').html(`
+        <h5 class="text-left m-0 ml-2">Attachments</h5>
+            <div class="spinner-border spinner-border-sm text-muted ml-2" role="status">
+        </div>
+    `);
     viewAttachments(id);
 });
 
 // View Document Versions
 function viewDocumentVersions(id){
+    $('.loading').show();
+    $('.documentPreviewInfo').hide();
+    $('#loadingDocument').show();
     $('.documentVersion').removeClass('disabled');
-
     $.ajax({
         type: "GET",
         url: window.routes.showDocumentVersions.replace(':id', id),
         success: function (response) {
             // Clear document info list
-            $('#documentInfoTitle').html(`Version History`);
+            $('#documentInfoTitle').html(`
+                <h5 class="text-left m-0 ml-2">Version History</h5>
+            `);
+            $('#documentInfoSpinner').show();
             $('#documentInfoList').html('');
             // Had new entries
             for (var i = 0; i < response.documentVersions.length; i++) {
@@ -1148,13 +1226,17 @@ function viewDocumentVersions(id){
         },
         error: function(response){
             console.log(response);
+        },
+        complete: function(response) {
+            $('#documentInfoSpinner').hide();
         }
     });
 }
 
 $(document).on('click', '.documentVersion', function(event){
     event.preventDefault();
-
+    $('.loading').show();
+    $('.documentPreviewInfo').hide();
     $('.documentInfo-active').removeClass('documentInfo-active');
     $(this).addClass('documentInfo-active');
     
@@ -1168,7 +1250,6 @@ $(document).on('click', '.documentVersion', function(event){
         type: "GET",
         url: window.routes.showDocumentVersion.replace(':id', id),
         success: function (response) {
-            console.log(response);
             if (response.version.series_number === "undefined" || response.version.series_number === null){
                 response.version.series_number = "N/A";
                 response.version.previous_series_number = "N/A";
@@ -1265,6 +1346,14 @@ $(document).on('click', '.documentVersion', function(event){
         },
         error: function(response){
             console.log(response);
+        },
+        beforeSend: function(){
+            $('.loading').show();
+            $('#loadingDocument').show();
+        },
+        complete: function(){
+            $('.loading').hide();
+            $('#loadingDocument').hide();
         }
     });
 })
@@ -1272,13 +1361,18 @@ $(document).on('click', '.documentVersion', function(event){
 // View Attachments
 function viewAttachments(id){
     $('.documentAttachment').removeClass('disabled');
-
+    $('.loading').show();
+    $('.documentPreviewInfo').hide();
+    $('#loadingDocument').show();
     $.ajax({
         type: "GET",
         url: window.routes.showAttachments.replace(':id', id),
         success: function (response) {
             // Clear document info list
-            $('#documentInfoTitle').html(`Attachments`);
+            $('#documentInfoTitle').html(`
+                <h5 class="text-left m-0 ml-2">Attachments</h5>
+            `);
+            $('#documentInfoSpinner').show();
             $('#documentInfoList').html('');
             // Had new entries
             for (var i = 0; i < response.attachments.length; i++) {
@@ -1304,15 +1398,21 @@ function viewAttachments(id){
         },
         error: function(response){
             console.log(response);
+        },
+        complete: function(response) {
+            $('#documentInfoSpinner').hide();
         }
     });
 }
 
 $(document).on('click', '.documentAttachment', function(event){
     event.preventDefault();
+    $('.loading').show();
 
     $('.documentInfo-active').removeClass('documentInfo-active');
     $(this).addClass('documentInfo-active');
+    
+    $('.documentPreviewInfo').hide();
 
     var id = $(this).data('id');
     
@@ -1343,6 +1443,14 @@ $(document).on('click', '.documentAttachment', function(event){
         },
         error: function(response){
             console.log(response);
+        },
+        beforeSend: function(){
+            $('.loading').show();
+        },
+        complete: function(){
+            $('.loading').hide();
+            $('#loadingDocument').hide();
+            $('#documentInfoSpinner').hide();
         }
     });
 })
@@ -1371,6 +1479,13 @@ function restoreDocument(id, rightClick = false){
         },
         error: function(response){
             console.log(response);
+            showNotification('Error', "Document cannot be restored, or not found.");
+        },
+        beforeSend: function(){
+            $('.loading').show();
+        },
+        complete: function(){
+            $('.loading').hide();
         }
     });
 }
@@ -1391,11 +1506,13 @@ function restoreAllDocument(ids){
             showNotification('Success', "Documents restored successfully!");
         },
         error: function(response) {
-            showNotification('Error', "Documents restored successfully!");
+            console.log(response);
+            showNotification('Error', "Documents cannot be restored, or not found.");
         }
     });
 }
 
+// Delete Document
 function deleteDocument(id){
     var formData = new FormData();
     formData = {
@@ -1413,6 +1530,13 @@ function deleteDocument(id){
         },
         error: function(response){
             console.log(response);
+            showNotification('Success', "Document might already be deleted, or not found.");
+        },
+        beforeSend: function(){
+            $('.loading').show();
+        },
+        complete: function(){
+            $('.loading').hide();
         }
     });
 }
@@ -1434,7 +1558,25 @@ function deleteAllDocument(ids){
             showNotification('Success', "Documents deleted successfully!");
         },
         error: function(response) {
-            showNotification('Error', "Documents deleted successfully!");
+            showNotification('Error', "Documents might already be deleted, or not found.");
+        },
+        beforeSend: function(){
+            $('.loading').show();
+        },
+        complete: function(){
+            $('.loading').hide();
         }
     });
 }
+
+$('.confirmDeleteBtn').on('click', function(event){
+    event.preventDefault();
+    $('.loading').show();
+    $('#confirmDeleteDocumentModal').modal('hide');
+    console.log($(this).data('ids'));
+    if (!$(this).data('ids').length){
+        deleteAllDocument($('#confirmDeleteDocumentModal').data('ids'));
+    } else {
+        deleteDocument($('#confirmDeleteDocumentModal').data('ids'));
+    }
+});

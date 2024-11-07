@@ -18,12 +18,4 @@ class Log extends Model
         'type',
         'detail'
     ];
-
-    protected function createdAt() : CastsAttribute {
-        return CastsAttribute::make(
-            get: fn ($value) => (string) Carbon::parse($value)
-                ->setTimezone('Asia/Singapore')
-                ->format('M. d, Y h:i:s a')
-        );
-    }
 }

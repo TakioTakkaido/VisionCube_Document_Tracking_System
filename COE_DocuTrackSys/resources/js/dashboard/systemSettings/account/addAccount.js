@@ -19,11 +19,11 @@ $('#addAccountBtn').on('click', function(event){
         url: window.routes.create,
         data: formData,
         success: function (data) {
-            showNotification('Account added successfully!');
+            showNotification('Success', 'Account added successfully!');
         },
         error: function (data) {
             // Get errors
-            showNotification('Error adding account.');
+            showNotification('Error', 'Error adding account.');
             var data = JSON.parse(data.responseText);
 
             // Change the input field, and

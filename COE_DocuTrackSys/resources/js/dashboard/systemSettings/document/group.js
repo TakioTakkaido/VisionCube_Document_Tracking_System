@@ -23,7 +23,7 @@ $('#addParticipantGroupBtn').on('click', function(event){
         data: formData,
         success: function (data) {
            // Log success message
-            showNotification('Success', 'Group added successfully!  <a href="#" class="reload">Reload</a>');
+            showNotification('Success', 'Group added successfully!');
             var newParticipantGroupId = data.id;
             // Update list group
             // Append a new list item to the list group
@@ -81,7 +81,7 @@ $('.systemParticipantGroupList').on('click', '.saveParticipantGroupBtn' , functi
         data: formData,
         success: function (data) {
            // Log success message
-            showNotification('Success', 'Group edited successfully!  <a href="#" class="reload">Reload</a>');
+            showNotification('Success', 'Group edited successfully!');
 
             // Update list group
             var newParticipantGroupText = $('#editParticipantGroupText').val();
@@ -229,7 +229,7 @@ $('#confirmDeleteParticipantGroupBtn').on('click', function(event){
         url: window.routes.deleteParticipantGroup,
         data: formData,
         success: function (data) {
-            showNotification('Success', 'Group deleted successfully! <a href="#" class="reload">Reload</a>');
+            showNotification('Success', 'Group deleted successfully!');
 
             // Remove the ParticipantGroup in the front end
             $('#participantGroup' + participantGroupId).remove();
