@@ -82,7 +82,6 @@
                                 <option value="">Select Category</option>
                                 <option value="Incoming">Incoming</option>
                                 <option value="Outgoing">Outgoing</option>
-                                <option value="Archived">Archived</option>
                             </select>
                         <span class="error" id="categoryError" style="display:none;"></span>
                     </div>

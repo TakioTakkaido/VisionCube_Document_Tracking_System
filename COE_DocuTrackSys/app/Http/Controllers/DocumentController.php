@@ -175,9 +175,9 @@ class DocumentController extends Controller{
 
         ModelsLog::create([
             'account'       => Auth::user()->name . " • " . Auth::user()->role,
-            'description'   => 'Deleted document: '.$document->previous_subject,
+            'description'   => 'Deleted document: '.$document->subject,
             'type' => 'Document',
-            'detail' => $document->toJson()
+            'detail' => $document->latestVersion()->toJson()
         ]);
         
         $document->delete();
@@ -189,7 +189,7 @@ class DocumentController extends Controller{
         $documents = [];
         foreach($ids as $id){    
             $document = Document::find($id);
-            $documents[] = $document->toArray();
+            $documents[] = $document->latestVersion()->toArray();
             $document->delete();
         }
 

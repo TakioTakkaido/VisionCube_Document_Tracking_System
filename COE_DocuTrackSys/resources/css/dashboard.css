@@ -836,3 +836,8 @@ button:focus {
 #logInfo ul {
     padding-left: 15px;
 }
+
+.datepicker{
+    font-size: 15px;
+    padding: 1px;
+}
