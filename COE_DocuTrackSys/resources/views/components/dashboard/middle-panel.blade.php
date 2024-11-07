@@ -3,6 +3,13 @@
     <x-dashboard.side-bar />
     
     <div class="table-panel">
+        {{-- Loading Screen --}}
+        <div id="loadingHomepage" class="active container justify-content-center align-items-center" style="height: 100%; position: absolute; width: 100%; display: flex; overflow-x: hidden; overflow-y: hidden;">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        
         {{-- Homepage --}}
         <div class="homepage">
             <x-dashboard.homepage />

@@ -25,7 +25,7 @@ $('#addStatusBtn').on('click', function(event){
         data: formData,
         success: function (data) {
            // Log success message
-            showNotification('Success', 'Status added successfully!  <a href="#" class="reload">Reload</a>');
+            showNotification('Success', 'Status added successfully!');
             var newStatusId = data.id;
             // Update list group
             // Append a new list item to the list group
@@ -82,7 +82,7 @@ $('.systemStatusList').on('click', '.saveStatusBtn' , function(event){
         data: formData,
         success: function (data) {
            // Log success message
-            showNotification('Success', 'Status edited successfully!  <a href="#" class="reload">Reload</a>');
+            showNotification('Success', 'Status edited successfully!');
 
             // Update list group
             var newStatusText = $('#editStatusText').val();
@@ -237,7 +237,7 @@ $('#confirmDeleteStatusBtn').on('click', function(event){
         url: window.routes.deleteStatus,
         data: formData,
         success: function (data) {
-            showNotification('Success', 'Status deleted successfully! <a href="#" class="reload">Reload</a>');
+            showNotification('Success', 'Status deleted successfully!');
 
             // Remove the status in the front end
             $('#status' + statusId).remove();

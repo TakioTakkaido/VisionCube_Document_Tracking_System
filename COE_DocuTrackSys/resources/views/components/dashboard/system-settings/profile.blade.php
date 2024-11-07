@@ -66,7 +66,9 @@
                     </div>
                     
                     @if (!Auth::user()->isVerified())
-                        <span class="small mr-auto">Email not verified. Verify email before using the system.</span>
+                        <span class="badge badge-warning text-wrap mr-2 text-justify" style="background-color: transparent; color: black;">
+                            Email not verified. Verify email before using the system.
+                        </span>
                     @endif
 
                     <div class="col-auto d-flex justify-content-end">

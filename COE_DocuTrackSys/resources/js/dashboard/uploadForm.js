@@ -243,6 +243,7 @@ $('#submitDocumentForm').on('click', function(event) {
         formData.append('files[]', fileInput.files[i]);  // Correct file append
     }
 
+    $('.loading').show();
     $.ajax({
         method: 'POST',
         url: window.routes.uploadDocument,
@@ -257,11 +258,10 @@ $('#submitDocumentForm').on('click', function(event) {
             $('#submitDocumentForm').prop('disabled', false);
             $('#clearUploadBtn').prop('disabled', false);
 
-            showNotification('Document upload success!');
+            showNotification('Success', 'Document upload success!');
         },
         error: function(data) {
-            showNotification('Error in uploading document.');
-
+            showNotification('Error', 'Error in uploading document.');
             if (data.responseJSON.errors.type){
                 $('#typeError').html(data.responseJSON.errors.type);
                 $('#uploadDocType').css('border', '1px solid red');
@@ -322,12 +322,12 @@ $('#submitDocumentForm').on('click', function(event) {
                 $('#uploadDate').css('border', '1px solid red');
                 $('#uploadDate').css('background-color', '#f09d9d');
             }
-
-            if (data.responseJSON.errors.file){
-                $('#fileError').html(data.responseJSON.errors.file);
+            
+            if (data.responseJSON.errors.files || data.responseJSON.errors["files.0"]){
+                $('#fileError').html(data.responseJSON.errors.files|| data.responseJSON.errors["files.0"]);
                 $('#fileError').css('display', 'block');
-                $('.custom-file-label').css('border', '1px solid red');
-                $('.custom-file-label').css('background-color', '#f09d9d');
+                $('.uploadFiles').css('border', '1px solid red');
+                $('.uploadFiles').css('background-color', '#f09d9d');
             }
 
             if (data.responseJSON.errors.category){
@@ -353,6 +353,9 @@ $('#submitDocumentForm').on('click', function(event) {
             
             $('#submitDocumentForm').prop('disabled', false);
             $('#clearUploadBtn').prop('disabled', false);
+        },
+        complete: function(){
+            $('.loading').hide();
         }
     });
 });
@@ -529,7 +532,7 @@ $('#uploadDate').on('input', function(event){
     $('#dateError').css('display', 'none');
 })
 
-$('#softcopy').on('input', function(event){
+$('#softcopy').off('input').on('input', function(event){
     event.preventDefault();
     var files = this.files;
 
@@ -559,11 +562,25 @@ $(document).on('click', '.deleteUploadFileBtn', function(event){
     event.stopPropagation();
     var deleteId = $(this).data('id');
     Array.from($('.uploadFilesList .list-group-item')).forEach((file, index) => {
-        console.log($(file).data('id'));
+        
         if ($(file).data('id') == deleteId){
+            var dataTransfer = new DataTransfer();
+            var deletedFileName = $(file).find('span').html();
+            var files = $('#softcopy')[0].files;
+            Array.from(files).forEach(function(file) {
+                if (file.name !== deletedFileName) {
+                    dataTransfer.items.add(file); // Add file to the DataTransfer object if it's not the deleted file
+                }
+            });
+
+            $('#softcopy')[0].files = dataTransfer.files;
             $(file).remove();
         }
     });
+    if ($('#softcopy')[0].files.length === 0) {
+        $('.uploadFiles').html('<div>No files added</div>');
+        $('.uploadFiles').data('value', 'none');
+    }
 });
 
 $('#uploadCategory').on('input', function(event){
@@ -573,7 +590,6 @@ $('#uploadCategory').on('input', function(event){
 
 $('#uploadStatus').on('input', function(event){
     event.preventDefault();
-    console.log($($('#uploadStatus')[0].options[($(this)[0].selectedIndex)]).data('color'));
     $(this).data('color', $($('#uploadStatus')[0].options[($(this)[0].selectedIndex)]).data('color'));
     $(this).css('background-color', $($('#uploadStatus')[0].options[($(this)[0].selectedIndex)]).data('color'));
     $('#statusError').css('display', 'none');

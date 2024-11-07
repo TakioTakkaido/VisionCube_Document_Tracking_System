@@ -1,4 +1,4 @@
-<div class="container border p-3 rounded">
+<div class="container-fluid border p-3 rounded">
     <h6 class="p-0 font-weight-bold">Upload Document Form</h6>
     {{-- Upload Document Form --}}
     <form class="uploadContent w-100" id="uploadDocumentForm" method="post">
@@ -13,7 +13,7 @@
                     <div class="col">
                         <label for="uploadDocType">Document Type</label>
                         <select id="uploadDocType" class="uploadInput" name="type">
-                            <option value="">Select the Type of Document</option>
+                            <option value="" disabled selected>Select the Type of Document</option>
                             {{-- Obtained document types using Laravel--}}
                             @foreach ($docTypes as $index => $docType)
                                 @if ($docType->value !== 'default')
@@ -45,7 +45,7 @@
                     <div class="col">
                         <label for="uploadStatus">Status</label>
                         <select id="uploadStatus" class="uploadInput" name="status">
-                            <option value="">Select Document Status</option>
+                            <option value="" disabled selected>Select Document Status</option>
                             {{-- Obtained document statuses using Laravel--}}
                             @foreach ($docStatuses as $docStatus)
                                 @if ($docStatus->value !== 'default')
@@ -62,7 +62,7 @@
                     <div class="col">
                         <label for="uploadAssignee">Assignee</label>
                         <select id="uploadAssignee" class="uploadInput" name="assignee">
-                            <option value="">Select Assignee</option>
+                            <option value="" disabled selected>Select Assignee</option>
                             {{-- Obtained assignees through account roles using Laravel--}}
                             @foreach ($roles as  $role)
                                 @if ($role->value !== 'default' && $role->value !== 'Admin')
@@ -79,7 +79,7 @@
                     <div class="col">
                         <label for="uploadCategory">Category</label>
                             <select id="uploadCategory" class="uploadInput" name="category">
-                                <option value="">Select Category</option>
+                                <option value="" disabled selected>Select Category</option>
                                 <option value="Incoming">Incoming</option>
                                 <option value="Outgoing">Outgoing</option>
                             </select>
@@ -149,11 +149,11 @@
         <div class="row mb-2">
             <div class="col">
                 <label for="uploadSoftcopy">Document Attachment/s: </label>
-                <div class="container rounded border p-2 d-flex justify-content-center align-items-center uploadFiles" data-value="none" style="flex-wrap: wrap; height: 200px;">
+                <div class="container rounded border p-2 d-flex justify-content-center align-items-center uploadFiles uploadInput" data-value="none" style="flex-wrap: wrap; height: 200px;">
                     <div>No files added</div>
                 </div>
                 
-                <div class="form-group">
+                <div class="form-group mb-0">
                     <label class="custom-file">
                         <label class="custom-file-label uploadInput" for="softcopy" id="fileLink">Add file/s to the document</label>
                         <input type="file" id="softcopy" class="uploadInput custom-file-input" placeholder="Choose File" name="files[]" multiple>

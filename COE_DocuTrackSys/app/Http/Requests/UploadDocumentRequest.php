@@ -22,7 +22,7 @@ class UploadDocumentRequest extends FormRequest {
             'memo_number' => $memo,
             'recipient' => 'required|string|max:255',
             'subject' => 'required|string',
-            'files.*' => 'required|file|mimes:'.FileExtension::getFileExtensions(),
+            'files.*' => 'mimes:'.FileExtension::getFileExtensions(),
             'files' => 'required|array',
             'category' => 'required|string',
             'status' => 'required|string',
@@ -53,7 +53,7 @@ class UploadDocumentRequest extends FormRequest {
             'subject.required' => 'Document subject is required!',
 
             'files.required' => 'Softcopy file is required!',
-            'files.*.mimes' => 'Softcopy file must be of types: '.FileExtension::getFileExtensions(),
+            'files.*.mimes' => 'Softcopy file/s must only be of types: '.FileExtension::getFileExtensions(),
 
             'category.required' => 'Document category is required!',
 

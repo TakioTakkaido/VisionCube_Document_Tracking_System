@@ -24,7 +24,7 @@ $('#addParticipantBtn').on('click', function(event){
         data: formData,
         success: function (data) {
            // Log success message
-            showNotification('Participant added successfully!  <a href="#" class="reload">Reload</a>');
+            showNotification('Success', 'Participant added successfully!');
             var newParticipantId = data.id;
             // Update list group
             // Append a new list item to the list group
@@ -46,7 +46,7 @@ $('#addParticipantBtn').on('click', function(event){
             $('#addParticipantText').val('');
         },
         error: function (data) {
-            showNotification('Error made when editing Participant.');
+            showNotification('Error', 'Error made when editing Participant.');
             // Parse the data from the json response
             var data = JSON.parse(data.responseText);
 
@@ -78,7 +78,7 @@ $('.systemParticipantList').on('click', '.saveParticipantBtn' , function(event){
         url: window.routes.updateParticipant,
         data: formData,
         success: function (data) {
-            showNotification('Success', 'Participant edited successfully! <a href="#" class="reload">Reload</a>');
+            showNotification('Success', 'Participant edited successfully!');
 
             // Update the list item with the new value
             var newParticipantText = $('#editParticipantText').val();
@@ -213,7 +213,7 @@ $('#confirmDeleteParticipantBtn').on('click', function(event) {
         url: window.routes.deleteParticipant,
         data: formData,
         success: function(data) {
-            showNotification('Success', 'Participant deleted successfully! <a href="#" class="reload">Reload</a>');
+            showNotification('Success', 'Participant deleted successfully!');
             $('#participant' + participantId).remove();
             $('#confirmDeleteParticipant').modal('hide');
         },

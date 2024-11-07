@@ -1,9 +1,12 @@
 $('.maintenanceBtn').on('click', function(event){   
+    $('.loading').show();
     if ($(this).data('maintenance') == false){
-        $('.maintenanceBtn').html('Maintenance Mode: On');
+        $('#maintenanceAccountBtn').html('Maintenance Mode: On');
+        $('#maintenanceDocumentBtn').html('Maintenance Mode: On');
         updateMaintenance(true);
     } else {
-        $('.maintenanceBtn').html('Maintenance Mode: Off');
+        $('#maintenanceAccountBtn').html('Maintenance Mode: Off');
+        $('#maintenanceDocumentBtn').html('Maintenance Mode: Off');
         updateMaintenance(false);
     }
 });
@@ -19,6 +22,9 @@ function updateMaintenance(maintenance){
         data: formData,
         success: function (response) {
             window.location.reload();
+        },
+        complete: function(){
+            $('.loading').hide();
         }
     });
 }

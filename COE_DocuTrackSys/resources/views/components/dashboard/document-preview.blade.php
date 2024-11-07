@@ -53,10 +53,16 @@
                         </div>
         
                         <div class="row border-top" style="height: 650px; max-height: 650px;">
-                            <div id="documentInfoContainer" class="col container" style="display: none;">
+                            <div id="loadingDocument" class="documentPreviewInfo col container justify-content-center align-items-center" style="height: 100vh; overflow: hidden;">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
                             </div>
 
-                            <div id="updateDocument" class="col container" style="overflow-x: none; max-height: inherit; overflow-y: scroll; display: none;">
+                            <div id="documentInfoContainer" class="documentPreviewInfo col container" style="display: none;">
+                            </div>
+
+                            <div id="updateDocument" class="documentPreviewInfo col container" style="overflow-x: none; max-height: inherit; overflow-y: scroll; display: none;">
                                 <div class="row justify-content-between">
                                 <div class="col p-2">
                                     <form class="editContent" id="editDocumentForm" method="post">
@@ -68,7 +74,7 @@
                                                 <div class="col">
                                                     <label for="editUploadDocType">Document Type</label>
                                                     <select id="editUploadDocType" class="editInput" name="type">
-                                                        <option value="">Select the Type of Document</option>
+                                                        <option value="" disabled selected>Select the Type of Document</option>
                                                         @foreach ($docTypes as $index => $docType)
                                                             @if ($docType->value !== 'default')
                                                                 <option value="{{$docType->value}}">{{$docType->value}}</option>
@@ -137,7 +143,7 @@
                                                 <div class="col">
                                                     <label for="editUploadAssignee">Assignee</label>
                                                     <select id="editUploadAssignee" class="editInput" name="assignee">
-                                                        <option value="">Select Assignee</option>
+                                                        <option value="" disabled selected>Select Assignee</option>
                                                         @foreach ($roles as  $role)
                                                             @if ($role->value !== 'default' && $role->value !== 'Admin')
                                                                 <option value="{{$role->value}}">{{$role->value}}</option>
@@ -150,7 +156,7 @@
                                                 <div class="col">
                                                     <label for="editUploadCategory">Category</label>
                                                     <select id="editUploadCategory" class="editInput" name="category">
-                                                        <option value="">Select Category</option>
+                                                        <option value="" disabled selected>Select Category</option>
                                                         <option value="Incoming">Incoming</option>
                                                         <option value="Outgoing">Outgoing</option>
                                                         <option value="Archived">Archived</option>
@@ -162,10 +168,10 @@
                                                 <div class="col">
                                                     <label for="editUploadStatus">Status</label>
                                                     <select id="editUploadStatus" class="editInput" name="status">
-                                                        <option value="">Select Document Status</option>
+                                                        <option value="" disabled selected>Select Document Status</option>
                                                         @foreach ($docStatuses as $docStatus)
                                                             @if ($docStatus->value !== 'default')
-                                                                <option value="{{$docStatus->value}}">{{$docStatus->value}}</option>
+                                                            <option value="{{$docStatus->value}}" data-color="{{$docStatus->color}}" style="background-color: {{$docStatus->color}}">{{$docStatus->value}}</option>
                                                             @endif
                                                         @endforeach
                                                     </select>
@@ -192,7 +198,7 @@
                                             <div class="row mb-2">
                                                 <div class="col">
                                                     <label for="editUploadSoftcopy">Document Attachment/s: </label>
-                                                    <div class="container rounded border p-2 d-flex justify-content-center align-items-center editUploadFiles" data-value="none" style="flex-wrap: wrap; height: 200px;">
+                                                    <div class="container rounded border p-2 d-flex justify-content-center align-items-center editUploadFiles editUploadInput" data-value="none" style="flex-wrap: wrap; height: 200px;">
                                                         <div>No files added</div>
                                                     </div>
                                                 
@@ -233,7 +239,8 @@
                 {{-- Version or Attachment List --}}
                 <div class="col-3 border-left p-0">
                     <div class="py-3">
-                        <h5 id="documentInfoTitle" class="ml-2 mb-2"></h5>
+                        <div class="d-flex align-items-center mb-2" id="documentInfoTitle">
+                        </div>
                         <ul class="list-group list-group-flush" style="overflow-x: hidden; max-width: inherit;" id="documentInfoList">
                         </ul>
                     </div>

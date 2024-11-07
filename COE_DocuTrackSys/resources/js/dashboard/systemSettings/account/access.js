@@ -87,12 +87,12 @@ function updateAccountAccess(secretaryAccesses = [], assistantAccesses = [], cle
         data: formData,
         success: function (data) {
            // Log success message
-            showNotification('Account accesses edited successfully!');
+            showNotification('Success', 'Account accesses updated successfully!');
         },
         error: function (data) {
 
             // Log error
-            showNotification('Error editing account accesses.');
+            showNotification('Error', 'Error updating account accesses.');
             console.log(data.errors)
         }
     });

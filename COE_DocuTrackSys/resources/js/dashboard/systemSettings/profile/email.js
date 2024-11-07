@@ -49,7 +49,7 @@ $('#saveEmailBtn').on('click', function(event){
         url: window.routes.editProfileEmail,
         data: formData,
         success: function (response) {
-            showNotification('Success', 'Email edited successfully!');
+            showNotification('Success', 'Email updated successfully!');
             // Update the header
             $('#displayProfileEmail').html($('#editProfileEmail').val());
 
@@ -63,7 +63,7 @@ $('#saveEmailBtn').on('click', function(event){
             $('#resetEmailBtn').trigger('click');
         },
         error: function(response) {
-            showNotification('Error', 'Error editing profile.');
+            showNotification('Error', 'Error updating email.');
 
             if (response.responseJSON.errors.email){
                 $('#profileEmailError').html(response.responseJSON.errors.type);
@@ -84,7 +84,7 @@ $('#verifyEmailBtn').on('click', function(event){
             showNotification('Success', 'Verification link sent to '+ $('#editProfileEmail').val() + '!');
         },
         error: function(response) {
-            showNotification('Error', 'Error editing profile.');
+            showNotification('Error', 'Error sending verification link'+ $('#editProfileEmail').val() +'.');
 
             if (response.responseJSON.errors.email){
                 $('#profileEmailError').html(response.responseJSON.errors.type);
