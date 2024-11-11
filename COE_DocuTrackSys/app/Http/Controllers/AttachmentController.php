@@ -11,7 +11,7 @@ class AttachmentController extends Controller {
         $attachment = Attachment::find($request->id);
 
         return response()->json([
-            'fileLink' => $attachment->file(),
+            'fileLink' => url($attachment->file),
         ]);
     }
 }

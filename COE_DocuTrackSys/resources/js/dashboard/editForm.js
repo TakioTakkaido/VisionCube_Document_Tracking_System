@@ -347,7 +347,7 @@ $('#submitEditDocumentBtn').off('click').on('click', function(event) {
         processData: false,
         contentType: false,
         success: function(response) {
-            showNotification('Success', 'Document updated successfully!');
+            showNotification('Document updated successfully!');
             
             getDocumentStatistics();
             documentPreview(documentId);
@@ -355,7 +355,7 @@ $('#submitEditDocumentBtn').off('click').on('click', function(event) {
             $('#dashboardTable').DataTable().ajax.reload();
         },
         error: function(data) {
-            showNotification('Error', 'Error in updating document.');
+            showNotification('Error in updating document.');
 
             if (data.responseJSON.errors.type){
                 $('#editTypeError').html(data.responseJSON.errors.type);
@@ -449,10 +449,11 @@ $('#submitEditDocumentBtn').off('click').on('click', function(event) {
             $('#clearEditBtn').prop('disabled', false);
         },
         beforeSend: function(){
-            $('.loading').show();
+            showNotification('Updating document...');
+            $('body').css('pointer', 'progress');
         },
         complete: function(){
-            $('.loading').hide();
+            $('body').css('pointer', 'auto');
         }
     });
 });

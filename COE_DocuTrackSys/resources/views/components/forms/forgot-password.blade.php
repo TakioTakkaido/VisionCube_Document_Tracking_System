@@ -26,7 +26,7 @@
 
         <div class="register-link">
             {{-- Redirect the user to login page whenever the password is remembered --}}
-            <p>Remembered your password? <a href="{{route('show.login')}}">Login</a></p>
+            <p>Remembered your password? <a href="{{route('show.login')}}">Back to Login</a></p>
         </div>
 
     </form>

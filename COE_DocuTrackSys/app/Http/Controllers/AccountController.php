@@ -24,6 +24,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateAccountFormRequest;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginFormRequest;
+use App\Mail\ResetPassword;
+use App\Mail\VerifyEmail;
 use App\Models\Log as ModelsLog;
 use App\Models\Settings;
 use Illuminate\Http\Request;
@@ -31,6 +33,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class AccountController extends Controller {
     // Show Account
@@ -98,43 +101,62 @@ class AccountController extends Controller {
             'detail' => $account->toJson()
         ]);
 
-        return response()->json([
-            'success' => 'Account created successfully'
-        ]);
+        return response('Account created successfully');
     }
 
     // Forgot Password
-    public function forgotPassword(ForgotPasswordRequest $request){
+    public function sendResetPasswordLink(ForgotPasswordRequest $request){
         // Validate credentials
         $request->validated();
         
-        // Add additional instuction like sending a verification link
-        // that when clicked would redirect to a link that would change the password
-        // and redirect the user to the log in page to input the new password
+        $user = Account::where('email', $request->input('email'))->first();
+            
+        $user->generateResetPasswordToken();
+
+        $verificationLinkToken = $user->reset_password_token;
+
+        // Send email that contains the reset password link
+        Mail::to($user->email)->queue(new ResetPassword($verificationLinkToken));
 
         // Create new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
-            'description' => 'Requested to change password',
+            'account' => Auth::user()->name.' • '.Auth::user()->role,
+            'description' => 'Sent reset password link to email with address: '.Auth::user()->email,
             'type' => 'Account',
-            'detail' => Auth::user()->toJson()
+            'detail' => $user->toJson()
         ]);
 
-        // Temporary fix: redirect to login for now
-        return redirect()->route('show.login');
+        return response('Reset password link sent to'. $user->email);
     }
 
     // Reset Password
-    public function resetPassword(){
-        // 
+    public function resetPassword(Request $request){
+        // Validate request
+        $request->validate([
+            'password' => 'required|string|confirmed|min:8',
+            'password_confirmation' => 'required',
+        ], [
+            'password.required' => 'Password field is required!',
+            'password.min' => 'Password should contain minimum of 8 characters!',
+
+            'password_confirmation.required' => 'Password confirmation does not match the inputted password!'
+        ]);
+
+        // Create password
+        $account = Account::where('email', $request->input('email'))->first();
+        $account->password = Hash::make($request->input('password'));
+        $account->reset_password_token = null;
+        $account->save();
 
         // Create new log
         ModelsLog::create([
-            'account' => Auth::user()->name . " • " . Auth::user()->role,
+            'account' => $account->name . " • " . $account->role,
             'description' => 'Resetted password',
             'type' => 'Account',
-            'detail' => Auth::user()->toJson
+            'detail' => $account->toJson()
         ]);
+
+        return response('Password successfully resetted!');
     }
 
     // Logout
@@ -174,6 +196,8 @@ class AccountController extends Controller {
             'type' => 'Account',
             'detail' => $account->toJson()
         ]);
+
+        return response('Account deactivated successfully!');
     }
 
     //ADMIN FUNCTIONS
@@ -367,9 +391,9 @@ class AccountController extends Controller {
 
         ModelsLog::create([
             'account' => Auth::user()->name.' • '.Auth::user()->role,
-            'description' => 'Change profile name from'.$name.' to '.Auth::user(),
+            'description' => 'Change profile name from '.$name.' to '.Auth::user()->name,
             'type' => 'Account',
-            'detail' => $account->toJson()
+            'detail' => $user->toJson()
         ]);
 
         return response()->json([
@@ -399,7 +423,7 @@ class AccountController extends Controller {
             'account' => Auth::user()->name.' • '.Auth::user()->role,
             'description' => 'Changed email from '.$email.'to'.Auth::user()->email,
             'type' => 'Account',
-            'detail' => $account->toJson()
+            'detail' => $user->toJson()
         ]);
 
         return response()->json([
@@ -407,20 +431,35 @@ class AccountController extends Controller {
         ]);
     }
 
-    public function verifyEmail(){
-        $user = Auth::user();
+    public function sendEmailVerificationLink(){
+        $user = Account::find(Auth::user()->id);
         
-        $user->sendEmailVerificationNotification();
+        $user->generateVerifyEmailToken();
+
+        $verificationLinkToken = $user->email_verification_token;
+
+        Mail::to($user->email)
+            ->queue(new VerifyEmail($verificationLinkToken));
 
         ModelsLog::create([
             'account' => Auth::user()->name.' • '.Auth::user()->role,
             'description' => 'Sent verification to email with address: '.Auth::user()->email,
             'type' => 'Account',
-            'detail' => $account->toJson()
+            'detail' => $user->toJson()
         ]);
 
         return response()->json([
             'success' => 'Verification link successfully!'
         ]);
+    }
+
+    public function verifyEmail(Request $request){
+        $user = Account::where('email_verification_token', $request->token)->first();
+        if ($user){
+            $user->email_verified_at = now();
+            $user->email_verification_token = null;
+            $user->save();
+            return redirect()->route('show.login');
+        }
     }
 }

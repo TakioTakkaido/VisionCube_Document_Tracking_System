@@ -54,15 +54,14 @@
             <div class="col">
                 <h6 class="p-0 font-weight-bold mb-0">Email</h6>
                 <p>Please verify the new email address via the confirmation link before updating it.</p>
-                <div class="row align-items-center">
+                <div class="row align-items-center d-flex justify-content-between">
                     <div class="col-6 text-left">
                         <div class="input-group">
-                            <input type="text" class="form-control" id="editProfileEmail" value="{{ Auth::user()->email }}" disabled/>
+                            <input type="text" class="form-control text-left" id="editProfileEmail" value="{{ Auth::user()->email }}" disabled/>
                             <div class="input-group-append profileEmailBtn">
                                 <button class="btn btn-primary editProfile" id="editEmailBtn"><i class='bx bx-edit-alt' style="font-size: 20px;"></i></button>
                             </div>
                         </div>
-                        
                     </div>
                     
                     @if (!Auth::user()->isVerified())
@@ -71,7 +70,7 @@
                         </span>
                     @endif
 
-                    <div class="col-auto d-flex justify-content-end">
+                    <div class="col-auto d-flex">
                         {{-- Save Button --}}
                         <button type="button" class="btn btn-primary disabled editProfile" id="saveEmailBtn">Change Email</button>
 

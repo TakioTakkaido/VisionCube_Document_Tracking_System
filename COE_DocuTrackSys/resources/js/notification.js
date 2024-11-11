@@ -3,11 +3,9 @@ $('.notification').on('click', '.reload', function(event){
     window.location.reload();
 })
 
-export function showNotification(header="Notification", message){
+export function showNotification(message){
     $('#notifHeader').html('');
-    $('.toast-body').html('');
     
-    $('#notifHeader').html(header);
-    $('.toast-body').html(message);
+    $('#notifMessage').html(message);
     $('.notification').toast('show');
 }

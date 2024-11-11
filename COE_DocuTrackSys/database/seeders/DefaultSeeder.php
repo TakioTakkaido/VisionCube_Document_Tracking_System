@@ -21,6 +21,8 @@ class DefaultSeeder extends Seeder
         // Make accounts
         Account::factory()->admin()->create();
         Account::factory()->secretary()->create();
+        Account::factory()->clerk()->create();
+        Account::factory()->assistant()->create();
 
         // Make participants
         $participants = Participant::factory()->definition();

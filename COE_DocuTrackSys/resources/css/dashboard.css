@@ -28,7 +28,7 @@ body {
     bottom: 0;
     background-color: transparent;
     z-index: 10000;
-    cursor: wait;
+    cursor: progress;
 }
 
 #loadingDocument{
@@ -56,6 +56,22 @@ table.dataTable.hover>tbody>tr.selected:hover>*{
 table.dataTable.hover>tbody>tr:hover>*{
     box-shadow: none !important;
     background-color: #e4c934;
+}
+
+.spinner-border {
+    border: .25em solid #810505;
+    border-right-color: transparent;
+}
+
+.badge-primary {
+    background-color: #810505 !important;
+    text-align: center;
+    align-items: center;
+    display: flex !important;
+}
+
+#reports {
+    font-size: 13px !important;
 }
 /************************TOP PANEL*************************/
 .top-panel {
@@ -567,6 +583,18 @@ table.dataTable.hover>tbody>tr:hover>*{
     display: block; 
 }
 
+.table-panel > div.active {
+    display: block; 
+}
+
+.analyticsPanel > div {
+    display: none;
+}
+
+.analyticsPanel > div.active {
+    display: block;
+}
+
 .form-check {
     display: flex;
     align-items: center;
@@ -702,7 +730,6 @@ button:focus {
 
 
 .notification {
-    margin-right: 1rem;
     background-color: #a50b0b;
     color: white;
     font-size: 15px;
@@ -713,14 +740,14 @@ button:focus {
     color: white;
 }
 
-#notifTitle .close {
+.toast-body .close {
     color: white;
     opacity: 1;
     text-shadow: none;
 }
 
 #notifMessage {
-    background-color: #c21f1f;
+    background-color: #a50b0b;
 }
 
 .accountAccessTable th,
