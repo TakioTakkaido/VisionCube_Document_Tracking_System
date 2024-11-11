@@ -47,7 +47,7 @@ $('#saveNameBtn').on('click', function(event){
         url: window.routes.editProfileName,
         data: formData,
         success: function (response) {
-            showNotification('Success', 'Profile name updated successfully!');
+            showNotification('Profile name updated successfully!');
             // Update the header
             $('#displayProfileName').html($('#editProfileName').val());
 
@@ -61,7 +61,7 @@ $('#saveNameBtn').on('click', function(event){
             $('#resetNameBtn').trigger('click');
         },
         error: function(response) {
-            showNotification('Error', 'Error updating name.');
+            showNotification('Error updating name.');
 
             if (response.responseJSON.errors.name){
                 $('#profileNameError').html(response.responseJSON.errors.type);

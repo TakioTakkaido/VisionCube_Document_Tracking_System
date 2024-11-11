@@ -1,3 +1,5 @@
+import { documentStatistics } from "./homepage";
+import { getDocumentStatistics } from "./homepage/documentStatistics";
 import { showActive, showDeactivated } from "./tables/account";
 import { showDocument } from "./tables/document";
 import { showLogs } from "./tables/log";
@@ -8,8 +10,6 @@ $('#homePageBtn').on('click', function(event){
     event.preventDefault();
     $('.side-panel-section a').removeClass('active');
     $(this).addClass('active');
-    $('#loadingHomepage').removeClass('active');
-    $('#loadingHomepage').css('display', 'none');
     if (!$('.homepage').hasClass('active')){
         $('.homepage').addClass('active');
         $('.dashboard-table').removeClass('active');
@@ -18,7 +18,38 @@ $('#homePageBtn').on('click', function(event){
         $('.document-settings').removeClass('active');
         $('.system-settings').removeClass('active'); 
     }
+
+    if($('#uploadDocumentBtn').data('upload') == 1){
+        $('#reports').removeClass('active');
+        $('#upload').addClass('active');
+        $('#uploadDocumentBtn').data('upload', 1);
+        $('#uploadDocumentBtn').html(`<strong><i class='bx bx-stats'></i>  Back to Statistics</strong>`);
+    } else {
+        documentStatistics();
+        $('#reports').addClass('active');
+        $('#upload').removeClass('active');
+        $('#uploadDocumentBtn').data('upload', 0);
+        $('#uploadDocumentBtn').html(`<strong><i class='bx bx-upload'></i>  Upload New Document</strong>`);
+    }
 });
+
+// Upload Document Button
+$('#uploadDocumentBtn').on('click', function(event){
+    event.preventDefault();
+
+    // Turn on the toggle
+    if(!$(this).data('upload')){
+        $(this).data('upload', 1);
+        $(this).html(`<strong><i class='bx bx-stats'></i>  Back to Statistics</strong>`);
+    } else {
+        $(this).data('upload', 0);
+        $(this).html(`<strong><i class='bx bx-upload'></i>  Upload New Document</strong>`);
+        documentStatistics();
+    }
+
+    $('#reports').toggleClass('active');
+    $('#upload').toggleClass('active');
+})
 
 // Account Button
 $('#accountBtn').on('click', function(event){

@@ -49,7 +49,7 @@ $('#saveEmailBtn').on('click', function(event){
         url: window.routes.editProfileEmail,
         data: formData,
         success: function (response) {
-            showNotification('Success', 'Email updated successfully!');
+            showNotification('Email updated successfully!');
             // Update the header
             $('#displayProfileEmail').html($('#editProfileEmail').val());
 
@@ -63,7 +63,7 @@ $('#saveEmailBtn').on('click', function(event){
             $('#resetEmailBtn').trigger('click');
         },
         error: function(response) {
-            showNotification('Error', 'Error updating email.');
+            showNotification('Error updating email.');
 
             if (response.responseJSON.errors.email){
                 $('#profileEmailError').html(response.responseJSON.errors.type);
@@ -81,10 +81,10 @@ $('#verifyEmailBtn').on('click', function(event){
         type: "GET",
         url: window.routes.verifyEmail,
         success: function (response) {
-            showNotification('Success', 'Verification link sent to '+ $('#editProfileEmail').val() + '!');
+            showNotification('Verification link sent to '+ $('#editProfileEmail').val() + '!');
         },
         error: function(response) {
-            showNotification('Error', 'Error sending verification link'+ $('#editProfileEmail').val() +'.');
+            showNotification('Error sending verification link'+ $('#editProfileEmail').val() +'.');
 
             if (response.responseJSON.errors.email){
                 $('#profileEmailError').html(response.responseJSON.errors.type);
@@ -92,6 +92,9 @@ $('#verifyEmailBtn').on('click', function(event){
                 $('#editProfileEmail').css('border', '1px solid red');
                 $('#editProfileEmail').css('background-color', '#f09d9d');
             }
+        },
+        beforeSend: function (){
+            showNotification('Sending verification link...');
         }
     });
 });

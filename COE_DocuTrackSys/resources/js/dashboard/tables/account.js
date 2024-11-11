@@ -308,10 +308,10 @@ function deactivateAccount(accountId, row) {
         data: formData,
         success: function (response) {
             $('#dashboardTable').DataTable().ajax.reloasd();
-            showNotification('Success', "Account deactivated successfully!");
+            showNotification("Account deactivated successfully!");
         },
         error: function (response) {    
-            showNotification('Error', "Account cannot be deactivated, or is not found.");
+            showNotification("Account cannot be deactivated, or is not found.");
         },
         beforeSend: function(){
             $('.loading').show();
@@ -336,12 +336,12 @@ function reactivateAccount(accountId, row) {
         success: function (response) {
             $('#dashboardTable').DataTable().ajax.reload();
             $(row).popover('toggle');
-            showNotification('Success',"Account reactivated successfully!");
+            showNotification("Account reactivated successfully!");
         },
         error: function (response) {
             $('#dashboardTable').DataTable().ajax.reload();
             $(row).popover('toggle');
-            showNotification('Error',"Account cannot be reactivated, or is not found.");
+            showNotification("Account cannot be reactivated, or is not found.");
         },
         beforeSend: function(){
             $('.loading').show();
@@ -366,12 +366,12 @@ function changeRole(accountId, newRole, row) {
             .replace(':role', newRole),
         data: formData,
         success: function (response) {
-            showNotification('Success', 'Account changed to ' + newRole + ' successfully!')
+            showNotification('Account changed to ' + newRole + ' successfully!')
             $('#dashboardTable').DataTable().ajax.reload();
             $(row).popover('hide');
         },
         error: function (response) {
-            showNotification('Error', 'Account cannot be changed to ' + newRole + ' or is not found.')
+            showNotification('Account cannot be changed to ' + newRole + ' or is not found.')
             $(row).popover('hide');
         },
         beforeSend: function(){

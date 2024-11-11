@@ -24,7 +24,7 @@ $('#addParticipantBtn').on('click', function(event){
         data: formData,
         success: function (data) {
            // Log success message
-            showNotification('Success', 'Participant added successfully!');
+            showNotification('Participant added successfully!');
             var newParticipantId = data.id;
             // Update list group
             // Append a new list item to the list group
@@ -46,7 +46,7 @@ $('#addParticipantBtn').on('click', function(event){
             $('#addParticipantText').val('');
         },
         error: function (data) {
-            showNotification('Error', 'Error made when editing Participant.');
+            showNotification('Error made when editing Participant.');
             // Parse the data from the json response
             var data = JSON.parse(data.responseText);
 
@@ -78,7 +78,7 @@ $('.systemParticipantList').on('click', '.saveParticipantBtn' , function(event){
         url: window.routes.updateParticipant,
         data: formData,
         success: function (data) {
-            showNotification('Success', 'Participant edited successfully!');
+            showNotification('Participant edited successfully!');
 
             // Update the list item with the new value
             var newParticipantText = $('#editParticipantText').val();
@@ -87,7 +87,7 @@ $('.systemParticipantList').on('click', '.saveParticipantBtn' , function(event){
             $('#participant' + saveParticipantBtn.data('id') + ' .closeEditBtn').trigger('click', newParticipantText);
         },
         error: function (data) {
-            showNotification('Error', 'Error editing participant.');
+            showNotification('Error editing participant.');
             console.error("Error occurred while editing participant", data);
         }
     });
@@ -213,12 +213,12 @@ $('#confirmDeleteParticipantBtn').on('click', function(event) {
         url: window.routes.deleteParticipant,
         data: formData,
         success: function(data) {
-            showNotification('Success', 'Participant deleted successfully!');
+            showNotification('Participant deleted successfully!');
             $('#participant' + participantId).remove();
             $('#confirmDeleteParticipant').modal('hide');
         },
         error: function(data) {
-            showNotification('Error', 'Error deleting participant.');
+            showNotification('Error deleting participant.');
             console.error("Error occurred while deleting participant", data);
         }
     });

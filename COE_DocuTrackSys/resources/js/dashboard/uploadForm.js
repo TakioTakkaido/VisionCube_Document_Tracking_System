@@ -2,13 +2,16 @@ import { showNotification } from "../notification";
 import { getDocumentStatistics } from "./homepage/documentStatistics";
 
 // Upload Document
-$('#submitDocumentForm').on('click', function(event) {
+$('#submitDocumentForm').off('click').on('click', function(event) {
+    event.preventDefault();
+
     $('#submitDocumentForm').prop('disabled', true);
     $('#clearUploadBtn').prop('disabled', true);
-    event.preventDefault();
+
     var formData = new FormData();
     var senderArray = [];
     var recipientArray = [];
+
     var seriesRequired = $('#uploadSeriesNo').prop('required');
     var memoRequired = $('#uploadMemoNo').prop('required');
     
@@ -35,7 +38,10 @@ $('#submitDocumentForm').on('click', function(event) {
     }
 
     formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
-    formData.append('type', $('#uploadDocType').val());
+
+    if ($('#uploadDocType').val()){
+        formData.append('type', $('#uploadDocType').val());
+    }
     
     var seriesNo;
     var memoNo;
@@ -59,6 +65,7 @@ $('#submitDocumentForm').on('click', function(event) {
     var start = false;
     var currentParent = '';
     var uploadFromOptions = $('#uploadFrom option');
+
     for (var index = 0; index < uploadFromOptions.length; index++) {
         const element = uploadFromOptions[index];
         if (element.selected === true){
@@ -231,19 +238,25 @@ $('#submitDocumentForm').on('click', function(event) {
 
     formData.append('document_date', $('#uploadDate').val());
 
-    formData.append('assignee', $('#uploadAssignee').val());
+    if($('#uploadAssignee').val()){
+        formData.append('assignee', $('#uploadAssignee').val());
+    }
     
-    formData.append('color', $('#uploadStatus').data('color'));
+    if($('#uploadStatus').val()){
+        formData.append('status', $('#uploadStatus').val());
+        formData.append('color', $('#uploadStatus').data('color'));
+    }
+    
+    if($('#uploadCategory').val()){
+        formData.append('category', $('#uploadCategory').val());
+    }
 
-    formData.append('category', $('#uploadCategory').val());
-    formData.append('status', $('#uploadStatus').val());
-
-    var fileInput = $('#softcopy')[0];
+    var fileInput = $('#softcopy')[0];  
     for(var i = 0; i < fileInput.files.length; i++){
         formData.append('files[]', fileInput.files[i]);  // Correct file append
     }
 
-    $('.loading').show();
+    $('body').css('cursor', 'progress');
     $.ajax({
         method: 'POST',
         url: window.routes.uploadDocument,
@@ -253,15 +266,15 @@ $('#submitDocumentForm').on('click', function(event) {
         success: function(response) {
             getDocumentStatistics();
 
-            $('#documentTable').DataTable().ajax.reload();
-
             $('#submitDocumentForm').prop('disabled', false);
             $('#clearUploadBtn').prop('disabled', false);
 
-            showNotification('Success', 'Document upload success!');
+            showNotification('Document upload success!');
         },
         error: function(data) {
-            showNotification('Error', 'Error in uploading document.');
+            showNotification('Error in uploading document.');
+            $('#submitDocumentForm').prop('disabled', false);
+            $('#clearUploadBtn').prop('disabled', false);
             if (data.responseJSON.errors.type){
                 $('#typeError').html(data.responseJSON.errors.type);
                 $('#uploadDocType').css('border', '1px solid red');
@@ -354,8 +367,11 @@ $('#submitDocumentForm').on('click', function(event) {
             $('#submitDocumentForm').prop('disabled', false);
             $('#clearUploadBtn').prop('disabled', false);
         },
+        beforeSend: function(){
+            showNotification('Uploading...');
+        },
         complete: function(){
-            $('.loading').hide();
+            $('body').css('cursor', 'auto');
         }
     });
 });
@@ -554,6 +570,8 @@ $('#softcopy').off('input').on('input', function(event){
     $('.uploadFiles').data('value', '');
 
     $('.uploadFiles').css('overflow-y', 'scroll');
+
+    $('.uploadFiles').css('background-color', 'white');
     $('#fileError').css('display', 'none');
 });
 

@@ -23,7 +23,7 @@ $('#addParticipantGroupBtn').on('click', function(event){
         data: formData,
         success: function (data) {
            // Log success message
-            showNotification('Success', 'Group added successfully!');
+            showNotification('Group added successfully!');
             var newParticipantGroupId = data.id;
             // Update list group
             // Append a new list item to the list group
@@ -47,7 +47,7 @@ $('#addParticipantGroupBtn').on('click', function(event){
             
         },
         error: function (data) {
-            showNotification('Error', 'Error made when editing group.');
+            showNotification('Error made when editing group.');
             // Parse the data from the json response
             var data = JSON.parse(data.responseText);
 
@@ -81,7 +81,7 @@ $('.systemParticipantGroupList').on('click', '.saveParticipantGroupBtn' , functi
         data: formData,
         success: function (data) {
            // Log success message
-            showNotification('Success', 'Group edited successfully!');
+            showNotification('Group edited successfully!');
 
             // Update list group
             var newParticipantGroupText = $('#editParticipantGroupText').val();
@@ -92,7 +92,7 @@ $('.systemParticipantGroupList').on('click', '.saveParticipantGroupBtn' , functi
             
         },
         error: function (data) {
-            showNotification('Error', 'Error made when editing group.');
+            showNotification('Error made when editing group.');
             // Parse the data from the json response
             var data = JSON.parse(data.responseText);
 
@@ -229,7 +229,7 @@ $('#confirmDeleteParticipantGroupBtn').on('click', function(event){
         url: window.routes.deleteParticipantGroup,
         data: formData,
         success: function (data) {
-            showNotification('Success', 'Group deleted successfully!');
+            showNotification('Group deleted successfully!');
 
             // Remove the ParticipantGroup in the front end
             $('#participantGroup' + participantGroupId).remove();
@@ -243,7 +243,7 @@ $('#confirmDeleteParticipantGroupBtn').on('click', function(event){
             var data = JSON.parse(data.responseText);
 
             // Log error
-            showNotification('Error', 'Error deleting group.');
+            showNotification('Error deleting group.');
             console.log(data.errors)
         }
     });

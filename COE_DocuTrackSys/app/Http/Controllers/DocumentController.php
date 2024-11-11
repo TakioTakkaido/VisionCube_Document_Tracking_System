@@ -13,6 +13,8 @@ namespace App\Http\Controllers;
 // Contributor/s: 
 // Calulut, Joshua Miguel C.
 
+use App\Events\UpdatedDocument;
+use App\Events\UploadedDocument;
 use App\Models\Document;
 
 use Illuminate\Support\Facades\Auth;
@@ -25,11 +27,31 @@ use App\Models\Attachment;
 use App\Models\DocumentVersion;
 
 use App\Models\Log as ModelsLog;
-
+use App\Models\Status;
+use Carbon\Carbon;
+use DateTime;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use PDO;
+
 
 class DocumentController extends Controller{
+    private function token(){
+        $client_id = \config('services.google.client_id');
+        $client_secret = \config('services.google.client_secret');
+        $refresh_token = \config('services.google.refresh_token');
+        $response = Http::post('https://oauth2.googleapis.com/token', [
+            'client_id' =>  $client_id,
+            'client_secret' => $client_secret,
+            'refresh_token' => $refresh_token,
+            'grant_type' => 'refresh_token'
+        ]);
+
+        $access_token = json_decode((string)$response->getBody(), true)['access_token'];
+        return $access_token;
+    }
+
     //Upload Document
     public function upload(UploadDocumentRequest $request){
         $request->validated();
@@ -62,13 +84,40 @@ class DocumentController extends Controller{
         // Create the attachments
         $attachments = [];
         foreach($request->file('files') as $file){
-            $attachment = Attachment::create([
-                'name'                  => $file->getClientOriginalName(),
-                'document_version_id'   => $documentVersion->id,
-                'file'                  => $file->store('public/documents')
-            ]);
+            $url = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';
 
-            array_push($attachments, $attachment);
+            // Metadata for the file (convert to JSON)
+            $metadata = [
+                'name' => $file->getClientOriginalName(),
+                'parents' => [config('services.google.document_folder_id')],
+            ];
+
+            $metadataJson = json_encode($metadata);
+
+            $fileStore = Http::withToken($this->token())
+                ->attach(
+                    'metadata', $metadataJson, 'metadata.json', ['Content-Type' => 'application/json; charset=UTF-8']
+                )
+                ->attach(
+                    'file', file_get_contents($file->getRealPath()), $file->getClientOriginalName(), ['Content-Type' => $file->getMimeType()]
+                )
+                ->post($url);
+            
+            if ($fileStore->successful()) {
+                // Get file metadata from Google Drive response
+                $fileResponse = $fileStore->json();
+                $fileId = $fileResponse['id'];
+                $fileUrl = $fileId;
+
+                // Create the attachment record with the file URL
+                $attachment = Attachment::create([
+                    'name' => $file->getClientOriginalName(),
+                    'document_version_id' => $documentVersion->id,
+                    'file' => $fileUrl, // Store the file URL instead of local file path
+                ]);
+
+                array_push($attachments, $attachment);
+            }
         }
 
         // Attach the attachments
@@ -85,6 +134,8 @@ class DocumentController extends Controller{
             'type' => 'Document',
             'detail' => $documentVersion->toJson()
         ]);
+
+        UploadedDocument::dispatch();
 
         return response()->json([
             'success' => 'Document created successfully!',
@@ -137,6 +188,18 @@ class DocumentController extends Controller{
         $attachments = [];
         if ($request->file('files') != null){    
             foreach($request->file('files') as $file){
+                $fileStore = Http::withHeaders([
+                    'Authorization' => 'Bearer '.$this->token(),
+                    'Content-Type' => 'application/json',
+                ])->post('https://www.googleapis.com/drive/v3/files', [
+                    'data'=>$file->getClientOriginalName(),
+                    'mimeType'=>$file->getClientMimeType(),
+                    'uploadType'=>'resumable'
+                ]);
+                 
+                if($fileStore->successful()){
+
+                }
                 $attachment = Attachment::create([
                     'name'                  => $file->getClientOriginalName(),
                     'document_version_id'   => $documentVersion->id,
@@ -268,6 +331,10 @@ class DocumentController extends Controller{
             'type' => 'Document',
             'detail' => $documentVersion->toJson()
         ]);
+
+        UpdatedDocument::dispatch();
+
+    return response()->json(['message' => 'Document moved successfully']);
     }
 
     // Move All Documents From One Category to Another
@@ -322,10 +389,14 @@ class DocumentController extends Controller{
         // Create new log
         ModelsLog::create([
             'account'       => Auth::user()->name . " • " . Auth::user()->role,
-            'description'   => 'Moved '.count($ids).' document to ' . $request->category,
+            'description'   => 'Moved '.count($ids).' document/s to ' . $request->category,
             'type' => 'Document',
             'detail' => json_encode($documents)
         ]);
+
+        UpdatedDocument::dispatch();
+
+        return response()->json(['message' => 'Document moved successfully']);
     }
 
     // Restore Document
@@ -534,25 +605,241 @@ class DocumentController extends Controller{
     // Homepage
     // Get Document Statistics
     // Document Statistics
-    public function getDocumentStatistics(){
+    
+
+    public function getDocumentStatisticsCurrent(){
         $documents = Document::all();
-        $incoming = 0;
-        $outgoing = 0;
 
+        // Get all versions
+        $versions = [];
         foreach($documents as $document){
-            $latestVersion = $document->latestVersion();
+            // Sort versions by latest
+            $versions[] = $document->latestVersion();
+        }
 
-            if($latestVersion->category == 'Incoming'){
-                $incoming++;
-            } else if ($latestVersion->category == 'Outgoing'){
-                $outgoing++;
+        // Daily
+        $day = date('d');
+        $dayDocuments = [];
+        foreach($versions as $version){    
+            $date = new DateTime($version->created_at);
+            if ($date->format('d') == $day && 
+                $version->category != 'Trash' && 
+                $version->category != 'Archived'){
+                // After finding the very first, stop searching immediately
+                $dayDocuments[] = $version;
+            }
+        }
+        // Weekly
+        $week = date('W');
+        $weekDocuments = [];
+
+        foreach($versions as $version){    
+            $date = new DateTime($version->created_at);
+            if ($date->format('W') == $week && 
+            $version->category != 'Trash' && 
+            $version->category != 'Archived'){
+                // After finding the very first, stop searching immediately
+                $weekDocuments[] = $version;
+            }
+        }
+        // Monthly
+        $month = date('m');
+        $monthDocuments = [];
+
+        foreach($versions as $version){    
+            $date = new DateTime($version->created_at);
+            if ($date->format('m') == $month && 
+            $version->category != 'Trash' && 
+            $version->category != 'Archived'){
+                // After finding the very first, stop searching immediately
+                $monthDocuments[] = $version;
             }
         }
 
+        // Yearly
+        $year = date('Y');
+        $yearDocuments = [];
+
+        foreach($versions as $version){       
+            $date = new DateTime($version->created_at);
+            if ($date->format('Y') == $year && 
+            $version->category != 'Trash' && 
+            $version->category != 'Archived'){
+                // After finding the very first, stop searching immediately
+                $yearDocuments[] = $version;
+            }
+        }
         
+
+        // Sort
+        // Day
+        function incrementCount(&$array, $key1, $key2 = null) {
+            if ($key2 === null) {
+                $array[$key1] = isset($array[$key1]) ? $array[$key1] + 1 : 1;
+            } else {
+                $array[$key1][$key2] = isset($array[$key1][$key2]) ? $array[$key1][$key2] + 1 : 1;
+            }
+        }
+
+        // Daily
+        $daily = ["total" => count($dayDocuments)];
+        $daily["category"]["Incoming"] = 0;
+        $daily["category"]["Outgoing"] = 0;
+        $statuses = Status::all();
+        foreach($statuses as $status){
+            $daily["status"][$status->value] = 0;
+            $daily["color"][$status->value] = $status->color;
+        }
+        foreach ($dayDocuments as $document) {
+            if($document->category != 'Trash' && $document->category != 'Archived'){
+                incrementCount($daily["category"], $document->category);
+                incrementCount($daily["status"], $document->status);
+            }
+        }
+
+        // Weekly
+        $weekly = ["total" => count($weekDocuments)];
+        $weekly["category"]["Incoming"] = 0;
+        $weekly["category"]["Outgoing"] = 0;
+        $statuses = Status::all();
+        foreach($statuses as $status){
+            $weekly["status"][$status->value] = 0;
+            $weekly["color"][$status->value] = $status->color;
+        }
+        foreach ($weekDocuments as $document) {
+            if($document->category != 'Trash' && $document->category != 'Archived'){
+                incrementCount($weekly["category"], $document->category);
+                incrementCount($weekly["status"], $document->status);
+            }
+        }
+
+        // Monthly
+        $monthly = ["total" => count($monthDocuments)];
+        $monthly["category"]["Incoming"] = 0;
+        $monthly["category"]["Outgoing"] = 0;
+        $statuses = Status::all();
+        foreach($statuses as $status){
+            $monthly["status"][$status->value] = 0;
+            $monthly["color"][$status->value] = $status->color;
+        }
+
+        foreach ($monthDocuments as $document) {
+            if($document->category != 'Trash' && $document->category != 'Archived'){
+                incrementCount($monthly["category"], $document->category);
+                incrementCount($monthly["status"], $document->status);
+            }
+        }
+
+        // Yearly
+        $yearly = ["total" => count($yearDocuments)];
+        $yearly["category"]["Incoming"] = 0;
+        $yearly["category"]["Outgoing"] = 0;
+        $statuses = Status::all();
+        foreach($statuses as $status){
+            $yearly["status"][$status->value] = 0;
+            $yearly["color"][$status->value] = $status->color;
+        }
+
+        foreach ($yearDocuments as $document) {
+            if($document->category != 'Trash' && $document->category != 'Archived'){
+                incrementCount($yearly["category"], $document->category);
+                incrementCount($yearly["status"], $document->status);
+            }
+        }
+
+
+        // Sort data by ascending order
+        function sortDataByValue(&$data) {
+            // Sort categories by their values in descending order (highest to lowest)
+            arsort($data['category']);
+        
+            // Sort statuses by their color values in descending order (highest to lowest)
+            arsort ($data['status']);
+        }
+
+        // Daily, Weekly, Monthly, Yearly calculations...
+        // Sorting after filling out the counts
+
+        // Example for Daily
+        sortDataByValue($daily);
+        sortDataByValue($weekly);
+        sortDataByValue($monthly);
+        sortDataByValue($yearly);
+
         return response()->json([
-            'incoming' => $incoming,
-            'outgoing' => $outgoing,
+            'daily' => json_encode($daily),
+            'weekly' => json_encode($weekly),
+            'monthly' => json_encode($monthly),
+            'yearly' => json_encode($yearly)
+        ]);
+    }
+
+    public function getDocumentStatistics(Request $request){
+        $date = new DateTime($request->date);
+        $type = $request->type;
+        // Get all documents
+        $documents = Document::all();
+
+        // Get all versions
+        $versions = [];
+        foreach($documents as $document){
+            // Sort versions by latest
+            $versions[] = $document->latestVersion();
+        }
+
+        // Set the type to get
+        if($type === 'Day'){
+            $date = $date->format('d');
+        } else if($type === 'Week'){
+            $date = $date->format('W');
+        } else if($type === 'Month'){
+            $date = $date->format('m');            
+        } else {
+            $date = $date->format('Y');            
+        }
+
+        
+        $selectedDocuments = [];
+        foreach($versions as $version){    
+            $versionDate = new DateTime($version->created_at);
+            if ($versionDate->format('d') == $date && 
+                $version->category != 'Trash' && 
+                $version->category != 'Archived'){
+                // After finding the very first, stop searching immediately
+                $selectedDocuments[] = $version;
+            }
+        }
+
+        function incrementDocumentCount(&$array, $key1, $key2 = null) {
+            if ($key2 === null) {
+                $array[$key1] = isset($array[$key1]) ? $array[$key1] + 1 : 1;
+            } else {
+                $array[$key1][$key2] = isset($array[$key1][$key2]) ? $array[$key1][$key2] + 1 : 1;
+            }
+        }
+
+        $documents = [];
+        $documents = ["total" => count($selectedDocuments)];
+        $documents["category"]["Incoming"] = 0;
+        $documents["category"]["Outgoing"] = 0;
+        $statuses = Status::all();
+        foreach($statuses as $status){
+            $documents["status"][$status->value] = 0;
+            $documents["color"][$status->value] = $status->color;
+        }
+        foreach ($selectedDocuments as $document) {
+            incrementDocumentCount($documents["category"], $document->category);
+            incrementDocumentCount($documents["status"], $document->status);
+        }
+
+        // Example for Daily
+        arsort($documents['category']);
+        
+        // Sort statuses by their color values in descending order (highest to lowest)
+        arsort ($documents['status']);
+
+        return response()->json([
+            'documents' => json_encode($documents)
         ]);
     }
 }

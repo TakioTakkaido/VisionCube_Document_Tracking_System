@@ -45,10 +45,10 @@ function updateFileExtensions(extensions = []){
         url: window.routes.updateFileExtensions,
         data: formData,
         success: function (data) {
-            showNotification('Success', 'Allowed file extensions changed successfully!');
+            showNotification('Allowed file extensions changed successfully!');
         },
         error: function (data) {
-            showNotification('Error', 'Error editing allowed file extensions.');
+            showNotification('Error editing allowed file extensions.');
             console.log(data);
         }
     });

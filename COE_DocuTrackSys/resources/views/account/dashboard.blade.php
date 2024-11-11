@@ -101,38 +101,6 @@ Sanchez, Shane David U.
     ])
 </head>
 <body>
-<script>
-    $(document).ready(function(){
-        var documentStatistics = $.ajax({
-        method: 'GET',
-        url: window.routes.getDocumentStatistics,
-        success: function(response) {
-            $('#incomingBadge').html(response.incoming);
-            $('#outgoingBadge').html(response.outgoing);
-            $('#archivedBadge').html(response.archived);
-        }});
-
-        var getMaintenanceStatus = $.ajax({
-            method: 'GET',
-            url: window.routes.getMaintenanceStatus,
-            success: function(response) {
-                if (response.maintenance == true){
-                    $('#accountSettingsBtn').trigger('click');
-                } else {
-                    
-                    $('#homePageBtn').trigger('click');
-                }
-            }
-        });
-
-        $.when(documentStatistics, getMaintenanceStatus).then(function() {
-            // Initialize the DataTable after AJAX completes
-            $('#accountAccessTable').DataTable();
-
-            $('.loading').hide();
-        });
-    });
-</script>
 
 <div class="loading"></div>
 {{-- NOTIFICATION --}}
@@ -154,7 +122,8 @@ Sanchez, Shane David U.
 <script>
     window.routes = {
         // Homepage Routes
-        getDocumentStatistics: "{{route('document.getStatistics')}}",
+        getDocumentStatistics: "{{route('document.getStatisticsCurrent')}}",
+        getSpecificDocumentStatistics: "{{route('document.getStatistics', [':date', ':type'])}}",
 
         // Maintenance
         updateMaintenance: "{{route('settings.update')}}",
@@ -171,7 +140,7 @@ Sanchez, Shane David U.
         updateRoleAccess: "{{route('account.editAccess')}}",
         editProfileName: "{{route('account.editName')}}",
         editProfileEmail: "{{route('account.editEmail')}}",
-        verifyEmail: "{{route('account.verifyEmail')}}",
+        verifyEmail: "{{route('account.sendVerificationLink')}}",
         
         // Document Routes
         showDocuments: "{{route('document.showAll', ':id')}}",

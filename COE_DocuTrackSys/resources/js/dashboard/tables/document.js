@@ -1,6 +1,8 @@
 import { showNotification } from "../../notification";
 import { updateDocument } from "../editForm";
 import { getDocumentStatistics } from "../homepage/documentStatistics";
+import '../../echo';
+import { documentStatistics } from "../homepage";
 
 var update = false;
 // SHOW INCOMING DOCUMENTS
@@ -43,6 +45,8 @@ export function showDocument(category){
         );
 
         var table = $('#dashboardTable').DataTable({
+            processing: true,
+            serverSide: true,
             ajax: {
                 url: window.routes.showDocuments.replace(':id', category),
                 dataSrc: 'documents',
@@ -288,6 +292,8 @@ export function showDocument(category){
         );
 
         $('#dashboardTable').DataTable({
+            processing: true,
+            serverSide: true,
             ajax: {
                 url: window.routes.showDocuments.replace(':id', category),
                 dataSrc: 'documents',
@@ -531,6 +537,8 @@ export function showDocument(category){
         );
 
         $('#dashboardTable').DataTable({
+            processing: true,
+            serverSide: true,
             ajax: {
                 url: window.routes.showDocuments.replace(':id', category),
                 dataSrc: 'documents',
@@ -782,6 +790,8 @@ export function showDocument(category){
 
         // DataTables initialisation
         var table = $('#dashboardTable').DataTable({
+            processing: true,
+            serverSide: true,
             ajax: {
                 url: window.routes.showDocuments.replace(':id', category),
                 dataSrc: 'documents',
@@ -1003,17 +1013,18 @@ function moveDocument(id, location, row){
         success: function (response) {
             $('#dashboardTable').DataTable().ajax.reload();
             $(row).popover('hide');
-            showNotification('Success', "Document moved to " + location + " successfully!");
+            showNotification("Document moved to " + location + " successfully!");
         },
         error: function(response){
             console.log(response);
-            showNotification('Error', "Document cannot be moved to "+location+", or not found.");
+            showNotification("Document cannot be moved to "+location+", or not found.");
         },
         beforeSend: function(){
-            $('.loading').show();
+            showNotification("Moving document...");
+            $('body').css('cursor', 'progress')
         },
         complete: function(){
-            $('.loading').hide();
+            $('body').css('cursor', 'auto')
         }
     });
 }
@@ -1034,17 +1045,18 @@ function moveAllDocument(ids, location, row){
         success: function (response) {
             $('#dashboardTable').DataTable().ajax.reload();
             $(row).popover('hide');
-            showNotification('Success', "Documents moved to " + location + " successfully!");
+            showNotification("Documents moved to " + location + " successfully!");
         },
         error: function(response) {
             $(row).popover('hide');
-            showNotification('Error', "Documents cannot be moved to "+location+", or not found.");
+            showNotification("Documents cannot be moved to "+location+", or not found.");
         },
         beforeSend: function(){
-            $('.loading').show();
+            showNotification("Moving document...");
+            $('body').css('cursor', 'progress')
         },
         complete: function(){
-            $('.loading').hide();
+            $('body').css('cursor', 'auto')
         }
     });
 }
@@ -1475,17 +1487,18 @@ function restoreDocument(id, rightClick = false){
             }
 
             $('#dashboardTable').DataTable().ajax.reload();
-            showNotification('Success', "Restored successfully!");
+            showNotification("Restored successfully!");
         },
         error: function(response){
             console.log(response);
-            showNotification('Error', "Document cannot be restored, or not found.");
+            showNotification("Document cannot be restored, or not found.");
         },
         beforeSend: function(){
-            $('.loading').show();
+            showNotification("Restoring document...");
+            $('body').css('cursor', 'progress')
         },
         complete: function(){
-            $('.loading').hide();
+            $('body').css('cursor', 'auto')
         }
     });
 }
@@ -1503,11 +1516,18 @@ function restoreAllDocument(ids){
         data: formData,
         success: function (response) {
             $('#dashboardTable').DataTable().ajax.reload();
-            showNotification('Success', "Documents restored successfully!");
+            showNotification("Documents restored successfully!");
         },
         error: function(response) {
             console.log(response);
-            showNotification('Error', "Documents cannot be restored, or not found.");
+            showNotification("Documents cannot be restored, or not found.");
+        },
+        beforeSend: function(){
+            showNotification("Restoring documents...");
+            $('body').css('cursor', 'progress')
+        },
+        complete: function(){
+            $('body').css('cursor', 'auto')
         }
     });
 }
@@ -1526,17 +1546,18 @@ function deleteDocument(id){
         data: formData,
         success: function (response) {
             $('#dashboardTable').DataTable().ajax.reload();
-            showNotification('Success', "Deleted successfully!");
+            showNotification("Deleted successfully!");
         },
         error: function(response){
             console.log(response);
-            showNotification('Success', "Document might already be deleted, or not found.");
+            showNotification("Document might already be deleted, or us not found.");
         },
         beforeSend: function(){
-            $('.loading').show();
+            showNotification("Deleting document...");
+            $('body').css('cursor', 'progress')
         },
         complete: function(){
-            $('.loading').hide();
+            $('body').css('cursor', 'auto')
         }
     });
 }
@@ -1555,16 +1576,17 @@ function deleteAllDocument(ids){
         success: function (response) {
             $('#dashboardTable').DataTable().ajax.reload();
             $(row).popover('hide');
-            showNotification('Success', "Documents deleted successfully!");
+            showNotification("Documents deleted successfully!");
         },
         error: function(response) {
-            showNotification('Error', "Documents might already be deleted, or not found.");
+            showNotification("Documents might already be deleted, or not found.");
         },
         beforeSend: function(){
-            $('.loading').show();
+            showNotification("Deleting documents...");
+            $('body').css('cursor', 'progress')
         },
         complete: function(){
-            $('.loading').hide();
+            $('body').css('cursor', 'auto')
         }
     });
 }
@@ -1580,3 +1602,12 @@ $('.confirmDeleteBtn').on('click', function(event){
         deleteDocument($('#confirmDeleteDocumentModal').data('ids'));
     }
 });
+
+export function reloadDocuments(){
+    // Reload the dashboardtable
+
+    // Send a notification
+
+    // Reload document statistics
+    documentStatistics(false);
+}

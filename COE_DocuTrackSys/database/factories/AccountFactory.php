@@ -25,8 +25,8 @@ class AccountFactory extends Factory {
     public function admin(): Factory {
         return $this->state(function (array $attributes) {
             return [
-                'name' => 'joshua1008',
-                'email' => 'joshua1008@gmail.com',
+                'name' => 'coeDTS_admin',
+                'email' => 'coedocutracksys@gmail.com',
                 'role' => 'Admin',
                 'canUpload' => true,
                 'canEdit' => true,
@@ -41,11 +41,48 @@ class AccountFactory extends Factory {
     public function secretary(): Factory {
         return $this->state(function (array $attributes) {
             return [
-                'name' => 'joshua8001',
-                'email' => 'joshua8001@gmail.com',
+                'name' => 'coeDTS_secretary',
+                'email' => 'calulutjoshuamiguel@gmail.com',
                 'role' => 'Secretary',
+                'canUpload' => true,
+                'canEdit' => true,
+                'canMove' => true,
+                'canArchive' => true,
+                'canDownload' => true,
+                'canPrint' => true,
             ];
         });
     }
 
+    public function assistant(): Factory {
+        return $this->state(function (array $attributes) {
+            return [
+                'name' => 'coeDTS_assistant',
+                'email' => 'eh202201752@wmsu.edu.ph',
+                'role' => 'Assistant',
+                'canUpload' => true,
+                'canEdit' => true,
+                'canMove' => true,
+                'canArchive' => true,
+                'canDownload' => true,
+                'canPrint' => true,
+            ];
+        });
+    }
+
+    public function clerk(): Factory {
+        return $this->state(function (array $attributes) {
+            return [
+                'name' => 'coeDTS_clerk',
+                'email' => 'papajoshua100804@gmail.com',
+                'role' => 'Clerk',
+                'canUpload' => true,
+                'canEdit' => true,
+                'canMove' => true,
+                'canArchive' => true,
+                'canDownload' => true,
+                'canPrint' => true,
+            ];
+        });
+    }
 }

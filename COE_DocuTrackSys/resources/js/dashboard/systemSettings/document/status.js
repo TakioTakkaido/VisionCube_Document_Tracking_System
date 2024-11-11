@@ -25,7 +25,7 @@ $('#addStatusBtn').on('click', function(event){
         data: formData,
         success: function (data) {
            // Log success message
-            showNotification('Success', 'Status added successfully!');
+            showNotification('Status added successfully!');
             var newStatusId = data.id;
             // Update list group
             // Append a new list item to the list group
@@ -48,7 +48,7 @@ $('#addStatusBtn').on('click', function(event){
             $('#addStatusText').val('');
         },
         error: function (data) {
-            showNotification('Error', 'Error made when editing status.');
+            showNotification('Error made when editing status.');
             // Parse the data from the json response
             var data = JSON.parse(data.responseText);
 
@@ -82,7 +82,7 @@ $('.systemStatusList').on('click', '.saveStatusBtn' , function(event){
         data: formData,
         success: function (data) {
            // Log success message
-            showNotification('Success', 'Status edited successfully!');
+            showNotification('Status edited successfully!');
 
             // Update list group
             var newStatusText = $('#editStatusText').val();
@@ -237,7 +237,7 @@ $('#confirmDeleteStatusBtn').on('click', function(event){
         url: window.routes.deleteStatus,
         data: formData,
         success: function (data) {
-            showNotification('Success', 'Status deleted successfully!');
+            showNotification('Status deleted successfully!');
 
             // Remove the status in the front end
             $('#status' + statusId).remove();
@@ -249,7 +249,7 @@ $('#confirmDeleteStatusBtn').on('click', function(event){
             var data = JSON.parse(data.responseText);
 
             // Log error
-            showNotification('Error', 'Error deleting status.');
+            showNotification('Error deleting status.');
             console.log(data.errors)
         }
     });

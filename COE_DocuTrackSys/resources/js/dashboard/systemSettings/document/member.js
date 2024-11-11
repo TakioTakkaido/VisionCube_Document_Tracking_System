@@ -37,12 +37,12 @@ $('.systemParticipantGroupList').on('click', '.saveParticipantGroupMemberBtn', f
             url: window.routes.updateParticipantGroupMembers,
             data: formData,
             success: function (data) {
-                showNotification('Success', 'Updated participant group members of ' + participantGroupText + ' successfully!');
+                showNotification('Updated participant group members of ' + participantGroupText + ' successfully!');
 
                 $('.closeEditParticipantGroupMemberBtn').trigger('click');
             },
             error: function (data) {
-                showNotification('Error', 'Error updating participant group members of ' + participantGroupText + '.');
+                showNotification('Error updating participant group members of ' + participantGroupText + '.');
                 console.log(data.errors)
             }
         });        
@@ -107,7 +107,7 @@ $('.systemParticipantGroupList').on('click', '.editParticipantGroupMemberBtn', f
             url: window.routes.getParticipantGroupMembers.replace(':id', participantGroupId),
             success: function (data) {
                 // Log success message
-                showNotification('Success', 'Group member obtained successfully!');
+                showNotification('Group member obtained successfully!');
 
                 // Edit the title
                 $('#editParticipantGroupMemberTitle').html('<h6 class="p-0 font-weight-bold mb-0">Edit Sender and Recipients of Selected Group: ' + participantGroupText + '</h6>');
@@ -163,7 +163,7 @@ $('.systemParticipantGroupList').on('click', '.editParticipantGroupMemberBtn', f
                 });
             },
             error: function (data) {
-                showNotification('Error', 'Error made when obtaining group members.');
+                showNotification('Error made when obtaining group members.');
                 // Parse the data from the json response
                 var data = JSON.parse(data.responseText);
 

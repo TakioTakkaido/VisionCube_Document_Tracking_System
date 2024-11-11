@@ -12,6 +12,7 @@ use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DocumentVersionController;
 use App\Http\Controllers\FileExtensionController;
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\ParticipantGroupController;
@@ -28,6 +29,7 @@ use App\Http\Middleware\VerifyDeactivated;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 // DISPLAY ROUTES
 // Middleware: Check Login Token
@@ -49,6 +51,20 @@ Route::middleware([NoCache::class, VerifyAccount::class])->group(function(){
     });
 });
 
+Route::name('show.')->group(function(){
+    // Display: Reset Password
+    Route::get('/password/reset/{token}', function($email, $token) {
+        if (Auth::check()) {
+            Auth::logout();
+        }
+
+        // Pass the token and email to the view
+        return view('account.resetPassword', [
+            'token' => $token
+        ]);
+    })->name('resetPassword');
+});
+
 Route::middleware([NoCache::class, NoDirectAccess::class])->group(function() {
     // Display Routes
     Route::name('show.')->group(function(){
@@ -56,11 +72,6 @@ Route::middleware([NoCache::class, NoDirectAccess::class])->group(function() {
         Route::get('/password/forgot', function(){
             return view('account.forgotPassword');
         })->name('forgotPassword');
-
-        // Display: Reset Password
-        Route::get('/password/reset', function(){
-            return view('account.resetPassword');
-        })->name('resetPassword');
 
         // Under Maintenance
         Route::middleware([UnderMaintenance::class])->group(function(){
@@ -78,22 +89,18 @@ Route::middleware([NoCache::class, NoDirectAccess::class])->group(function() {
     });
 });
 
-Route::get('/verify-email/{id}/{hash}', function ($id, $hash) {
-    // $user = User::findOrFail($id);
 
-    // // Manually check if the hash matches (basic validation)
-    // if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
-    //     return response()->json(['error' => 'Invalid or expired verification link.'], 422);
-    // }
-
-    // // Mark email as verified if not already verified
-    // if (!$user->hasVerifiedEmail()) {
-    //     $user->email_verified_at = now();
-    //     $user->save();
-    // }
-
-    return response()->json(['message' => 'Email verified successfully!']);
-})->name('verify.email');
+Route::name('account.')->group(function(){
+    Route::controller(AccountController::class)->group(function(){
+        Route::prefix('/account')->group(function(){
+            Route::get('/verify-email/{token}', 'verifyEmail')
+            ->name('verifyEmail');
+            
+            Route::post('/resetPassword', 'resetPassword')
+            ->name('resetPassword');
+        });
+    });
+});
 
 // Middleware: No Direct Access
 Route::middleware([NoDirectAccess::class])->group(function() {
@@ -162,8 +169,11 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 Route::post('/edit/email', 'editEmail')
                 ->name('editEmail');
 
-                Route::get('/sendVerificationLink', 'verifyEmail')
-                ->name('verifyEmail');
+                Route::get('/sendVerificationLink', 'sendEmailVerificationLink')
+                ->name('sendVerificationLink');
+
+                Route::post('/sendResetPasswordLink', 'sendResetPasswordLink')
+                ->name('sendResetPasswordLink');
             });
         });
     });
@@ -192,8 +202,12 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 Route::get('download/{id}', 'download')
                 ->name('download');
 
-                // Document Statistics
-                Route::get('stats', 'getDocumentStatistics')
+                // Current Document Statistics
+                Route::get('stats', 'getDocumentStatisticsCurrent')
+                ->name('getStatisticsCurrent');
+
+                // Selected Document Statistics
+                Route::get('stats/{date}/{type}', 'getDocumentStatistics')
                 ->name('getStatistics');
 
                 // Edit Document

@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class Account extends Authenticatable implements MustVerifyEmail {
     use HasFactory, Notifiable;
@@ -53,6 +55,8 @@ class Account extends Authenticatable implements MustVerifyEmail {
     protected $hidden = [
         'password',
         'remember_token',
+        'email_verification_token',
+        'reset_password_token'
     ];
 
     /**
@@ -64,6 +68,7 @@ class Account extends Authenticatable implements MustVerifyEmail {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            
         ];
     }
 
@@ -72,9 +77,15 @@ class Account extends Authenticatable implements MustVerifyEmail {
     }
 
 
-    public function sendEmailVerificationNotification() {
-        $this->notify(new VerifyEmail);
-    }
+    public function generateVerifyEmailToken() {
+        $this->email_verification_token = Hash::make(Str::random(20));
+        $this->save();
+    } 
+
+    public function generateResetPasswordToken() {
+        $this->reset_password_token = Hash::make(Str::random(20));
+        $this->save();
+    } 
 
     public function isVerified() : bool {
         return $this->email_verified_at !== null;
