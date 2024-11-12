@@ -36,7 +36,10 @@ Sanchez, Shane David U.
 
   {{-- Assets --}}
   <link rel="icon" href="{{Vite::asset('resources/img/COE.png')}}" type="image/x-icon">
-  @vite(['resources/css/register_login.css'])
+  @vite([
+    'resources/css/register_login.css',
+    'resources/css/notification.css',
+  ])
 
   {{-- Scripts --}}
   @vite(['resources/js/forgotPassword.js'])
@@ -44,6 +47,8 @@ Sanchez, Shane David U.
 
 <body>
   <x-forms.forgot-password/>
+
+  <x-notification />
 </body>
 
 {{-- Routes for AJAX --}}

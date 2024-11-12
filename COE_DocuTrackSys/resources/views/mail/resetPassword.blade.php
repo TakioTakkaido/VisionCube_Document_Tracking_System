@@ -116,7 +116,7 @@
             <h1 id="verify">Reset Password</h1>
             <h5 id="descr">Please click the button below to proceed in resetting your password.</h5>
             <!-- Updated Button -->
-            <a class="buttonclick" href="{{ url(route('show.resetPassword', ['token' => $verificationLinkToken])) }}">
+            <a class="buttonclick" href="{{ url(route('resetPassword', ['token' => $verificationLinkToken])) }}">
                 <strong style="color: white">Reset Password</strong>
             </a>
             <p id="para">If you received this in error, simply ignore this email and do not click the button.</p>

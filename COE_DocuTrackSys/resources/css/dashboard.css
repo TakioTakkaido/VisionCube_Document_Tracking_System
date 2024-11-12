@@ -728,28 +728,6 @@ button:focus {
     height: auto;
 }
 
-
-.notification {
-    background-color: #a50b0b;
-    color: white;
-    font-size: 15px;
-}
-
-#notifTitle {
-    background-color: #810505;
-    color: white;
-}
-
-.toast-body .close {
-    color: white;
-    opacity: 1;
-    text-shadow: none;
-}
-
-#notifMessage {
-    background-color: #a50b0b;
-}
-
 .accountAccessTable th,
 .accountAccessTable td {
     text-align: center;

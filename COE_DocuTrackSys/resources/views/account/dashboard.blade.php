@@ -60,7 +60,10 @@ Sanchez, Shane David U.
 
     {{-- Assets --}}
     <link rel="icon" href="{{Vite::asset('resources/img/COE.png')}}" type="image/x-icon">
-    @vite(['resources/css/dashboard.css'])
+    @vite([
+        'resources/css/dashboard.css',
+        'resources/css/notification.css',
+    ])
 
     {{-- Scripts --}}
     @vite([

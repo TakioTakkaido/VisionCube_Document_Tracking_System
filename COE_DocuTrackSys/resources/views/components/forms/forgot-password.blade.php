@@ -13,16 +13,13 @@
         {{-- Email Input --}}
         <div class="input-box">
             <input type="email" id="email" name="email" placeholder="Email" required>
+            <span class="error" id="error-email" style="display: none"></span>
             <i class='bx bx-mail-send'></i>
         </div>
 
-        {{-- 
-            Sends verification link into the inputted email, whenever the email is proved to be present in the accounts table
-            IMPORTANT: NEEDED IMPLEMENTATION IN SENDING LINK IN EMAIL
-        --}}
 
         {{-- Submit Button --}}
-        <button type="submit" class="btn">Send Verification</button>
+        <button type="submit" class="btn" id="sendResetPasswordBtn">Send Reset Password Link</button>
 
         <div class="register-link">
             {{-- Redirect the user to login page whenever the password is remembered --}}

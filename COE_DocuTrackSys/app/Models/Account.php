@@ -12,6 +12,11 @@ namespace App\Models;
 // Calulut, Joshua Miguel C.
 
 use App\AccountRole;
+use App\Models\ResetPasswordToken;
+use App\Models\EmailVerificationToken;
+
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +25,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Tests\Feature\Auth\EmailVerificationTest;
 
 class Account extends Authenticatable implements MustVerifyEmail {
     use HasFactory, Notifiable;
@@ -36,6 +42,7 @@ class Account extends Authenticatable implements MustVerifyEmail {
         'password',
         'role',
         'deactivated',
+
         
 
         // Access Functions
@@ -55,8 +62,12 @@ class Account extends Authenticatable implements MustVerifyEmail {
     protected $hidden = [
         'password',
         'remember_token',
+
         'email_verification_token',
-        'reset_password_token'
+        'used_email_token',
+        
+        'reset_password_token',
+        'used_password_token',
     ];
 
     /**
@@ -68,7 +79,6 @@ class Account extends Authenticatable implements MustVerifyEmail {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            
         ];
     }
 
@@ -76,19 +86,41 @@ class Account extends Authenticatable implements MustVerifyEmail {
         return $this->role == 'Admin';
     }
 
-
-    public function generateVerifyEmailToken() {
-        $this->email_verification_token = Hash::make(Str::random(20));
-        $this->save();
-    } 
+    public function reset_password_token(){
+        return $this->hasOne(ResetPasswordToken::class);
+    }
 
     public function generateResetPasswordToken() {
-        $this->reset_password_token = Hash::make(Str::random(20));
+        $this->reset_password_token()->create([
+            'token' => Str::random(60),
+            'used' => false,
+        ]);
+    }
+
+    public function email_verification_token(){
+        return $this->hasOne(EmailVerificationToken::class);
+    }
+
+    
+
+    public function generateVerifyEmailToken() {
+        $this->email_verification_token()->delete();
+
+        $token = new EmailVerificationToken([
+            'token' => Str::random(60),
+            'used' => false
+        ]);
+
+        $this->email_verification_token()->save($token);
         $this->save();
     } 
+
+    
 
     public function isVerified() : bool {
         return $this->email_verified_at !== null;
     }
+
+    
 }
 
