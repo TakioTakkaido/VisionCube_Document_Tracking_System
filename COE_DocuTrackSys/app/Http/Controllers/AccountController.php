@@ -26,7 +26,9 @@ use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginFormRequest;
 use App\Mail\ResetPassword;
 use App\Mail\VerifyEmail;
+use App\Models\EmailVerificationToken;
 use App\Models\Log as ModelsLog;
+use App\Models\ResetPasswordToken;
 use App\Models\Settings;
 use Illuminate\Http\Request;
 
@@ -57,13 +59,13 @@ class AccountController extends Controller {
         // Authorization attempt
         if (Auth::guard('web')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
-
+            $user = Auth::user();
             // Send log
             ModelsLog::create([
-                'account' => Auth::user()->name . " • " . Auth::user()->role,
+                'account' => $user->name . " • " . $user->role,
                 'description' => 'Logged in to the system',
                 'type' => 'Account',
-                'detail' => Auth::user()->toJson()
+                'detail' => $user->toJson()
             ]);
             
             // Authentication passed, to dashboard
@@ -106,34 +108,47 @@ class AccountController extends Controller {
 
     // Forgot Password
     public function sendResetPasswordLink(ForgotPasswordRequest $request){
-        // Validate credentials
+        // Validate the request
         $request->validated();
         
+        // Find the user by email
         $user = Account::where('email', $request->input('email'))->first();
-            
+        
+        // Check if the user exists
+        if (!$user) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
         $user->generateResetPasswordToken();
 
-        $verificationLinkToken = $user->reset_password_token;
+        $resetPasswordToken = $user->reset_password_token()->first(); 
 
-        // Send email that contains the reset password link
+        if (!$resetPasswordToken) {
+            return response()->json(['message' => 'Failed to generate reset password token.'], 500);
+        }
+
+        $verificationLinkToken = $resetPasswordToken->token;
+
         Mail::to($user->email)->queue(new ResetPassword($verificationLinkToken));
 
-        // Create new log
+        // Create a log entry for the action
         ModelsLog::create([
-            'account' => Auth::user()->name.' • '.Auth::user()->role,
-            'description' => 'Sent reset password link to email with address: '.Auth::user()->email,
+            'account' => $user->name . ' • ' . $user->role,
+            'description' => 'Sent reset password link to email with address: ' . $user->email,
             'type' => 'Account',
             'detail' => $user->toJson()
         ]);
 
-        return response('Reset password link sent to'. $user->email);
+        // Return a response indicating the link has been sent
+        return response('Reset password link sent to ' . $user->email);
     }
+
 
     // Reset Password
     public function resetPassword(Request $request){
         // Validate request
         $request->validate([
-            'password' => 'required|string|confirmed|min:8',
+            'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required',
         ], [
             'password.required' => 'Password field is required!',
@@ -143,9 +158,12 @@ class AccountController extends Controller {
         ]);
 
         // Create password
-        $account = Account::where('email', $request->input('email'))->first();
+        $token = ResetPasswordToken::where('token', $request->input('reset_password_token'))->first();
+        $account = $token->account()->first();
+
         $account->password = Hash::make($request->input('password'));
-        $account->reset_password_token = null;
+        $token->used = true;
+        $token->save();
         $account->save();
 
         // Create new log
@@ -386,7 +404,7 @@ class AccountController extends Controller {
 
         $name = $user->name;
         $user->name = $request->input('name');
-
+        
         $user->save();
 
         ModelsLog::create([
@@ -436,7 +454,8 @@ class AccountController extends Controller {
         
         $user->generateVerifyEmailToken();
 
-        $verificationLinkToken = $user->email_verification_token;
+        $email_verification_token = $user->email_verification_token()->first();
+        $verificationLinkToken = $email_verification_token->token;
 
         Mail::to($user->email)
             ->queue(new VerifyEmail($verificationLinkToken));
@@ -454,12 +473,18 @@ class AccountController extends Controller {
     }
 
     public function verifyEmail(Request $request){
-        $user = Account::where('email_verification_token', $request->token)->first();
-        if ($user){
-            $user->email_verified_at = now();
-            $user->email_verification_token = null;
-            $user->save();
+        $token = EmailVerificationToken::where('token', $request->token)->first();
+        if($token->used !== true){
+            $account = $token->account()->first();
+    
+            $account->email_verified_at = now();
+            $account->email_verification_token = null;
+            $token->used = true;
+            $account->save();
+    
             return redirect()->route('show.login');
+        } else {
+            return redirect()->route('show.cantVerifyEmail');
         }
     }
 }
