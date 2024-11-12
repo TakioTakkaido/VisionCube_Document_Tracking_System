@@ -51,9 +51,9 @@ Route::middleware([NoCache::class, VerifyAccount::class])->group(function(){
     });
 });
 
-Route::name('show.')->group(function(){
-    // Display: Reset Password
-    Route::get('/password/reset/{token}', function($email, $token) {
+// Display: Reset Password
+Route::get('/password/reset/{token}', function($token) {
+    if($token->used !== true){
         if (Auth::check()) {
             Auth::logout();
         }
@@ -62,8 +62,10 @@ Route::name('show.')->group(function(){
         return view('account.resetPassword', [
             'token' => $token
         ]);
-    })->name('resetPassword');
-});
+    } else {
+        return view('account.cantResetPassword');
+    }
+})->name('resetPassword');
 
 Route::middleware([NoCache::class, NoDirectAccess::class])->group(function() {
     // Display Routes
