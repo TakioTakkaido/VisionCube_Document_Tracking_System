@@ -40,7 +40,7 @@ Password
       <div class="remember-forgot mb-0">
         {{-- Remember Password --}}        
         <label>
-          <input type="checkbox" name="remember">Remember Me
+          <input type="checkbox" name="remember" id="remember">Remember Me
         </label>
 
         {{-- Redirect the user to forget password when password is forgotten --}}

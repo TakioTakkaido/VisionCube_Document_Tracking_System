@@ -8,6 +8,7 @@ $(document).on('submit', '#loginForm', function(event){
     formData = {
         'email' : $('#email').val(),
         'password' : $('#password').val(),
+        'remember' : $('#remember').is(':checked'),
         '_token' : $('meta[name="csrf-token"]').attr('content')
     };
 
