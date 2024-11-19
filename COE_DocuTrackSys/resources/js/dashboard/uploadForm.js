@@ -271,6 +271,8 @@ $('#submitDocumentForm').off('click').on('click', function(event) {
             $('#clearUploadBtn').prop('disabled', false);
 
             showNotification('Document upload success!');
+
+            $('#clearUploadBtn').trigger('click');
         },
         error: function(data) {
             showNotification('Error in uploading document.');
@@ -401,6 +403,8 @@ $('#clearUploadBtn').on('click', function (event){
         'border': '1px solid #ccc',
         'background-color': 'white'
     });
+
+    $('.deleteUploadFileBtn').trigger('click');
 });
 
 $('#updateDocumentMenuBtn').on('click', function(event){
@@ -590,6 +594,8 @@ $('#softcopy').off('input').on('input', function(event){
 
     $('.uploadFiles').css('background-color', 'white');
     $('#fileError').css('display', 'none');
+
+    $('.fileUploadLabel').html('Document Attachment/s ('+$('#softcopy')[0].files.length+' Attachment/s Uploaded): <small style="color: red">*</small>')
 });
 
 $(document).on('click', '.deleteUploadFileBtn', function(event){
@@ -615,6 +621,9 @@ $(document).on('click', '.deleteUploadFileBtn', function(event){
     if ($('#softcopy')[0].files.length === 0) {
         $('.uploadFiles').html('<div>No files added</div>');
         $('.uploadFiles').data('value', 'none');
+        $('.fileUploadLabel').html('Document Attachment/s: <small style="color: red">*</small>')
+    } else {
+        $('.fileUploadLabel').html('Document Attachment/s ('+$('#softcopy')[0].files.length+' Attachment/s Uploaded): <small style="color: red">*</small>')
     }
 });
 

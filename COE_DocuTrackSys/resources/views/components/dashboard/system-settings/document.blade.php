@@ -406,7 +406,6 @@
                         <div class="col-auto">
                             <button type="submit" class="btn btn-primary"    id="fileExtensionSaveBtn">Save Changes</button>        
                             <button type="button" class="btn btn-warning"    id="fileExtensionResetBtn">Reset to Default</button>
-                            <button type="button" class="btn btn-secondary"  id="fileExtensionCancelBtn">Cancel</button>
                         </div>
                     </div>
                 </form>

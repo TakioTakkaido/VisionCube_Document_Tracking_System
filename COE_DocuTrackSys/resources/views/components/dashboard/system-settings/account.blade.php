@@ -35,7 +35,7 @@
         <div class="row mb-2 justify-content-end align-items-end">
             <div class="col">
                 {{-- Add Account --}}
-                <h6 class="p-0 font-weight-bold mb-0">Add New Account</h6>
+                <h6 class="p-0 font-weight-bold mb-0">Add New Account  <small style="color: red; font-size: 11px;">All fields required.</small></h6>
                 <p>Add new account that shall be used by other users in the system.</p>
                 <form id="addNewAccount" method="post" autocomplete="off">
                     <div class="row mb-2">
@@ -157,7 +157,6 @@
 
                     <button type="submit" class="btn btn-primary"    id="saveAccountAccessBtn">Save Changes</button>       
                     <button type="button" class="btn btn-warning"  id="defaultAccountAccessBtn">Reset to Default</button>
-                    <button type="cancel" class="btn btn-secondary"  id="accountAccessCancelBtn">Cancel</button> 
                 </form>
             </div>
         </div>

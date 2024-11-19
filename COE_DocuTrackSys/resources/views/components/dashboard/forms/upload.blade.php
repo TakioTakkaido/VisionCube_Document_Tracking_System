@@ -1,5 +1,6 @@
 <div class="container-fluid border p-3 rounded">
-    <h6 class="p-0 font-weight-bold">Upload Document Form</h6>
+    <h6 class="p-0 font-weight-bold">Upload Document Form<small class="pt-0" style="font-size: 11px; color: red">  (* - required)</small></h6>
+    
     {{-- Upload Document Form --}}
     <form class="uploadContent w-100" id="uploadDocumentForm" method="post">
         @csrf
@@ -8,7 +9,7 @@
         {{-- Document Subject --}}
         <div class="row mb-1">
             <div class="col">
-                <label for="uploadSubject">Subject</label>
+                <label for="uploadSubject">Subject<small style="color: red">*</small></label>
                 <textarea id="uploadSubject" class="uploadInput"  name="subject" rows="2" placeholder="Enter the Subject of the Document"></textarea>
                 <span class="error" id="subjectError" style="margin-top: -8px; display:none;"></span>
             </div>
@@ -17,7 +18,7 @@
         {{-- Document Sender and Recipient --}}
         <div class="row mb-2">
             <div class="col">
-                <label for="uploadFrom">From</label>
+                <label for="uploadFrom">From<small style="color: red">*</small></label>
                 <select class="form-control selectpicker uploadInput uploadFrom p-0 border mb-1"  id="uploadFrom" name="sender" data-live-search="true" multiple title="Select Sender (From)">
                     @foreach($groups as $group)
                         <option style="font-size: 15px !important;" title="" value="{{ $group['id'] }}" data-level={{$group['level']}} data-name="{{ $group['value'] }}" data-parent="{{$group['parent']}}" data-participant="{{$group['participant']}}">
@@ -33,7 +34,7 @@
             </div>
 
             <div class="col">
-                <label for="uploadTo">To</label>
+                <label for="uploadTo">To<small style="color: red">*</small></label>
                 <select class="form-control selectpicker uploadInput uploadTo p-0 border mb-1"  style="border: 1px solid #ccc;" id="uploadTo" name="recipient" data-live-search="true" multiple title="Select Recipient (To)">
                     @foreach($groups as $group)
                         <option style="font-size: 15px !important;" title="" value="{{ $group['id'] }}" data-level={{$group['level']}} data-name="{{ $group['value'] }}" data-parent="{{$group['parent']}}" data-participant="{{$group['participant']}}">
@@ -52,7 +53,7 @@
         <div class="row mb-2">
             <div class="col">
                 {{-- Document Type --}}
-                <label for="uploadDocType">Document Type</label>
+                <label for="uploadDocType">Document Type<small style="color: red">*</small></label>
                 <select id="uploadDocType" class="uploadInput" name="type">
                     <option value="" disabled selected>Select the Type of Document</option>
                     {{-- Obtained document types using Laravel--}}
@@ -68,13 +69,13 @@
             {{-- Series Number and Memo Number --}}
             <div class="col p-0" id="memoInfo" style="display: none;">
                 <div class="col">
-                    <label for="uploadSeriesNo">Series No.</label>
+                    <label for="uploadSeriesNo">Series No.<small style="color: red">*</small></label>
                     <input id="uploadSeriesNo" class="uploadInput" type="number" name="seriesNo" min="1" max="99999">
                     <span class="error"  id="seriesError" style="display:none;"></span>
                 </div>
                     
                 <div class="col">
-                    <label for="uploadMemoNo">Memo No.</label>
+                    <label for="uploadMemoNo">Memo No.<small style="color: red">*</small></label>
                     <input id="uploadMemoNo" class="uploadInput" type="number" name="memoNo" min="1" max="99999">
                     <span class="error" id="memoError" style="display:none;"></span>
                 </div>
@@ -84,7 +85,7 @@
         <div class="row mb-2">
             {{-- Document Date --}}
             <div class="col">
-                <label for="uploadDate">Date</label>
+                <label for="uploadDate">Date<small style="color: red">*</small></label>
                 <input id="uploadDate" type="date" class="uploadInput"  name="date">
                 <span class="error" id="dateError" style="display:none;"></span>
             </div>
@@ -93,7 +94,7 @@
         <div class="row mb-2">
             {{-- Document Status --}}
             <div class="col">
-                <label for="uploadStatus">Status</label>
+                <label for="uploadStatus">Status<small style="color: red">*</small></label>
                 <select id="uploadStatus" class="uploadInput" name="status">
                     <option value="" disabled selected>Select Document Status</option>
                     {{-- Obtained document statuses using Laravel--}}
@@ -108,7 +109,7 @@
 
             {{-- Assignee --}}
             <div class="col">
-                <label for="uploadAssignee">Assignee</label>
+                <label for="uploadAssignee">Assignee<small style="color: red">*</small></label>
                 <select id="uploadAssignee" class="uploadInput" name="assignee">
                     <option value="" disabled selected>Select Assignee</option>
                     {{-- Obtained assignees through account roles using Laravel--}}
@@ -123,7 +124,7 @@
 
             {{-- Category --}}
             <div class="col">
-                <label for="uploadCategory">Category</label>
+                <label for="uploadCategory">Category<small style="color: red">*</small></label>
                     <select id="uploadCategory" class="uploadInput" name="category">
                         <option value="" disabled selected>Select Category</option>
                         <option value="Incoming">Incoming</option>
@@ -136,7 +137,7 @@
         {{-- Document Attachments --}}
         <div class="row mb-2">
             <div class="col">
-                <label for="uploadSoftcopy">Document Attachment/s: </label>
+                <label class="fileUploadLabel" for="uploadSoftcopy">Document Attachment/s: <small style="color: red">*</small></label>
                 <div class="container rounded border p-2 d-flex justify-content-center align-items-center uploadFiles uploadInput" data-value="none" style="flex-wrap: wrap; height: 200px;">
                     <div>No files added</div>
                 </div>

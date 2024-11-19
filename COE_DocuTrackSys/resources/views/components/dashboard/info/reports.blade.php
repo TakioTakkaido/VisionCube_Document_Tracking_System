@@ -4,11 +4,11 @@
         <div class="row d-flex justify-content-between align-items-center mb-3">
             <div class="col">
                 <h6 class="font-weight-bold mb-0" style="font-size: 15px;">Daily Tracked Documents</h6>
-                <small class="text-muted"><i>Day: {{ date('M. j, Y') }}</i></small>
+                <small class="text-muted" id="dateDay"><i>Day: {{ date('M. j, Y') }}</i></small>
             </div>
 
             <div class="col">
-                <input type="text" class="form-control w-15" id="analyticsDay" placeholder="Select Day">
+                <input type="text" class="form-control w-15" id="analyticsDay" placeholder="Select Day" autocomplete="off">
             </div>
 
             <div class="col-auto">
@@ -41,10 +41,10 @@
         <div class="row d-flex justify-content-between align-items-center mb-3">
             <div class="col">
                 <h6 class="p-0 font-weight-bold mb-0" style="font-size: 15px;">Weekly Tracked Documents</h6>
-                <small class="text-muted"><i>Week: {{ date('W, Y') }}</i></small>
+                <small class="text-muted" id="dateWeek"><i>Week: {{date('M. j, Y', strtotime('last Sunday'))}} -  {{date('M. j, Y', strtotime('next Saturday')) }}</i></small>
             </div>
             <div class="col">
-                <input type="text" class="form-control w-15" id="analyticsWeek" placeholder="Select Week">
+                <input type="text" class="form-control w-15" id="analyticsWeek" placeholder="Select Week" autocomplete="off">
             </div>
             <div class="col-auto">
                 <button type="button" class="btn btn-primary font-weight-bold text-right" id="generateReportWeekBtn">
@@ -76,11 +76,11 @@
         <div class="row d-flex justify-content-between align-items-center mb-3">
             <div class="col">
                 <h6 class="p-0 font-weight-bold mb-0" style="font-size: 15px;">Monthly Tracked Documents</h6>
-                <small class="text-muted"><i>Month: {{ date('M. Y') }}</i></small>
+                <small class="text-muted" id="dateMonth"><i>Month: {{ date('M. Y') }}</i></small>
             </div>
             
             <div class="col">
-                <input type="text" class="form-control w-15" id="analyticsMonth" placeholder="Select Month">
+                <input type="text" class="form-control w-15" id="analyticsMonth" placeholder="Select Month" autocomplete="off">
             </div>
 
             <div class="col-auto">
@@ -113,10 +113,10 @@
         <div class="row d-flex justify-content-between align-items-center mb-3">
             <div class="col">
                 <h6 class="p-0 font-weight-bold mb-0" style="font-size: 15px;">Yearly Tracked Documents</h6>
-                <small class="text-muted"><i>Year: {{ date('Y') }}</i></small>
+                <small class="text-muted" id="dateYear"><i>Year: {{ date('Y') }}</i></small>
             </div>
             <div class="col">
-                <input type="text" class="form-control w-15" id="analyticsYear" placeholder="Select Year">
+                <input type="text" class="form-control w-15" id="analyticsYear" placeholder="Select Year" autocomplete="off">
             </div>
             <div class="col-auto">
                 <button type="button" class="btn btn-primary font-weight-bold text-right" id="generateReportYearBtn">

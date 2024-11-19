@@ -13,6 +13,13 @@ $('#updateFileExtensionForm').on('submit', function (event) {
 
 $('#fileExtensionResetBtn').on('click', function(event){
     event.preventDefault();
+    $.each($('.editExtension'), function (index, element) {
+        $(element).prop("checked", true);    
+    });  
+});
+
+$('#fileExtensionResetBtn').on('click', function(event){
+    event.preventDefault();
 
     var extensions = [];
     extensions = [
