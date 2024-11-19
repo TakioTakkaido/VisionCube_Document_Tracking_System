@@ -12,6 +12,8 @@ $(document).on('submit', '#loginForm', function(event){
         '_token' : $('meta[name="csrf-token"]').attr('content')
     };
 
+    console.log(formData);
+
     $('#loginBtn').prop('disabled', true);
     
     $.ajax({

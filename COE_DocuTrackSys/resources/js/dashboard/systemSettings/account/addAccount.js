@@ -16,7 +16,7 @@ $('#addAccountBtn').on('click', function(event){
 
     $.ajax({    
         method: "POST",
-        url: window.routes.create,
+        url: window.routes.createAccount,
         data: formData,
         success: function (data) {
             showNotification('Account added successfully!');

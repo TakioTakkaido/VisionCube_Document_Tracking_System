@@ -37,7 +37,7 @@ class StatusController extends Controller {
 
             $latestVersions = [];
             foreach($documents as $document){
-                array_push($latestVersions, $document->version());
+                array_push($latestVersions, $document->latestVersion());
             }
             
             // If it contains that type, update it

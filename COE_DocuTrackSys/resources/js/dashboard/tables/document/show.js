@@ -43,8 +43,6 @@ export function showDocument(category){
         );
 
         var table = $('#dashboardTable').DataTable({
-            processing: true,
-            serverSide: true,
             ajax: {
                 url: window.routes.showDocuments.replace(':id', category),
                 dataSrc: 'documents',
@@ -315,8 +313,6 @@ export function showDocument(category){
         );
 
         $('#dashboardTable').DataTable({
-            processing: true,
-            serverSide: true,
             ajax: {
                 url: window.routes.showDocuments.replace(':id', category),
                 dataSrc: 'documents',
@@ -589,8 +585,6 @@ export function showDocument(category){
         );
 
         $('#dashboardTable').DataTable({
-            processing: true,
-            serverSide: true,
             ajax: {
                 url: window.routes.showDocuments.replace(':id', category),
                 dataSrc: 'documents',
@@ -845,8 +839,6 @@ export function showDocument(category){
 
         // DataTables initialisation
         var table = $('#dashboardTable').DataTable({
-            processing: true,
-            serverSide: true,
             ajax: {
                 url: window.routes.showDocuments.replace(':id', category),
                 dataSrc: 'documents',

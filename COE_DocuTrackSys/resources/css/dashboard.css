@@ -288,7 +288,8 @@ table.dataTable.hover>tbody>tr:hover>*{
 }
 .sidepanel-btn span {
     /* flex-grow: 1; */
-    margin-right: 13px;
+    margin-right: 10px;
+    margin-left: 5px;
 }
 .dropdown-arrow {
     display: flex;
@@ -356,6 +357,7 @@ table.dataTable.hover>tbody>tr:hover>*{
     color: white;
 }
 
+
 .dropdown-container a:hover{
     color: black;
     /* padding: 10px 20px; */
@@ -396,26 +398,18 @@ table.dataTable.hover>tbody>tr:hover>*{
     width: 100%;
 }
 
-.home-btn i{
-    display: inline-block;
-    font-size: 18px;
-}
-
+.home-btn i,
 .home-btn span{
-    font-size: 18px;
+    font-size: 22px;
 }
 
 .home-btn:hover{
-    box-shadow: 0 0 20px rgba(33, 33, 33, 0.5);
-    padding: 15px;
-    font-size: 20px;   
-    transition: padding 0.45s ease;
+    box-shadow: 0 0 20px rgba(33, 33, 33, 0.75);
 }
 
 .home-btn.active{
-    box-shadow: 0 0 20px rgba(33, 33, 33, 0.5);
-    padding: 20px 25px 20px 20px;
-    font-size: 20px;
+    box-shadow: 0 0 20px rgba(33, 33, 33, 0.75);
+    padding: 25px;
 }
 
 /** FOR JS, FORM POPUP**/
@@ -611,6 +605,13 @@ table.dataTable.hover>tbody>tr:hover>*{
 .side-panel-section a:hover {
     color: black !important;
 }
+
+.side-panel-section .list-group-item.disabled {
+    opacity: 0.3;
+    color: white;
+    background-color: transparent !important;
+}
+
 
 /* ACCOUNT MENU DROPDOWN */
 #accountMenuDropdownBtn:active {
@@ -1057,4 +1058,33 @@ button:focus {
 .datepicker{
     font-size: 15px;
     padding: 1px;
+}
+
+#searchBarText {
+    background-color: white;
+    color: grey;
+    font-size: 15px;
+    border: transparent;
+    border-radius: 20px;
+    border-end-end-radius: 0px;
+    border-start-end-radius: 0px;
+}
+
+#searchBarText:focus {
+    border:transparent;
+    box-shadow: #a50b0b 2px solid !important;
+}
+
+#searchBar .input-group-text{
+    border-end-end-radius: 20px;
+    border-start-end-radius: 20px;
+    background-color: white;
+    border: transparent;
+}
+
+.form-control:focus {
+    box-shadow: none;
+}
+#searchBarText::placeholder {
+    color: grey;
 }

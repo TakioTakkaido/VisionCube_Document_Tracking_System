@@ -19,10 +19,12 @@ class FileExtensionController extends Controller {
         // Get all extensions
         $fileExtensions = FileExtension::all();
         
+        // dd($request->extensions);
         $fileExtensionLog = [];
         for ($i=0; $i < sizeof($fileExtensions); $i++) { 
             $fileExtension = $fileExtensions[$i];
 
+        
             // Check every file extension in the checklist
             $fileExtension->checked = $request->extensions[$i];
 
