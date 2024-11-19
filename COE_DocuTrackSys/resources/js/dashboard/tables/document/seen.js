@@ -1,0 +1,2 @@
+import { getNewDocuments } from "../../homepage";
+

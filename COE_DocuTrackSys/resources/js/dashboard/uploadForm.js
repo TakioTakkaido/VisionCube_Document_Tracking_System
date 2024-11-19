@@ -1,4 +1,5 @@
 import { showNotification } from "../notification";
+import { getNewDocuments } from "./homepage";
 import { getDocumentStatistics } from "./homepage/documentStatistics";
 
 // Upload Document
@@ -265,7 +266,7 @@ $('#submitDocumentForm').off('click').on('click', function(event) {
         contentType: false,  // Prevent jQuery from overriding the content type
         success: function(response) {
             getDocumentStatistics();
-
+            getNewDocuments();
             $('#submitDocumentForm').prop('disabled', false);
             $('#clearUploadBtn').prop('disabled', false);
 
@@ -401,6 +402,22 @@ $('#clearUploadBtn').on('click', function (event){
         'background-color': 'white'
     });
 });
+
+$('#updateDocumentMenuBtn').on('click', function(event){
+    event.preventDefault();
+    var id = $(this).data('id');
+    $('.loading').show();
+    $('.documentPreviewInfo').hide();
+    $('#restoreDocumentMenuBtn').prop('disabled', true);
+    $('#updateDocumentMenuBtn').prop('disabled', true);
+    $('#viewDocumentHistoryBtn').prop('disabled', true);
+    $('#viewDocumentAttachmentsBtn').prop('disabled', true);
+    $('#documentInfoTitle').html(`
+        <h5 class="text-left m-0 ml-2">Version History</h5>
+    `);
+    updateDocument(id);
+});
+
 
 var pos;
 // Event to trigger after clicking the options in the select

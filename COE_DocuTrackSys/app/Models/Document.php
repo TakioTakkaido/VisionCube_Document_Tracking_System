@@ -36,4 +36,20 @@ class Document extends Model
     public function latestVersion() : DocumentVersion {
         return $this->versions()->orderBy('version_number', 'desc')->first();
     }
+
+    public function seenUpdatedAccounts(){
+        return $this->belongsToMany(Account::class, 
+            'new_update_documents',
+            'new_update_document_id',
+            'account_id'
+        );
+    }
+
+    public function seenUploadedAccounts(){
+        return $this->belongsToMany(Account::class, 
+            'new_upload_documents', 
+            'new_upload_document_id',
+            'account_id',
+        );
+    }
 }

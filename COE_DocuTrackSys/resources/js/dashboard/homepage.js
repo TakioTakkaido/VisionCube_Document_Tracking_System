@@ -1,10 +1,10 @@
 import { showNotification } from "../notification";
 
 $(document).ready(function(){
-    $.when(getMaintenanceStatus()).then(function() {
+
+    $.when(getMaintenanceStatus(), getNewDocuments()).then(function() {
         // Initialize the DataTable after AJAX completes
         $('#accountAccessTable').DataTable();
-
         $('#analyticsDay').datepicker({
             format: "M. d, yyyy",
             autoclose: true
@@ -577,6 +577,61 @@ function getDocumentStatistics(date, type){
         }, 
         complete: function(){
             $('.loading').hide();
+        }
+    });
+}
+
+export function getNewDocuments(){
+    $.ajax({
+        method: "GET",
+        url: window.routes.getNewDocuments,
+        success: function (response) {
+            if(response.totalNewUploaded){
+                $('#totalNewUploaded').removeClass('hide');     
+            } else {
+                $('#totalNewUploaded').addClass('hide');     
+            }
+            
+            if(response.totalNewUpdated){
+                $('#totalNewUpdated').removeClass('hide'); 
+            } else {
+                $('#totalNewUpdated').addClass('hide'); 
+            }
+            
+            if(response.totalNewUploadedIncoming){
+                $('#totalNewUploadedIncoming').removeClass('hide'); 
+            } else {
+                $('#totalNewUploadedIncoming').addClass('hide'); 
+            }
+            
+            if(response.totalNewUpdatedIncoming){
+                $('#totalNewUpdatedIncoming').removeClass('hide'); 
+            } else {
+                $('#totalNewUpdatedIncoming').addClass('hide'); 
+            }
+            
+            if(response.totalNewUploadedOutgoing){
+                $('#totalNewUploadedOutgoing').removeClass('hide'); 
+            } else {
+                $('#totalNewUploadedOutgoing').addClass('hide'); 
+            }
+
+            
+            if(response.totalNewUpdatedOutgoing){
+                $('#totalNewUpdatedOutgoing').removeClass('hide'); 
+            } else {
+                $('#totalNewUpdatedOutgoing').addClass('hide'); 
+            }
+
+            $('#totalNewUploaded').html(response.totalNewUploaded);
+            $('#totalNewUpdated').html(response.totalNewUpdated);
+            $('#totalNewUploadedIncoming').html(response.totalNewUploadedIncoming);
+            $('#totalNewUpdatedIncoming').html(response.totalNewUpdatedIncoming);
+            $('#totalNewUploadedOutgoing').html(response.totalNewUploadedOutgoing);
+            $('#totalNewUpdatedOutgoing').html(response.totalNewUpdatedOutgoing);
+            
+            // if(!response.totalNewUpdated){}
+            // if(!response.totalNewUpdated){}
         }
     });
 }
