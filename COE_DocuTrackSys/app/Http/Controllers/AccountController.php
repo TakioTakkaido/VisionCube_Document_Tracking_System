@@ -54,7 +54,7 @@ class AccountController extends Controller {
 
         // Retrieve the necessary credentials
         $credentials = $request->safe()->only('email', 'password');
-        $remember = $request->safe()->has('remember');
+        $remember = $request->input('remember');
 
         // Authorization attempt
         if (Auth::guard('web')->attempt($credentials, $remember)) {
@@ -189,6 +189,8 @@ class AccountController extends Controller {
             ]);
     
             // Logout
+            Auth::user()->setRememberToken(null);
+            Auth::user()->save();
             Auth::logout();
             
             $request->session()->invalidate();

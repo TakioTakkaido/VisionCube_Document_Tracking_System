@@ -10,6 +10,15 @@
       <a class="nav-link" id="contact">Contact Us</a>
     </nav>
 
+    <div class="form-group m-0" id="searchBar">
+        <div class="input-group">
+            <input type="text" class="form-control" id="searchBarText" aria-describedby="helpId" placeholder="Search Documents...">
+            <div class="input-group-append">
+                <div class="input-group-text"><i class='bx bx-search' style="font-size: 15px;"></i></div>
+            </div>
+        </div>
+    </div>
+        
     <div class="account-info d-flex" style="color: white;">
         <strong id="topPanelName">{{$user->name}}  •  {{$user->role}}</strong>
         

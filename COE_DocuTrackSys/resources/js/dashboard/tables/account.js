@@ -307,7 +307,7 @@ function deactivateAccount(accountId, row) {
         url: window.routes.deactivateAccount.replace(':id', accountId),
         data: formData,
         success: function (response) {
-            $('#dashboardTable').DataTable().ajax.reloasd();
+            $('#dashboardTable').DataTable().ajax.reload();
             showNotification("Account deactivated successfully!");
         },
         error: function (response) {    

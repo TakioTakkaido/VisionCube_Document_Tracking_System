@@ -96,7 +96,7 @@ $('.systemStatusList').on('click', '.saveStatusBtn' , function(event){
                 .trigger('click');
         },
         error: function (data) {
-            showNotification('Error', 'Error made when editing status.');
+            showNotification('Error made when editing status.');
             // Parse the data from the json response
             var data = JSON.parse(data.responseText);
 

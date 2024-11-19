@@ -24,7 +24,7 @@ $('#addTypeBtn').on('click', function(event){
         data: formData,
         success: function (data) {
            // Log success message
-            showNotification('Success', 'Type added successfully!');
+            showNotification('Type added successfully!');
             var newTypeId = data.id;
             // Update list group
             // Append a new list item to the list group
@@ -46,7 +46,7 @@ $('#addTypeBtn').on('click', function(event){
             $('#addTypeText').val('');
         },
         error: function (data) {
-            showNotification('Error', 'Error made when editing type.');
+            showNotification('Error made when editing type.');
             // Parse the data from the json response
             var data = JSON.parse(data.responseText);
 
@@ -79,7 +79,7 @@ $('.systemTypeList').on('click', '.saveTypeBtn' , function(event){
         data: formData,
         success: function (data) {
            // Log success message
-            showNotification('Success', 'Type edited successfully!');
+            showNotification('Type edited successfully!');
 
             // Update list group
             var newTypeText = $('#editTypeText').val();
@@ -88,7 +88,7 @@ $('.systemTypeList').on('click', '.saveTypeBtn' , function(event){
             $('#type' + saveTypeBtn.data('id') + ' .closeEditBtn').trigger('click', newTypeText);
         },
         error: function (data) {
-            showNotification('Error', 'Error made when editing type.');
+            showNotification('Error made when editing type.');
             // Parse the data from the json response
             var data = JSON.parse(data.responseText);
 
@@ -222,7 +222,7 @@ $('#confirmDeleteTypeBtn').on('click', function(event){
         url: window.routes.deleteType,
         data: formData,
         success: function (data) {
-            showNotification('Success', 'Type deleted successfully!');
+            showNotification('Type deleted successfully!');
 
             // Remove the type in the front end
             $('#type' + typeId).remove();
@@ -234,7 +234,7 @@ $('#confirmDeleteTypeBtn').on('click', function(event){
             var data = JSON.parse(data.responseText);
 
             // Log error
-            showNotification('Error', 'Error deleting type.');
+            showNotification('Error deleting type.');
             console.log(data.errors)
         }
     });

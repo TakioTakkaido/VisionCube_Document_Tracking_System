@@ -389,7 +389,7 @@
                                         <tr class="p-2">
                                     @endif
                                         <td class="pr-5">
-                                            <input type="checkbox" class="editExtension" name="extensions[]" id="{{$fileExtensions[$i]->id}}" {{$fileExtensions[$i]->checked  ? 'checked' : ''}}>
+                                            <input type="checkbox" class="editExtension" name="extensions[]" id="{{$fileExtensions[$i]->id}}" {{$fileExtensions[$i]->checked == "true"  ? 'checked' : ''}}>
                                             <label for="{{$fileExtensions[$i]->id}}" class="form-check-label">
                                                 {{$fileExtensions[$i]->value}}
                                             </label>

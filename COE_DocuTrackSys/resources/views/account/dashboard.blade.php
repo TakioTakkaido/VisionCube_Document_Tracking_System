@@ -137,6 +137,7 @@ Sanchez, Shane David U.
         getMaintenanceStatus: "{{route('settings.getMaintenanceStatus')}}",
 
         // Account Routes
+        createAccount: "{{route('account.create')}}",
         logout: "{{route('account.logout')}}",
         showAccount: "{{route('account.show', ':id')}}",
         showAllActiveAccounts: "{{route('account.showAllActiveAccounts')}}",
