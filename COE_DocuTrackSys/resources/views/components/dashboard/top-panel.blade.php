@@ -12,10 +12,13 @@
 
     <div class="form-group m-0" id="searchBar">
         <div class="input-group">
-            <input type="text" class="form-control" id="searchBarText" aria-describedby="helpId" placeholder="Search Documents...">
+            <input type="text" class="form-control" id="searchBarText" placeholder="Search Documents..." autocomplete="off">
             <div class="input-group-append">
                 <div class="input-group-text"><i class='bx bx-search' style="font-size: 15px;"></i></div>
             </div>
+        </div>
+
+        <div class="list-group mt-1" id="searchSuggestions">
         </div>
     </div>
         

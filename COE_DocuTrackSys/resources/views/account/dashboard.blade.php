@@ -100,7 +100,10 @@ Sanchez, Shane David U.
         'resources/js/dashboard/systemSettings/document/fileExtension.js',
 
         // Notifications
-        'resources/js/notification.js'
+        'resources/js/notification.js',
+
+        // Search
+        'resources/js/search.js'
     ])
 </head>
 <body>
@@ -167,6 +170,7 @@ Sanchez, Shane David U.
         deleteAllDocument: "{{route('document.deleteAll')}}",
         seenDocument: "{{route('document.seen')}}",
         getNewDocuments: "{{route('document.getNewDocuments')}}",
+        search: "{{route('document.search')}}",
 
         // Document Version Routes
         showDocumentVersion: "{{route('version.show', ':id')}}",
