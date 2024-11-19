@@ -115,12 +115,24 @@ class Account extends Authenticatable implements MustVerifyEmail {
         $this->save();
     } 
 
-    
-
     public function isVerified() : bool {
         return $this->email_verified_at !== null;
     }
 
-    
+    public function newlyUpdatedDocuments(){
+        return $this->belongsToMany(Document::class, 
+            'new_update_documents',
+            'account_id',
+            'new_update_document_id'
+        );
+    }
+
+    public function newlyUploadedDocuments(){
+        return $this->belongsToMany(Document::class, 
+            'new_upload_documents', 
+            'account_id',
+            'new_upload_document_id'
+        );
+    }
 }
 

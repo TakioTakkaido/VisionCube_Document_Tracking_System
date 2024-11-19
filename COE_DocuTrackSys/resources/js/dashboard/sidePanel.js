@@ -1,7 +1,7 @@
 import { documentStatistics } from "./homepage";
 import { getDocumentStatistics } from "./homepage/documentStatistics";
 import { showActive, showDeactivated } from "./tables/account";
-import { showDocument } from "./tables/document";
+import { showDocument } from "./tables/document/show";
 import { showLogs } from "./tables/log";
 
 // Event listener for the side panel buttons

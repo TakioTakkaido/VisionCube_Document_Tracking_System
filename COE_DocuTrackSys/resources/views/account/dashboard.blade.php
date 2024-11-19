@@ -106,14 +106,18 @@ Sanchez, Shane David U.
 <body>
 
 <div class="loading"></div>
-{{-- NOTIFICATION --}}
-<x-notification />
 
 {{-- TOP BAR --}}
 <x-dashboard.top-panel />
 
 {{-- MIDDLE PANEL --}}
 <x-dashboard.middle-panel />
+
+{{-- NOTIFICATION --}}
+<x-notification />
+
+
+
 
 {{-- INFORMATION TABLES --}}
 <x-dashboard.info.log />
@@ -160,6 +164,8 @@ Sanchez, Shane David U.
         restoreAllDocument: "{{route('document.restoreAll')}}",
         deleteDocument: "{{route('document.delete', ':id')}}",
         deleteAllDocument: "{{route('document.deleteAll')}}",
+        seenDocument: "{{route('document.seen')}}",
+        getNewDocuments: "{{route('document.getNewDocuments')}}",
 
         // Document Version Routes
         showDocumentVersion: "{{route('version.show', ':id')}}",

@@ -45,17 +45,21 @@ body {
 
 table.dataTable>tbody>tr.selected>*{
     box-shadow: none;
-    background-color: #a50b0b;
+    background-color: #e4c309;
+    color: black;
 }
 
 table.dataTable.hover>tbody>tr.selected:hover>*{
     box-shadow: none !important;
-    background-color: #810505;
+    background-color: #bb9f03;
+    color: black;
 }
-
+table.dataTable.hover>tbody>tr>*{
+    transition: background-color 0.45s ease;
+}
 table.dataTable.hover>tbody>tr:hover>*{
     box-shadow: none !important;
-    background-color: #e4c934;
+    background-color: #cecece;
 }
 
 .spinner-border {
@@ -64,10 +68,15 @@ table.dataTable.hover>tbody>tr:hover>*{
 }
 
 .badge-primary {
-    background-color: #810505 !important;
+    background-color: #e4c309 !important;
     text-align: center;
     align-items: center;
-    display: flex !important;
+    color: black;
+    margin-left: auto;
+    /* padding: 3px 8px; */
+    flex-grow: 0;
+    flex-shrink: 0;
+    /* display: inline-block; */
 }
 
 #reports {
@@ -75,22 +84,23 @@ table.dataTable.hover>tbody>tr:hover>*{
 }
 /************************TOP PANEL*************************/
 .top-panel {
-    height: 10%; 
+    height: 13%;
     width: 100%;
     background-color: #810505;
     top: 0; 
     left: 0; 
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 0px;
     user-select: none;
-    -webkit-user-select: none; /* For Safari */
-    -moz-user-select: none;    /* For Firefox */
-    -ms-user-select: none;     /* For IE */
+    -webkit-user-select: none; 
+    -moz-user-select: none;    
+    -ms-user-select: none;     
 }
 
 .middle-panel {
-    height: 90%;
+    height: 87%;
     width: 100%;
     display: flex;
     flex-wrap: nowrap;
@@ -161,12 +171,33 @@ table.dataTable.hover>tbody>tr:hover>*{
 
 
 .header-logo{
-    width: 80px;
-    height: auto;
-    padding: 10px 10px 10px 30px;
-    margin-left: -15px;
-    display: inline-block;
-    object-fit: contain;
+    width: 50px;
+    display: flex;
+}
+
+#logoutBtn {
+    max-width: 150px;
+    width: 250px;
+}
+
+#topPanelNav{
+    height: 100%;
+    flex-direction: column;
+}
+
+#topPanelNav a{
+    text-decoration: none;
+    height: 100%;
+    color: white !important;
+    display: flex;
+    align-items: center;
+    transition: background-color ease 0.3s;
+}
+
+#topPanelNav a:hover{
+    background-color: #e4c309;
+    color: black !important;
+    cursor: pointer;
 }
 
 .header-text {
@@ -192,10 +223,10 @@ table.dataTable.hover>tbody>tr:hover>*{
 }
 
 .account-info {
-    display: block;
+    display: flex;
     font-size: 15px;
+    flex-direction: column;
 }
-
 .account-name {
     font-size: 15px;
     color: white;
@@ -216,48 +247,65 @@ table.dataTable.hover>tbody>tr:hover>*{
 
 /*SIDE PANEL BORDER*/
 .side-panel {
-    display: flex;
+    /* display: flex; */
     height: 100%;
     width: 15%;
-    position: relative;
+    /* position: fixed; */
     text-align: middle;
     background-color: #a50b0b;
     overflow-x: hidden;
     padding-top: 10px;
     scrollbar-width: none;
+    /* flex-direction: column; */
 }
 
+.side-panel .row {
+    margin: 0;
+}
 
 .side-panel::-webkit-scrollbar{
     display: none;
 }
 
-.sidepanel-btn{
-    position: relative;
+.sidepanel-btn {
+    display: flex;
     align-items: center;
-}
-
-.sidepanel-btn span{
-    position: relative;
-    left: 17px;
+    justify-content: flex-start;
+    width: 100%;  /* Ensures the button takes full width */
+    padding: 5px 16px;
+    /* border-radius: 8px; */
+    font-size: 18px;
+    background-color: transparent;
+    color: black;
+    transition: 0.45s ease;
+    cursor: pointer;
+    border: none;
+    border-radius: none !important;
 }
 
 .sidepanel-btn i, .dropdown-btn i{
-    margin-right: 25px;
+    margin-right: 8px;
 }
-
+.sidepanel-btn span {
+    /* flex-grow: 1; */
+    margin-right: 13px;
+}
+.dropdown-arrow {
+    display: flex;
+    align-items: center;
+}
 .side-panel-section a{
-    position: relative;
-    display: inline-block;
-    width: 200px;
-    top: 100px;
-    padding: 5px 10px; 
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
+    /* position: relative; */
+    /* display: inline-block; */
+    /* width: 500px; */
+    /* top: 100px; */
+    /* padding: 5px 5px;  */
+    /* border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px; */
     text-decoration: none;
     font-size: 18px;
     color: white;
-    transition: 0.45s ease;
+    transition: 0.3s ease;
 }
 
 .side-panel-section a:hover{
@@ -265,55 +313,87 @@ table.dataTable.hover>tbody>tr:hover>*{
     color: black;
     background-color: #e4c309;
     box-shadow: 0 0 10px rgba(33, 33, 33, 0.5);
-    padding: 5px 25px;
+    /* padding: 5px 25px; */
     cursor: pointer;
+}
+
+.side-panel-section a:hover i{
+    color: black;
+}
+
+.side-panel-section a:hover .badge{
+    background-color: #a50b0b !important;
+    color: white;
 }
 
 .side-panel-section a.active{ 
     height: auto;
     color: black;
     background-color: #e4c309;
-    box-shadow: 0 0 10px rgba(33, 33, 33, 0.5);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
     cursor: pointer;
 }
 
 .dropdown-container { 
     display: none;
-    color: white;
+    color: black;
     transition: all 0.3s ease;
+    flex-direction: column;
+    width: 100%;
+}
+
+.dropdown-container .sidepanel-btn {
+    padding-left: 32px; /* Indent nested items */
+    /* background-color: #f1f1f1; */
 }
 
 .dropdown-container a{
-    display: flex;
-    font-size: 17px;
-    padding: 10px 60px;
+    /* background-color: #e4c309; */
+    /* display: flex; */
+    font-size: 18px;
+    padding: 10px;
     line-height: 1;
+    color: white;
 }
 
 .dropdown-container a:hover{
-    color: black !important;
-    padding: 10px 70px;
+    color: black;
+    /* padding: 10px 20px; */
     position: relative;
+}
+
+.dropdown-container a:hover,
+.dropdown-container:hover{
+    color: black;
+}
+
+
+.dropdown-container a{
+    margin-right: 10px;
+    color: white;
 }
 
 .dropdown-container a i {
     margin-right: 10px;
+    color: white;
 }
 
 .home-btn{
-    display: flex;
-    position: absolute;
+    /* display: flex; */
+    /* position: absolute; */
     background-color: #e4c309;
     color: black;
     top: 35px;
     left: 20px;
-    padding: 15px 20px 15px 15px;
+    padding: 10px;
     border: none;
     border-radius: 8px;
     align-items: center;
     gap: 15px;
     cursor: pointer;
     transition: 0.45s ease;
+    justify-content: center;
+    width: 100%;
 }
 
 .home-btn i{
@@ -323,15 +403,13 @@ table.dataTable.hover>tbody>tr:hover>*{
 
 .home-btn span{
     font-size: 18px;
-    display: flex;
-    
 }
 
 .home-btn:hover{
     box-shadow: 0 0 20px rgba(33, 33, 33, 0.5);
-    padding: 20px 25px 20px 20px;
+    padding: 15px;
     font-size: 20px;   
-    transition: 0.45s ease;
+    transition: padding 0.45s ease;
 }
 
 .home-btn.active{

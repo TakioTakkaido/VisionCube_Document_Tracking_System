@@ -247,6 +247,14 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 // Delete All Documents
                 Route::post('/deleteAll', 'deleteAll')
                 ->name('deleteAll');
+
+                // Document seen by the Account
+                Route::post('/seen', 'seen')
+                ->name('seen');
+
+                // Get the nuber of all New Documents
+                Route::get('/getNewDocuments', 'getNewDocuments')
+                ->name('getNewDocuments');
             });
         }); 
     });

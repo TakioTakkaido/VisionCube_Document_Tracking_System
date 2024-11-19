@@ -125,6 +125,8 @@ class DocumentController extends Controller{
             $documentVersion->attachments()->save($attachment);
         }
 
+        $document->seenUpdatedAccounts()->sync([]);
+
         $document->versions()->save($documentVersion);
 
         // Create log 
@@ -134,6 +136,8 @@ class DocumentController extends Controller{
             'type' => 'Document',
             'detail' => $documentVersion->toJson()
         ]);
+
+        // All users would not be able to see this document at first
 
         UploadedDocument::dispatch();
 
@@ -225,6 +229,10 @@ class DocumentController extends Controller{
             'type' => 'Document',
             'detail' => $documentVersion->toJson()
         ]);
+
+        $document->seenUpdatedAccounts()->sync([]);
+
+        UpdatedDocument::dispatch();
 
         // Return success message
         return response()->json([
@@ -332,9 +340,11 @@ class DocumentController extends Controller{
             'detail' => $documentVersion->toJson()
         ]);
 
+        $document->seenUpdatedAccounts()->sync([]);
+
         UpdatedDocument::dispatch();
 
-    return response()->json(['message' => 'Document moved successfully']);
+        return response()->json(['message' => 'Document moved successfully']);
     }
 
     // Move All Documents From One Category to Another
@@ -381,6 +391,9 @@ class DocumentController extends Controller{
             ]);
 
             $documents[] = $documentVersion->toArray();
+
+            $document->seenUpdatedAccounts()->sync([]);
+
             // Save new document version
             $document->versions()->save($documentVersion);
         }
@@ -394,6 +407,7 @@ class DocumentController extends Controller{
             'detail' => json_encode($documents)
         ]);
 
+        
         UpdatedDocument::dispatch();
 
         return response()->json(['message' => 'Document moved successfully']);
@@ -439,8 +453,12 @@ class DocumentController extends Controller{
             'previous_memo_number'      => $latestVersion->previous_memo_number
         ]);
 
+        $document->seenUpdatedAccounts()->sync([]);
+
         // Save new document version
         $document->versions()->save($documentVersion);
+
+        UpdatedDocument::dispatch();
 
         // Create new log
         ModelsLog::create([
@@ -494,12 +512,16 @@ class DocumentController extends Controller{
                 'previous_memo_number'      => $latestVersion->previous_memo_number
             ]);
 
+            $document->seenUpdatedAccounts()->sync([]);
+
             // Save new document version
             $document->versions()->save($documentVersion);
 
             $documents[] = $documentVersion->toArray();
         }
         
+        UpdatedDocument::dispatch();
+
         // Create new log
         ModelsLog::create([
             'account'       => Auth::user()->name . " • " . Auth::user()->role,
@@ -529,18 +551,25 @@ class DocumentController extends Controller{
             if($document->category == $request->category){
                 array_push($allDocuments, $document);
             }
+
         }
 
+        $newlyUpdatedDocuments = Auth::user()->newlyUpdatedDocuments()->pluck('new_update_document_id')->toArray();
+        $newlyUploadedDocuments = Auth::user()->newlyUploadedDocuments()->pluck('new_upload_document_id')->toArray();
         
         foreach($allDocuments as $document){
-            $document_date = strtotime($document->document_date);
-            $document->document_date = date('M. d, Y', $document_date);
             $document->canEdit = Auth::user()->canEdit;
             $document->canMove = Auth::user()->canMove;
             $document->canArchive = Auth::user()->canArchive;
             $document->canDownload = Auth::user()->canDownload;
             $document->canPrint = Auth::user()->canPrint;
+            $document->newUpload = !(in_array($document->document_id, $newlyUploadedDocuments));
+            $document->newUpdate = !(in_array($document->document_id, $newlyUpdatedDocuments));
         }
+
+        usort($allDocuments, function ($a, $b) {
+            return strtotime($b->created_at) <=> strtotime($a->created_at);
+        });
 
         // Log
         Log::channel('daily')->info('Documents obtained: {documents}', ['documents' => $allDocuments]);
@@ -602,6 +631,13 @@ class DocumentController extends Controller{
         ]);
     }
 
+    public function seen(Request $request){
+        $document = Document::find($request->id);
+        $document->seenUploadedAccounts()->attach(Auth::user()->id);
+        $document->seenUpdatedAccounts()->attach(Auth::user()->id);
+
+        return response('Document seen by the account');
+    }
     // Homepage
     // Get Document Statistics
     // Document Statistics
@@ -840,6 +876,53 @@ class DocumentController extends Controller{
 
         return response()->json([
             'documents' => json_encode($documents)
+        ]);
+    }
+
+    public function getNewDocuments(){
+        $newUpdated = [];
+        $totalNewUpdated = 0;
+        $totalNewUpdatedIncoming = 0;
+        $totalNewUpdatedOutgoing = 0;
+        // Get all the document ids under the auth user
+        $newUpdated = Auth::user()->newlyUpdatedDocuments()->pluck('new_update_document_id')->toArray();
+
+        // Get all the document ids
+        $documentIds = [];
+        $incomingDocumentIds = [];
+        $outgoingDocumentIds = [];
+
+        $documents = Document::all();
+        foreach($documents as $document){
+            array_push($documentIds, $document->latestVersion()->document_id);
+            if ($document->latestVersion()->category === "Incoming"){
+                array_push($incomingDocumentIds, $document->latestVersion()->document_id);
+            }
+
+            if ($document->latestVersion()->category === "Outgoing"){
+                array_push($outgoingDocumentIds, $document->latestVersion()->document_id);
+            }
+        }
+        
+        // Check whether each document id belong to the previous document id
+        foreach($documentIds as $id){
+            if(!(in_array($id, $newUpdated))){$totalNewUpdated++;}
+        }
+
+        // Check whether each document id belong to the previous document id
+        foreach($incomingDocumentIds as $id){
+            if(!(in_array($id, $newUpdated))){$totalNewUpdatedIncoming++;}
+        }
+
+        // Check whether each document id belong to the previous document id
+        foreach($outgoingDocumentIds as $id){
+            if(!(in_array($id, $newUpdated))){$totalNewUpdatedOutgoing++;}
+        }
+
+        return response()->json([
+            'totalNewUpdated' => $totalNewUpdated,
+            'totalNewUpdatedIncoming' => $totalNewUpdatedIncoming,
+            'totalNewUpdatedOutgoing' => $totalNewUpdatedOutgoing
         ]);
     }
 }

@@ -1,6 +1,7 @@
 import { showNotification } from "../notification";
+import { getNewDocuments } from "./homepage";
 import { getDocumentStatistics } from "./homepage/documentStatistics";
-import { documentPreview } from "./tables/document";
+import { documentPreview } from "./tables/document/show";
 
 // Edit Document Btn
 var senderName = '';
@@ -348,7 +349,7 @@ $('#submitEditDocumentBtn').off('click').on('click', function(event) {
         contentType: false,
         success: function(response) {
             showNotification('Document updated successfully!');
-            
+            getNewDocuments();
             getDocumentStatistics();
             documentPreview(documentId);
              
