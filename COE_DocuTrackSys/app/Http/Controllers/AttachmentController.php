@@ -11,7 +11,7 @@ class AttachmentController extends Controller {
         $attachment = Attachment::find($request->id);
 
         return response()->json([
-            'fileLink' => url($attachment->file),
+            'fileLink' => url("https://drive.google.com/file/d/".$attachment->file."/preview"),
         ]);
     }
 }

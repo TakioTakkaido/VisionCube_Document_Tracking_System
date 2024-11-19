@@ -58,6 +58,10 @@ function updateAccountAccess(secretaryAccesses = [], assistantAccesses = [], cle
         });
     }
 
+    $.each($('.editSecretaryRole'), function (index, element) { 
+        $(element).prop('checked', secretaryAccesses[index] === 'true');
+    });
+
     // Access array
     if (assistantAccesses.length == 0){
         $.each($('.editAssistantRole'), function (index, element) { 
@@ -65,12 +69,20 @@ function updateAccountAccess(secretaryAccesses = [], assistantAccesses = [], cle
         });
     }
     
+    $.each($('.editAssistantRole'), function (index, element) { 
+        $(element).prop('checked', assistantAccesses[index] === 'true');
+    });
+
     // Access array
     if (clerkAccesses.length == 0){ 
         $.each($('.editClerkRole'), function (index, element) { 
             clerkAccesses[index] = $(element).is(':checked');
         });
     }
+
+    $.each($('.editClerkRole'), function (index, element) { 
+        $(element).prop('checked', clerkAccesses[index] === 'true');
+    });
 
     var formData = new FormData();
     

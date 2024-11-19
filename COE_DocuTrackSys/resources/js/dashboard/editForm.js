@@ -352,7 +352,6 @@ $('#submitEditDocumentBtn').off('click').on('click', function(event) {
             getNewDocuments();
             getDocumentStatistics();
             documentPreview(documentId);
-             
             $('#dashboardTable').DataTable().ajax.reload();
         },
         error: function(data) {
@@ -473,6 +472,8 @@ $('#clearEditBtn').on('click', function (event){
     $.each($('.error'), function () { 
         $(this).css('display', 'none');
     });
+
+    $('.deleteEditUploadFileBtn').trigger('click');
 });
 
 var pos;
@@ -657,6 +658,8 @@ $('#editSoftcopy').off('input').on('input', function(event){
 
     $('.editUploadFiles').css('overflow-y', 'scroll');
     $('#editFileError').css('display', 'none');
+
+    $('.editFileUploadLabel').html('Document Attachment/s ('+$('#editSoftcopy')[0].files.length+' Attachment/s Uploaded):')
 });
 
 $(document).on('click', '.deleteEditUploadFileBtn', function(event){
@@ -679,6 +682,14 @@ $(document).on('click', '.deleteEditUploadFileBtn', function(event){
             $(file).remove();
         }
     });
+
+    if ($('#editSoftcopy')[0].files.length === 0) {
+        $('.editFiles').html('<div>No files added</div>');
+        $('.editFiles').data('value', 'none');
+        $('.editFileUploadLabel').html('Document Attachment/s: <small style="color: red">*</small>')
+    } else {
+        $('.editFileUploadLabel').html('Document Attachment/s ('+$('#editSoftcopy')[0].files.length+' Attachment/s Uploaded):')
+    }
 });
 
 $('#editUploadCategory').on('input', function(event){

@@ -1,5 +1,5 @@
 <div class="top-panel px-3">
-    <div class="d-flex align-items-center">
+    <div class="d-flex align-items-center" onclick="window.location.reload();" style="cursor: pointer;">
         <img src="{{Vite::asset('resources/img/COE.png')}}" alt="Logo" class="header-logo mr-2">
         <div class="align-items-center header-text">Document Tracking System</div>
     </div>

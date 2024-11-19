@@ -59,7 +59,7 @@
                                 </div>
                             </div>
 
-                            <div id="documentInfoContainer" class="documentPreviewInfo col container" style="display: none;">
+                            <div id="documentInfoContainer" class="documentPreviewInfo col container" style="display: none; overflow-y: scroll;">
                             </div>
 
                             <div id="updateDocument" class="documentPreviewInfo col container" style="overflow-x: none; max-height: inherit; overflow-y: scroll; display: none;">
@@ -197,7 +197,7 @@
 
                                             <div class="row mb-2">
                                                 <div class="col">
-                                                    <label for="editUploadSoftcopy">Document Attachment/s: </label>
+                                                    <label for="editUploadSoftcopy" class="editFileUploadLabel">Document Attachment/s: </label>
                                                     <div class="container rounded border p-2 d-flex justify-content-center align-items-center editUploadFiles editUploadInput" data-value="none" style="flex-wrap: wrap; height: 200px;">
                                                         <div>No files added</div>
                                                     </div>
@@ -241,7 +241,7 @@
                     <div class="py-3">
                         <div class="d-flex align-items-center mb-2" id="documentInfoTitle">
                         </div>
-                        <ul class="list-group list-group-flush" style="overflow-x: hidden; max-width: inherit;" id="documentInfoList">
+                        <ul class="list-group list-group-flush" style="overflow-x: hidden; max-width: inherit; max-height: 1000px; overflow-y: scroll" id="documentInfoList">
                         </ul>
                     </div>
                 </div>

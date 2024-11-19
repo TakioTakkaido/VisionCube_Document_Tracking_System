@@ -547,29 +547,37 @@ function getDocumentStatistics(date, type){
                 }
 
                     if(type === 'Day'){
+                        $('#dateDay').html('<i>Day: ' + moment(date).format('MMM. D, YYYY') + '</i>');
                         $('#categoryDay').html(categoryStats);
                         $('#statusDay').html(statusStats);
-                    }else if(type === 'Week'){
+                    }else if(type === 'Week'){ 
+                        $('#dateWeek').html('<i>Week: ' + moment(date).startOf('isoWeek').format('MMM. D, YYYY') + ' - ' + moment(date).endOf('isoWeek').format('MMM. D, YYYY') + '</i>');
                         $('#categoryWeek').html(categoryStats);
                         $('#statusWeek').html(statusStats);
                     }else if(type === 'Month'){
+                        $('#dateMonth').html('<i>Month: ' + moment(date).format('MMM. YYYY') + '</i>');
                         $('#categoryMonth').html(categoryStats);
                         $('#statusMonth').html(statusStats);
                     }else {
+                        $('#dateYear').html('<i>Year: ' + moment(date).format('YYYY') + '</i>');
                         $('#categoryYear').html(categoryStats);
                         $('#statusYear').html(statusStats);
                     }
             } else {
                 if(type === 'Day'){
+                    $('#dateDay').html('<i>Day: ' + moment(date).format('MMM. D, YYYY') + '</i>');
                     $('#categoryDay').html(`<span class="d-flex justify-content-center align-items-center text-justify">No documents tracked at this day.</span>`);
                     $('#statusDay').html(`<span class="d-flex justify-content-center align-items-center text-justify">No documents tracked at this day.</span>`);
                 }else if(type === 'Week'){
+                    $('#dateWeek').html('<i>Week: ' + moment(date).startOf('isoWeek').format('MMM. D, YYYY') + ' - ' + moment(date).endOf('isoWeek').format('MMM. D, YYYY') + '</i>');
                     $('#categoryWeek').html(`<span class="d-flex justify-content-center align-items-center text-justify">No documents tracked at this week.</span>`);
                     $('#statusWeek').html(`<span class="d-flex justify-content-center align-items-center text-justify">No documents tracked at this week.</span>`);
                 }else if(type === 'Month'){
+                    $('#dateMonth').html('<i>Month: ' + moment(date).format('MMM. YYYY') + '</i>');
                     $('#categoryMonth').html(`<span class="d-flex justify-content-center align-items-center text-justify">No documents tracked at this month.</span>`);
                     $('#statusMonth').html(`<span class="d-flex justify-content-center align-items-center text-justify">No documents tracked at this month.</span>`);
                 }else {
+                    $('#dateYear').html('<i>Year: ' + moment(date).format('YYYY') + '</i>');
                     $('#categoryYear').html(`<span class="d-flex justify-content-center align-items-center text-justify">No documents tracked at this year.</span>`);
                     $('#statusYear').html(`<span class="d-flex justify-content-center align-items-center text-justify">No documents tracked at this year.</span>`);
                 }
