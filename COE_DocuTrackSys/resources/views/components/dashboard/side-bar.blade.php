@@ -96,7 +96,15 @@
                     </a>
                     <a class="list-group-item sidepanel-btn" id="documentSettingsBtn">
                         <i class='bx bx-file'></i>
-                        <span>Document</span>
+                        <span>Document Form</span>
+                    </a>
+                    <a class="list-group-item sidepanel-btn" id="attachmentUploadBtn">
+                        <i class='bx bx-cloud-upload'></i>
+                        <span>Attachment Upload</span>
+                    </a>
+                    <a class="list-group-item sidepanel-btn" id="sysInfoSettingsBtn">
+                        <i class='bx bxs-info-circle' ></i>
+                        <span>System Information</span>
                     </a>
                 @endif
             </div>

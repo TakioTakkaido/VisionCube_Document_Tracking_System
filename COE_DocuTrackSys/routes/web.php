@@ -176,6 +176,8 @@ Route::middleware([NoDirectAccess::class])->group(function() {
 
                 Route::post('/sendResetPasswordLink', 'sendResetPasswordLink')
                 ->name('sendResetPasswordLink');
+
+                
             });
         });
     });
@@ -255,6 +257,9 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 // Get the nuber of all New Documents
                 Route::get('/getNewDocuments', 'getNewDocuments')
                 ->name('getNewDocuments');
+
+                Route::get('/search', 'search')
+                ->name('search');
             });
         }); 
     });

@@ -1082,6 +1082,33 @@ button:focus {
     border: transparent;
 }
 
+#searchSuggestions{
+    position: fixed;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: scroll;
+    width: 350px;
+}
+
+#searchSuggestions .list-group-item{
+    font-size: 15px;
+    color: grey;
+    transition: 0.2s ease;
+}
+
+#searchSuggestions .list-group-item div{
+    color: black;
+}
+
+#searchSuggestions .list-group-item:hover div {
+    color: white;
+}
+
+#searchSuggestions .list-group-item:hover{
+    color: white;
+    background-color: #a50b0b;
+}
+
 .form-control:focus {
     box-shadow: none;
 }

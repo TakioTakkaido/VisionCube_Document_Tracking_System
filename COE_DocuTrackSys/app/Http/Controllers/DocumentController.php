@@ -925,4 +925,35 @@ class DocumentController extends Controller{
             'totalNewUpdatedOutgoing' => $totalNewUpdatedOutgoing
         ]);
     }
+
+    public function search(Request $request){
+        $documents = Document::all();
+        $query = $request->query('query');
+        $latestDocuments = [];
+        foreach ($documents as $document){
+            $latestDocuments[] = $document->latestVersion();
+        }
+
+        $searchedDocuments = collect($latestDocuments)->filter(function ($document) use ($query){
+            return (
+                stripos($document->subject, $query) !== false ||
+                stripos($document->status, $query) !== false ||
+                stripos($document->description, $query) !== false ||
+                stripos($document->modified_by, $query) !== false ||
+                stripos($document->type, $query) !== false ||
+                stripos($document->sender, $query) !== false ||
+                stripos($document->recipient, $query) !== false ||
+                stripos($document->assignee, $query) !== false ||
+                stripos($document->category, $query) !== false ||
+                stripos($document->series_number, $query) !== false ||
+                stripos($document->memo_number, $query) !== false ||
+                stripos(Carbon::parse($document->document_date)->format('l, F j, Y g:i A'), $query) !== false ||
+                stripos($document->venue, $query) !== false ||
+                stripos($document->event_description, $query) !== false
+            );
+        });
+        return response()->json([
+            'documents' => $searchedDocuments
+        ]);
+    }
 }
