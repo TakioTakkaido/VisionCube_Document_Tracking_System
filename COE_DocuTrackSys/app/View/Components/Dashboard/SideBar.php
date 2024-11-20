@@ -29,7 +29,8 @@ class SideBar extends Component
         return view('components.dashboard.side-bar', [
             'canUpload' => FacadesAuth::user()->canUpload,
             'isAdmin' => $user->role == 'Admin',
-            'maintenance' => SettingsController::getMaintenanceStatus()
+            'maintenance' => SettingsController::getMaintenanceStatus(),
+            'isVerified' => $user->email_verified_at !== null
         ]);
     }
 }

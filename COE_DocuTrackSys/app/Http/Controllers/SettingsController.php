@@ -18,6 +18,7 @@ class SettingsController extends Controller {
     public function getMaintenanceStatusFrontend(){
         $settings = Settings::all()->first();
         return response()->json([
+            'verified' => Auth::user()->email_verified_at !== null,
             'maintenance' => filter_var($settings->maintenance, FILTER_VALIDATE_BOOLEAN)
         ]);
     }

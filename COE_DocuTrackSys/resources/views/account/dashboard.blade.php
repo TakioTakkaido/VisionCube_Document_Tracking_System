@@ -99,6 +99,9 @@ Sanchez, Shane David U.
         'resources/js/dashboard/systemSettings/document/status.js',
         'resources/js/dashboard/systemSettings/document/fileExtension.js',
 
+        // Report
+        'resources/js/dashboard/tables/report.js',
+
         // Notifications
         'resources/js/notification.js',
 
@@ -118,9 +121,6 @@ Sanchez, Shane David U.
 
 {{-- NOTIFICATION --}}
 <x-notification />
-
-
-
 
 {{-- INFORMATION TABLES --}}
 <x-dashboard.info.log />

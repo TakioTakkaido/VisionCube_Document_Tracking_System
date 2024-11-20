@@ -1,8 +1,7 @@
 import { showNotification } from "../notification";
 
 $(document).ready(function(){
-
-    $.when(getMaintenanceStatus(), getNewDocuments()).then(function() {
+    $.when(getNewDocuments(), getMaintenanceStatus()).then(function() {
         // Initialize the DataTable after AJAX completes
         $('#accountAccessTable').DataTable();
         $('#analyticsDay').datepicker({
@@ -38,6 +37,7 @@ $(document).ready(function(){
             getDocumentStatistics($(this).datepicker('getDate'), 'Year');
         });
 
+        
         $('.loading').hide();
     });
 });
@@ -445,11 +445,19 @@ function getMaintenanceStatus(){
         method: 'GET',
         url: window.routes.getMaintenanceStatus,
         success: function(response) {
-            if (response.maintenance == true){
-                $('#accountSettingsBtn').trigger('click');
-                $('#loadingHomepage').hide();
+            if (response.verified == true){
+                if (response.maintenance == true){
+                    $('#systemSettingsDropdown').addClass('show');
+                    $('#accountSettingsBtn').trigger('click');
+                    $('#loadingHomepage').hide();
+                } else {
+                    $('#homePageBtn').trigger('click');
+                }
             } else {
-                $('#homePageBtn').trigger('click');
+                $('#profileSettingsBtn').trigger('click');
+                $('#systemSettingsDropdown').addClass('show');
+                $('#loadingHomepage').hide();
+                $('#verifyFirst').modal('show');
             }
         }
     });

@@ -23,6 +23,7 @@ class TopPanel extends Component
     {
         return view('components.dashboard.top-panel', [
             'user' => Auth::user(),
+            'isVerified' => Auth::user()->email_verified_at !== null
         ]);
     }
 }

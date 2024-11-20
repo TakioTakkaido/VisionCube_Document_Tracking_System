@@ -16,6 +16,8 @@ $('#homePageBtn').on('click', function(event){
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
+        $('.attachmentUpload-settings').removeClass('active');
+        $('.sysInfo-settings').removeClass('active');
         $('.system-settings').removeClass('active'); 
     }
 
@@ -72,6 +74,8 @@ $('#activeBtn').on('click', function(event){
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
+        $('.attachmentUpload-settings').removeClass('active');
+        $('.sysInfo-settings').removeClass('active');
         $('.system-settings').removeClass('active'); 
     }
 
@@ -92,6 +96,8 @@ $('#deactivatedBtn').on('click', function(event){
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
+        $('.attachmentUpload-settings').removeClass('active');
+        $('.sysInfo-settings').removeClass('active');
         $('.system-settings').removeClass('active'); 
     }
 
@@ -120,6 +126,8 @@ $('#incomingBtn').on('click', function(event){
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
+        $('.attachmentUpload-settings').removeClass('active');
+        $('.sysInfo-settings').removeClass('active');
         $('.system-settings').removeClass('active'); 
     }
 
@@ -139,6 +147,8 @@ $('#outgoingBtn').on('click', function(event){
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
+        $('.attachmentUpload-settings').removeClass('active');
+        $('.sysInfo-settings').removeClass('active');
         $('.system-settings').removeClass('active');
     }
 
@@ -160,6 +170,8 @@ $('#recycleBinBtn').on('click', function(event){
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
+        $('.attachmentUpload-settings').removeClass('active');
+        $('.sysInfo-settings').removeClass('active');
         $('.system-settings').removeClass('active'); 
     }
 
@@ -180,6 +192,8 @@ $('#archivedBtn').on('click', function(event){
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
+        $('.attachmentUpload-settings').removeClass('active');
+        $('.sysInfo-settings').removeClass('active');
         $('.system-settings').removeClass('active'); 
     }
 
@@ -200,6 +214,8 @@ $('#logBtn').on('click', function(event){
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
+        $('.attachmentUpload-settings').removeClass('active');
+        $('.sysInfo-settings').removeClass('active');
         $('.system-settings').removeClass('active'); 
     }
     
@@ -231,6 +247,8 @@ $('#profileSettingsBtn').on('click', function (event) {
         $('.profile-settings').addClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
+        $('.attachmentUpload-settings').removeClass('active');
+        $('.sysInfo-settings').removeClass('active');
         $('.dashboard-table').removeClass('active');
     }
 });
@@ -247,6 +265,8 @@ $('#accountSettingsBtn').on('click', function (event) {
         $('.profile-settings').removeClass('active');
         $('.account-settings').addClass('active');
         $('.document-settings').removeClass('active');
+        $('.attachmentUpload-settings').removeClass('active');
+        $('.sysInfo-settings').removeClass('active');
         $('.dashboard-table').removeClass('active');
     }
 });
@@ -263,6 +283,44 @@ $('#documentSettingsBtn').on('click', function (event) {
         $('.profile-settings').removeClass('active');
         $('.document-settings').addClass('active'); 
         $('.account-settings').removeClass('active');
+        $('.attachmentUpload-settings').removeClass('active');
+        $('.sysInfo-settings').removeClass('active');
+        $('.dashboard-table').removeClass('active');
+    }
+});
+
+$('#attachmentUploadBtn').on('click', function (event) {
+    event.preventDefault();
+    $('.home-btn').removeClass('active');
+    $('.side-panel-section a').removeClass('active');
+    $(this).addClass('active');
+
+    if (!$('.attachmentUpload-settings').hasClass('active')){
+        $('.system-settings').addClass('active');
+        $('.homepage').removeClass('active');
+        $('.profile-settings').removeClass('active');
+        $('.document-settings').removeClass('active'); 
+        $('.account-settings').removeClass('active');
+        $('.attachmentUpload-settings').addClass('active');
+        $('.sysInfo-settings').removeClass('active');
+        $('.dashboard-table').removeClass('active');
+    }
+});
+
+$('#sysInfoSettingsBtn').on('click', function (event) {
+    event.preventDefault();
+    $('.home-btn').removeClass('active');
+    $('.side-panel-section a').removeClass('active');
+    $(this).addClass('active');
+
+    if (!$('.sysInfo-settings').hasClass('active')){
+        $('.system-settings').addClass('active');
+        $('.homepage').removeClass('active');
+        $('.profile-settings').removeClass('active');
+        $('.document-settings').removeClass('active'); 
+        $('.account-settings').removeClass('active');
+        $('.attachmentUpload-settings').removeClass('active');
+        $('.sysInfo-settings').addClass('active');
         $('.dashboard-table').removeClass('active');
     }
 });

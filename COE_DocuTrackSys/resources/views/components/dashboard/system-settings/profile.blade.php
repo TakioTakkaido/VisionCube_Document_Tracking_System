@@ -33,7 +33,7 @@
                         <div class="input-group">
                             <input type="text" class="form-control" id="editProfileName" value="{{ Auth::user()->name }}" disabled/>
                             <div class="input-group-append profileNameBtn">
-                                <button class="btn btn-primary editProfile" id="editNameBtn" data-value="{{ Auth::user()->name }}"><i class='bx bx-edit-alt' style="font-size: 20px;"></i></button>
+                                <button class="btn btn-primary editProfile {{!$isVerified ? 'disabled' : ''}}" id="editNameBtn" data-value="{{ Auth::user()->name }}"><i class='bx bx-edit-alt' style="font-size: 20px;"></i></button>
                             </div>                            
                         </div>
                         <span class="error" id="profileNameError" style="display:none;"></span>
@@ -59,7 +59,7 @@
                         <div class="input-group">
                             <input type="text" class="form-control text-left" id="editProfileEmail" value="{{ Auth::user()->email }}" disabled/>
                             <div class="input-group-append profileEmailBtn">
-                                <button class="btn btn-primary editProfile" id="editEmailBtn"><i class='bx bx-edit-alt' style="font-size: 20px;"></i></button>
+                                <button class="btn btn-primary editProfile {{!$isVerified ? 'disabled' : ''}}" id="editEmailBtn"><i class='bx bx-edit-alt' style="font-size: 20px;"></i></button>
                             </div>
                         </div>
                     </div>
@@ -92,7 +92,24 @@
             
             <div class="col-6 text-right">
                 <!-- Reset Password Button -->
-                <a href="{{route('show.forgotPassword')}}" class="btn btn-primary" id="resetPasswordBtn">Reset Password</a>
+                <a href="{{route('show.forgotPassword')}}" class="btn btn-primary {{!$isVerified ? 'disabled' : ''}}" id="resetPasswordBtn">Reset Password</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="verifyFirst" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Account not Verified</h5>
+                </div>
+                <div class="modal-body">
+                    In order to proceed using the COE Document Tracking System, you must verify your email first.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>

@@ -112,7 +112,7 @@
 <body>
     <div id="box1">  
         <div id="click">      
-            <img id="englogo" src="{{ $message->embed(asset('img/COE.png')) }}" alt="COE Logo">
+            <img id="englogo" src="{{ $message->embed(Vite::asset('resources/img/COE.png')) }}" alt="COE Logo">
             <h1 id="verify">Verify your Email Address</h1>
             <h5 id="descr">Please click the button below to verify your email address and activate your account.</h5>
             <!-- Updated Button -->
