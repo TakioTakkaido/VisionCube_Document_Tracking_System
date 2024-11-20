@@ -335,6 +335,10 @@ table.dataTable.hover>tbody>tr:hover>*{
     cursor: pointer;
 }
 
+.side-panel-section a.active i{ 
+    color: black;
+}
+
 .dropdown-container { 
     display: none;
     color: black;

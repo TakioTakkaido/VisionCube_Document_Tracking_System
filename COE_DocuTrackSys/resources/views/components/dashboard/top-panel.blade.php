@@ -4,15 +4,15 @@
         <div class="align-items-center header-text">Document Tracking System</div>
     </div>
     <nav class="nav justify-content-center align-items-center" id="topPanelNav">
-      <a class="nav-link" id="about">About</a>
-      <a class="nav-link" id="mission">WMSU Mission</a>
-      <a class="nav-link" id="vision">WMSU Vision</a>
-      <a class="nav-link" id="contact">Contact Us</a>
+      <a class="nav-link {{!$isVerified ? 'disabled' : ''}}" id="about">About</a>
+      <a class="nav-link {{!$isVerified ? 'disabled' : ''}}" id="mission">WMSU Mission</a>
+      <a class="nav-link {{!$isVerified ? 'disabled' : ''}}" id="vision">WMSU Vision</a>
+      <a class="nav-link {{!$isVerified ? 'disabled' : ''}}" id="contact">Contact Us</a>
     </nav>
 
     <div class="form-group m-0" id="searchBar">
         <div class="input-group">
-            <input type="text" class="form-control" id="searchBarText" placeholder="Search Documents..." autocomplete="off">
+            <input type="text" class="form-control" id="searchBarText" placeholder="Search Documents..." autocomplete="off" {{!$isVerified ? 'disabled' : ''}}>
             <div class="input-group-append">
                 <div class="input-group-text"><i class='bx bx-search' style="font-size: 15px;"></i></div>
             </div>

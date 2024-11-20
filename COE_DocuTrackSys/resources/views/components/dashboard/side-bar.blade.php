@@ -3,7 +3,7 @@
 
     {{-- Home Button --}}
     <div class="row p-3">
-        <button class="home-btn {{ $maintenance ? 'disabled' : '' }}" id="homePageBtn">
+        <button class="home-btn {{ ($maintenance || !$isVerified) ? 'disabled' : '' }}" id="homePageBtn">
             <i class='bx bx-home'></i>
             <span>Home</span>
         </button>
@@ -13,7 +13,7 @@
 
             {{-- Accounts Section (Visible to Admins Only) --}}
             @if($isAdmin)
-                <a class="list-group-item sidepanel-btn" id="accountBtn">
+                <a class="list-group-item sidepanel-btn {{!$isVerified ? 'disabled' : ''}}" id="accountBtn">
                     <i class='bx bx-user'></i>
                     <span>Accounts</span>
                 </a>
@@ -33,7 +33,7 @@
             @endif
 
             {{-- Documents Section --}}
-            <a class="list-group-item sidepanel-btn {{ $maintenance ? 'disabled' : '' }}" id="documentBtn">
+            <a class="list-group-item sidepanel-btn {{( $maintenance || !$isVerified) ? 'disabled' : '' }}" id="documentBtn">
                 <i class='bx bx-file'></i>
                 <span>Documents</span>
                 <span class="badge badge-primary newDocuments hide ml-3" id="totalNewUpdated">1</span>
@@ -59,19 +59,19 @@
 
             {{-- Archives (Visible to Admins Only) --}}
             @if($isAdmin)
-                <a class="list-group-item sidepanel-btn {{ $maintenance ? 'disabled' : '' }}" id="archivedBtn">
+                <a class="list-group-item sidepanel-btn {{ ( $maintenance || !$isVerified)  ? 'disabled' : '' }}" id="archivedBtn">
                     <i class='bx bx-archive'></i>
                     <span>Archives</span>
                 </a>
 
                 {{-- Reports --}}
-                <a class="list-group-item sidepanel-btn {{ $maintenance ? 'disabled' : '' }}" id="reportsBtn">
+                <a class="list-group-item sidepanel-btn {{ ($maintenance || !$isVerified) ? 'disabled' : '' }}" id="reportsBtn">
                     <i class='bx bxs-report'></i>
                     <span>Reports</span>
                 </a>
 
                 {{-- Logs --}}
-                <a class="list-group-item sidepanel-btn {{ $maintenance ? 'disabled' : '' }}" id="logBtn">
+                <a class="list-group-item sidepanel-btn {{( $maintenance || !$isVerified) ? 'disabled' : '' }}" id="logBtn">
                     <i class='bx bx-history'></i>
                     <span>Logs</span>
                 </a>
@@ -90,19 +90,19 @@
                     <span>Profile</span>
                 </a>
                 @if ($isAdmin)
-                    <a class="list-group-item sidepanel-btn" id="accountSettingsBtn">
+                    <a class="list-group-item sidepanel-btn {{!$isVerified ? 'disabled' : ''}}" id="accountSettingsBtn">
                         <i class='bx bx-user'></i>
                         <span>Account</span>
                     </a>
-                    <a class="list-group-item sidepanel-btn" id="documentSettingsBtn">
+                    <a class="list-group-item sidepanel-btn {{!$isVerified ? 'disabled' : ''}}" id="documentSettingsBtn">
                         <i class='bx bx-file'></i>
                         <span>Document Form</span>
                     </a>
-                    <a class="list-group-item sidepanel-btn" id="attachmentUploadBtn">
+                    <a class="list-group-item sidepanel-btn {{!$isVerified ? 'disabled' : ''}}" id="attachmentUploadBtn">
                         <i class='bx bx-cloud-upload'></i>
                         <span>Attachment Upload</span>
                     </a>
-                    <a class="list-group-item sidepanel-btn" id="sysInfoSettingsBtn">
+                    <a class="list-group-item sidepanel-btn {{!$isVerified ? 'disabled' : ''}}" id="sysInfoSettingsBtn">
                         <i class='bx bxs-info-circle' ></i>
                         <span>System Information</span>
                     </a>

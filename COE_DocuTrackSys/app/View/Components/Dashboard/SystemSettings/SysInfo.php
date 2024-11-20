@@ -2,26 +2,28 @@
 
 namespace App\View\Components\Dashboard\SystemSettings;
 
+use App\Http\Controllers\SettingsController;
 use Closure;
 use Illuminate\View\Component;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Auth;
 
-class Profile extends Component
+class SysInfo extends Component
 {
     /**
      * Create a new component instance.
      */
-    public function __construct() {
+    public function __construct()
+    {
         //
     }
 
     /**
      * Get the view / contents that represent the component.
      */
-    public function render(): View|Closure|string {
-        return view('components.dashboard.system-settings.profile', [
-            'isVerified' => Auth::user()->email_verified_at !== null
+    public function render(): View|Closure|string
+    {
+        return view('components.dashboard.system-settings.sys-info', [
+            'maintenance' => SettingsController::getMaintenanceStatus()
         ]);
     }
 }

@@ -33,5 +33,15 @@
         <div class="document-settings">
             <x-dashboard.system-settings.document />
         </div>
+
+        {{-- Attachment Upload Settings --}}
+        <div class="attachmentUpload-settings">
+            <x-dashboard.system-settings.attachmentUpload />
+        </div>
+
+        {{-- Sys info upload Settings --}}
+        <div class="sysInfo-settings">
+            <x-dashboard.system-settings.sysInfo />
+        </div>
     </div>
 </div>
