@@ -8,6 +8,7 @@ use App\Models\Participant;
 use App\Models\ParticipantGroup;
 use App\Models\Settings;
 use App\Models\Status;
+use App\Models\SysInfo;
 use App\Models\Type;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -62,5 +63,8 @@ class DefaultSeeder extends Seeder
 
         // Create settings
         Settings::factory()->create();
+
+        // Create system information
+        SysInfo::factory()->create();
     }
 }

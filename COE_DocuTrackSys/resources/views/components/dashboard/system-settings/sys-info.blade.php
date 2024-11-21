@@ -1,12 +1,13 @@
 <div>
+    <!-- Header Section -->
     <div class="container p-0 mb-2">
         <div class="row d-flex justify-content-between align-items-center">
-            <!-- Title on the left -->
+            <!-- Title -->
             <div class="col-auto">
                 <h5>System Information Settings</h5>
             </div>
         
-            <!-- Warning text and maintenance button on the right -->
+            <!-- Maintenance Warning and Button -->
             <div class="col-auto d-flex align-items-center">
                 <span class="badge badge-warning text-wrap mr-2 text-justify" style="background-color: transparent; color: black;">
                     @if ($maintenance)
@@ -16,7 +17,7 @@
                     @endif
                 </span>
                 {{-- maintenanceBtn --}}
-                <button type="button" class="btn btn-primary" id="maintenanceAccountBtn" data-target="#confirmMaintenanceSysinfoModal" data-toggle="modal">
+                <button type="button" class="btn btn-primary" id="maintenanceSysInfoBtn" data-target="#confirmMaintenanceSysinfoModal" data-toggle="modal">
                     @if ($maintenance)
                         Maintenance Mode: On   
                     @else
@@ -27,79 +28,101 @@
         </div>
     </div>
 
+    <!-- System Name Section -->
     <div class="container border p-3 rounded mb-2 position-relative">
-        @if ($maintenance != true)
-            <div class="overlay" title="Settings can only be accessed under maintenance."></div>  
+        @if (!$maintenance)
+            <div class="overlay" title="Settings can only be accessed under maintenance."></div>
         @endif
-        <div class="row mb-2 justify-content-end align-items-end">
-            <div class="col">
-                <h6 class="p-0 font-weight-bold mb-0">Edit System Name</h6>
-                <p>Proceed to change the system name with caution.</p>
+        <div class="row mb-2">
+            <div class="col-12">
+                <h6 class="font-weight-bold">Edit System Name</h6>
+            </div>
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="systemName" value="{{ $info->name }}" placeholder="Enter the System Name" disabled required>
+                    <div class="input-group-append systemNameBtn">
+                        <button class="btn btn-primary editSysInfo {{ !$isVerified ? 'disabled' : '' }}" id="editSysInfoNameBtn" data-value="{{ $info->name }}">
+                            <i class='bx bx-edit-alt' style="font-size: 20px;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 text-right">
+                <button type="button" class="btn btn-primary disabled editSysInfo" id="saveSysInfoNameBtn">Change System Name</button>
             </div>
         </div>
     </div>
 
+    <!-- Logo Section -->
     <div class="container border p-3 rounded mb-2 position-relative">
-        @if ($maintenance != true)
-            <div class="overlay" title="Settings can only be accessed under maintenance."></div>  
+        @if (!$maintenance)
+            <div class="overlay" title="Settings can only be accessed under maintenance."></div>
         @endif
-        <div class="row mb-2 justify-content-end align-items-end">
-            <div class="col">
-                <h6 class="p-0 font-weight-bold mb-0">Change System Logo</h6>
-                <p>Minimum size requirement: | Minimum resolution: </p>
+        <h6 class="font-weight-bold">Change System Logo</h6>
+        <p>Minimum size requirement: | Minimum resolution:</p>
+    </div>
+
+    <!-- Favicon Section -->
+    <div class="container border p-3 rounded mb-2 position-relative">
+        @if (!$maintenance)
+            <div class="overlay" title="Settings can only be accessed under maintenance."></div>
+        @endif
+        <h6 class="font-weight-bold">Change Favicon</h6>
+        <p>Minimum size requirement: | Minimum resolution:</p>
+    </div>
+
+    <!-- About Section -->
+    <div class="container border p-3 rounded mb-2 position-relative">
+        @if (!$maintenance)
+            <div class="overlay" title="Settings can only be accessed under maintenance."></div>
+        @endif
+        <h6 class="font-weight-bold">Edit About</h6>
+        <div class="row">
+            <div class="col-md-6">
+                <textarea class="form-control" id="systemAbout" rows="5" placeholder="Enter the About Page Details" disabled>{{ $info->about }}</textarea>
+            </div>
+            <div class="col-md-6 d-flex flex-column align-items-end text-right systemAboutBtn">
+                <button type="button" class="btn btn-primary editSysInfo" id="editSysInfoAboutBtn" data-value="{{ $info->about }}">Edit About Page</button>
+                <button type="button" class="btn btn-primary disabled editSysInfo" id="saveSysInfoAboutBtn">Change About Page</button>
             </div>
         </div>
     </div>
 
+    <!-- Mission Section -->
     <div class="container border p-3 rounded mb-2 position-relative">
-        @if ($maintenance != true)
-            <div class="overlay" title="Settings can only be accessed under maintenance."></div>  
+        @if (!$maintenance)
+            <div class="overlay" title="Settings can only be accessed under maintenance."></div>
         @endif
-        <div class="row mb-2 justify-content-end align-items-end">
-            <div class="col">
-                <h6 class="p-0 font-weight-bold mb-0">Change Favicon</h6>
-                <p>Minimum size requirement: | Minimum resolution: </p>
+        <h6 class="font-weight-bold">Edit WMSU Mission</h6>
+        <div class="row">
+            <div class="col-md-6">
+                <textarea class="form-control" id="systemMission" rows="5" placeholder="Enter the WMSU Mission" disabled>{{ $info->mission }}</textarea>
+            </div>
+            <div class="col-md-6 d-flex flex-column align-items-end  text-right systemMissionBtn">
+                <button type="button" class="btn btn-primary editSysInfo" id="editSysInfoMissionBtn" data-value="{{ $info->mission }}">Edit WMSU Mission Page</button>
+                <button type="button" class="btn btn-primary disabled editSysInfo" id="saveSysInfoMissionBtn">Change WMSU Mission Page</button>
             </div>
         </div>
     </div>
 
+    <!-- Vision Section -->
     <div class="container border p-3 rounded mb-2 position-relative">
-        @if ($maintenance != true)
-            <div class="overlay" title="Settings can only be accessed under maintenance."></div>  
+        @if (!$maintenance)
+            <div class="overlay" title="Settings can only be accessed under maintenance."></div>
         @endif
-        <div class="row mb-2 justify-content-end align-items-end">
-            <div class="col">
-                <h6 class="p-0 font-weight-bold mb-0">Edit About</h6>
-                <p>Minimum size requirement: | Minimum resolution: </p>
+        <h6 class="font-weight-bold">Edit WMSU Vision</h6>
+        <div class="row">
+            <div class="col-md-6">
+                <textarea class="form-control" id="systemVision" rows="5" placeholder="Enter the WMSU Vision" disabled>{{ $info->vision }}</textarea>
             </div>
-        </div>
-    </div>
-        
-    <div class="container border p-3 rounded mb-2 position-relative">
-        @if ($maintenance != true)
-            <div class="overlay" title="Settings can only be accessed under maintenance."></div>  
-        @endif
-        <div class="row mb-2 justify-content-end align-items-end">
-            <div class="col">
-                <h6 class="p-0 font-weight-bold mb-0">Edit WMSU Mission</h6>
-                <p>Minimum size requirement: | Minimum resolution: </p>
+            <div class="col-md-6 d-flex flex-column align-items-end  text-right systemVisionBtn">
+                <button type="button" class="btn btn-primary editSysInfo" id="editSysInfoVisionBtn" data-value="{{ $info->vision }}">Edit WMSU Vision Page</button>
+                <button type="button" class="btn btn-primary disabled editSysInfo" id="saveSysInfoVisionBtn">Change WMSU Vision Page</button>
             </div>
         </div>
     </div>
 
-    <div class="container border p-3 rounded mb-2 position-relative">
-        @if ($maintenance != true)
-            <div class="overlay" title="Settings can only be accessed under maintenance."></div>  
-        @endif
-        <div class="row mb-2 justify-content-end align-items-end">
-            <div class="col">
-                <h6 class="p-0 font-weight-bold mb-0">Edit WMSU Vision</h6>
-                <p>Minimum size requirement: | Minimum resolution: </p>
-            </div>
-        </div>
-    </div>
-
-    {{-- Confirm Maintenance Modal --}}
+    <!-- Confirm Maintenance Modal -->
     <div class="modal fade" id="confirmMaintenanceSysinfoModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

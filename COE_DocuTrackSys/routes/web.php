@@ -18,6 +18,7 @@ use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\ParticipantGroupController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\SysInfoController;
 use App\Http\Controllers\TypeController;
 
 // Middlewares
@@ -26,6 +27,7 @@ use App\Http\Middleware\NoDirectAccess;
 use App\Http\Middleware\UnderMaintenance;
 use App\Http\Middleware\VerifyAccount;
 use App\Http\Middleware\VerifyDeactivated;
+use App\View\Components\Dashboard\SystemSettings\SysInfo;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -384,6 +386,17 @@ Route::middleware([NoDirectAccess::class])->group(function() {
         Route::controller(FileExtensionController::class)->group(function(){
             Route::prefix('/fileExtension')->group(function(){
                 Route::post('/update', 'update')
+                ->name('update');
+            });
+        });
+    });
+
+    // System Information
+    Route::name('info.')->group(function(){
+        Route::controller(SysInfoController::class)->group(function(){
+            Route::prefix('/info')->group(function(){
+                // Update Settings
+                Route::post('update', 'update')
                 ->name('update');
             });
         });

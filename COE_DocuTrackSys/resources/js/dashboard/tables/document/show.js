@@ -5,6 +5,7 @@ import { getNewDocuments } from "../../homepage";
 export var update = false;
 // SHOW INCOMING DOCUMENTS
 export function showDocument(category){
+    $('#tableOverlay').hide();
     $('#archivedTitle').hide();
     $('#archivedDatePicker').hide();
 
@@ -168,6 +169,8 @@ export function showDocument(category){
                         $('#updateDocumentBtn' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
+                            $(row).css('font-weight', 'normal');
+                            seenDocument(data.document_id);
                             documentPreview(data.document_id);
                             update = true;
                         });
@@ -175,6 +178,8 @@ export function showDocument(category){
                         $('#viewAttachments' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
+                            $(row).css('font-weight', 'normal');
+                            seenDocument(data.document_id);
                             documentPreview(data.document_id, true);
                         });
 
@@ -390,7 +395,6 @@ export function showDocument(category){
                     var selectedRows = selectedRows.map(function(rowData) {
                         return rowData.document_id;  // Assuming 'id' is the property in the row data
                     }).toArray();
-                    console.log(selectedRows.length);
                     // Determine the content of the document per the category
                     var popoverContent = ``;
                     
@@ -442,6 +446,8 @@ export function showDocument(category){
                         $('#updateDocumentBtn' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
+                            $(row).css('font-weight', 'normal');
+                            seenDocument(data.document_id);
                             documentPreview(data.document_id);
                             update = true;
                         });
@@ -449,12 +455,15 @@ export function showDocument(category){
                         $('#viewAttachments' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
+                            $(row).css('font-weight', 'normal');
+                            seenDocument(data.document_id);
                             documentPreview(data.document_id, true);
                         });
 
                         $('#viewDocumentVersionsBtn' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
+
                             viewDocumentVersions(data.document_id, row);
                         });
 
@@ -725,6 +734,8 @@ export function showDocument(category){
                         $('#viewAttachments' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
+                            $(row).css('font-weight', 'normal');
+                            seenDocument(data.document_id);
                             documentPreview(data.document_id, true);
                         });
 
@@ -965,6 +976,8 @@ export function showDocument(category){
                         $('#viewAttachments' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
+                            $(row).css('font-weight', 'normal');
+                            seenDocument(data.document_id);
                             documentPreview(data.document_id, true);
                         });
 

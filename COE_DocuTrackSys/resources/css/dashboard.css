@@ -1039,12 +1039,14 @@ button:focus {
     cursor: not-allowed;
 }
 
+.editSysInfo.btn-primary.disabled,
 .editProfile.btn-primary.disabled {
     background-color: #a50b0b !important;
     border: transparent;
     cursor: not-allowed !important;
 }
 
+.editSysInfo.btn-warning.disabled,
 .editProfile.btn-warning.disabled {
     opacity: 0.5;
     border: transparent;
@@ -1118,4 +1120,12 @@ button:focus {
 }
 #searchBarText::placeholder {
     color: grey;
+}
+
+textarea {
+    resize: none !important;
+}
+
+.form-control:focus {
+    border-color: #ffa0a0;
 }

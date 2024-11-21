@@ -99,6 +99,14 @@ Sanchez, Shane David U.
         'resources/js/dashboard/systemSettings/document/status.js',
         'resources/js/dashboard/systemSettings/document/fileExtension.js',
 
+        // System Info
+        'resources/js/dashboard/systemSettings/sysInfo/name.js',
+        'resources/js/dashboard/systemSettings/sysInfo/about.js',
+        'resources/js/dashboard/systemSettings/sysInfo/logo.js',
+        'resources/js/dashboard/systemSettings/sysInfo/icon.js',
+        'resources/js/dashboard/systemSettings/sysInfo/mission.js',
+        'resources/js/dashboard/systemSettings/sysInfo/vision.js',
+
         // Report
         'resources/js/dashboard/tables/report.js',
 
@@ -106,7 +114,7 @@ Sanchez, Shane David U.
         'resources/js/notification.js',
 
         // Search
-        'resources/js/search.js'
+        'resources/js/search.js',
     ])
 </head>
 <body>
@@ -204,6 +212,9 @@ Sanchez, Shane David U.
 
         // File Extensions
         updateFileExtensions: "{{route('fileExtension.update')}}",
+
+        // System Information
+        updateSysInfo: "{{route('info.update')}}",
     };
 </script>
 
