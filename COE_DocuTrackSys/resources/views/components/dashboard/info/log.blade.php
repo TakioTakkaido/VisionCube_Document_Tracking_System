@@ -3,7 +3,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title p-0">Log Information</h4>
+                <h4 class="modal-title p-0" id="logTitle">Log Information</h4>
             </div>
             <div class="modal-body logInfo">
                 <span id="logDate"></span><br>

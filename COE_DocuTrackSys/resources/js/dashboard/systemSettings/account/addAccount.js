@@ -29,58 +29,87 @@ $('#addAccountBtn').on('click', function(event){
             // Change the input field, and
             // Add error text
             if (data.errors.name){
-                $('#name').addClass('error-input');
-                $('<span class="error" id="error-name">'+data.errors.name+'</span>').insertAfter('#name');
+                $('#accountNameError').html(data.errors.name);
+                $('#name').css('border', '1px solid red');
+                $('#name').css('background-color', '#f09d9d');
+                $('#accountNameError').css('display', 'block');
             }
 
             if (data.errors.email){
-                $('#email').addClass('error-input');
-                $('<span class="error" id="error-email">'+data.errors.email+'</span>').insertAfter('#email');
+                $('#accountEmailError').html(data.errors.email);
+                $('#email').css('border', '1px solid red');
+                $('#email').css('background-color', '#f09d9d');
+                $('#accountEmailError').css('display', 'block');
             }
 
             if (data.errors.password){
-                $('#password').addClass('error-input');
-                $('<span class="error" id="error-password">'+data.errors.password+'</span>').insertAfter('#password');
+                $('#accountPasswordError').html(data.errors.password);
+                $('#password').css('border', '1px solid red');
+                $('#password').css('background-color', '#f09d9d');
+                $('#accountPasswordError').css('display', 'block');
             }
 
             if (data.errors.password_confirmation){
-                $('#password_confirmation').addClass('error-input');
-                $('<span class="error" id="error-password-confirmation">'+data.errors.password_confirmation+'</span>').insertAfter('#password_confirmation');
+                $('#accountConfirmPasswordError').html(data.errors.password_confirmation);
+                $('#password_confirmation').css('border', '1px solid red');
+                $('#password_confirmation').css('background-color', '#f09d9d');
+                $('#accountConfirmationPasswordError').css('display', 'block');
+            }
+
+            if (data.errors.role) {
+                $('#accountRoleError').html(data.errors.role);
+                $('#role').css('border', '1px solid red');
+                $('#role').css('background-color', '#f09d9d');
+                $('#accountRoleError').css('display', 'block');
             }
         }
     });
+});
+
+$('#cancelAccountBtn').on('click', function (event){
+    $('#addNewAccount').trigger('reset');
+
+    $.each($('.addAccountInput'), function () { 
+        $(this).css('border', '1px solid #ccc');
+        $(this).css('background-color', 'white');
+    });
+
+    $.each($('.error'), function () { 
+        $(this).css('display', 'none');
+    });
+});
+
+$.each($('.addAccountInput'), function (index, value) { 
+    $($('.addAccountInput')[index]).on('input', function(event){
+        event.preventDefault();
+        $(this).css('border', '1px solid #ccc');
+        $(this).css('background-color', 'white');
+    })
 });
 
 // Event to remove the error color of the form, and the error message
 // when input is being typed
 $('#name').on('input' , function(event){
     event.preventDefault();
-
-    // Remove errors
-    $('#error-name').remove();
-    $(this).removeClass('error-input');
+    $('#accountNameError').css('display', 'none');
 });
 
 $('#email').on('input' , function(event){
     event.preventDefault();
-
-    // Remove errors
-    $('#error-email').remove();
-    $(this).removeClass('error-input');
+    $('#accountEmailError').css('display', 'none');
 });
 
 $('#password').on('input' , function(event){
     event.preventDefault();
-    
-    // Remove errors
-    $('#error-password').remove();
-    $(this).removeClass('error-input');
+    $('#accountPasswordError').css('display', 'none');
 });
 
 $('#password_confirmation').on('input' , function(event){
     event.preventDefault();
-    
-    // Remove errors
-    $('#error-password-confirmation').remove();
-    $(this).removeClass('error-input');
+    $('#accountConfirmPasswordError').css('display', 'none');
+});
+
+$('#role').on('input' , function(event){
+    event.preventDefault();
+    $('#accountRoleError').css('display', 'none');
 });

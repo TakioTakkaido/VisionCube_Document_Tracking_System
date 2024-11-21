@@ -294,6 +294,9 @@ Route::middleware([NoDirectAccess::class])->group(function() {
 
                 Route::get('/view/{id}', 'show')
                 ->name('show');
+
+                Route::get('getLatestMaintenance' , 'getLatestMaintenanceLog')
+                ->name('getLatestMaintenanceLog');
             });
         });
     });

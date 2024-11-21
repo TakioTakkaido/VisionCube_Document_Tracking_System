@@ -12,7 +12,12 @@
             </div>
         </div>
     </div>
+    
     <div class="row">
+        
+        @if ($maintenance != true)
+        <div class="overlay" title="Account editing can only be done under maintenance."></div>  
+    @endif
         <div class="col">
             <div class="tableContentstable dashboardTableContents">
                 <table id="dashboardTable" class="table cell-border table-bordered hover pt-1">

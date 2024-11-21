@@ -181,6 +181,7 @@ Sanchez, Shane David U.
         // Logs
         showAllLogs: "{{route('log.showAll')}}",
         logInfo: "{{route('log.show', ':id')}}",
+        getLatestMaintenanceLog: "{{route('log.getLatestMaintenanceLog')}}",
         
         // System Settings
         // Participant

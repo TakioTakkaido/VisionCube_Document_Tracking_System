@@ -52,10 +52,7 @@
             </div>
 
             {{-- Recent Changes --}}
-            <div class="container-fluid border rounded p-3 mb-2 recentUpdates" style="text-align: center;">
-                <h6 class="p-0 font-weight-bold" style="font-size: 14px; text-align:left;">Recent Updates</h6>
-                No recent changes to the system
-            </div>
+            <button type="button" class="recentUpdates mb-2 font-weight-bold btn btn-primary w-100" style="font-size: 14px; text-align: center;" id="showLatestMaintenanceLog">Maintenance Notes <span class="badge badge-warning" id="latestMaintenanceBadge">!</span></button>
 
             {{-- @if($isAdmin)
             <div class="documentStatistics container-fluid border rounded p-3 mb-2">

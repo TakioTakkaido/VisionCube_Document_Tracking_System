@@ -31,4 +31,11 @@ class LogController extends Controller {
             'logs' => $logs
         ]);
     }
+
+    public function getLatestMaintenanceLog(){
+        $logs = Log::where('type', 'Maintenance')
+                    ->orderByDesc('created_at')->get();
+
+        return response($logs);
+    }
 }
