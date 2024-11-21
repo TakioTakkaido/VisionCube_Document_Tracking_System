@@ -257,6 +257,11 @@ $('#submitDocumentForm').off('click').on('click', function(event) {
         formData.append('files[]', fileInput.files[i]);  // Correct file append
     }
 
+    // Document Details
+    formData.append('event_venue', $('#uploadEventVenue').val());
+    formData.append('event_description', $('#uploadEventDescription').val());
+    formData.append('event_date', $('#uploadEventDate').val());
+
     $('body').css('cursor', 'progress');
     $.ajax({
         method: 'POST',
@@ -407,20 +412,7 @@ $('#clearUploadBtn').on('click', function (event){
     $('.deleteUploadFileBtn').trigger('click');
 });
 
-$('#updateDocumentMenuBtn').on('click', function(event){
-    event.preventDefault();
-    var id = $(this).data('id');
-    $('.loading').show();
-    $('.documentPreviewInfo').hide();
-    $('#restoreDocumentMenuBtn').prop('disabled', true);
-    $('#updateDocumentMenuBtn').prop('disabled', true);
-    $('#viewDocumentHistoryBtn').prop('disabled', true);
-    $('#viewDocumentAttachmentsBtn').prop('disabled', true);
-    $('#documentInfoTitle').html(`
-        <h5 class="text-left m-0 ml-2">Version History</h5>
-    `);
-    updateDocument(id);
-});
+
 
 
 var pos;
@@ -723,5 +715,15 @@ $('#otherRecipient').on('click', function(event){
         $('.uploadTo .border').css({
             'border': '1px solid #dee2e6'
         })
+    }
+});
+
+// Document Details
+$('#documentDetailsBtn').off('click').on('click', function(event){
+    console.log($('#documentDetails').css('display'));
+    if ($('#documentDetails').css('display') === 'block'){
+        $('#documentDetails').css('display', 'none');
+    } else {
+        $('#documentDetails').css('display', 'block');
     }
 });

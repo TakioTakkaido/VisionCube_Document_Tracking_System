@@ -40,6 +40,10 @@ return new class extends Migration
             $table->date('document_date');
             $table->string('color');
 
+            $table->string('event_venue')->nullable();
+            $table->string('event_description')->nullable();
+            $table->date('event_date')->nullable();
+
             $table->string('previous_type')->default('None');
             $table->string('previous_status')->default('None');
             $table->string('previous_sender')->default('None');
@@ -50,6 +54,10 @@ return new class extends Migration
             $table->date('previous_document_date')->default('None');
             $table->unsignedBigInteger('previous_series_number')->nullable();
             $table->unsignedBigInteger('previous_memo_number')->nullable();
+
+            $table->string('previous_event_venue')->nullable();
+            $table->string('previous_event_description')->nullable();
+            $table->date('previous_event_date')->nullable();
 
             // Foreign key established with: Document
             $table->foreign('document_id')->references('id')->on('documents')->onDelete('cascade');
