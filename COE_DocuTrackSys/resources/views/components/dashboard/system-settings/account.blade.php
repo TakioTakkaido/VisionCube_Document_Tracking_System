@@ -37,29 +37,33 @@
                 {{-- Add Account --}}
                 <h6 class="p-0 font-weight-bold mb-0">Add New Account  <small style="color: red; font-size: 11px;">All fields required.</small></h6>
                 <p>Add new account that shall be used by other users in the system.</p>
-                <form id="addNewAccount" method="post" autocomplete="off">
+                <form id="addNewAccount" method="post" autocomplete="off" aria-autocomplete="none">
                     <div class="row mb-2">
                         <div class="col">
-                            <input type="name" name="name" id="name" placeholder="Username">
+                            <input class="addAccountInput mb-2" type="name" name="name" id="name" placeholder="Username">
+                            <span class="error" id="accountNameError" style="display:none;"></span>
                         </div>
                         <div class="col">
-                            <input type="password" name="password" id="password" placeholder="Password">
+                            <input class="addAccountInput mb-2" type="password" name="password" id="password" placeholder="Password">
+                            <span class="error" id="accountPasswordError" style="display:none;"></span>
                         </div>
                     </div>
             
                     <div class="row mb-2">
                         <div class="col">
-                            <input type="email" name="email" id="email" placeholder="Email">
+                            <input class="addAccountInput mb-2" type="email" name="email" id="email" placeholder="Email">
+                            <span class="error" id="accountEmailError" style="display:none;"></span>
                         </div>
                         <div class="col">
-                            <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Confirm Password" required>
+                            <input class="addAccountInput mb-2" type="password" name="password_confirmation" id="password_confirmation" placeholder="Confirm Password" required>
+                            <span class="error" id="accountConfirmPasswordError" style="display:none;"></span>
                         </div>
                     </div>
                     
                     <div class="row">
                         <div class="col">
-                            <label for="role">Category:</label>
-                            <select id="role" name="role" placeholder="Select Account Role">
+                            <label for="role">Role:</label>
+                            <select class="addAccountInput" id="role" name="role" placeholder="Select Account Role">
                                 <option value="">Select Account Role</option>
                                 {{-- Obtained document categories using Laravel--}}
                                 @foreach ($roles as $role)
@@ -68,10 +72,11 @@
                                     @endif
                                 @endforeach
                             </select>
+                            <span class="error" id="accountRoleError" style="display:none;"></span>
                         </div>
                         <div class="col">
                             <a name="submit" id="addAccountBtn" class="btn btn-primary" href="#" role="button">Create Account</a>        
-                            <a name="cancel" class="btn btn-secondary" href="#" role="button">Cancel</a>
+                            <a name="cancel" id="cancelAccountBtn" class="btn btn-secondary" href="#" role="button">Cancel</a>
                         </div>
                     </div>
                 </form>
