@@ -3,6 +3,7 @@
 namespace App\View\Components\Dashboard\SystemSettings;
 
 use App\Http\Controllers\SettingsController;
+use App\Models\Drive;
 use Closure;
 use Illuminate\View\Component;
 use Illuminate\Contracts\View\View;
@@ -23,6 +24,7 @@ class AttachmentUpload extends Component
     public function render(): View|Closure|string
     {
         return view('components.dashboard.system-settings.attachment-upload', [
+            'drives' => Drive::all(),
             'maintenance' => SettingsController::getMaintenanceStatus()
         ]);
     }

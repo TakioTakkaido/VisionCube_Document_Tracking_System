@@ -78,7 +78,11 @@ class DocumentController extends Controller{
             'series_number'         => $request->input('series_number'),
             'memo_number'           => $request->input('memo_number'),
             'document_date'         => $request->input('document_date'),
-            'color'                 => $request->input('color')
+            'color'                 => $request->input('color'),
+
+            'event_venue'           => $request->input('event_venue'),
+            'event_description'     => $request->input('event_description'),
+            'event_date'            => $request->input('event_date'),
         ]);
 
         // Create the attachments
@@ -176,6 +180,10 @@ class DocumentController extends Controller{
             'document_date'             => $request->input('document_date'),
             'color'                     => $request->input('color'),
 
+            'event_venue'               => $request->input('event_venue'),
+            'event_description'         => $request->input('event_description'),
+            'event_date'                => $request->input('event_date'),
+
             // Previous document information
             'previous_type'             => $latestVersion->type == $request->input('type') ? $latestVersion->previous_type : $latestVersion->type,
             'previous_status'           => $latestVersion->status == $request->input('status') ? $latestVersion->previous_status : $latestVersion->status,
@@ -185,7 +193,11 @@ class DocumentController extends Controller{
             'previous_assignee'         => $latestVersion->assignee == $request->input('assignee') ? $latestVersion->previous_assignee : $latestVersion->assignee,
             'previous_category'         => $latestVersion->category == $request->input('category') ? $latestVersion->previous_category : $latestVersion->category,
             'previous_series_number'    => $latestVersion->series_number == $request->input('series_number') ? $latestVersion->previous_series_number : $latestVersion->series_number,
-            'previous_memo_number'      => $latestVersion->memo_number == $request->input('memo_number') ? $latestVersion->previous_memo_number : $latestVersion->memo_number
+            'previous_memo_number'      => $latestVersion->memo_number == $request->input('memo_number') ? $latestVersion->previous_memo_number : $latestVersion->memo_number,
+
+            'previous_event_venue'      => $latestVersion->event_venue == $request->input('event_venue') ? $latestVersion->previous_event_venue : $latestVersion->event_venue,
+            'previous_event_description'=> $latestVersion->event_description == $request->input('event_description') ? $latestVersion->previous_event_description : $latestVersion->event_description,
+            'previous_event_date'       => $latestVersion->event_date == $request->input('event_date') ? $latestVersion->previous_event_date : $latestVersion->event_date,
         ]);
 
         // Create the attachments

@@ -53,13 +53,13 @@
                         </div>
         
                         <div class="row border-top" style="height: 650px; max-height: 650px;">
-                            <div id="loadingDocument" class="documentPreviewInfo col container justify-content-center align-items-center" style="height: 100vh; overflow: hidden;">
+                            <div id="loadingDocument" class="documentPreviewInfo col container justify-content-center align-items-center">
                                 <div class="spinner-border" role="status">
                                     <span class="sr-only">Loading...</span>
                                 </div>
                             </div>
 
-                            <div id="documentInfoContainer" class="documentPreviewInfo col container" style="display: none; overflow-y: scroll;">
+                            <div id="documentInfoContainer" class="documentPreviewInfo col container" style="overflow-x: none; max-height: inherit; overflow-y: scroll; display: none; overflow-y: scroll;">
                             </div>
 
                             <div id="updateDocument" class="documentPreviewInfo col container" style="overflow-x: none; max-height: inherit; overflow-y: scroll; display: none;">
@@ -69,42 +69,19 @@
                                         <input type='hidden' name='document_id' id="documentId">
                                         
                                         <div class="col">
+                                            <!-- Subject -->
                                             <div class="row mb-2">
-                                                <!-- Document Type -->
                                                 <div class="col">
-                                                    <label for="editUploadDocType">Document Type</label>
-                                                    <select id="editUploadDocType" class="editInput" name="type">
-                                                        <option value="" disabled selected>Select the Type of Document</option>
-                                                        @foreach ($docTypes as $index => $docType)
-                                                            @if ($docType->value !== 'default')
-                                                                <option value="{{$docType->value}}">{{$docType->value}}</option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
-                                                    <span class="error" id="editTypeError" style="display:none;"></span>
-                                                </div>
-            
-                                                <!-- Series No. and Memo No. -->
-                                                <div class="col" id="editMemoInfo" style="display: none;">
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <label for="editUploadSeriesNo">Series No.</label>
-                                                            <input id="editUploadSeriesNo" class="editInput" type="number" name="seriesNo" min="1" max="99999">
-                                                            <span class="error" id="editSeriesError" style="display:none;"></span>
-                                                        </div>
-                                                        <div class="col">
-                                                            <label for="editUploadMemoNo">Memo No.</label>
-                                                            <input id="editUploadMemoNo" class="editInput" type="number" name="memoNo" min="1" max="99999">
-                                                            <span class="error" id="editMemoError" style="display:none;"></span>
-                                                        </div>
-                                                    </div>
+                                                    <label for="editUploadSubject">Subject<small style="color: red">*</small></label>
+                                                    <textarea id="editUploadSubject" class="editInput" name="subject" rows="2" placeholder="Enter the Subject of the Document"></textarea>
+                                                    <span class="error" id="editSubjectError" style="margin-top: -8px; display:none;"></span>
                                                 </div>
                                             </div>
             
                                             <!-- From -->
                                             <div class="row mb-2">
                                                 <div class="col">
-                                                    <label for="editUploadFrom">From</label>
+                                                    <label for="editUploadFrom">From<small style="color: red">*</small></label>
                                                     <select class="form-control selectpicker editInput editFrom p-0 border mb-1" id="editUploadFrom" name="sender" data-live-search="true" multiple title="Select Sender (From)">
                                                         @foreach($groups as $group)
                                                             <option style="font-size: 15px !important;" value="{{ $group['id'] }}" data-level="{{$group['level']}}" data-name="{{ $group['value'] }}" data-parent="{{$group['parent']}}" data-participant="{{$group['participant']}}">
@@ -122,7 +99,7 @@
                                             <!-- To -->
                                             <div class="row mb-2">
                                                 <div class="col">
-                                                    <label for="editUploadTo">To</label>
+                                                    <label for="editUploadTo">To<small style="color: red">*</small></label>
                                                     <select class="form-control selectpicker editInput editTo p-0 border mb-1" id="editUploadTo" name="recipient" data-live-search="true" multiple title="Select Recipient (To)">
                                                         @foreach($groups as $group)
                                                             <option style="font-size: 15px !important;" value="{{ $group['id'] }}" data-level="{{$group['level']}}" data-name="{{ $group['value'] }}" data-parent="{{$group['parent']}}" data-participant="{{$group['participant']}}">
@@ -136,12 +113,46 @@
                                                 </div>
                                             </div>
                                         </div>
-            
+                                        
+                                        <div class="col">
+                                        <div class="row mb-2">
+                                            <!-- Document Type -->
+                                            <div class="col">
+                                                <label for="editUploadDocType">Document Type<small style="color: red">*</small></label>
+                                                <select id="editUploadDocType" class="editInput" name="type">
+                                                    <option value="" disabled selected>Select the Type of Document</option>
+                                                    @foreach ($docTypes as $index => $docType)
+                                                        @if ($docType->value !== 'default')
+                                                            <option value="{{$docType->value}}">{{$docType->value}}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                                <span class="error" id="editTypeError" style="display:none;"></span>
+                                            </div>
+        
+                                            <!-- Series No. and Memo No. -->
+                                            <div class="col" id="editMemoInfo" style="display: none;">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label for="editUploadSeriesNo">Series No.<small style="color: red">*</small></label>
+                                                        <input id="editUploadSeriesNo" class="editInput" type="number" name="seriesNo" min="1" max="99999">
+                                                        <span class="error" id="editSeriesError" style="display:none;"></span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="editUploadMemoNo">Memo No.<small style="color: red">*</small></label>
+                                                        <input id="editUploadMemoNo" class="editInput" type="number" name="memoNo" min="1" max="99999">
+                                                        <span class="error" id="editMemoError" style="display:none;"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                         
                                         <div class="col">
                                             <!-- Assignee -->
                                             <div class="row mb-2">
                                                 <div class="col">
-                                                    <label for="editUploadAssignee">Assignee</label>
+                                                    <label for="editUploadAssignee">Assignee<small style="color: red">*</small></label>
                                                     <select id="editUploadAssignee" class="editInput" name="assignee">
                                                         <option value="" disabled selected>Select Assignee</option>
                                                         @foreach ($roles as  $role)
@@ -154,7 +165,7 @@
                                                 </div>
 
                                                 <div class="col">
-                                                    <label for="editUploadCategory">Category</label>
+                                                    <label for="editUploadCategory">Category<small style="color: red">*</small></label>
                                                     <select id="editUploadCategory" class="editInput" name="category">
                                                         <option value="" disabled selected>Select Category</option>
                                                         <option value="Incoming">Incoming</option>
@@ -163,10 +174,12 @@
                                                     </select>
                                                     <span class="error" id="editCategoryError" style="display:none;"></span>
                                                 </div>
-
+                                            </div>
+        
+                                            <div class="row mb-2">
                                                 <!-- Status -->
                                                 <div class="col">
-                                                    <label for="editUploadStatus">Status</label>
+                                                    <label for="editUploadStatus">Status <small style="color: red">*</small></label>
                                                     <select id="editUploadStatus" class="editInput" name="status">
                                                         <option value="" disabled selected>Select Document Status</option>
                                                         @foreach ($docStatuses as $docStatus)
@@ -177,19 +190,10 @@
                                                     </select>
                                                     <span class="error" id="editStatusError" style="display:none;"></span>
                                                 </div>
-                                            </div>
-        
-                                            <div class="row mb-2">
-                                                <!-- Subject -->
-                                                <div class="col">
-                                                    <label for="editUploadSubject">Subject</label>
-                                                    <textarea id="editUploadSubject" class="editInput" name="subject" rows="2" placeholder="Enter the Subject of the Document"></textarea>
-                                                    <span class="error" id="editSubjectError" style="margin-top: -8px; display:none;"></span>
-                                                </div>
 
                                                 <!-- Document Date -->
                                                 <div class="col">
-                                                    <label for="editUploadDate">Date</label>
+                                                    <label for="editUploadDate">Date <small style="color: red">*</small></label>
                                                     <input id="editUploadDate" type="date" class="editInput"  name="date">
                                                     <span class="error" id="editDateError" style="display:none;"></span>
                                                 </div>
@@ -212,10 +216,48 @@
                                                 </div>
                                             </div>
 
+                                            <div class="container rounded border p-3 mb-3">
+                                                <div class="row d-flex justify-content-between align-items-center">
+                                                    <div class="col-auto text-left">
+                                                        <h6 class="p-0 mb-0 font-weight-bold" style="font-size: 15px;">Document Details (optional)</h6>
+                                                    </div>
+                                                
+                                                    <div class="col-auto text-right">
+                                                        <h6 class="p-0 mb-0" style="font-size: 15px; color: #a50b0b" id="editDocumentDetailsBtn">Show Document Details</h6>
+                                                    </div>
+                                                </div>
+                                        
+                                                <div style="display: none;" id="editDocumentDetails">
+                                                    <div class="row mb-1">
+                                                        {{-- Document Event Description --}}
+                                                        <div class="col">
+                                                            <label for="editUploadEventDescription">Event Description</label>
+                                                            <textarea id="editUploadEventDescription" class="editInput mb-2"  name="event_description" rows="3" placeholder="Enter the Description of the Event"></textarea>
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="row mb-1">
+                                                        {{-- Document Venue --}}
+                                                        <div class="col">
+                                                            <label for="editUploadEventVenue">Event Venue</label>
+                                                            <input id="editUploadEventVenue" class="editInput mb-2" type="text" name="event_venue" placeholder="Enter Venue of the Event">
+                                                        </div>
+                                                    </div>
+                                    
+                                                    <div class="row mb-2">
+                                                        {{-- Document Venue --}}
+                                                        <div class="col">
+                                                            <label for="editUploadEventDate">Event Date</label>
+                                                            <input id="editUploadEventDate" class="editInput" type="date" name="event_date">
+                                                        </div>
+                                                    </div>
+                                                </div>                                                    
+                                            </div>
+                                            
                                             <div class="row mb-2">
                                                 <!-- Description -->
                                                 <div class="col">
-                                                    <label for="editDescription">Description</label>
+                                                    <label for="editDescription">Description<small style="color: red">*</small></label>
                                                     <input type="text" id="editDescription" class="editInput">
                                                 </div>
                                                 <span class="error" id="editDescriptionError" style="display:none;"></span>

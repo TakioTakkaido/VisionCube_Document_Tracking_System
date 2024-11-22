@@ -11,13 +11,16 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DocumentVersionController;
+use App\Http\Controllers\DriveController;
 use App\Http\Controllers\FileExtensionController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\ParticipantGroupController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\SysInfoController;
 use App\Http\Controllers\TypeController;
 
 // Middlewares
@@ -26,6 +29,7 @@ use App\Http\Middleware\NoDirectAccess;
 use App\Http\Middleware\UnderMaintenance;
 use App\Http\Middleware\VerifyAccount;
 use App\Http\Middleware\VerifyDeactivated;
+use App\View\Components\Dashboard\SystemSettings\SysInfo;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -385,6 +389,63 @@ Route::middleware([NoDirectAccess::class])->group(function() {
             Route::prefix('/fileExtension')->group(function(){
                 Route::post('/update', 'update')
                 ->name('update');
+            });
+        });
+    });
+
+    // System Information
+    Route::name('info.')->group(function(){
+        Route::controller(SysInfoController::class)->group(function(){
+            Route::prefix('/info')->group(function(){
+                // Update Settings
+                Route::post('update', 'update')
+                ->name('update');
+            });
+        });
+    });
+
+    // Drive
+    Route::name('drive.')->group(function(){
+        Route::controller(DriveController::class)->group(function(){
+            Route::prefix('/drive')->group(function(){
+                // Link Account
+                Route::post('add', 'add')
+                ->name('add');
+
+                // Remove Account
+                Route::post('remove', 'remove')
+                ->name('remove');
+
+                // Get Transfer Emails
+                Route::get('getTransferEmails', 'getTransferEmails')
+                ->name('getTransferEmails');
+
+                // Transfer Attachment
+                Route::post('transfer', 'transfer')
+                ->name('transfer');
+
+                // Update the Storage Details of Every Account
+                Route::post('updateStorage', 'updateStorage')
+                ->name('updateStorage');
+
+                // Disable the Account from Storing
+                Route::get('disable', 'disable')
+                ->name('disable');
+            });
+        });
+    });
+
+    // Report
+    Route::name('report.')->group(function(){
+        Route::controller(ReportController::class)->group(function(){
+            Route::prefix('/report')->group(function(){
+                // Generate Report
+                Route::post('generate', 'generate')
+                ->name('generate');
+
+                // Show All Reports
+                Route::get('showAll', 'showAll')
+                ->name('showAll');
             });
         });
     });

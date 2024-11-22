@@ -27,7 +27,11 @@ class UploadDocumentRequest extends FormRequest {
             'category' => 'required|string',
             'status' => 'required|string',
             'assignee' => 'required|string',
-            'document_date' => 'required'
+            'document_date' => 'required',
+            
+            'event_venue' => 'nullable',
+            'event_description' => 'nullable',
+            'event_date' => 'nullable'
         ];
     }
 

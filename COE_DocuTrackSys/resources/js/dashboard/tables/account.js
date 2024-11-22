@@ -6,6 +6,8 @@ export function showActive() {
     $('#archivedDatePicker').hide();
     $('.dashboardTableTitle').html('Active Accounts');
 
+    $('#tableOverlay').show();
+
     if ($.fn.DataTable.isDataTable('#dashboardTable')) {
         $('#dashboardTable').DataTable().clear().destroy();
     }

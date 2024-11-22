@@ -5,6 +5,7 @@ import { getNewDocuments } from "../../homepage";
 export var update = false;
 // SHOW INCOMING DOCUMENTS
 export function showDocument(category){
+    $('#tableOverlay').hide();
     $('#archivedTitle').hide();
     $('#archivedDatePicker').hide();
 
@@ -168,6 +169,8 @@ export function showDocument(category){
                         $('#updateDocumentBtn' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
+                            $(row).css('font-weight', 'normal');
+                            seenDocument(data.document_id);
                             documentPreview(data.document_id);
                             update = true;
                         });
@@ -175,6 +178,8 @@ export function showDocument(category){
                         $('#viewAttachments' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
+                            $(row).css('font-weight', 'normal');
+                            seenDocument(data.document_id);
                             documentPreview(data.document_id, true);
                         });
 
@@ -390,7 +395,6 @@ export function showDocument(category){
                     var selectedRows = selectedRows.map(function(rowData) {
                         return rowData.document_id;  // Assuming 'id' is the property in the row data
                     }).toArray();
-                    console.log(selectedRows.length);
                     // Determine the content of the document per the category
                     var popoverContent = ``;
                     
@@ -442,6 +446,8 @@ export function showDocument(category){
                         $('#updateDocumentBtn' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
+                            $(row).css('font-weight', 'normal');
+                            seenDocument(data.document_id);
                             documentPreview(data.document_id);
                             update = true;
                         });
@@ -449,12 +455,15 @@ export function showDocument(category){
                         $('#viewAttachments' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
+                            $(row).css('font-weight', 'normal');
+                            seenDocument(data.document_id);
                             documentPreview(data.document_id, true);
                         });
 
                         $('#viewDocumentVersionsBtn' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
+
                             viewDocumentVersions(data.document_id, row);
                         });
 
@@ -725,6 +734,8 @@ export function showDocument(category){
                         $('#viewAttachments' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
+                            $(row).css('font-weight', 'normal');
+                            seenDocument(data.document_id);
                             documentPreview(data.document_id, true);
                         });
 
@@ -965,6 +976,8 @@ export function showDocument(category){
                         $('#viewAttachments' + data.document_id).off('click').on('click', function(event) {
                             event.stopPropagation();
                             $(row).popover('toggle');
+                            $(row).css('font-weight', 'normal');
+                            seenDocument(data.document_id);
                             documentPreview(data.document_id, true);
                         });
 
@@ -1118,12 +1131,19 @@ $(document).on('click', '.documentVersion', function(event){
         success: function (response) {
             if (response.version.series_number === "undefined" || response.version.series_number === null){
                 response.version.series_number = "N/A";
-                response.version.previous_series_number = "N/A";
             }
+
+            if (response.version.previous_memo_number === "undefined" || response.version.previous_memo_number === null){
+                response.version.previous_memo_number = "N/A";
+            }
+
 
             if (response.version.memo_number === "undefined" || response.version.memo_number === null){
                 response.version.memo_number = "N/A";
-                response.version.previous_memo_number = "N/A";
+            }
+
+            if (response.version.previous_series_number === "undefined" || response.version.previous_series_number === null){
+                response.version.previous_series_number = "N/A";
             }
 
             $('#documentInfoContainer').html(`
@@ -1196,6 +1216,33 @@ $(document).on('click', '.documentVersion', function(event){
                                 <label class="font-weight-bold">Assignee:</label>
                                 <input type="text" class="form-control" disabled value="${response.version.assignee}">
                                 <span>Previous: ${response.version.previous_assignee}</span>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <h6 class="p-0 font-weight-bold" style="font-size: 15px;">Document Details: </h6> 
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="font-weight-bold">Event Venue:</label>
+                                <input type="text" class="form-control" disabled value="${response.version.event_venue}">
+                                <span>Previous: ${response.version.previous_event_venue}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="font-weight-bold">Event Description:</label>
+                                <input type="text" class="form-control" disabled value="${response.version.event_description}">
+                                <span>Previous: ${response.version.previous_event_description}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="font-weight-bold">Event Date:</label>
+                                <input type="text" class="form-control" disabled value="${response.version.event_date}">
+                                <span>Previous: ${response.version.previous_event_date}</span>
                             </div>
                         </div>
                     </div>
@@ -1322,7 +1369,6 @@ export function documentPreview(id, attachment = false){
                 $('#viewDocumentHistoryBtn').trigger('click');
             }
 
-            console.log("Done prevew");
             
         },
         beforeSend: function(){
@@ -1601,3 +1647,18 @@ export function markAsReadAll(ids){
     }
     getNewDocuments();
 }
+
+$('#updateDocumentMenuBtn').on('click', function(event){
+    event.preventDefault();
+    var id = $(this).data('id');
+    $('.loading').show();
+    $('.documentPreviewInfo').hide();
+    $('#restoreDocumentMenuBtn').prop('disabled', true);
+    $('#updateDocumentMenuBtn').prop('disabled', true);
+    $('#viewDocumentHistoryBtn').prop('disabled', true);
+    $('#viewDocumentAttachmentsBtn').prop('disabled', true);
+    $('#documentInfoTitle').html(`
+        <h5 class="text-left m-0 ml-2">Version History</h5>
+    `);
+    updateDocument(id);
+});

@@ -32,6 +32,17 @@ return new class extends Migration
 
             $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
         });
+
+        Schema::create('drive_email_verification_tokens', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+            $table->unsignedBigInteger('drive_id');
+
+            $table->string('token');
+            $table->boolean('used');
+
+            $table->foreign('drive_id')->references('id')->on('drives')->onDelete('cascade');
+        });
     }
 
     /**

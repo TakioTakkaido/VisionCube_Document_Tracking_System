@@ -3,6 +3,7 @@
 namespace App\View\Components\Dashboard;
 
 use App\Models\FileExtension;
+use App\Models\SysInfo;
 use Closure;
 
 use Illuminate\View\Component;
@@ -23,7 +24,8 @@ class TopPanel extends Component
     {
         return view('components.dashboard.top-panel', [
             'user' => Auth::user(),
-            'isVerified' => Auth::user()->email_verified_at !== null
+            'isVerified' => Auth::user()->email_verified_at !== null,
+            'info' => SysInfo::all()->first()
         ]);
     }
 }

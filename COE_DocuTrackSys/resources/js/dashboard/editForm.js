@@ -77,6 +77,9 @@ export function updateDocument(id){
             $('#editUploadStatus').val(response.document.status);
             $('#editUploadAssignee').val(response.document.assignee);
 
+            $('#editUploadEventVenue').val(response.document.event_venue);
+            $('#editUploadEventDescription').val(response.document.event_description);
+            $('#editUploadEventDate').val(response.document.event_date);
 
             $('#updateDocumentMenuBtn').prop('disabled', false);
             $('#viewDocumentHistoryBtn').prop('disabled', false);
@@ -334,7 +337,13 @@ $('#submitEditDocumentBtn').off('click').on('click', function(event) {
         formData.append('files[]', fileInput.files[i]);  // Correct file append
     }
 
+
     formData.append('description', $('#editDescription').val());
+
+    // Document Details
+    formData.append('event_venue', $('#editUploadEventVenue').val());
+    formData.append('event_description', $('#editUploadEventDescription').val());
+    formData.append('event_date', $('#editUploadEventDate').val());
 
     $('#updateDocumentMenuBtn').prop('disabled', true);
     $('#viewDocumentHistoryBtn').prop('disabled', true);
@@ -784,5 +793,15 @@ $('#editOtherRecipient').on('click', function(event){
         $('.editTo .border').css({
             'border': '1px solid #dee2e6'
         })
+    }
+});
+
+// Document Details
+$('#editDocumentDetailsBtn').off('click').on('click', function(event){
+    console.log($('#editDocumentDetails').css('display'));
+    if ($('#editDocumentDetails').css('display') === 'block'){
+        $('#editDocumentDetails').css('display', 'none');
+    } else {
+        $('#editDocumentDetails').css('display', 'block');
     }
 });

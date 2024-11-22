@@ -1,4 +1,5 @@
 export function showLogs(){
+    $('#tableOverlay').hide();
     $('#archivedTitle').hide();
     $('#archivedDatePicker').hide();
     $('.dashboardTableTitle').html('System Logs');
@@ -465,7 +466,7 @@ function viewLogInformation(logId) {
                     }
                 }
                 $('#logDetails').html(logDetail);
-            } else {
+            } else if(response.log.type == 'Maintenance'){
                 $('#logDetailTitle').html('Maintenance Details');
                 const settings = JSON.parse(response.log.detail);
                 let logDetail = "";
@@ -584,6 +585,17 @@ function viewLogInformation(logId) {
                 }
             
                 $('#logDetails').html(logDetail);
+            } else {
+                $('#logDetailTitle').html('System Information Details');
+                var info = JSON.parse(response.log.detail);
+                $('#logDetails').html(`
+                    <span><strong>Name: </strong>${info.name}</span><br>
+                    <span><strong>Logo: </strong>${info.logo}</span><br>
+                    <span><strong>Favicon: </strong>${info.favicon}</span><br>
+                    <span><strong>About: </strong>${info.about}</span><br>
+                    <span><strong>WMSU Missiono: </strong>${info.mission}</span><br>
+                    <span><strong>WMSU Vision: </strong>${info.vision}</span><br>
+                `);
             }
             
             $('#logInfo').modal('show');

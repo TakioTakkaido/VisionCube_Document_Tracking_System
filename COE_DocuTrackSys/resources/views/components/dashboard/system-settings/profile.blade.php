@@ -92,7 +92,7 @@
             
             <div class="col-6 text-right">
                 <!-- Reset Password Button -->
-                <a href="{{route('show.forgotPassword')}}" class="btn btn-primary {{!$isVerified ? 'disabled' : ''}}" id="resetPasswordBtn">Reset Password</a>
+                <a href="{{route('show.forgotPassword')}}" class="btn btn-primary {{!$isVerified ? 'disabled' : ''}} editProfile" id="resetPasswordBtn">Reset Password</a>
             </div>
         </div>
     </div>

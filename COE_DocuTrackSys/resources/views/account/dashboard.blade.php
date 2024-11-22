@@ -99,6 +99,14 @@ Sanchez, Shane David U.
         'resources/js/dashboard/systemSettings/document/status.js',
         'resources/js/dashboard/systemSettings/document/fileExtension.js',
 
+        // System Info
+        'resources/js/dashboard/systemSettings/sysInfo/name.js',
+        'resources/js/dashboard/systemSettings/sysInfo/about.js',
+        'resources/js/dashboard/systemSettings/sysInfo/logo.js',
+        'resources/js/dashboard/systemSettings/sysInfo/icon.js',
+        'resources/js/dashboard/systemSettings/sysInfo/mission.js',
+        'resources/js/dashboard/systemSettings/sysInfo/vision.js',
+
         // Report
         'resources/js/dashboard/tables/report.js',
 
@@ -106,7 +114,12 @@ Sanchez, Shane David U.
         'resources/js/notification.js',
 
         // Search
-        'resources/js/search.js'
+        'resources/js/search.js',
+
+        // Attachment Uplaod
+        'resources/js/dashboard/systemSettings/attachmentUpload/linkGmail.js',
+        'resources/js/dashboard/systemSettings/attachmentUpload/manageGmail.js',
+        'resources/js/dashboard/systemSettings/attachmentUpload/assignGmail.js',
     ])
 </head>
 <body>
@@ -204,6 +217,21 @@ Sanchez, Shane David U.
 
         // File Extensions
         updateFileExtensions: "{{route('fileExtension.update')}}",
+
+        // System Information
+        updateSysInfo: "{{route('info.update')}}",
+
+        // Attachment Upload
+        linkEmail: "{{route('drive.add')}}",
+        removeEmail: "{{route('drive.remove')}}",
+        getTransferEmails: "{{route('drive.getTransferEmails')}}",
+        transferAttachments: "{{route('drive.transfer')}}",
+        updateAttachmentStorage: "{{route('drive.updateStorage')}}",
+        disableEmail: "{{route('drive.disable')}}",
+
+        // Report
+        generateReport: "{{route('report.generate')}}",
+        showReports: "{{route('report.showAll')}}",
     };
 </script>
 

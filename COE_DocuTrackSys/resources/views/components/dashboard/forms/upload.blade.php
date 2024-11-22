@@ -152,6 +152,46 @@
             </div>
         </div>
 
+        {{-- Document Details --}}
+        <div class="container rounded border p-3 mb-3">
+            <div class="row d-flex justify-content-between align-items-center">
+                <div class="col-auto text-left">
+                    <h6 class="p-0 mb-0 font-weight-bold" style="font-size: 15px;">Document Details (optional)</h6>
+                </div>
+            
+                <div class="col-auto text-right">
+                    <h6 class="p-0 mb-0" style="font-size: 15px; color: #a50b0b" id="documentDetailsBtn">Show Document Details</h6>
+                </div>
+            </div>
+                
+            <div style="display: none;" id="documentDetails">
+                <div class="row mb-1">
+                    {{-- Document Event Description --}}
+                    <div class="col">
+                        <label for="uploadEventDescription">Event Description</label>
+                        <textarea id="uploadEventDescription" class="uploadInput mb-2"  name="event_description" rows="3" placeholder="Enter the Description of the Event"></textarea>
+                    </div>
+                </div>
+        
+                <div class="row mb-1">
+                    {{-- Document Venue --}}
+                    <div class="col">
+                        <label for="uploadEventVenue">Event Venue</label>
+                        <input id="uploadEventVenue" class="uploadInput mb-2" type="text" name="event_venue" placeholder="Enter Venue of the Event">
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    {{-- Document Venue --}}
+                    <div class="col">
+                        <label for="uploadEventDate">Event Date</label>
+                        <input id="uploadEventDate" class="uploadInput" type="date" name="event_date">
+                    </div>
+                </div>
+            </div>        
+
+        </div>
+        
         <div class="row justify-content-end align-items-end">
             <div class="col-auto">
                 {{-- Submit form data using AJAX in uploadform.js --}}

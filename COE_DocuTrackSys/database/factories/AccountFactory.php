@@ -34,6 +34,7 @@ class AccountFactory extends Factory {
                 'canArchive' => true,
                 'canDownload' => true,
                 'canPrint' => true,
+                'email_verified_at' => now()
             ];
         });
     }

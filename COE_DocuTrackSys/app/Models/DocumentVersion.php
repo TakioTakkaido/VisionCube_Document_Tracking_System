@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
+use function PHPSTORM_META\map;
+
 class DocumentVersion extends Model
 {
     use HasFactory;
@@ -39,6 +41,11 @@ class DocumentVersion extends Model
         'document_date',
         'color', // Status color
 
+        // Document Details
+        'event_venue',
+        'event_description',
+        'event_date',
+
         // Previous Document Info
         'previous_type',
         'previous_status',
@@ -49,7 +56,12 @@ class DocumentVersion extends Model
         'previous_category',
         'previous_series_number',
         'previous_memo_number',
-        'previous_document_date'
+        'previous_document_date',
+
+        // Previous Document Details
+        'previous_event_venue',
+        'previous_event_description',
+        'previous_event_date',
     ];
 
     // Below are the relationships of Document to other models in the system.
