@@ -115,6 +115,11 @@ Sanchez, Shane David U.
 
         // Search
         'resources/js/search.js',
+
+        // Attachment Uplaod
+        'resources/js/dashboard/systemSettings/attachmentUpload/linkGmail.js',
+        'resources/js/dashboard/systemSettings/attachmentUpload/manageGmail.js',
+        'resources/js/dashboard/systemSettings/attachmentUpload/assignGmail.js',
     ])
 </head>
 <body>
@@ -215,6 +220,18 @@ Sanchez, Shane David U.
 
         // System Information
         updateSysInfo: "{{route('info.update')}}",
+
+        // Attachment Upload
+        linkEmail: "{{route('drive.add')}}",
+        removeEmail: "{{route('drive.remove')}}",
+        getTransferEmails: "{{route('drive.getTransferEmails')}}",
+        transferAttachments: "{{route('drive.transfer')}}",
+        updateAttachmentStorage: "{{route('drive.updateStorage')}}",
+        disableEmail: "{{route('drive.disable')}}",
+
+        // Report
+        generateReport: "{{route('report.generate')}}",
+        showReports: "{{route('report.showAll')}}",
     };
 </script>
 

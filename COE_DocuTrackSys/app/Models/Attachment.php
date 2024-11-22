@@ -32,4 +32,8 @@ class Attachment extends Model
                 ->format('M. d, Y h:i:s a')
         );
     }
+
+    public function folder(){
+        return $this->hasOne(Folder::class);
+    }
 }

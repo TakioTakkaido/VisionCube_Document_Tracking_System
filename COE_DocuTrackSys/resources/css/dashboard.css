@@ -1039,6 +1039,7 @@ button:focus {
     cursor: not-allowed;
 }
 
+.driveSettings.btn-primary.disabled,
 .editSysInfo.btn-primary.disabled,
 .editProfile.btn-primary.disabled {
     background-color: #a50b0b !important;

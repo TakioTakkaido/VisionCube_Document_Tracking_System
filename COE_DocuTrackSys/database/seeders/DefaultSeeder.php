@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Account;
+use App\Models\Drive;
 use App\Models\FileExtension;
 use App\Models\Participant;
 use App\Models\ParticipantGroup;
@@ -66,5 +67,8 @@ class DefaultSeeder extends Seeder
 
         // Create system information
         SysInfo::factory()->create();
+
+        // Create temporary drive
+        Drive::factory()->create();
     }
 }
