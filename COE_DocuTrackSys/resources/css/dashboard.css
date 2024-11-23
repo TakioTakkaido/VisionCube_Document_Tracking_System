@@ -927,7 +927,8 @@ button:focus {
 .systemParticipant div:hover,
 .systemParticipantGroup div:hover,
 .systemStatus div:hover,
-.systemType div:hover {
+.systemType div:hover,
+.driveAccountBtn i:hover{
     color:#a50b0b;
     cursor: pointer;
 }
@@ -960,7 +961,8 @@ button:focus {
 
 .editTypeBtn.disabled:hover,
 .addSettings.disabled:hover,
-.deleteTypeBtn.disabled:hover {
+.deleteTypeBtn.disabled:hover,
+.attachmentUploadBtn.disabled:hover {
     /* color:#a50b0b !important; */
     cursor: not-allowed !important;
     color: unset;
@@ -1041,7 +1043,8 @@ button:focus {
 
 .driveSettings.btn-primary.disabled,
 .editSysInfo.btn-primary.disabled,
-.editProfile.btn-primary.disabled {
+.editProfile.btn-primary.disabled,
+.attachmentUploadBtn.btn-primary.disabled {
     background-color: #a50b0b !important;
     border: transparent;
     cursor: not-allowed !important;
@@ -1078,8 +1081,8 @@ button:focus {
 }
 
 #searchBarText:focus {
-    border:transparent;
-    box-shadow: #a50b0b 2px solid !important;
+    border: transparent;
+    /* box-shadow: #a50b0b 2px solid !important; */
 }
 
 #searchBar .input-group-text{
@@ -1119,6 +1122,7 @@ button:focus {
 .form-control:focus {
     box-shadow: none;
 }
+
 #searchBarText::placeholder {
     color: grey;
 }
@@ -1128,5 +1132,5 @@ textarea {
 }
 
 .form-control:focus {
-    border-color: #ffa0a0;
+    border-color: #33333340;
 }

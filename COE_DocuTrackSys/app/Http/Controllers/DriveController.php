@@ -49,64 +49,62 @@ class DriveController extends Controller {
         ]);
     }
 
-    public function callback(Request $request)
-{
-    if ($request->has('code')) {
-        $code = $request->input('code');  // Get the authorization code
+    public function callback(Request $request){
+        if ($request->has('code')) {
+            $code = $request->input('code');  // Get the authorization code
 
-        // Send a request to Google's token endpoint to exchange the code for tokens
-        $response = Http::post('https://oauth2.googleapis.com/token', [
-            'code' => $code,
-            'client_id' => config('services.google.client_id'),
-            'client_secret' => config('services.google.client_secret'),
-            'redirect_uri' => route('drive.callback'),  // Same URI as before
-            'grant_type' => 'authorization_code',
-        ]);
-
-        // Get the JSON response from Google
-        $tokens = $response->json();
-
-        // Log the entire response to help debug
-        Log::debug('Google OAuth response', $tokens);  // This will log the tokens to the log file
-
-        // Optionally, dump the response for interactive debugging
-        // dd($tokens);  // Use dd() to stop execution and inspect the output
-
-        if (isset($tokens['refresh_token'])) {
-            // We have the refresh token, now store it in the database
-
-            $refreshToken = $tokens['refresh_token'];
-            // Retrieve the Drive record using the state (Drive ID)
-            $drive = Drive::find($request->query('state'));  // Use 'state' to find the right Drive
-
-            // Log the Drive record to ensure it’s being fetched correctly
-            Log::debug('Drive record found', ['drive_id' => $drive->id, 'email' => $drive->email]);
-
-            // Update the Drive record with the refresh token
-            $drive->verified_at = now();
-            $drive->refresh_token = $refreshToken;
-            $drive->save();
-
-            // Return the drive and token info in response
-            // Response make sreut to show the webage
-            return response()->json([
-                'drive' => $drive,
-                'refresh_token' => $refreshToken  // Optionally return the token to verify it's correct
+            // Send a request to Google's token endpoint to exchange the code for tokens
+            $response = Http::post('https://oauth2.googleapis.com/token', [
+                'code' => $code,
+                'client_id' => config('services.google.client_id'),
+                'client_secret' => config('services.google.client_secret'),
+                'redirect_uri' => route('drive.callback'),  // Same URI as before
+                'grant_type' => 'authorization_code',
             ]);
+
+            // Get the JSON response from Google
+            $tokens = $response->json();
+
+            // Log the entire response to help debug
+            Log::debug('Google OAuth response', $tokens);  // This will log the tokens to the log file
+
+            // Optionally, dump the response for interactive debugging
+            // dd($tokens);  // Use dd() to stop execution and inspect the output
+
+            if (isset($tokens['refresh_token'])) {
+                // We have the refresh token, now store it in the database
+
+                $refreshToken = $tokens['refresh_token'];
+                // Retrieve the Drive record using the state (Drive ID)
+                $drive = Drive::find($request->query('state'));  // Use 'state' to find the right Drive
+
+                // Log the Drive record to ensure it’s being fetched correctly
+                // Log::debug('Drive record found', ['drive_id' => $drive->id, 'email' => $drive->email]);
+
+                // Update the Drive record with the refresh token
+                $drive->verified_at = now();
+                $drive->refresh_token = $refreshToken;
+                $drive->save();
+
+                // Return the drive and token info in response
+                // Response make sreut to show the webage
+                return response()->json([
+                    'drive' => $drive,
+                    'refresh_token' => $refreshToken  // Optionally return the token to verify it's correct
+                ]);
+            } else {
+                // Log the error if no refresh token is found
+                Log::error('No refresh token received from Google API', ['response' => $tokens]);
+                
+                return response('Error: No refresh token returned', 400);
+            }
         } else {
-            // Log the error if no refresh token is found
-            Log::error('No refresh token received from Google API', ['response' => $tokens]);
-            
-            return response('Error: No refresh token returned', 400);
+            // Log the error if the authorization code is not found
+            Log::error('No authorization code in callback', ['query_params' => $request->query()]);
+
+            return response('Error: Authorization code not found', 400);
         }
-    } else {
-        // Log the error if the authorization code is not found
-        Log::error('No authorization code in callback', ['query_params' => $request->query()]);
-
-        return response('Error: Authorization code not found', 400);
     }
-}
-
 
     public function remove(Request $request){
         $drive = Drive::find($request->id);
@@ -146,15 +144,14 @@ class DriveController extends Controller {
     public function getTransferEmails(Request $request){
         // Get the drives except itself
         return response()->json([
-            'drives' => Drive::whereNot('id', $request)->get()
+            'drives' => Drive::whereNot('id', $request->id)->get()
         ]);
     }
-
 
     public function disable(Request $request){
         $drive = Drive::find($request->id);
 
-        $drive->disabled = true;
+        $drive->disabled = $request->input('disable');
         $drive->save();
 
         // Log

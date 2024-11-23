@@ -25,6 +25,7 @@ class AttachmentUpload extends Component
     {
         return view('components.dashboard.system-settings.attachment-upload', [
             'drives' => Drive::all(),
+            'verifiedDrives' => Drive::whereNot('verified_at', null)->get(),
             'maintenance' => SettingsController::getMaintenanceStatus()
         ]);
     }

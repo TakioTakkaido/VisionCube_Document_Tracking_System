@@ -7,55 +7,79 @@ import {  } from "../../uploadForm";
 
 // Edit Document Type
 $('#addDriveAccountBtn').on('click', function(event){
-    // Prevent other events
     event.preventDefault();
-
-    // Create new form data
-    var formData = new FormData();
-    // Create form data for submission
-    formData = {
-        '_token' : $('meta[name="csrf-token"]').attr('content'),
-        'email': $('#addDriveAccountEmail').val(),
-        'verified_at': null
-    }
-
-    // Submit the data form
-    $.ajax({
-        method: "POST",
-        url: window.routes.linkEmail,
-        data: formData,
-        success: function (data) {
-           // Log success message
-            showNotification('Verification link sent to ' + $('#addDriveAccountEmail').val());
-            var newTypeId = data.drive.id;
-            // Update list group
-            // Append a new list item to the list group
-            var newListItem = `
-                <li class="list-group-item p-2 d-flex justify-content-between align-items-center driveAccount" id="${"driveAccount" + newTypeId}">
-                    <span class="text-left mr-auto p-0">${$('#addDriveAccountEmail').val()}</span>
-                    <span class="text-right mr p-0" style="color: gray;">Awaiting Verification</span>    
-                    <div class="driveAccountBtn mr-2 p-0 removeEmailLink"
-                        data-toggle="modal" data-target="#confirmRemoveEmailLink"
-                        data-id=${newTypeId} data-value="${$('#addDriveAccountEmail').val()}"><i class='bx bx-trash' style="font-size: 20px;"></i>
-                    </div>
-                </li>`;
-            
-            // Append the new item to the list
-            $('.driveAccountList').append(newListItem);
-
-            // Optionally, clear the input field after adding
-            $('#addDriveAccountEmail').val('');
-        },
-        error: function (data) {
-            showNotification('Error made when adding Google account.');
-            // Parse the data from the json response
-            var data = JSON.parse(data.responseText);
-
-            // Log error
-            console.log("Error occured while editing type")
-            console.log(data.errors);
+    // Prevent other events
+    if(!$(this).hasClass('disabled')){
+        // Create new form data
+        var formData = new FormData();
+        // Create form data for submission
+        formData = {
+            '_token' : $('meta[name="csrf-token"]').attr('content'),
+            'email': $('#addDriveAccountEmail').val(),
+            'verified_at': null
         }
-    });
+
+        // Submit the data form
+        $.ajax({
+            method: "POST",
+            url: window.routes.linkEmail,
+            data: formData,
+            success: function (data) {
+            // Log success message
+                showNotification('Verification link sent to ' + $('#addDriveAccountEmail').val() + "!");
+                var newTypeId = data.drive.id;
+                // Update list group
+                // Append a new list item to the list group
+                var newListItem = `
+                    <li class="list-group-item p-2 d-flex justify-content-between align-items-center driveAccount" id="${"driveAccount" + newTypeId}">
+                        <span class="text-left mr-auto p-0">${$('#addDriveAccountEmail').val()}</span>
+                        <div class="d-flex text-right mr-2 p-0" id="notVerifiedDriveAccount${newTypeId}">
+                            <span class="text-right mr-2 p-0" style="color: gray;">Awaiting Verification</span>    
+                            <div class="driveAccountBtn p-0 removeEmailLink"
+                                data-toggle="modal" data-target="#confirmRemoveEmailLink"
+                                data-id=${newTypeId} data-value="${$('#addDriveAccountEmail').val()}"><i class='bx bx-trash' style="font-size: 20px;"></i>
+                            </div>
+                        </div>
+                    </li>`;
+                
+                // Append the new item to the list
+                $('.noDriveAccount').remove();
+
+                $('.driveAccountList').append(newListItem);
+                // if($('.driveAccount').length == 0){
+                //     $('.driveAccountList').html(`
+                //         <li class="list-group-item p-2 d-flex justify-content-between align-items-center driveAccount">
+                //             <span class="text-justify mr-auto p-0">No accounts linked for storage yet.</span>
+                //         </li>
+                //     `)
+                // }
+
+                // Optionally, clear the input field after adding
+                $('#addDriveAccountEmail').val('');
+            },
+            error: function (data) {
+                showNotification('Error made when adding Google account.');
+                // Parse the data from the json response
+                var data = JSON.parse(data.responseText);
+
+                // Log error
+                console.log("Error occured while editing type")
+                console.log(data.errors);
+            },
+            beforeSend: function(){
+                $('body').css('cursor', 'progress');
+                $('.loading').show();
+                $('.attachmentUploadBtn').addClass('disabled');
+                showNotification('Sending link to ' + $('#addDriveAccountEmail').val() + "...");
+            },
+            complete: function(){
+                $('body').css('cursor', 'auto');
+                $('.loading').hide();
+                $('.attachmentUploadBtn').addClass('disabled');
+            }
+        });
+    }
+    
 });
 
 $('#addDriveAccountEmail').on('input', function(event){
@@ -67,22 +91,38 @@ $('#addDriveAccountEmail').on('input', function(event){
     }
 });
 
-$('#searchDriveAccountEmail').on('input', function(event){
+$('#searchDriveAccountEmail').on('input', function (event) {
     event.preventDefault();
 
     // Get the search query
     var query = $(this).val().toLowerCase();
 
+    // Remove the "No accounts" placeholder if it exists
+    $('.noDriveAccount').remove();
+
     // Filter the list items based on the search query
-    $('.driveAccountList').each(function(){
-        var typeText = $(this).find('span').html().toLowerCase();
-        if (typeText.includes(query)){
+    var hasVisibleItems = false;
+
+    $('.driveAccount').each(function () {
+        var typeText = $(this).find('span').html().toLowerCase(); // Assuming span contains email
+        if (typeText.includes(query)) {
             $(this).removeClass('hide');
+            hasVisibleItems = true;
         } else {
             $(this).addClass('hide');
         }
     });
+
+    // If no items are visible, append the "No accounts" message
+    if (!hasVisibleItems) {
+        $('.driveAccountList').append(`
+            <li class="list-group-item p-2 d-flex justify-content-between align-items-center noDriveAccount">
+                <span class="text-justify mr-auto p-0">No accounts linked for storage yet.</span>
+            </li>
+        `);
+    }
 });
+
 
 // DELETE DOCUMENT TYPE
 // To trigger delete type confirm
@@ -119,6 +159,14 @@ $('#confirmRemoveLinkBtn').on('click', function(event){
             $('#driveAccount' + typeId).remove();
 
             $('#confirmRemoveEmailLink').modal('hide');
+            
+            if($('.driveAccount').length == 0){
+                $('.driveAccountList').html(`
+                    <li class="list-group-item p-2 d-flex justify-content-between align-items-center noDriveAccount">
+                        <span class="text-justify mr-auto p-0">No accounts linked for storage yet.</span>
+                    </li>
+                `)
+            }
         },
         error: function (data) {
             // Parse the data from the json response
@@ -127,6 +175,15 @@ $('#confirmRemoveLinkBtn').on('click', function(event){
             // Log error
             showNotification('Error removing Google account.');
             console.log(data.errors)
+        },
+        beforeSend: function(){
+            $('body').css('cursor', 'progress');
+            $('.loading').show();
+            showNotification('Removing Google account...');
+        },
+        complete: function(){
+            $('.loading').hide();
+            $('body').css('cursor', 'auto');
         }
     });
     
