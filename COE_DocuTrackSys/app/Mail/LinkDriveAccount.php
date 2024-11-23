@@ -16,7 +16,7 @@ class LinkDriveAccount extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public string $verificationLinkToken) {}
+    public function __construct(public string $url) {}
 
     /**
      * Get the message envelope.

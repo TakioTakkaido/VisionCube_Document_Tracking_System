@@ -17,6 +17,7 @@ return new class extends Migration
             $table->boolean('disabled')->default(false);
             $table->boolean('canReport')->default(false);
             $table->boolean('canDocument')->default(false);
+            $table->string('refresh_token')->nullable();
             $table->timestamps();
         });
     }

@@ -261,6 +261,7 @@ $('#submitDocumentForm').off('click').on('click', function(event) {
     formData.append('event_venue', $('#uploadEventVenue').val());
     formData.append('event_description', $('#uploadEventDescription').val());
     formData.append('event_date', $('#uploadEventDate').val());
+    formData.append('drive_id', $('#documentFolder').val())
 
     $('body').css('cursor', 'progress');
     $.ajax({

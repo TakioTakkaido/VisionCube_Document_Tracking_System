@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Dashboard;
 
+use App\Models\Drive;
 use Closure;
 use Illuminate\View\Component;
 use Illuminate\Contracts\View\View;
@@ -23,7 +24,12 @@ class Homepage extends Component
     public function render(): View|Closure|string
     {
         return view('components.dashboard.homepage', [
-            'isAdmin' => Auth::user()->role == 'Admin'
+            'isAdmin'   => Auth::user()->role == 'Admin',
+            'drives'    => Drive::where('canReport', true)
+                                    ->where('disabled', false)
+                                    ->whereNot('verified_at', null)
+                                    ->orderBy('id', 'asc')
+                                    ->get()
         ]);
     }
 }

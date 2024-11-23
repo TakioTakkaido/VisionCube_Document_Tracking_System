@@ -152,6 +152,17 @@
             </div>
         </div>
 
+        <div class="row mb-2">
+            <div class="col">
+                <select id="documentFolder" class="uploadInput" name="category">
+                    <option value="" disabled selected>Select Account to Store the Document</option>
+                    @foreach ($drives as $drive)
+                        <option value="{{$drive->id}}">{{$drive->email}}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
         {{-- Document Details --}}
         <div class="container rounded border p-3 mb-3">
             <div class="row d-flex justify-content-between align-items-center">

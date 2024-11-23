@@ -159,10 +159,14 @@
                                     <input type="text" class="form-control" id="reportFile" placeholder="Report Name">
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label for="inputName" class="col-form-label">Report Dates: </label>
+                            <div class="row mb-2">
                                 <div class="col">
-                                    <input type="text" class="form-control" id="reportDate" placeholder="Report Date">
+                                    <select id="reportFolder" name="category">
+                                        <option value="" disabled selected>Select Account to Store the Report</option>
+                                        @foreach ($drives as $drive)
+                                            <option value="${{$drive->id}}">{{$drive->email}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </form>

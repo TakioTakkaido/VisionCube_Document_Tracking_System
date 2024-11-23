@@ -75,8 +75,8 @@
                             <span class="error" id="accountRoleError" style="display:none;"></span>
                         </div>
                         <div class="col">
-                            <a name="submit" id="addAccountBtn" class="btn btn-primary" href="#" role="button">Create Account</a>        
-                            <a name="cancel" id="cancelAccountBtn" class="btn btn-secondary" href="#" role="button">Cancel</a>
+                            <a name="submit" id="addAccountBtn" class="btn btn-primary createAccountBtn" href="#" role="button">Create Account</a>        
+                            <a name="cancel" id="cancelAccountBtn" class="btn btn-secondary createAccountBtn" href="#" role="button">Cancel</a>
                         </div>
                     </div>
                 </form>
@@ -160,8 +160,8 @@
                         </tbody>
                     </table>
 
-                    <button type="submit" class="btn btn-primary"    id="saveAccountAccessBtn">Save Changes</button>       
-                    <button type="button" class="btn btn-warning"  id="defaultAccountAccessBtn">Reset to Default</button>
+                    <button type="submit" class="btn btn-primary accountAccessBtn"    id="saveAccountAccessBtn">Save Changes</button>       
+                    <button type="button" class="btn btn-warning accountAccessBtn"  id="defaultAccountAccessBtn">Reset to Default</button>
                 </form>
             </div>
         </div>

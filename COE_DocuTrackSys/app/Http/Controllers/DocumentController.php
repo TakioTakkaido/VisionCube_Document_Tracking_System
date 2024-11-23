@@ -25,7 +25,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Attachment;
 use App\Models\DocumentVersion;
-
+use App\Models\Drive;
 use App\Models\Log as ModelsLog;
 use App\Models\Status;
 use Carbon\Carbon;
@@ -54,6 +54,7 @@ class DocumentController extends Controller{
 
     //Upload Document
     public function upload(UploadDocumentRequest $request){
+
         $request->validated();
 
         // Create the document
@@ -85,20 +86,31 @@ class DocumentController extends Controller{
             'event_date'            => $request->input('event_date'),
         ]);
 
+
+        
+        // Attachment Upload
+        $drive = Drive::find($request->input('drive_id'));
+        // dd($drive);
+        $folder_id = "";
+
+        // Check first whether the drive has a gdrive folder, and then create if none
+        $document_date = new DateTime($documentVersion->created_at);
+        $folder_id = $drive->getDocumentFolder(($document_date->format('Y')), $document_date->format('M'));
         // Create the attachments
         $attachments = [];
+
         foreach($request->file('files') as $file){
             $url = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';
 
             // Metadata for the file (convert to JSON)
             $metadata = [
                 'name' => $file->getClientOriginalName(),
-                'parents' => [config('services.google.document_folder_id')],
+                'parents' => [$folder_id],
             ];
 
             $metadataJson = json_encode($metadata);
 
-            $fileStore = Http::withToken($this->token())
+            $fileStore = Http::withToken($drive->token())
                 ->attach(
                     'metadata', $metadataJson, 'metadata.json', ['Content-Type' => 'application/json; charset=UTF-8']
                 )

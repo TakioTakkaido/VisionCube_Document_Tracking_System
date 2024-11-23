@@ -62,6 +62,15 @@ $('#addAccountBtn').on('click', function(event){
                 $('#role').css('background-color', '#f09d9d');
                 $('#accountRoleError').css('display', 'block');
             }
+        },
+        beforeSend: function(){
+            $('body').css('cursor', 'progress');
+            showNotification('Adding account to the system...');
+            $('.createAccountBtn').addClass('disabled');
+        },
+        complete: function(){
+            $('body').css('cursor', 'auto');
+            $('.createAccountBtn').removeClass('disabled');
         }
     });
 });
