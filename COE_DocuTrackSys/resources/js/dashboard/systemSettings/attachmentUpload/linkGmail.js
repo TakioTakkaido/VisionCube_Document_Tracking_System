@@ -27,7 +27,7 @@ $('#addDriveAccountBtn').on('click', function(event){
         success: function (data) {
            // Log success message
             showNotification('Verification link sent to ' + $('#addDriveAccountEmail').val());
-            var newTypeId = data.id;
+            var newTypeId = data.drive.id;
             // Update list group
             // Append a new list item to the list group
             var newListItem = `
@@ -86,7 +86,7 @@ $('#searchDriveAccountEmail').on('input', function(event){
 
 // DELETE DOCUMENT TYPE
 // To trigger delete type confirm
-$('.removeEmailLink').on('click', function(event){
+$('.driveAccountList').on('click', '.removeEmailLink',function(event){
     // Prevent other events
     event.preventDefault();
 

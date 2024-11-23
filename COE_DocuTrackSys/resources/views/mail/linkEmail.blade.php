@@ -112,12 +112,12 @@
 <body>
     <div id="box1">  
         <div id="click">      
-            <img id="englogo" src="{{ $message->embed(asset('img/COE.png')) }}" alt="COE Logo">
+            <img id="englogo" src="{{ $message->embed(Vite::asset('resources/img/COE.png')) }}" alt="COE Logo">
             <h1 id="verify">Verify Google Account to Link for Storage</h1>
             <h5 id="descr">Please click the button below to proceed in resetting your password.</h5>
             <!-- Updated Button -->
-            <a class="buttonclick" href="{{ url(route('verifyDriveAccount', ['token' => $verificationLinkToken])) }}">
-                <strong style="color: white">Verify Google Account</strong>
+            <a class="buttonclick" href="{{ $url }}">
+                <strong style="color: white">Link Account</strong>
             </a>
             <p id="para">If you received this in error, simply ignore this email and do not click the button.</p>
         </div>

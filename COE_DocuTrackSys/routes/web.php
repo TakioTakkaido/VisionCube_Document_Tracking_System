@@ -431,9 +431,15 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 // Disable the Account from Storing
                 Route::get('disable', 'disable')
                 ->name('disable');
+
+                
             });
         });
     });
+
+    
+
+    // Route::get('/home', function())
 
     // Report
     Route::name('report.')->group(function(){
@@ -450,5 +456,8 @@ Route::middleware([NoDirectAccess::class])->group(function() {
         });
     });
 });
+
+Route::get('/drive/callback', [DriveController::class, 'callback'])
+    ->name('drive.callback');
 
 require __DIR__.'/auth.php';

@@ -4,6 +4,7 @@ namespace App\View\Components\Dashboard\Forms;
 
 use App\AccountRole;
 use App\Http\Controllers\ParticipantGroupController;
+use App\Models\Drive;
 use App\Models\ParticipantGroup;
 use App\Models\Status;
 use App\Models\Type;
@@ -29,7 +30,12 @@ class Upload extends Component
             'docStatuses'   => Status::all(),
             'roles'         => AccountRole::cases(),
             'groups'        => ParticipantGroupController::showAllGroups(),
-            'canUpload'     => Auth::user()->canUpload
+            'canUpload'     => Auth::user()->canUpload,
+            'drives'        => Drive::where('canDocument', true)
+                                        ->where('disabled', false)
+                                        ->whereNot('verified_at', null)
+                                        ->orderBy('id', 'asc')
+                                        ->get()
         ]);
     }
 }

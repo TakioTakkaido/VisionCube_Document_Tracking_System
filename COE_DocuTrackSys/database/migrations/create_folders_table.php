@@ -13,12 +13,17 @@ return new class extends Migration
     {
         Schema::create('folders', function (Blueprint $table) {
             $table->id();
-            $table->string('type',);
-            $table->date('year',);
-            $table->date('month',);
-            $table->boolean('disabled',);
+            $table->string('type');
+            $table->date('year')->nullable();
+            $table->date('month')->nullable();
             $table->string('folder_id');
+            $table->unsignedBigInteger('drive_id');
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
+
+            // Foreign key established with: Document
+            $table->foreign('drive_id')->references('id')->on('drives')->onDelete('cascade');
+            $table->foreign('parent_id')->references('id')->on('folders')->onDelete('cascade');
         });
     }
 

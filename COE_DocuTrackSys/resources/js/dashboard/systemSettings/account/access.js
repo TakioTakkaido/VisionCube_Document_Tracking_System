@@ -22,66 +22,67 @@ $('#defaultAccountAccessBtn').on('click', function(event){
     // download
     // print
     secretaryAccesses = [
-        'true',
-        'true',
-        'true',
-        'true',
-        'true',
-        'true'
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
     ];
     
     assistantAccesses = [
-        'false',
-        'true',
-        'true',
-        'true',
-        'true',
-        'true'
+        false,
+        true,
+        true,
+        true,
+        true,
+        true
     ];
 
     clerkAccesses = [
-        'false',
-        'true',
-        'true',
-        'true',
-        'false',
-        'false'
+        false,
+        true,
+        true,
+        true,
+        false,
+        false
     ];
 
     updateAccountAccess(secretaryAccesses, assistantAccesses, clerkAccesses);
 });
 
 function updateAccountAccess(secretaryAccesses = [], assistantAccesses = [], clerkAccesses = []){
-    if (secretaryAccesses.length == 0){
-        $.each($('.editSecretaryRole'), function (index, element) { 
-            secretaryAccesses[index] = $(element).is(':checked');
-        });
-    }
-
-    $.each($('.editSecretaryRole'), function (index, element) { 
-        $(element).prop('checked', secretaryAccesses[index] === 'true');
-    });
-
-    // Access array
-    if (assistantAccesses.length == 0){
-        $.each($('.editAssistantRole'), function (index, element) { 
-            assistantAccesses[index] = $(element).prop('checked');
+    if (secretaryAccesses.length == 0) {
+        // Populate `secretaryAccesses` with the checked state of each element
+        $('.editSecretaryRole').each(function (index, element) {
+            secretaryAccesses[index] = $(element).prop('checked'); // Use `.prop('checked')`
         });
     }
     
-    $.each($('.editAssistantRole'), function (index, element) { 
-        $(element).prop('checked', assistantAccesses[index] === 'true');
+    // Restore the `checked` state of each element
+    $('.editSecretaryRole').each(function (index, element) {
+        $(element).prop('checked', Boolean(secretaryAccesses[index])); // Ensure proper boolean handling
     });
 
-    // Access array
-    if (clerkAccesses.length == 0){ 
-        $.each($('.editClerkRole'), function (index, element) { 
-            clerkAccesses[index] = $(element).is(':checked');
+    if (assistantAccesses.length == 0) {
+        $('.editAssistantRole').each(function (index, element) {
+            assistantAccesses[index] = $(element).prop('checked'); // Use `.prop('checked')`
         });
     }
-
-    $.each($('.editClerkRole'), function (index, element) { 
-        $(element).prop('checked', clerkAccesses[index] === 'true');
+    
+    $('.editAssistantRole').each(function (index, element) {
+        $(element).prop('checked', Boolean(assistantAccesses[index])); // Ensure proper boolean handling
+    });
+    
+    // Handle Clerk Role
+    if (clerkAccesses.length == 0) {
+        $('.editClerkRole').each(function (index, element) {
+            clerkAccesses[index] = $(element).prop('checked'); // Use `.prop('checked')`
+        });
+    }
+    
+    $('.editClerkRole').each(function (index, element) {
+        $(element).prop('checked', Boolean(clerkAccesses[index])); // Ensure proper boolean handling
     });
 
     var formData = new FormData();
@@ -106,6 +107,16 @@ function updateAccountAccess(secretaryAccesses = [], assistantAccesses = [], cle
             // Log error
             showNotification('Error updating account accesses.');
             console.log(data.errors)
+        },
+        beforeSend: function(){
+            showNotification('Updating account accesses...');
+            $('body').css('cursor', 'progress');
+            $('.accountAccessBtn').addClass('disabled');
+
+        }, 
+        complete: function(){
+            $('body').css('cursor', 'auto');
+            $('.accountAccessBtn').removeClass('disabled');
         }
     });
 }

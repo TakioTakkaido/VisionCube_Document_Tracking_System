@@ -31,7 +31,8 @@ class UploadDocumentRequest extends FormRequest {
             
             'event_venue' => 'nullable',
             'event_description' => 'nullable',
-            'event_date' => 'nullable'
+            'event_date' => 'nullable',
+            'drive_id' => 'required'
         ];
     }
 

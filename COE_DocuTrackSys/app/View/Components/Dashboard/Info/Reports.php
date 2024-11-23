@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Dashboard\Info;
 
+use App\Models\Drive;
 use Closure;
 use Illuminate\View\Component;
 use Illuminate\Contracts\View\View;
@@ -21,6 +22,12 @@ class Reports extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.dashboard.info.reports');
+        return view('components.dashboard.info.reports', [
+            'drives'    => Drive::where('canReport', true)
+                                    ->where('disabled', false)
+                                    ->whereNot('verified_at', null)
+                                    ->orderBy('id', 'asc')
+                                    ->get()
+        ]);
     }
 }
