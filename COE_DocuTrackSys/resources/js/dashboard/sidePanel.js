@@ -11,8 +11,14 @@ $('#homePageBtn').on('click', function(event){
     event.preventDefault();
     $('.side-panel-section a').removeClass('active');
     $(this).addClass('active');
+
     if (!$('.homepage').hasClass('active')){
         $('.homepage').addClass('active');
+        $('.about').removeClass('active');
+        $('.mission').removeClass('active');
+        $('.vision').removeClass('active');
+        $('.contactUs').removeClass('active');
+        
         $('.dashboard-table').removeClass('active');
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
@@ -72,6 +78,11 @@ $('#activeBtn').on('click', function(event){
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
         $('.homepage').removeClass('active');
+        $('.about').removeClass('active');
+        $('.mission').removeClass('active');
+        $('.vision').removeClass('active');
+        $('.contactUs').removeClass('active');
+        
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
@@ -94,6 +105,11 @@ $('#deactivatedBtn').on('click', function(event){
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
         $('.homepage').removeClass('active');
+        $('.about').removeClass('active');
+        $('.mission').removeClass('active');
+        $('.vision').removeClass('active');
+        $('.contactUs').removeClass('active');
+        
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
@@ -124,6 +140,11 @@ $('#incomingBtn').on('click', function(event){
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
         $('.homepage').removeClass('active');
+        $('.about').removeClass('active');
+        $('.mission').removeClass('active');
+        $('.vision').removeClass('active');
+        $('.contactUs').removeClass('active');
+        
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
@@ -145,6 +166,11 @@ $('#outgoingBtn').on('click', function(event){
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
         $('.homepage').removeClass('active');
+        $('.about').removeClass('active');
+        $('.mission').removeClass('active');
+        $('.vision').removeClass('active');
+        $('.contactUs').removeClass('active');
+        
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
@@ -168,6 +194,11 @@ $('#recycleBinBtn').on('click', function(event){
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
         $('.homepage').removeClass('active');
+        $('.about').removeClass('active');
+        $('.mission').removeClass('active');
+        $('.vision').removeClass('active');
+        $('.contactUs').removeClass('active');
+        
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
@@ -190,6 +221,11 @@ $('#archivedBtn').on('click', function(event){
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
         $('.homepage').removeClass('active');
+        $('.about').removeClass('active');
+        $('.mission').removeClass('active');
+        $('.vision').removeClass('active');
+        $('.contactUs').removeClass('active');
+        
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
@@ -211,6 +247,11 @@ $('#reportsBtn').on('click', function(event){
 
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
+        $('.about').removeClass('active');
+        $('.mission').removeClass('active');
+        $('.vision').removeClass('active');
+        $('.contactUs').removeClass('active');
+        
         $('.homepage').removeClass('active');
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
@@ -233,6 +274,11 @@ $('#logBtn').on('click', function(event){
     if (!$('.dashboard-table').hasClass('active')){
         $('.dashboard-table').addClass('active');
         $('.homepage').removeClass('active');
+        $('.about').removeClass('active');
+        $('.mission').removeClass('active');
+        $('.vision').removeClass('active');
+        $('.contactUs').removeClass('active');
+        
         $('.profile-settings').removeClass('active');
         $('.account-settings').removeClass('active');
         $('.document-settings').removeClass('active');
@@ -265,6 +311,11 @@ $('#profileSettingsBtn').on('click', function (event) {
 
     if (!$('.profile-settings').hasClass('active')){
         $('.system-settings').addClass('active');
+        $('.about').removeClass('active');
+        $('.mission').removeClass('active');
+        $('.vision').removeClass('active');
+        $('.contactUs').removeClass('active');
+        
         $('.homepage').removeClass('active');
         $('.profile-settings').addClass('active');
         $('.account-settings').removeClass('active');
@@ -283,6 +334,11 @@ $('#accountSettingsBtn').on('click', function (event) {
 
     if (!$('.account-settings').hasClass('active')){
         $('.system-settings').addClass('active');
+        $('.about').removeClass('active');
+        $('.mission').removeClass('active');
+        $('.vision').removeClass('active');
+        $('.contactUs').removeClass('active');
+        
         $('.homepage').removeClass('active');
         $('.profile-settings').removeClass('active');
         $('.account-settings').addClass('active');
@@ -301,6 +357,11 @@ $('#documentSettingsBtn').on('click', function (event) {
 
     if (!$('.document-settings').hasClass('active')){
         $('.system-settings').addClass('active');
+        $('.about').removeClass('active');
+        $('.mission').removeClass('active');
+        $('.vision').removeClass('active');
+        $('.contactUs').removeClass('active');
+        
         $('.homepage').removeClass('active');
         $('.profile-settings').removeClass('active');
         $('.document-settings').addClass('active'); 
@@ -319,6 +380,11 @@ $('#attachmentUploadBtn').on('click', function (event) {
 
     if (!$('.attachmentUpload-settings').hasClass('active')){
         $('.system-settings').addClass('active');
+        $('.about').removeClass('active');
+        $('.mission').removeClass('active');
+        $('.vision').removeClass('active');
+        $('.contactUs').removeClass('active');
+        
         $('.homepage').removeClass('active');
         $('.profile-settings').removeClass('active');
         $('.document-settings').removeClass('active'); 
@@ -337,6 +403,11 @@ $('#sysInfoSettingsBtn').on('click', function (event) {
 
     if (!$('.sysInfo-settings').hasClass('active')){
         $('.system-settings').addClass('active');
+        $('.about').removeClass('active');
+        $('.mission').removeClass('active');
+        $('.vision').removeClass('active');
+        $('.contactUs').removeClass('active');
+        
         $('.homepage').removeClass('active');
         $('.profile-settings').removeClass('active');
         $('.document-settings').removeClass('active'); 
