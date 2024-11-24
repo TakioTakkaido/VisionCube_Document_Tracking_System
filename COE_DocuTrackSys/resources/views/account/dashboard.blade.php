@@ -103,7 +103,7 @@ Sanchez, Shane David U.
         'resources/js/dashboard/systemSettings/sysInfo/name.js',
         'resources/js/dashboard/systemSettings/sysInfo/about.js',
         'resources/js/dashboard/systemSettings/sysInfo/logo.js',
-        'resources/js/dashboard/systemSettings/sysInfo/icon.js',
+        'resources/js/dashboard/systemSettings/sysInfo/favicon.js',
         'resources/js/dashboard/systemSettings/sysInfo/mission.js',
         'resources/js/dashboard/systemSettings/sysInfo/vision.js',
 

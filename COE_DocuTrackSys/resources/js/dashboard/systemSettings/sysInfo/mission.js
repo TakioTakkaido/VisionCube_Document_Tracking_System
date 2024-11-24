@@ -9,8 +9,8 @@ $('.systemMissionBtn').on('click', '#editSysInfoMissionBtn', function(event){
     $('#systemMission').prop('disabled', false);
 
     $('.systemMissionBtn').html(`
-        <button class="btn btn-warning editSysInfo" id="resetSysInfoMissionBtn" data-value="${profileSysInfoName}">Reset WMSU Mission Page</button>
-        <button type="button" class="btn btn-primary disabled editSysInfo" id="saveSysInfoMissionBtn">Change WMSU Mission Page</button>
+        <button class="btn btn-warning editSysInfo mb-2" id="resetSysInfoMissionBtn" data-value="${profileSysInfoName}">Reset WMSU<br>Mission Page</button>
+        <button type="button" class="btn btn-primary disabled editSysInfo" id="saveSysInfoMissionBtn">Change WMSU<br>Mission Page</button>
     `);
 });
 
@@ -24,8 +24,8 @@ $('.systemMissionBtn').on('click', '#resetSysInfoMissionBtn', function(event){
     $('#systemMission').val(profileSysInfoName);
 
     $('.systemMissionBtn').html(`
-        <button type="button" class="btn btn-primary editSysInfo" id="editSysInfoMissionBtn" data-value="${profileSysInfoName}">Edit WMSU Mission Page</button>
-        <button type="button" class="btn btn-primary disabled editSysInfo" id="saveSysInfoMissionBtn">Change WMSU Mission Page</button>
+        <button type="button" class="btn btn-primary editSysInfo mb-2" id="editSysInfoMissionBtn" data-value="${profileSysInfoName}">Edit WMSU<br>Mission Page</button>
+        <button type="button" class="btn btn-primary disabled editSysInfo" id="saveSysInfoMissionBtn">Change WMSU<br>Mission Page</button>
     `);
 
     $('#saveSysInfoMissionBtn').addClass('disabled');
@@ -39,29 +39,38 @@ $('#systemMission').on('input', function(event){
 // Update Profile SysInfoName
 $('.systemMissionBtn').on('click', '#saveSysInfoMissionBtn', function(event){
     event.preventDefault();
-    var formData = new FormData();
-    formData = {
-        '_token' : $('meta[name="csrf-token"]').attr('content'),
-        'mission' : $('#systemMission').val()
-    }
-
-    $.ajax({
-        type: "POST",
-        url: window.routes.updateSysInfo,
-        data: formData,
-        success: function (response) {
-            showNotification('WMSU Mission updated successfully!');
-            // Update the mission
-            $('#topPanelSystemMission').html($('#systemMission').val());
-
-            // Update the form
-            $('#resetSysInfoMissionBtn').data('value', $('#systemMission').val());
-
-            // Close the form
-            $('#resetSysInfoMissionBtn').trigger('click');
-        },
-        error: function(response) {
-            showNotification('Error updating WMSU Mission.');
+    if (!$(this).hasClass('disabled')){
+        var formData = new FormData();
+        formData = {
+            '_token' : $('meta[name="csrf-token"]').attr('content'),
+            'mission' : $('#systemMission').val()
         }
-    });
+
+        $.ajax({
+            type: "POST",
+            url: window.routes.updateSysInfo,
+            data: formData,
+            success: function (response) {
+                showNotification('WMSU Mission updated successfully!');
+                // Update the mission
+                $('#topPanelSystemMission').html($('#systemMission').val());
+
+                // Update the form
+                $('#resetSysInfoMissionBtn').data('value', $('#systemMission').val());
+
+                // Close the form
+                $('#resetSysInfoMissionBtn').trigger('click');
+            },
+            error: function(response) {
+                showNotification('Error updating WMSU Mission.');
+            },
+            beforeSend: function(){
+                showNotification('Editing WMSU Mission...');
+                $('.loading').show();
+            },
+            complete: function(){
+                $('.loading').hide();
+            }
+        });
+    }
 });
