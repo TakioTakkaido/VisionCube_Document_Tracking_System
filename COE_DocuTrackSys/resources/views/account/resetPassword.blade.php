@@ -42,7 +42,8 @@
 </body>
 <script>
     window.routes = {
-        resetPassword : "{{route('account.resetPassword')}}"
+        resetPassword : "{{route('account.resetPassword')}}",
+        confirm: "{{route('confirmPassword')}}"
     }
 </script>
 

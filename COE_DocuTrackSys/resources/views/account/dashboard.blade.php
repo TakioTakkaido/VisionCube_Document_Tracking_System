@@ -58,6 +58,9 @@ Sanchez, Shane David U.
     <link rel="stylesheet" href="https://cdn.datatables.net/select/2.1.0/css/select.dataTables.min.css">
     <script src="https://cdn.datatables.net/select/2.1.0/js/dataTables.select.min.js"></script>
 
+    {{-- JS PDF --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+
     {{-- Assets --}}
     <link rel="icon" href="{{Vite::asset('resources/img/COE.png')}}" type="image/x-icon">
     @vite([
@@ -144,6 +147,9 @@ Sanchez, Shane David U.
 {{-- Routes retrieving document, since AJAX cannot get this as a link, when inserted directly --}}
 <script>
     window.routes = {
+        // Image Routes
+        logo: "{{Vite::asset('resources/img/COE.png')}}",
+        
         // Homepage Routes
         getDocumentStatistics: "{{route('document.getStatisticsCurrent')}}",
         getSpecificDocumentStatistics: "{{route('document.getStatistics', [':date', ':type'])}}",
@@ -232,6 +238,8 @@ Sanchez, Shane David U.
         // Report
         generateReport: "{{route('report.generate')}}",
         showReports: "{{route('report.showAll')}}",
+        seenReport: "{{route('report.seen')}}",
+        getNewReports: "{{route('report.getNewReports')}}"
     };
 </script>
 

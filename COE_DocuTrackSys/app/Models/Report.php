@@ -13,4 +13,12 @@ class Report extends Model
         'name',
         'file'
     ];
+
+    public function seenUploadedAccounts(){
+        return $this->belongsToMany(Account::class, 
+            'new_upload_reports', 
+            'new_upload_report_id',
+            'account_id',
+        );
+    }
 }

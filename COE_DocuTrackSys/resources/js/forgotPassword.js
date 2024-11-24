@@ -71,6 +71,7 @@ $('#resetPasswordBtn').on('click', function(event){
         data: formData,
         success: function (data){
             showNotification('Password successfully resetted!');
+            window.location.href = window.routes.confirm;
         },
         error: function (data) {
             // Get errors

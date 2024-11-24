@@ -173,8 +173,6 @@ class AccountController extends Controller {
             'type' => 'Account',
             'detail' => $account->toJson()
         ]);
-
-        return response('Password successfully resetted!');
     }
 
     // Logout
@@ -484,7 +482,7 @@ class AccountController extends Controller {
             $token->used = true;
             $account->save();
     
-            return redirect()->route('show.login');
+            return view('confirm.email');
         } else {
             return redirect()->route('show.cantVerifyEmail');
         }

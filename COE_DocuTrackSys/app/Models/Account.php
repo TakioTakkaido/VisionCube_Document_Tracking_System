@@ -134,5 +134,13 @@ class Account extends Authenticatable implements MustVerifyEmail {
             'new_upload_document_id'
         );
     }
+
+    public function newlyUploadedReports(){
+        return $this->belongsToMany(Report::class, 
+            'new_upload_reports', 
+            'account_id',
+            'new_upload_report_id'
+        );
+    }
 }
 
