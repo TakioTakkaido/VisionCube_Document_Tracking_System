@@ -205,6 +205,10 @@ table.dataTable.hover>tbody>tr:hover>*{
     margin-left: 0px;
     font-size: 25px; 
     font-family: "Poppins", sans-serif; 
+    text-overflow: ellipsis;
+    max-width: 370px;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .profile {
@@ -962,7 +966,8 @@ button:focus {
 .editTypeBtn.disabled:hover,
 .addSettings.disabled:hover,
 .deleteTypeBtn.disabled:hover,
-.attachmentUploadBtn.disabled:hover {
+.attachmentUploadBtn.disabled:hover,
+.sysInfoPicBtn.disabled:hover {
     /* color:#a50b0b !important; */
     cursor: not-allowed !important;
     color: unset;
@@ -1044,7 +1049,8 @@ button:focus {
 .driveSettings.btn-primary.disabled,
 .editSysInfo.btn-primary.disabled,
 .editProfile.btn-primary.disabled,
-.attachmentUploadBtn.btn-primary.disabled {
+.attachmentUploadBtn.btn-primary.disabled,
+.sysInfoPicBtn.btn-primary.disabled {
     background-color: #a50b0b !important;
     border: transparent;
     cursor: not-allowed !important;
@@ -1133,4 +1139,8 @@ textarea {
 
 .form-control:focus {
     border-color: #33333340;
+}
+
+.editSysInfo {
+    width: 60%;
 }

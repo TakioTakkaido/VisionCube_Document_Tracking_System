@@ -14,6 +14,34 @@ class SysInfoController extends Controller {
             $info->name = $request->input('name');
         }
         
+        if ($request->hasFile('logo')) {
+            $logo = $request->file('logo');
+    
+            // Validate image resolution
+            list($width, $height) = getimagesize($logo);
+            if ($width < 200 || $height < 50) {
+                return response()->json(['error' => 'The system icon must have at least 200x50 resolution.'], 400);
+            }
+    
+            // Store the file
+            $logoPath = $logo->store('public/icons');
+            $info->logo = $logoPath;  // Store the path to the icon in the database
+        }
+
+        if ($request->hasFile('favicon')) {
+            $favicon = $request->file('favicon');
+    
+            // Validate image resolution
+            list($width, $height) = getimagesize($favicon);
+            if ($width < 32 || $height < 32) {
+                return response()->json(['error' => 'The system icon must have at least 200x50 resolution.'], 400);
+            }
+    
+            // Store the file
+            $faviconPath = $favicon->store('public/icons');
+            $info->favicon = $faviconPath;  // Store the path to the icon in the database
+        }
+
         if ($request->filled('about')) {
             $info->about = $request->input('about');
         }

@@ -9,7 +9,7 @@ $('.systemNameBtn').on('click', '#editSysInfoNameBtn', function(event){
     $('#systemName').prop('disabled', false);
 
     $('.systemNameBtn').html(`
-        <button class="btn btn-primary editSysInfo" id="resetSysInfoNameBtn" data-value="${profileSysInfoName}"><i class='bx bx-x' style="font-size: 20px;"></i></button>
+        <button class="btn btn-primary editSysInfo" id="resetSysInfoNameBtn" data-value="${profileSysInfoName}" style="width: 100%; !important"><i class='bx bx-x' style="font-size: 20px;"></i></button>
     `);
 });
 
@@ -23,7 +23,7 @@ $('.systemNameBtn').on('click', '#resetSysInfoNameBtn', function(event){
     $('#systemName').val(profileSysInfoName);
 
     $('.systemNameBtn').html(`
-        <button class="btn btn-primary editSysInfo" id="editSysInfoNameBtn" data-value="${profileSysInfoName}"><i class='bx bx-edit-alt' style="font-size: 20px;"></i></button>
+        <button class="btn btn-primary editSysInfo" id="editSysInfoNameBtn" data-value="${profileSysInfoName}" style="width: 100%; !important"><i class='bx bx-edit-alt' style="font-size: 20px;"></i></button>
     `);
 
     $('#saveSysInfoNameBtn').addClass('disabled');
@@ -59,6 +59,13 @@ $('#saveSysInfoNameBtn').on('click', function(event){
         },
         error: function(response) {
             showNotification('Error updating name.');
+        },
+        beforeSend: function(){
+            $('.loading').show();
+            showNotification('Updating system name...');
+        },
+        complete: function(){
+            $('.loading').hide();
         }
     });
 });
