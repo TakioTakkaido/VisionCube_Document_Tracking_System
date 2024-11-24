@@ -10,7 +10,25 @@
             </div>
         </div>
         
+        {{-- About Page --}}
+        <div class="about">
+            <x-dashboard.top-panel.about />
+        </div>
+
+        <div class="mission">
+            <x-dashboard.top-panel.mission />
+        </div>
+
+        <div class="vision">
+            <x-dashboard.top-panel.vision />
+        </div>
+
+        <div class="contactUs">
+            <x-dashboard.top-panel.contact-us />
+        </div>
+        
         {{-- Homepage --}}
+
         <div class="homepage">
             <x-dashboard.homepage />
         </div>
