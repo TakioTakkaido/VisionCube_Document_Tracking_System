@@ -404,7 +404,7 @@ class AccountController extends Controller {
 
         $name = $user->name;
         $user->name = $request->input('name');
-        
+        $user->lastChangedName = now();
         $user->save();
 
         ModelsLog::create([

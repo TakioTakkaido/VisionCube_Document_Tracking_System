@@ -42,6 +42,7 @@ class Account extends Authenticatable implements MustVerifyEmail {
         'password',
         'role',
         'deactivated',
+        
 
         
 
@@ -51,7 +52,9 @@ class Account extends Authenticatable implements MustVerifyEmail {
         'canMove',
         'canArchive',
         'canDownload',
-        'canPrint'
+        'canPrint',
+
+        'lastChangedName'
     ];
 
     /**

@@ -28,18 +28,30 @@
             <div class="col">
                 <h6 class="p-0 font-weight-bold mb-0">Username</h6>
                 <p>Username can only be changed once every 60 days.</p>
-                <div class="row align-items-center">
+                <div class="row align-items-center justify-content-between">
                     <div class="col-6 text-left">
                         <div class="input-group">
                             <input type="text" class="form-control" id="editProfileName" value="{{ Auth::user()->name }}" disabled/>
                             <div class="input-group-append profileNameBtn">
-                                <button class="btn btn-primary editProfile {{!$isVerified ? 'disabled' : ''}}" id="editNameBtn" data-value="{{ Auth::user()->name }}"><i class='bx bx-edit-alt' style="font-size: 20px;"></i></button>
+                                <button 
+                                    class="btn btn-primary editProfile {{ (!$isVerified || now() < \Carbon\Carbon::parse(Auth::user()->lastChangedName)->addDays(60)) ? 'disabled' : '' }}" 
+                                    id="editNameBtn" 
+                                    data-value="{{ Auth::user()->name }}" 
+                                    {{ (!$isVerified && (now() < \Carbon\Carbon::parse(Auth::user()->lastChangedName)->addDays(60))) ? 'disabled' : '' }}>
+                                    <i class='bx bx-edit-alt' style="font-size: 20px;"></i>
+                                </button>
                             </div>                            
                         </div>
                         <span class="error" id="profileNameError" style="display:none;"></span>
-                    </div>
+                    </div>  
                     
-                    <div class="col-6 d-flex justify-content-end">
+                    @if (Auth::user()->lastChangedName && now() < \Carbon\Carbon::parse(Auth::user()->lastChangedName)->addDays(60))
+                        <span class="badge badge-warning text-wrap mr-2 text-justify" style="background-color: transparent; color: black;">
+                            Profile name can only be changed after {{ round(now()->diffInDays(\Carbon\Carbon::parse(Auth::user()->lastChangedName)->addDays(60))) }} days.
+                        </span>
+                    @endif
+
+                    <div class="col-auto text-right d-flex justify-content-end">
                         <!-- Save Button -->
                         <button type="button" class="btn btn-primary disabled editProfile" id="saveNameBtn">Change Username</button>
                     </div>

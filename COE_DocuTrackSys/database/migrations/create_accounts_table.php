@@ -39,6 +39,8 @@ return new class extends Migration
             $table->boolean('canArchive')->default(false);
             $table->boolean('canDownload')->default(false);
             $table->boolean('canPrint')->default(false);
+
+            $table->timestamp('lastChangedName')->nullable();
         });
     }
 
