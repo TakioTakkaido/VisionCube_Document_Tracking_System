@@ -143,7 +143,7 @@
         </div>
     </div>
 
-    <!-- Generate Report Day -->
+    <!-- Generate Report -->
     <div class="modal fade" id="generateReport" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -153,6 +153,7 @@
                 <div class="modal-body">
                     <div class="container">
                         <form>
+                            <input type="text" class="d-none" id="reportDate">
                             <div class="form-group row">
                                 <label for="inputName" class="col-form-label">Report File Name:</label>
                                 <div class="col">
@@ -164,7 +165,7 @@
                                     <select id="reportFolder" name="category">
                                         <option value="" disabled selected>Select Account to Store the Report</option>
                                         @foreach ($drives as $drive)
-                                            <option value="${{$drive->id}}">{{$drive->email}}</option>
+                                            <option value="{{$drive->id}}">{{$drive->email}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -173,10 +174,58 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Generate Report</button>
+                    <button type="button" class="btn btn-primary" id="generateReportBtn">Generate Report</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
+
+    {{-- Report Table, stay hidden --}}
+    <div class="hidden-content d-none">
+        <!-- OUTGOING TABLE // incorporate mo nalang josh yung mga valuessss thnxxx  -->
+        <h2>Outgoing</h2>
+        <table id="outgoing-table">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Letter</th>
+              <th>Requests</th>
+              <th>Memoranda</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Status 1</td><td>5</td><td>4</td><td>6</td><td>15</td></tr>
+            <tr><td>Status 2</td><td>10</td><td>8</td><td>9</td><td>27</td></tr>
+            <tr><td>Status 2</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
+            <tr><td>Status 3</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
+            <tr><td>Status 4</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
+            <tr><td>Status 5</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
+            <tr><td><strong>Overall Total</strong></td><td>15</td><td>12</td><td>15</td><td>42</td></tr>
+          </tbody>
+        </table>
+    
+        <!-- INCOMING TABLE // incorporate mo nalang josh yung mga valuessss thnxxx -->
+        <h2>Incoming</h2>
+        <table id="incoming-table">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Letter</th>
+              <th>Requests</th>
+              <th>Memoranda</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Status 1</td><td>6</td><td>5</td><td>8</td><td>19</td></tr>
+            <tr><td>Status 2</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
+            <tr><td>Status 3</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
+            <tr><td>Status 4</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
+            <tr><td>Status 5</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
+            <tr><td><strong>Overall Total</strong></td><td>15</td><td>12</td><td>19</td><td>46</td></tr>
+          </tbody>
+        </table>
+      </div>
 </div>

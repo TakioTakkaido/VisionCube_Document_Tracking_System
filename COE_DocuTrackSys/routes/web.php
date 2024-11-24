@@ -57,7 +57,7 @@ Route::middleware([NoCache::class, VerifyAccount::class])->group(function(){
 
 // Display: Reset Password
 Route::get('/password/reset/{token}', function($token) {
-    if($token->used !== true){
+    // if($token->used !== true){
         if (Auth::check()) {
             Auth::logout();
         }
@@ -66,10 +66,14 @@ Route::get('/password/reset/{token}', function($token) {
         return view('account.resetPassword', [
             'token' => $token
         ]);
-    } else {
-        return view('account.cantResetPassword');
-    }
+    // } else {
+    //     return view('account.cantResetPassword');
+    // }
 })->name('resetPassword');
+
+Route::get('/confirmResetPassword', function(){
+    return view('confirm.password');
+})->name('confirmPassword');
 
 Route::middleware([NoCache::class, NoDirectAccess::class])->group(function() {
     // Display Routes
@@ -452,6 +456,14 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 // Show All Reports
                 Route::get('showAll', 'showAll')
                 ->name('showAll');
+
+                // Seen Report
+                Route::post('seen', 'seen')
+                ->name('seen');
+
+                // Get the nuber of all New Reports
+                Route::get('/getNewReports', 'getNewReports')
+                ->name('getNewReports');
             });
         });
     });

@@ -179,7 +179,7 @@ class Drive extends Model {
 
     }
 
-    public function createReportFolder($year, $month){
+    public function getReportFolder($year, $month){
         // Create Root Folder if it doesn't exist
         if ($this->rootFolder()->first() == null) {
             $this->createRootFolder();
@@ -251,11 +251,11 @@ class Drive extends Model {
         }
 
         // Create Document Folder
-        $documentFolder = $monthFolder->subFolders->first(function ($subFolder) {
+        $reportFolder = $monthFolder->subFolders->first(function ($subFolder) {
             return $subFolder->type === 'Reports';
         });
 
-        if (!$documentFolder) {
+        if (!$reportFolder) {
             // Upload new folder
             $metadata = [
                 'name' => "Reports",
@@ -277,7 +277,7 @@ class Drive extends Model {
                     'parent_id' => $monthFolder->id
                 ]);
 
-                $monthFolder->subFolders()->save($documentFolder);
+                $monthFolder->subFolders()->save($reportFolder);
                 
             }
         }

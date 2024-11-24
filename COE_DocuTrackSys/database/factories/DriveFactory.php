@@ -18,7 +18,10 @@ class DriveFactory extends Factory
         return [
             'email' => 'coedocutracksys@gmail.com',
             'verified_at' => now(),
-            'disabled' => false
+            'disabled' => false,
+            'canDocument' => true,
+            'canReport' => true,
+            'refresh_token' => \config('services.google.refresh_token')
         ];
     }
 }

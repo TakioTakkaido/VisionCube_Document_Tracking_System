@@ -112,7 +112,7 @@
 <body>
     <div id="box1">  
         <div id="click">      
-            <img id="englogo" src={{ $message->embed(Vite::asset('resources/img/COE.png')) }}" alt="COE Logo">
+            <img id="englogo" src="{{ $message->embed(Vite::asset('resources/img/COE.png')) }}" alt="COE Logo">
             <h1 id="verify">Reset Password</h1>
             <h5 id="descr">Please click the button below to proceed in resetting your password.</h5>
             <!-- Updated Button -->

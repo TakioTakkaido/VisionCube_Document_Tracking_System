@@ -3,6 +3,7 @@ import { getDocumentStatistics } from "./homepage/documentStatistics";
 import { showActive, showDeactivated } from "./tables/account";
 import { showDocument } from "./tables/document/show";
 import { showLogs } from "./tables/log";
+import { showAllReports } from "./tables/report";
 
 // Event listener for the side panel buttons
 // Upload button for uploading documents
@@ -199,6 +200,27 @@ $('#archivedBtn').on('click', function(event){
 
     // Show the dropdown
     showDocument("Archived");
+});
+
+// Report Button
+$('#reportsBtn').on('click', function(event){
+    event.preventDefault();
+    $('.home-btn').removeClass('active');
+    $('.side-panel-section a').removeClass('active');
+    $(this).addClass('active');
+
+    if (!$('.dashboard-table').hasClass('active')){
+        $('.dashboard-table').addClass('active');
+        $('.homepage').removeClass('active');
+        $('.profile-settings').removeClass('active');
+        $('.account-settings').removeClass('active');
+        $('.document-settings').removeClass('active');
+        $('.attachmentUpload-settings').removeClass('active');
+        $('.sysInfo-settings').removeClass('active');
+        $('.system-settings').removeClass('active'); 
+    }
+    
+    showAllReports();
 });
 
 // Log Button

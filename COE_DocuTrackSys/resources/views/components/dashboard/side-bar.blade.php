@@ -10,7 +10,6 @@
     </div>
 
     <div class="row list-group-flush side-panel-section">
-
             {{-- Accounts Section (Visible to Admins Only) --}}
             @if($isAdmin)
                 <a class="list-group-item sidepanel-btn {{!$isVerified ? 'disabled' : ''}}" id="accountBtn">
@@ -67,7 +66,8 @@
                 {{-- Reports --}}
                 <a class="list-group-item sidepanel-btn {{ ($maintenance || !$isVerified) ? 'disabled' : '' }}" id="reportsBtn">
                     <i class='bx bxs-report'></i>
-                    <span>Reports</span>
+                    <span style="margin-right: 38px;">Reports</span>
+                    <span class="badge badge-primary newDocuments hide ml-3" id="totalNewUploadedReport"></span>
                 </a>
 
                 {{-- Logs --}}

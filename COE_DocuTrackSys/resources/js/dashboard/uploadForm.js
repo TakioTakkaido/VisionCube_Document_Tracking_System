@@ -413,9 +413,6 @@ $('#clearUploadBtn').on('click', function (event){
     $('.deleteUploadFileBtn').trigger('click');
 });
 
-
-
-
 var pos;
 // Event to trigger after clicking the options in the select
 $('#uploadFrom').selectpicker().on('changed.bs.select', function(event, clickedIndex, isSelected, previousValue){

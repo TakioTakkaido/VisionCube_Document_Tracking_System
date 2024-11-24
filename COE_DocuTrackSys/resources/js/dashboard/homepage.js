@@ -1,7 +1,7 @@
 import { showNotification } from "../notification";
 
 $(document).ready(function(){
-    $.when(getNewDocuments(), getMaintenanceStatus()).then(function() {
+    $.when(getNewDocuments(), getNewReports(), getMaintenanceStatus()).then(function() {
         // Initialize the DataTable after AJAX completes
         $('#accountAccessTable').DataTable();
         $('#analyticsDay').datepicker({
@@ -648,6 +648,21 @@ export function getNewDocuments(){
             
             // if(!response.totalNewUpdated){}
             // if(!response.totalNewUpdated){}
+        }
+    });
+}
+
+export function getNewReports(){
+    $.ajax({
+        method: "GET",
+        url: window.routes.getNewReports,
+        success: function (response) {
+            if(response.totalNewUploaded){
+                $('#totalNewUploadedReport').removeClass('hide'); 
+            } else {
+                $('#totalNewUploadedReport').addClass('hide'); 
+            }
+            $('#totalNewUploadedReport').html(response.totalNewUploaded);
         }
     });
 }

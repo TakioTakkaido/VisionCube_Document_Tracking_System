@@ -18,7 +18,7 @@ class GeneratedReport
     /**
      * Create a new event instance.
      */
-    public function __construct(Account $account) {
+    public function __construct() {
         //
     }
 

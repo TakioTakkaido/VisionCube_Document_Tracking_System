@@ -88,10 +88,7 @@ class DriveController extends Controller {
 
                 // Return the drive and token info in response
                 // Response make sreut to show the webage
-                return response()->json([
-                    'drive' => $drive,
-                    'refresh_token' => $refreshToken  // Optionally return the token to verify it's correct
-                ]);
+                return view('confirm.link');
             } else {
                 // Log the error if no refresh token is found
                 Log::error('No refresh token received from Google API', ['response' => $tokens]);
