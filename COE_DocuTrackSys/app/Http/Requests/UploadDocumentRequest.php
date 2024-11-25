@@ -23,7 +23,7 @@ class UploadDocumentRequest extends FormRequest {
             'recipient' => 'required|string|max:255',
             'subject' => 'required|string',
             'files.*' => 'mimes:'.FileExtension::getFileExtensions(),
-            'files' => 'required|array',
+            'files' => 'required|array|max:5',
             'category' => 'required|string',
             'status' => 'required|string',
             'assignee' => 'required|string',
@@ -66,7 +66,7 @@ class UploadDocumentRequest extends FormRequest {
 
             'assignee.required' => 'Assignee is required!',
 
-            'document_date.required' => 'Date is required!'
+            'document_date.required' => 'Date is required!',
         ];
     }
 }

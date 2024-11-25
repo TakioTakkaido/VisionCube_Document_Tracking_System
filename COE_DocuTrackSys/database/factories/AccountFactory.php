@@ -33,7 +33,7 @@ class AccountFactory extends Factory {
                 'canMove' => true,
                 'canArchive' => true,
                 'canDownload' => true,
-                'canPrint' => true,
+                'canReport' => true,
                 'email_verified_at' => now()
             ];
         });
@@ -50,7 +50,7 @@ class AccountFactory extends Factory {
                 'canMove' => true,
                 'canArchive' => true,
                 'canDownload' => true,
-                'canPrint' => true,
+                'canReport' => true,
             ];
         });
     }
@@ -66,7 +66,7 @@ class AccountFactory extends Factory {
                 'canMove' => true,
                 'canArchive' => true,
                 'canDownload' => true,
-                'canPrint' => true,
+                'canReport' => true,
             ];
         });
     }
@@ -82,7 +82,7 @@ class AccountFactory extends Factory {
                 'canMove' => true,
                 'canArchive' => true,
                 'canDownload' => true,
-                'canPrint' => true,
+                'canReport' => true,
             ];
         });
     }

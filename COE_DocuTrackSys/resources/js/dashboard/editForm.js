@@ -337,6 +337,7 @@ $('#submitEditDocumentBtn').off('click').on('click', function(event) {
         formData.append('files[]', fileInput.files[i]);  // Correct file append
     }
 
+    formData.append('drive_id', $('#editDocumentFolder').val());
 
     formData.append('description', $('#editDescription').val());
 
@@ -481,6 +482,10 @@ $('#clearEditBtn').on('click', function (event){
     $.each($('.error'), function () { 
         $(this).css('display', 'none');
     });
+
+    while (dt.items.length > 0) {
+        dt.items.remove(globalDataTransfer); // Remove the first item repeatedly until all are removed
+    }
 
     $('.deleteEditUploadFileBtn').trigger('click');
 });
@@ -643,19 +648,30 @@ $('#editUploadDate').on('input', function(event){
     $('#editDateError').css('display', 'none');
 })
 
+var globalDataTransfer = new DataTransfer();
+
 $('#editSoftcopy').off('input').on('input', function(event){
     event.preventDefault();
     event.stopPropagation();
-    var files = this.files;
+
+    var oldFiles = $('#editSoftcopy')[0].files;
+    Array.from(oldFiles).forEach(function(file) {
+        globalDataTransfer.items.add(file); // Add file to the DataTransfer object if it's not the deleted file
+    });
+
+    $('#editSoftcopy')[0].files = globalDataTransfer.files;
+
+    $('.editUploadFilesList').html('')
 
     var editUploadFilesList = `<ul class="list-group editUploadFilesList" style="width:100%;">
                             </ul>`
+
     if($('.editUploadFiles').data('value') == 'none'){
         $('.editUploadFiles').html('');
         $('.editUploadFiles').append(editUploadFilesList);
     };
 
-    Array.from(files).forEach((file, index) => {
+    Array.from($('#editSoftcopy')[0].files).forEach((file, index) => {
         $('.editUploadFilesList').append(`<li class="list-group-item d-flex justify-content-between align-items-center" data-id=${index}>
             <span class="text-left mr-auto">${file.name}</span >
             <button class="btn btn-primary deleteEditUploadFileBtn" data-id=${index} data-name=${file.name}>

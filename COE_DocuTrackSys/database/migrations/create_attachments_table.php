@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->unsignedBigInteger('document_version_id');
+            $table->string('drive_folder');
             $table->string('name');
             $table->string('file');
 

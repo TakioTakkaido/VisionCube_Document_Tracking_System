@@ -7,15 +7,23 @@
                 <small class="text-muted" id="dateDay"><i>Day: {{ date('M. j, Y') }}</i></small>
             </div>
 
+
             <div class="col">
-                <input type="text" class="form-control w-15" id="analyticsDay" placeholder="Select Day" autocomplete="off" data-value="{{ date('M. j, Y') }}">
+                <div class="row">
+                    <div class="col">
+                        <input type="text" class="form-control mr-2" id="analyticsDay" placeholder="Select Day" autocomplete="off" data-value="{{ date('M. j, Y') }}">
+                    </div>
+
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-primary font-weight-bold text-right reportBtn {{Auth::user()->canReport == false ? 'disabled' : ''}}" id="generateReportDayBtn">
+                            Generate Report
+                        </button>
+                    </div>
+                </div>
+                
             </div>
 
-            <div class="col-auto">
-                <button type="button" class="btn btn-primary font-weight-bold text-right" id="generateReportDayBtn">
-                    Generate Report
-                </button>
-            </div>
+            
         </div>
 
         {{-- Breakdown Daily --}}
@@ -44,12 +52,17 @@
                 <small class="text-muted" id="dateWeek"><i>Week: {{date('M. j, Y', strtotime('last Sunday'))}} -  {{date('M. j, Y', strtotime('next Saturday')) }}</i></small>
             </div>
             <div class="col">
-                <input type="text" class="form-control w-15" id="analyticsWeek" placeholder="Select Week" autocomplete="off" data-value="{{ date('M. j, Y') }}">
-            </div>
-            <div class="col-auto">
-                <button type="button" class="btn btn-primary font-weight-bold text-right" id="generateReportWeekBtn">
-                    Generate Report
-                </button>
+                <div class="row">
+                    <div class="col">
+                        <input type="text" class="form-control w-15" id="analyticsWeek" placeholder="Select Week" autocomplete="off" data-value="{{ date('M. j, Y') }}">
+                    </div>
+                    
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-primary font-weight-bold text-right reportBtn {{Auth::user()->canReport == false ? 'disabled' : ''}}" id="generateReportWeekBtn">
+                            Generate Report
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -80,13 +93,16 @@
             </div>
             
             <div class="col">
-                <input type="text" class="form-control w-15" id="analyticsMonth" placeholder="Select Month" autocomplete="off" data-value="{{ date('M. Y') }}">
-            </div>
-
-            <div class="col-auto">
-                <button type="button" class="btn btn-primary font-weight-bold text-right" id="generateReportMonthBtn">
-                    Generate Report
-                </button>
+                <div class="row">
+                    <div class="col">
+                        <input type="text" class="form-control w-15" id="analyticsMonth" placeholder="Select Month" autocomplete="off" data-value="{{ date('M. Y') }}">
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-primary font-weight-bold text-right reportBtn {{Auth::user()->canReport == false ? 'disabled' : ''}}" id="generateReportMonthBtn">
+                            Generate Report
+                        </button>
+                    </div>
+                </div>
             </div>
         </div> 
         
@@ -116,13 +132,18 @@
                 <small class="text-muted" id="dateYear"><i>Year: {{ date('Y') }}</i></small>
             </div>
             <div class="col">
-                <input type="text" class="form-control w-15" id="analyticsYear" placeholder="Select Year" autocomplete="off" data-value="{{ date('Y') }}">
+                <div class="row">
+                    <div class="col">
+                        <input type="text" class="form-control w-15" id="analyticsYear" placeholder="Select Year" autocomplete="off" data-value="{{ date('Y') }}">
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-primary font-weight-bold text-right reportBtn {{Auth::user()->canReport == false ? 'disabled' : ''}}" id="generateReportYearBtn">
+                            Generate Report
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="col-auto">
-                <button type="button" class="btn btn-primary font-weight-bold text-right" id="generateReportYearBtn">
-                    Generate Report
-                </button>
-            </div>
+            
         </div>
 
         
@@ -154,27 +175,26 @@
                     <div class="container">
                         <form>
                             <input type="text" class="d-none" id="reportDate">
-                            <div class="form-group row">
-                                <label for="inputName" class="col-form-label">Report File Name:</label>
-                                <div class="col">
-                                    <input type="text" class="form-control" id="reportFile" placeholder="Report Name">
-                                </div>
+                            <input type="text" class="d-none" id="reportSystemName" value="{{$systemName." Report "}}">
+                    
+                            <div class="form-group mb-3">
+                                <label for="reportFile" class="form-label" style="font-size: 15px;">Report File Name:</label>
+                                <input type="text" class="form-control" id="reportFile" placeholder="Report Name" required>
                             </div>
-                            <div class="row mb-2">
-                                <div class="col">
-                                    <select id="reportFolder" name="category">
-                                        <option value="" disabled selected>Select Account to Store the Report</option>
-                                        @foreach ($drives as $drive)
-                                            <option value="{{$drive->id}}">{{$drive->email}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                    
+                            <div class="form-group mb-3">
+                                <label for="reportFolder" class="form-label" style="font-size: 15px;">Google Drive to Store Report:</label>
+                                <select id="reportFolder" class="form-control" style="font-size: 15px;">
+                                    @foreach ($drives as $drive)
+                                        <option value="{{$drive->id}}">{{$drive->email}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="generateReportBtn">Generate Report</button>
+                    <button type="submit" class="btn btn-primary reportBtn" id="generateReportBtn">Generate Report</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -183,49 +203,10 @@
 
     {{-- Report Table, stay hidden --}}
     <div class="hidden-content d-none">
-        <!-- OUTGOING TABLE // incorporate mo nalang josh yung mga valuessss thnxxx  -->
-        <h2>Outgoing</h2>
-        <table id="outgoing-table">
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Letter</th>
-              <th>Requests</th>
-              <th>Memoranda</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Status 1</td><td>5</td><td>4</td><td>6</td><td>15</td></tr>
-            <tr><td>Status 2</td><td>10</td><td>8</td><td>9</td><td>27</td></tr>
-            <tr><td>Status 2</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
-            <tr><td>Status 3</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
-            <tr><td>Status 4</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
-            <tr><td>Status 5</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
-            <tr><td><strong>Overall Total</strong></td><td>15</td><td>12</td><td>15</td><td>42</td></tr>
-          </tbody>
-        </table>
-    
-        <!-- INCOMING TABLE // incorporate mo nalang josh yung mga valuessss thnxxx -->
-        <h2>Incoming</h2>
-        <table id="incoming-table">
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Letter</th>
-              <th>Requests</th>
-              <th>Memoranda</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Status 1</td><td>6</td><td>5</td><td>8</td><td>19</td></tr>
-            <tr><td>Status 2</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
-            <tr><td>Status 3</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
-            <tr><td>Status 4</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
-            <tr><td>Status 5</td><td>9</td><td>7</td><td>11</td><td>27</td></tr>
-            <tr><td><strong>Overall Total</strong></td><td>15</td><td>12</td><td>19</td><td>46</td></tr>
-          </tbody>
-        </table>
+        <div id="outgoing-table">
+        </div>
+        
+        <div id="incoming-table">
+        </div>
       </div>
 </div>

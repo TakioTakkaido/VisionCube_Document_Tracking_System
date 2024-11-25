@@ -276,7 +276,7 @@ export function showDocument(category){
                         $('#downloadFileBtn' + data.document_id).prop('disabled', true);
                     }
     
-                    if (!data.canPrint){
+                    if (!data.canReport){
                         console.log('cannot print');
                         // $('#updateDocumentBtn' + data.document_id).css({
                         //     'cursor' : 'not-allowed'
@@ -554,7 +554,7 @@ export function showDocument(category){
                         $('#downloadFileBtn' + data.document_id).prop('disabled', true);
                     }
     
-                    if (!data.canPrint){
+                    if (!data.canReport){
                         console.log('cannot print');
                         // $('#updateDocumentBtn' + data.document_id).css({
                         //     'cursor' : 'not-allowed'
@@ -776,7 +776,7 @@ export function showDocument(category){
                         $('#downloadFileBtn' + data.document_id).prop('disabled', true);
                     }
     
-                    if (!data.canPrint){
+                    if (!data.canReport){
                         console.log('cannot print');
                         // $('#updateDocumentBtn' + data.document_id).css({
                         //     'cursor' : 'not-allowed'
@@ -1032,7 +1032,7 @@ export function showDocument(category){
                         $('#downloadFileBtn' + data.document_id).prop('disabled', true);
                     }
     
-                    if (!data.canPrint){
+                    if (!data.canReport){
                         console.log('cannot print');
                         // $('#updateDocumentBtn' + data.document_id).css({
                         //     'cursor' : 'not-allowed'
@@ -1402,6 +1402,11 @@ export function viewAttachments(id){
                         <div class="row">
                             <div class="col">
                                 <span class="text-left mr-auto"><strong>${attachment.name}</strong></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <span class="text-left mr-auto" style="overflow-x: hidden">${attachment.drive_folder}</span>
                             </div>
                         </div>
                         <div class="row">

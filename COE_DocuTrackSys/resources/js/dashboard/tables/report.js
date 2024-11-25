@@ -1,17 +1,24 @@
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { showNotification } from "../../notification";
-import { getNewReports } from "../homepage";
+import { getNewReports, getReportTable } from "../homepage";
 
 $('#generateReportDayBtn').on('click', function(event){
-    if ($('#analyticsDay').val().length !== 0){
-        $('#reportDate').val($('#analyticsDay').val());
-    } else {
-        $('#reportDate').val($('#analyticsDay').data('value'));
-    }
+    if(!$(this).hasClass('disabled')){
+        if ($('#analyticsDay').val().length !== 0){
+            $('#reportDate').val($('#analyticsDay').val());
+        } else {
+            $('#reportDate').val($('#analyticsDay').data('value'));
+            getReportTable(new Date($('#analyticsDay').data('value')), 'Day')
+        }
 
-    console.log($('#reportDate').val())
-    $('#generateReport').modal('show');
+        var reportDate = moment($('#reportDate').val()).format('MM_DD_YYYY');
+
+        var fileName = $('#reportSystemName').val() + " " + reportDate;
+        var snakeFileName = fileName.replace(/\s+/g, '_');
+        $('#reportFile').val(snakeFileName)
+        $('#generateReport').modal('show');
+    }
 });
 
 $('#generateReportWeekBtn').on('click', function(event){
@@ -19,8 +26,14 @@ $('#generateReportWeekBtn').on('click', function(event){
         $('#reportDate').val($('#analyticsWeek').val());
     } else {
         $('#reportDate').val($('#analyticsWeek').data('value'));
+        getReportTable(new Date($('#analyticsWeek').data('value')), 'Week')        
     }
 
+
+    var reportDate = moment($('#reportDate').val()).startOf('week').format('MM_DD_YYYY') + ' - ' + moment($('#reportDate').val()).endOf('week').format('MM_DD_YYYY')
+    var fileName = $('#reportSystemName').val() + " " + reportDate;
+    var snakeFileName = fileName.replace(/\s+/g, '_');
+    $('#reportFile').val(snakeFileName)
     $('#generateReport').modal('show');
 });
 
@@ -29,7 +42,13 @@ $('#generateReportMonthBtn').on('click', function(event){
         $('#reportDate').val($('#analyticsMonth').val());
     } else {
         $('#reportDate').val($('#analyticsMonth').data('value'));
+        getReportTable(new Date($('#analyticsMonth').data('value')), 'Month')
     }
+
+    var reportDate = moment($('#reportDate').val()).format('MM_YYYY');
+    var fileName = $('#reportSystemName').val() + " " + reportDate;
+    var snakeFileName = fileName.replace(/\s+/g, '_');
+    $('#reportFile').val(snakeFileName)
     $('#generateReport').modal('show');
 });
 
@@ -37,131 +56,163 @@ $('#generateReportYearBtn').on('click', function(event){
     if ($('#analyticsYear').val().length !== 0){
         $('#reportDate').val($('#analyticsYear').val());
     } else {
-        $('#reportDate').val($('#analyticsYear').data('value'));
+        getReportTable(new Date($('#analyticsYear').data('value')), 'Year')
     }
+
+
+
+    var reportDate = moment($('#reportDate').val()).format('YYYY');
+    var fileName = $('#reportSystemName').val() + " " + reportDate;
+    var snakeFileName = fileName.replace(/\s+/g, '_');
+    $('#reportFile').val(snakeFileName)
     $('#generateReport').modal('show');
 });
 
-$('#generateReportBtn').on('click', function(event){
-    var fileName = "COE Document Tracking System Report " + $('#reportDate').val();
-    var output = fileName.replace(/\s+/g, '_')
-    const doc = new jsPDF();
+$('#reportFile').on('input', function(event){
+    event.preventDefault();
+    if($(this).val().length == 0){
+        $('#generateReportBtn').addClass('disabled');
+    } else {
+        $('#generateReportBtn').removeClass('disabled');
+    }
+})
 
-    //LOGO
-    const logo = new Image();
-    logo.src = window.routes.logo;
-    $(logo).on('load', function () {
-        const pageWidth = doc.internal.pageSize.width;
-        const logoWidth = 25;
-        const logoXPosition = 10;
-    
-        doc.addImage(logo, "PNG", logoXPosition, 10, logoWidth, 25);
-    
-        // HEADER
-        doc.setFontSize(20);
-        const headerText = "COE Document Tracking System";
-        const addressText = "Normal Rd, Zamboanga, 7000 Zamboanga del Sur";
-        const phoneText = "(+63) 900 000 0000";
-        const emailText = "coedeansoffice@wmsu.edu.ph";
-        const websiteText = "Website: wmsu.edu.ph";
-    
-        // HEADER INFORMATIONS
-        doc.setFontSize(20);
-        doc.text(headerText, pageWidth - 10, 15, { align: "right" });
-        doc.setFontSize(10);
-        doc.setTextColor(80);
-        doc.text(addressText, pageWidth - 10, 22, { align: "right" });
-        doc.text(phoneText, pageWidth - 10, 26, { align: "right" });
-        doc.text(emailText, pageWidth - 10, 30, { align: "right" });
-        doc.text(websiteText, pageWidth - 10, 34, { align: "right" });
-    
-        // DISPLAY OUTGOING TABLE IN PDF
-        const outgoingTableRows = $("#outgoing-table tr").toArray().map((row) => {
-            return $(row)
-                .find("td, th")
-                .toArray()
-                .map((cell) => $(cell).text().trim());
-        });
-    
-        const outgoingHead = [outgoingTableRows[0]]; // Header row
-        const outgoingBody = outgoingTableRows.slice(1); // Body rows
-    
-        doc.autoTable({
-            head: outgoingHead,
-            body: outgoingBody,
-            startY: 50,
-            theme: "striped",
-            headStyles: {
-                fillColor: [105, 105, 105], // Dark Gray Headers
-                textColor: [255, 255, 255], // White text
-            },
-        });
-    
-        const lastY = doc.lastAutoTable.finalY + 10;
-    
-        // DISPLAY INCOMING TABLE IN PDF
-        const incomingTableRows = $("#incoming-table tr").toArray().map((row) => {
-            return $(row)
-                .find("td, th")
-                .toArray()
-                .map((cell) => $(cell).text().trim());
-        });
-    
-        const incomingHead = [incomingTableRows[0]]; // Header row
-        const incomingBody = incomingTableRows.slice(1); // Body rows
-    
-        doc.autoTable({
-            head: incomingHead,
-            body: incomingBody,
-            startY: lastY,
-            theme: "striped",
-            headStyles: {
-                fillColor: [105, 105, 105], // Dark Gray Headers
-                textColor: [255, 255, 255], // White text
-            },
-        });
-    
-        // FOOTER DELETE IF NOT NEEDED thnx
-        const pageHeight = doc.internal.pageSize.height;
-        doc.text(
-            "The Analytic Report is created on a computer and is valid without the signature and stamp.",
-            35,
-            pageHeight - 10
-        );
-    
-        // GENERATE CURRENT DATE
-    
-        // SAVE PDF
-        var reportFile = doc.output("blob");
-        var formData = new FormData();
+$('#generateReportBtn').off('click').on('click', function(event){
+    if(!$(this).hasClass('disabled')){
+        const doc = new jsPDF();
 
-        formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
-        formData.append('name', output);
-        formData.append('drive_id', $('#reportFolder').val());
-        formData.append('file', reportFile);
+            // LOGO
+            const logo = new Image();
+            logo.src = window.routes.logo;
+            $(logo).on('load', function () {
+            const pageWidth = doc.internal.pageSize.width;
+            const pageHeight = doc.internal.pageSize.height;
 
-        // Upload report file to google drive
-        $.ajax({
-            type: "POST",
-            url: window.routes.generateReport,
-            data: formData,
-            processData: false,  // Prevent jQuery from converting the data
-            contentType: false,  // Prevent jQuery from overriding the content type
-            success: function (response) {
-                showNotification('Report generated successfully!')
-                getNewReports();
-            },
-            error: function (response){
-                showNotification('Error generating report.')
-            },
-            beforeSend: function(){
-                showNotification('Generating report...');
-            },
-            complete: function(){
-                $('body').css('cursor', 'auto');
-            }
+            const logoWidth = 25;
+            const logoXPosition = 10;
+            const logoYPosition = 10; // Adjusted for better placement
+            const logoHeight = 25;
+
+            // Add the logo to the PDF
+            doc.addImage(logo, "PNG", logoXPosition, logoYPosition, logoWidth, logoHeight);
+
+            // HEADER
+            const headerText = "COE Document Tracking System";
+            const addressText = "Normal Rd, Zamboanga, 7000 Zamboanga del Sur";
+            const phoneText = "(+63) 900 000 0000";
+            const emailText = "coedeansoffice@wmsu.edu.ph";
+            const websiteText = "Website: wmsu.edu.ph";
+
+            // HEADER INFORMATION
+            doc.setFontSize(20);
+            doc.text(headerText, pageWidth - 10, 15, { align: "right" });
+
+            doc.setFontSize(10);
+            doc.setTextColor(80);
+            doc.text(addressText, pageWidth - 10, 22, { align: "right" });
+            doc.text(phoneText, pageWidth - 10, 26, { align: "right" });
+            doc.text(emailText, pageWidth - 10, 30, { align: "right" });
+            doc.text(websiteText, pageWidth - 10, 34, { align: "right" });
+
+            // DISPLAY OUTGOING TABLE IN PDF
+            doc.setFontSize(14);
+            doc.text('Outgoing Documents', 10, 50); // Title for outgoing table
+
+            // Extract outgoing table rows
+            const outgoingTableRows = $("#outgoing-table tr").toArray().map((row) => {
+                return $(row)
+                    .find("td, th")
+                    .toArray()
+                    .map((cell) => $(cell).text().trim());
+            });
+
+            // Separate header and body for autoTable
+            const outgoingHead = [outgoingTableRows[0]]; // Header row
+            const outgoingBody = outgoingTableRows.slice(1); // Body rows
+
+            doc.autoTable({
+                head: outgoingHead,
+                body: outgoingBody,
+                startY: 60,
+                theme: "striped",
+                headStyles: {
+                    fillColor: [105, 105, 105], // Dark Gray Headers
+                    textColor: [255, 255, 255], // White text
+                },
+                margin: { left: 10 },
+            });
+
+            // Get the last Y position for the next table
+            const lastY = doc.lastAutoTable.finalY;
+
+            // DISPLAY INCOMING TABLE IN PDF
+            doc.text('Incoming Documents', 10, lastY + 10); // Title for incoming table
+
+            // Extract incoming table rows
+            const incomingTableRows = $("#incoming-table tr").toArray().map((row) => {
+                return $(row)
+                    .find("td, th")
+                    .toArray()
+                    .map((cell) => $(cell).text().trim());
+            });
+
+            // Separate header and body for autoTable
+            const incomingHead = [incomingTableRows[0]]; // Header row
+            const incomingBody = incomingTableRows.slice(1); // Body rows
+
+            doc.autoTable({
+                head: incomingHead,
+                body: incomingBody,
+                startY: lastY + 20,
+                theme: "striped",
+                headStyles: {
+                    fillColor: [105, 105, 105], // Dark Gray Headers
+                    textColor: [255, 255, 255], // White text
+                },
+                margin: { left: 10 },
+            });
+
+            // FOOTER
+            const footerText =
+                "The Analytic Report is created on a computer and is valid without the signature and stamp.";
+            doc.setFont("helvetica", "normal"); // Default font (no bold)
+            doc.setFontSize(10);
+            doc.text(footerText, pageWidth / 2, pageHeight - 10, { align: "center" });
+
+        
+            // GENERATE CURRENT DATE
+            // SAVE PDF
+            var reportFile = doc.output("blob");
+            var formData = new FormData();
+
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+            formData.append('name', $('#reportFile').val());
+            formData.append('drive_id', $('#reportFolder').val());
+            formData.append('file', reportFile);
+
+            // Upload report file to google drive
+            $.ajax({
+                type: "POST",
+                url: window.routes.generateReport,
+                data: formData,
+                processData: false,  // Prevent jQuery from converting the data
+                contentType: false,  // Prevent jQuery from overriding the content type
+                success: function (response) {
+                    showNotification('Report generated successfully!')
+                    getNewReports();
+                },
+                error: function (response){
+                    showNotification('Error generating report.')
+                },
+                beforeSend: function(){
+                    showNotification('Generating report...');
+                },
+                complete: function(){
+                    $('body').css('cursor', 'auto');
+                }
+            });
         });
-    });
+    }
     
 });
 

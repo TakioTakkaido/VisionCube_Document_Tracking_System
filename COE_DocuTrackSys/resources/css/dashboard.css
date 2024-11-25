@@ -967,7 +967,8 @@ button:focus {
 .addSettings.disabled:hover,
 .deleteTypeBtn.disabled:hover,
 .attachmentUploadBtn.disabled:hover,
-.sysInfoPicBtn.disabled:hover {
+.sysInfoPicBtn.disabled:hover,
+.reportBtn.disabled:hover {
     /* color:#a50b0b !important; */
     cursor: not-allowed !important;
     color: unset;
@@ -1050,7 +1051,8 @@ button:focus {
 .editSysInfo.btn-primary.disabled,
 .editProfile.btn-primary.disabled,
 .attachmentUploadBtn.btn-primary.disabled,
-.sysInfoPicBtn.btn-primary.disabled {
+.sysInfoPicBtn.btn-primary.disabled,
+.reportBtn.btn-primary.disabled{
     background-color: #a50b0b !important;
     border: transparent;
     cursor: not-allowed !important;

@@ -86,7 +86,7 @@
             {{-- Document Date --}}
             <div class="col">
                 <label for="uploadDate">Date<small style="color: red">*</small></label>
-                <input id="uploadDate" type="date" class="uploadInput"  name="date">
+                <input id="uploadDate" type="date" class="uploadInput"  name="date" max="{{now()->toDateString()}}">
                 <span class="error" id="dateError" style="display:none;"></span>
             </div>
         </div>
@@ -154,8 +154,8 @@
 
         <div class="row mb-2">
             <div class="col">
+                <label for="documentFolder">Google Drive to Store Document: </label>
                 <select id="documentFolder" class="uploadInput" name="category">
-                    <option value="" disabled selected>Select Account to Store the Document</option>
                     @foreach ($drives as $drive)
                         <option value="{{$drive->id}}">{{$drive->email}}</option>
                     @endforeach

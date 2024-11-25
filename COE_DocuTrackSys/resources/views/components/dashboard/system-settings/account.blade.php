@@ -108,7 +108,7 @@
                                 <th>Can Move Document</th>
                                 <th>Can Archive Document</th>
                                 <th>Can Download Document File</th>
-                                <th>Can Print Document File</th>
+                                <th>Can Generate Report Files</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -124,7 +124,7 @@
                                     {{$secretary[3] == true ? 'checked' : null}}></td>
                                 <td><input type="checkbox" class="editSecretaryRole" name="access" id="canDownloadSecretary" 
                                     {{$secretary[4]  == true ? 'checked' : null}}></td>
-                                <td><input type="checkbox" class="editSecretaryRole" name="access" id="canPrintSecretary" 
+                                <td><input type="checkbox" class="editSecretaryRole" name="access" id="canReportSecretary" 
                                     {{$secretary[5] == true ? 'checked' : null}}></td>
                             </tr>
                             <tr>
@@ -139,7 +139,7 @@
                                     {{$assistant[3] == true ? 'checked' : null}}></td>
                                 <td><input type="checkbox" class="editAssistantRole" name="access" id="canDownloadAssistant"
                                     {{$assistant[4] == true ? 'checked' : null}}></td>
-                                <td><input type="checkbox" class="editAssistantRole" name="access" id="canPrintAssistant"
+                                <td><input type="checkbox" class="editAssistantRole" name="access" id="canReportAssistant"
                                     {{$assistant[5] == true ? 'checked' : null}}></td>
                             </tr>
                             <tr>
@@ -154,7 +154,7 @@
                                     {{$clerk[3] == true ? 'checked' : null}}></td>
                                 <td><input type="checkbox" class="editClerkRole" name="access" id="canDownloadClerk"
                                     {{$clerk[4] == true ? 'checked' : null}}></td>
-                                <td><input type="checkbox" class="editClerkRole" name="access" id="canPrintClerk"
+                                <td><input type="checkbox" class="editClerkRole" name="access" id="canReportClerk"
                                     {{$clerk[5] == true ? 'checked' : null}}></td>
                             </tr>
                         </tbody>

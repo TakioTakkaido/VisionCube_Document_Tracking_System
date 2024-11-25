@@ -222,6 +222,10 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 Route::get('stats/{date}/{type}', 'getDocumentStatistics')
                 ->name('getStatistics');
 
+                // Get Report Files
+                Route::get('report/{date}/{type}', 'getReportDocuments')
+                ->name('getReportDocuments');
+
                 // Edit Document
                 Route::post('edit/{id}', 'edit')
                 ->name('edit');

@@ -15,6 +15,7 @@ class Attachment extends Model
     protected $fillable = [
         'name',
         'file',
+        'drive_folder',
         'document_version_id'
     ];
 

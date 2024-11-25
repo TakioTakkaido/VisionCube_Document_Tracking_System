@@ -298,7 +298,7 @@ class AccountController extends Controller {
             $secretary->canMove       = filter_var($request->secretaryAccesses[2], FILTER_VALIDATE_BOOLEAN);
             $secretary->canArchive    = filter_var($request->secretaryAccesses[3], FILTER_VALIDATE_BOOLEAN);
             $secretary->canDownload   = filter_var($request->secretaryAccesses[4], FILTER_VALIDATE_BOOLEAN);
-            $secretary->canPrint      = filter_var($request->secretaryAccesses[5], FILTER_VALIDATE_BOOLEAN);
+            $secretary->canReport      = filter_var($request->secretaryAccesses[5], FILTER_VALIDATE_BOOLEAN);
             $secretary->save();
         }   
 
@@ -310,7 +310,7 @@ class AccountController extends Controller {
             $assistant->canMove       = filter_var($request->assistantAccesses[2], FILTER_VALIDATE_BOOLEAN);
             $assistant->canArchive    = filter_var($request->assistantAccesses[3], FILTER_VALIDATE_BOOLEAN);
             $assistant->canDownload   = filter_var($request->assistantAccesses[4], FILTER_VALIDATE_BOOLEAN);
-            $assistant->canPrint      = filter_var($request->assistantAccesses[5], FILTER_VALIDATE_BOOLEAN);
+            $assistant->canReport      = filter_var($request->assistantAccesses[5], FILTER_VALIDATE_BOOLEAN);
             
             $assistant->save();
 
@@ -324,7 +324,7 @@ class AccountController extends Controller {
             $clerk->canMove       = filter_var($request->clerkAccesses[2], FILTER_VALIDATE_BOOLEAN);
             $clerk->canArchive    = filter_var($request->clerkAccesses[3], FILTER_VALIDATE_BOOLEAN);
             $clerk->canDownload   = filter_var($request->clerkAccesses[4], FILTER_VALIDATE_BOOLEAN);
-            $clerk->canPrint      = filter_var($request->clerkAccesses[5], FILTER_VALIDATE_BOOLEAN);
+            $clerk->canReport      = filter_var($request->clerkAccesses[5], FILTER_VALIDATE_BOOLEAN);
 
             $clerk->save();
         }   
@@ -349,7 +349,7 @@ class AccountController extends Controller {
         $access[2] = isset($secretary->canMove) ? $secretary->canMove : false;
         $access[3] = isset($secretary->canArchive) ? $secretary->canArchive : false;
         $access[4] = isset($secretary->canDownload) ? $secretary->canDownload : false;
-        $access[5] = isset($secretary->canPrint) ? $secretary->canPrint : false;
+        $access[5] = isset($secretary->canReport) ? $secretary->canReport : false;
 
         // Return all access
         return $access;
@@ -366,7 +366,7 @@ class AccountController extends Controller {
         $access[2] = isset($assistant->canMove) ? $assistant->canMove : false;
         $access[3] = isset($assistant->canArchive) ? $assistant->canArchive : false;
         $access[4] = isset($assistant->canDownload) ? $assistant->canDownload : false;
-        $access[5] = isset($assistant->canPrint) ? $assistant->canPrint : false;
+        $access[5] = isset($assistant->canReport) ? $assistant->canReport : false;
         
         // Return all access
         return $access;
@@ -383,7 +383,7 @@ class AccountController extends Controller {
         $access[2] = isset($clerk->canMove) ? $clerk->canMove : false;
         $access[3] = isset($clerk->canArchive) ? $clerk->canArchive : false;
         $access[4] = isset($clerk->canDownload) ? $clerk->canDownload : false;
-        $access[5] = isset($clerk->canPrint) ? $clerk->canPrint : false;
+        $access[5] = isset($clerk->canReport) ? $clerk->canReport : false;
         
         // Return all access
         return $access;
@@ -404,7 +404,7 @@ class AccountController extends Controller {
 
         $name = $user->name;
         $user->name = $request->input('name');
-        
+        $user->lastChangedName = now();
         $user->save();
 
         ModelsLog::create([

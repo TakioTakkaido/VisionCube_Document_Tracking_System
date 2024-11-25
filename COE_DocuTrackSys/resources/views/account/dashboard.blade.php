@@ -190,6 +190,7 @@ Sanchez, Shane David U.
         seenDocument: "{{route('document.seen')}}",
         getNewDocuments: "{{route('document.getNewDocuments')}}",
         search: "{{route('document.search')}}",
+        getReportDocuments: "{{route('document.getReportDocuments', [':date', ':type'])}}",
 
         // Document Version Routes
         showDocumentVersion: "{{route('version.show', ':id')}}",

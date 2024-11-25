@@ -28,6 +28,7 @@ use App\Models\DocumentVersion;
 use App\Models\Drive;
 use App\Models\Log as ModelsLog;
 use App\Models\Status;
+use App\Models\Type;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Support\Facades\Http;
@@ -129,6 +130,7 @@ class DocumentController extends Controller{
                 $attachment = Attachment::create([
                     'name' => $file->getClientOriginalName(),
                     'document_version_id' => $documentVersion->id,
+                    'drive_folder' => $drive->email,
                     'file' => $fileUrl, // Store the file URL instead of local file path
                 ]);
 
@@ -213,28 +215,52 @@ class DocumentController extends Controller{
         ]);
 
         // Create the attachments
+        // Attachment Upload
+        $drive = Drive::find($request->input('drive_id'));
+        // dd($drive);
+        $folder_id = "";
+
+        // Check first whether the drive has a gdrive folder, and then create if none
+        $document_date = new DateTime($documentVersion->created_at);
+        $folder_id = $drive->getDocumentFolder(($document_date->format('Y')), $document_date->format('M'));
+        // Create the attachments
         $attachments = [];
+
         if ($request->file('files') != null){    
             foreach($request->file('files') as $file){
-                $fileStore = Http::withHeaders([
-                    'Authorization' => 'Bearer '.$this->token(),
-                    'Content-Type' => 'application/json',
-                ])->post('https://www.googleapis.com/drive/v3/files', [
-                    'data'=>$file->getClientOriginalName(),
-                    'mimeType'=>$file->getClientMimeType(),
-                    'uploadType'=>'resumable'
-                ]);
+                $url = 'https://www.googleapis.com/drive/v3/files';
+                 // Metadata for the file (convert to JSON)
+                $metadata = [
+                    'name' => $file->getClientOriginalName(),
+                    'parents' => [$folder_id],
+                ];
+
+                $metadataJson = json_encode($metadata);
+
+                $fileStore = Http::withToken($drive->token())
+                    ->attach(
+                        'metadata', $metadataJson, 'metadata.json', ['Content-Type' => 'application/json; charset=UTF-8']
+                    )
+                    ->attach(
+                        'file', file_get_contents($file->getRealPath()), $file->getClientOriginalName(), ['Content-Type' => $file->getMimeType()]
+                    )
+                    ->post($url);
                  
                 if($fileStore->successful()){
+                    // Get file metadata from Google Drive response
+                    $fileResponse = $fileStore->json();
+                    $fileId = $fileResponse['id'];
+                    $fileUrl = $fileId;
 
+                    $attachment = Attachment::create([
+                        'name'                  => $file->getClientOriginalName(),
+                        'document_version_id'   => $documentVersion->id,
+                        'drive_folder'          => $drive->email,
+                        'file'                  => $fileUrl
+                    ]);
+    
+                    array_push($attachments, $attachment);
                 }
-                $attachment = Attachment::create([
-                    'name'                  => $file->getClientOriginalName(),
-                    'document_version_id'   => $documentVersion->id,
-                    'file'                  => $file->store('public/documents')
-                ]);
-
-                array_push($attachments, $attachment);
             }
 
             // Attach the attachments
@@ -586,7 +612,7 @@ class DocumentController extends Controller{
             $document->canMove = Auth::user()->canMove;
             $document->canArchive = Auth::user()->canArchive;
             $document->canDownload = Auth::user()->canDownload;
-            $document->canPrint = Auth::user()->canPrint;
+            $document->canReport = Auth::user()->canReport;
             $document->newUpload = !(in_array($document->document_id, $newlyUploadedDocuments));
             $document->newUpdate = !(in_array($document->document_id, $newlyUpdatedDocuments));
         }
@@ -903,6 +929,145 @@ class DocumentController extends Controller{
         ]);
     }
 
+    public function getReportDocuments(Request $request){
+        $date = new DateTime($request->date);
+        $statuses = Status::all();
+        $type = $request->type;
+        // Get all documents
+        $documents = Document::all();
+
+        // Get all versions
+        $versions = [];
+        foreach($documents as $document){
+            // Sort versions by latest
+            $versions[] = $document->latestVersion();
+        }
+
+        // Set the type to get
+        if($type === 'Day'){
+            $date = $date->format('d');
+        } else if($type === 'Week'){
+            $date = $date->format('W');
+        } else if($type === 'Month'){
+            $date = $date->format('m');            
+        } else {
+            $date = $date->format('Y');            
+        }
+
+        
+        $selectedDocuments = [];
+        foreach($versions as $version){    
+            $versionDate = new DateTime($version->created_at);
+            if ($versionDate->format('d') == $date && 
+                $version->category != 'Trash' && 
+                $version->category != 'Archived'){
+                // After finding the very first, stop searching immediately
+                $selectedDocuments[] = $version;
+            }
+        }
+
+        // Report Documents
+        $reportHeader = [];
+
+        // Separate incoming and outgoing documents
+        $incomingDocumentDoc = [];
+        $outgoingDocumentDoc = [];
+        foreach ($selectedDocuments as $document) {
+            if ($document->category == 'Incoming') {
+                $incomingDocumentDoc[] = $document;
+            } elseif ($document->category == 'Outgoing') {
+                $outgoingDocumentDoc[] = $document;
+            }
+        }
+
+        // Get all types
+        $types = Type::all(); // Assuming this gives you the document types
+
+        // Make the header (first column is "Status", then the rest are document types, and finally "Total")
+        $reportHeader[] = "Status";
+        foreach ($types as $type) {
+            $reportHeader[] = $type->value;  // Adding document types to the header
+        }
+        $reportHeader[] = "Total"; // Add a "Total" column to the header
+
+        // Function to calculate report data for given documents
+        function generateReportData($statuses, $types, $documents) {
+            $documentCounts = [];
+            $totalPerType = array_fill_keys($types->pluck('value')->toArray(), 0); // Initialize totals for each type
+            $totalOverall = 0; // Initialize overall total
+            $reportData = [];
+
+            // Loop through documents and calculate counts
+            foreach ($documents as $document) {
+                $statusValue = $document->status; // Get the status of the document
+                $typeValue = $document->type; // Get the type of the document
+
+                // If the status doesn't exist in documentCounts, initialize it
+                if (!isset($documentCounts[$statusValue])) {
+                    $documentCounts[$statusValue] = array_fill_keys($types->pluck('value')->toArray(), 0); // Initialize types for status
+                }
+
+                // Increment the count for this type under the status
+                $documentCounts[$statusValue][$typeValue]++;
+            }
+
+            // Prepare rows based on documentCounts
+            foreach ($statuses as $status) {
+                $row = []; // Initialize row array
+
+                // Add the status value as the first item in the row
+                $row[] = $status->value;
+
+                // Initialize a total for this status
+                $statusTotal = 0;
+
+                // For each type, get the number of documents from documentCounts
+                foreach ($types as $type) {
+                    $typeValue = $type->value;
+
+                    // Get the document count for this status and type, default to 0 if not found
+                    $docCount = isset($documentCounts[$status->value][$typeValue])
+                                ? $documentCounts[$status->value][$typeValue]
+                                : 0;
+
+                    $row[] = $docCount; // Add the count to the row
+                    $statusTotal += $docCount; // Add to the status total
+                    $totalPerType[$typeValue] += $docCount; // Add to the type total
+                }
+
+                // Add the total count for the status to the row
+                $row[] = $statusTotal;
+
+                // Add the row to the report data
+                $reportData[] = $row;
+
+                // Add to the overall total
+                $totalOverall += $statusTotal;
+            }
+
+            // Add the final row for totals
+            $totalRow = ["Total"];
+            foreach ($types as $type) {
+                $typeValue = $type->value;
+                $totalRow[] = $totalPerType[$typeValue]; // Add the total for this type
+            }
+            $totalRow[] = $totalOverall; // Add the overall total
+            $reportData[] = $totalRow;
+
+            return $reportData;
+        }
+
+        // Generate report data for outgoing and incoming documents
+        $reportOutgoingDocuments = generateReportData($statuses, $types, $outgoingDocumentDoc);
+        $reportIncomingDocuments = generateReportData($statuses, $types, $incomingDocumentDoc);
+
+        return response()->json([
+            'reportHeader' => json_encode($reportHeader),
+            'reportOutgoingDocuments' => json_encode($reportOutgoingDocuments),
+            'reportIncomingDocuments' => json_encode($reportIncomingDocuments)
+        ]);
+
+    }
     public function getNewDocuments(){
         $newUpdated = [];
         $totalNewUpdated = 0;
