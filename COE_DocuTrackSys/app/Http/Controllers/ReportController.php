@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\GeneratedReport;
 use App\Models\Report;
 use App\Http\Controllers\Controller;
+use App\Models\Account;
 use App\Models\Drive;
 use DateTime;
 use Google\Service\CloudSourceRepositories\Repo;
@@ -49,7 +50,8 @@ class ReportController extends Controller {
             // Create the attachment record with the file URL
             $report = Report::create([
                 'name' => $request->input('name'),
-                'file' => $fileUrl
+                'file' => $fileUrl,
+                'drive_folder' => $drive->email
             ]);
             $report->seenUploadedAccounts()->sync([]);
 
@@ -78,7 +80,8 @@ class ReportController extends Controller {
         // Get all reports
         $reports = Report::all();
 
-        $newlyUploadedReports = Auth::user()->newlyUploadedReports()->pluck('new_upload_report_id')->toArray();
+        $account = Account::find(Auth::user()->id);
+        $newlyUploadedReports = $account->newlyUploadedReports()->pluck('new_upload_report_id')->toArray();
 
         foreach ($reports as $report) {
             $report->newUpload = !(in_array($report->id, $newlyUploadedReports));
@@ -98,8 +101,9 @@ class ReportController extends Controller {
     public function getNewReports(){
         $newUpdated = [];
         $totalNewUploaded = 0;
+        $account = Account::find(Auth::user()->id);
         // Get all the report ids under the auth user
-        $newUploaded = Auth::user()->newlyUploadedReports()->pluck('new_upload_report_id')->toArray();
+        $newUploaded = $account->newlyUploadedReports()->pluck('new_upload_report_id')->toArray();
 
 
         $reports = Report::all();
@@ -111,6 +115,15 @@ class ReportController extends Controller {
 
         return response()->json([
             'totalNewUploaded' => $totalNewUploaded,
+        ]);
+    }
+
+    public function show(Request $request){
+        $report = Report::find($request->id);
+
+        return response()->json([
+            'report' => $report,
+            'fileLink' => url("https://drive.google.com/file/d/".$report->file."/preview")
         ]);
     }
 }

@@ -48,24 +48,7 @@ class Drive extends Model {
         return $access_token;
     }
 
-    private function folderExists(string $folderId): bool
-    {
-        $apiKey = env('GOOGLE_DRIVE_API_KEY');
-        $url = "https://www.googleapis.com/drive/v3/files/{$folderId}?fields=id&key={$apiKey}";
-
-        $response = Http::get($url);
-
-        if ($response->successful()) {
-            return true; // Folder exists
-        }
-
-        if ($response->status() === 404) {
-            return false; // Folder does not exist
-        }
-
-        // Optionally handle other errors here or log them if needed
-        return false;
-    }
+    
 
     public function createRootFolder(){
         $metadata = [
@@ -90,217 +73,132 @@ class Drive extends Model {
             $this->rootFolder()->save($rootFolder);
         }
     }
-
-    public function getDocumentFolder($year, $month){
-        // Create Root Folder if it doesn't exist
-        if ($this->rootFolder()->first() == null ) {
-            $this->createRootFolder();
-        }
-
-        $rootFolder = $this->rootFolder()->first();
-
-        // Create the Subroot Folder (for the year)
-        // dd($rootFolder->subFolders()->get());
-        $yearFolder = $rootFolder->subFolders->first(function ($subFolderByYear) use ($year) {
-            return $subFolderByYear->year == $year && $subFolderByYear->month == null;
-        });
-
-
-        if (!$yearFolder) {
-            // Upload new folder
-            $metadata = [
-                'name' => $year,
-                'mimeType' => 'application/vnd.google-apps.folder',
-                'parents' => [$rootFolder->folder_id]
-            ];
-
-            $fileStore = Http::withToken($this->token())
-                ->withHeaders(['Content-Type' => 'application/json'])
-                ->post('https://www.googleapis.com/drive/v3/files', $metadata);
-
-            if ($fileStore->successful()) {
-                $yearFolder = Folder::create([
-                    'type' => 'Subroot',
-                    'year' => $year,
-                    'folder_id' => $fileStore->json('id'),
-                    'drive_id' => $this->id,
-                    'parent_id' => $rootFolder->id
-                ]);
-
-                $rootFolder->subFolders()->save($yearFolder);
-            }
-        }
-
-        // Create the Sub sub root Folder (for the month)
-        $monthFolder = $yearFolder->subFolders->first(function ($subFolderByMonth) use ($year, $month) {
-            return $subFolderByMonth->year == $year && $subFolderByMonth->month == $month;
-        });
-
-        if (!$monthFolder) {
-            // Upload new folder
-            $metadata = [
-                'name' => $month,
-                'mimeType' => 'application/vnd.google-apps.folder',
-                'parents' => [$yearFolder->folder_id]
-            ];
-
-            $fileStore = Http::withToken($this->token())
-                ->withHeaders(['Content-Type' => 'application/json'])
-                ->post('https://www.googleapis.com/drive/v3/files', $metadata);
-
-            if ($fileStore->successful()) {
-                $monthFolder = Folder::create([
-                    'type' => 'Subroot',
-                    'year' => $year,
-                    'month' => $month,
-                    'folder_id' => $fileStore->json('id'),
-                    'drive_id' => $this->id,
-                    'parent_id' => $yearFolder->id
-                ]);
-
-                $yearFolder->subFolders()->save($monthFolder);
-            }
-        }
-
-        // Create Document Folder
-        $documentFolder = $monthFolder->subFolders->first(function ($subFolder) {
-            return $subFolder->type === 'Documents';
-        });
-
-        if (!$documentFolder) {
-            // Upload new folder
-            $metadata = [
-                'name' => "Documents",
-                'mimeType' => 'application/vnd.google-apps.folder',
-                'parents' => [$monthFolder->folder_id]
-            ];
-
-            $fileStore = Http::withToken($this->token())
-                ->withHeaders(['Content-Type' => 'application/json'])
-                ->post('https://www.googleapis.com/drive/v3/files', $metadata);
-
-            if ($fileStore->successful()) {
-                $documentFolder = Folder::create([
-                    'type' => 'Documents',
-                    'year' => $year,
-                    'month' => $month,
-                    'folder_id' => $fileStore->json('id'),
-                    'drive_id' => $this->id,
-                    'parent_id' => $monthFolder->id
-                ]);
-
-                $monthFolder->subFolders()->save($documentFolder);
-                
-            }
-        }
-
-        return $documentFolder->folder_id;
-
+    public function getDocumentFolder($year, $month)
+    {
+        return $this->getFolder($year, $month, 'Documents');
     }
-
-    public function getReportFolder($year, $month){
-        // Create Root Folder if it doesn't exist
+    
+    public function getReportFolder($year, $month)
+    {
+        return $this->getFolder($year, $month, 'Reports');
+    }
+    
+    private function getFolder($year, $month, $type)
+    {
+        // Ensure the root folder exists
+        $rootFolder = $this->ensureFolderExists(null, 'Root');
+    
+        // Ensure the year folder exists
+        $yearFolder = $this->ensureFolderExists($rootFolder, 'Subroot', $year);
+    
+        // Ensure the month folder exists
+        $monthFolder = $this->ensureFolderExists($yearFolder, 'Subroot', $year, $month);
+    
+        // Ensure the type folder exists (e.g., 'Documents' or 'Reports')
+        $typeFolder = $this->ensureFolderExists($monthFolder, $type);
+    
+        return $typeFolder->folder_id;
+    }
+    
+    private function ensureFolderExists($parentFolder, $type, $year = null, $month = null)
+    {
+        if ($type === 'Root' && !$parentFolder) {
+            // Handle the Root folder separately
+            return $this->handleRootFolder();
+        }
+    
+        // Search for the folder in the database
+        $existingFolder = $parentFolder->subFolders->first(function ($folder) use ($type, $year, $month) {
+            return $folder->type === $type &&
+                $folder->year == $year &&
+                $folder->month == $month;
+        });
+    
+        // Validate and recreate folder if it exists but is invalid on Google Drive
+        if ($existingFolder && !$this->folderExists($existingFolder->folder_id)) {
+            $parentFolder->subFolders()->detach($existingFolder);
+            $existingFolder->delete();
+            $existingFolder = null;
+        }
+    
+        // Create a new folder if it doesn't exist
+        if (!$existingFolder) {
+            $folderName = $this->getFolderName($type, $year, $month);
+            $metadata = [
+                'name' => $folderName,
+                'mimeType' => 'application/vnd.google-apps.folder',
+                'parents' => [$parentFolder->folder_id],
+            ];
+    
+            $fileStore = Http::withToken($this->token())
+                ->withHeaders(['Content-Type' => 'application/json'])
+                ->post('https://www.googleapis.com/drive/v3/files', $metadata);
+    
+            if ($fileStore->successful()) {
+                $existingFolder = Folder::create([
+                    'type' => $type,
+                    'year' => $year,
+                    'month' => $month,
+                    'folder_id' => $fileStore->json('id'),
+                    'drive_id' => $this->id,
+                    'parent_id' => $parentFolder->id,
+                ]);
+    
+                $parentFolder->subFolders()->save($existingFolder);
+            }
+        }
+    
+        return $existingFolder;
+    }
+    
+    private function handleRootFolder()
+    {
         if ($this->rootFolder()->first() == null) {
             $this->createRootFolder();
         }
-
+    
         $rootFolder = $this->rootFolder()->first();
-
-        // Create the Subroot Folder (for the year)
-        // dd($rootFolder->subFolders()->get());
-        $yearFolder = $rootFolder->subFolders->first(function ($subFolderByYear) use ($year) {
-            return $subFolderByYear->year == $year && $subFolderByYear->month == null;
-        });
-
-
-        if (!$yearFolder) {
-            // Upload new folder
-            $metadata = [
-                'name' => $year,
-                'mimeType' => 'application/vnd.google-apps.folder',
-                'parents' => [$rootFolder->folder_id]
-            ];
-
-            $fileStore = Http::withToken($this->token())
-                ->withHeaders(['Content-Type' => 'application/json'])
-                ->post('https://www.googleapis.com/drive/v3/files', $metadata);
-
-            if ($fileStore->successful()) {
-                $yearFolder = Folder::create([
-                    'type' => 'Subroot',
-                    'year' => $year,
-                    'folder_id' => $fileStore->json('id'),
-                    'drive_id' => $this->id,
-                    'parent_id' => $rootFolder->id
-                ]);
-
-                $rootFolder->subFolders()->save($yearFolder);
-            }
+    
+        if (!$this->folderExists($rootFolder->folder_id)) {
+            $rootFolder->delete();
+            $this->createRootFolder();
+            $rootFolder = $this->rootFolder()->first();
         }
-
-        // Create the Sub sub root Folder (for the month)
-        $monthFolder = $yearFolder->subFolders->first(function ($subFolderByMonth) use ($year, $month) {
-            return $subFolderByMonth->year == $year && $subFolderByMonth->month == $month;
-        });
-
-        if (!$monthFolder) {
-            // Upload new folder
-            $metadata = [
-                'name' => $month,
-                'mimeType' => 'application/vnd.google-apps.folder',
-                'parents' => [$yearFolder->folder_id]
-            ];
-
-            $fileStore = Http::withToken($this->token())
-                ->withHeaders(['Content-Type' => 'application/json'])
-                ->post('https://www.googleapis.com/drive/v3/files', $metadata);
-
-            if ($fileStore->successful()) {
-                $monthFolder = Folder::create([
-                    'type' => 'Subroot',
-                    'year' => $year,
-                    'month' => $month,
-                    'folder_id' => $fileStore->json('id'),
-                    'drive_id' => $this->id,
-                    'parent_id' => $yearFolder->id
-                ]);
-
-                $yearFolder->subFolders()->save($monthFolder);
-            }
-        }
-
-        // Create Document Folder
-        $reportFolder = $monthFolder->subFolders->first(function ($subFolder) {
-            return $subFolder->type === 'Reports';
-        });
-
-        if (!$reportFolder) {
-            // Upload new folder
-            $metadata = [
-                'name' => "Reports",
-                'mimeType' => 'application/vnd.google-apps.folder',
-                'parents' => [$monthFolder->folder_id]
-            ];
-
-            $fileStore = Http::withToken($this->token())
-                ->withHeaders(['Content-Type' => 'application/json'])
-                ->post('https://www.googleapis.com/drive/v3/files', $metadata);
-
-            if ($fileStore->successful()) {
-                $reportFolder = Folder::create([
-                    'type' => 'Reports',
-                    'year' => $year,
-                    'month' => $month,
-                    'folder_id' => $fileStore->json('id'),
-                    'drive_id' => $this->id,
-                    'parent_id' => $monthFolder->id
-                ]);
-
-                $monthFolder->subFolders()->save($reportFolder);
-                
-            }
-        }
-
-        return $reportFolder->folder_id;
+    
+        return $rootFolder;
     }
+    
+    private function getFolderName($type, $year = null, $month = null)
+    {
+        switch ($type) {
+            case 'Root':
+                return 'RootFolder'; // Adjust this if your root folder has a specific name
+            case 'Subroot':
+                return $month ?: $year;
+            case 'Documents':
+            case 'Reports':
+                return $type;
+            default:
+                return 'Unknown';
+        }
+    }
+    
+    private function folderExists(string $folderId): bool
+    {
+        $apiKey = env('GOOGLE_API_KEY');
+        $url = "https://www.googleapis.com/drive/v3/files/{$folderId}?fields=id&key={$apiKey}";
+    
+        $response = Http::get($url);
+    
+        if ($response->successful()) {
+            return true;
+        }
+    
+        if ($response->status() === 404) {
+            return false;
+        }
+    
+        return false;
+    }
+    
 }

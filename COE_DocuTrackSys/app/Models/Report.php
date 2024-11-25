@@ -11,7 +11,8 @@ class Report extends Model
 
     protected $fillable = [
         'name',
-        'file'
+        'file',
+        'drive_folder'
     ];
 
     public function seenUploadedAccounts(){
