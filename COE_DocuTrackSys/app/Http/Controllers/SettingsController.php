@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Settings;
 use App\Http\Controllers\Controller;
+use App\Models\Drive;
 use App\Models\FileExtension;
 use App\Models\Log;
 use Illuminate\Http\Request;
@@ -109,6 +110,24 @@ class SettingsController extends Controller {
             $fileExtensions = $settings->fileExtensions == [] ? FileExtension::where('checked', true)->select('value') : $settings->fileExtensions;
             $details['fileExtensions'] = $fileExtensions;
             $settings->fileExtensions = [];
+
+            $drives = Drive::where('canDocument', true)
+                            ->where('disabled', false)
+                            ->whereNot('verified_at', null)
+                            ->orderBy('id', 'asc')
+                            ->get();
+            foreach($drives as $drive){
+                $details['documentDrives'][] = $drive->email;
+            }
+
+            $drives = Drive::where('canReport', true)
+                            ->where('disabled', false)
+                            ->whereNot('verified_at', null)
+                            ->orderBy('id', 'asc')
+                            ->get();
+            foreach($drives as $drive){
+                $details['reportDrives'][] = $drive->email;
+            }
 
             $settings->save();
             Log::create([

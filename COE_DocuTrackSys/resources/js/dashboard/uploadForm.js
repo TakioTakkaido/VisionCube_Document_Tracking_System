@@ -410,6 +410,10 @@ $('#clearUploadBtn').on('click', function (event){
         'background-color': 'white'
     });
 
+    while (dt.items.length > 0) {
+        dt.items.remove(globalDataTransfer); // Remove the first item repeatedly until all are removed
+    }
+
     $('.deleteUploadFileBtn').trigger('click');
 });
 
@@ -559,9 +563,20 @@ $('#uploadDate').on('input', function(event){
     $('#dateError').css('display', 'none');
 })
 
+
+var globalDataTransfer = new DataTransfer();
+
 $('#softcopy').off('input').on('input', function(event){
     event.preventDefault();
-    var files = this.files;
+
+    var oldFiles = $('#softcopy')[0].files;
+    Array.from(oldFiles).forEach(function(file) {
+        globalDataTransfer.items.add(file); // Add file to the DataTransfer object if it's not the deleted file
+    });
+    
+    $('#softcopy')[0].files = globalDataTransfer.files;
+
+    $('.uploadFilesList').html('');
 
     var uploadFilesList = `<ul class="list-group uploadFilesList" style="width:100%;">
                             </ul>`
@@ -570,13 +585,14 @@ $('#softcopy').off('input').on('input', function(event){
         $('.uploadFiles').append(uploadFilesList);
     };
 
-    Array.from(files).forEach((file, index) => {
+    Array.from($('#softcopy')[0].files).forEach((file, index) => {
         $('.uploadFilesList').append(`<li class="list-group-item d-flex justify-content-between align-items-center" data-id=${index}>
             <span class="text-left mr-auto">${file.name}</span >
             <button class="btn btn-primary deleteUploadFileBtn" data-id=${index}>
                 <i class='bx bx-trash' style="font-size: 20px;"></i></button>
             </li>`);
     });
+    
 
     $('.uploadFiles').data('value', '');
 
@@ -593,7 +609,6 @@ $(document).on('click', '.deleteUploadFileBtn', function(event){
     event.stopPropagation();
     var deleteId = $(this).data('id');
     Array.from($('.uploadFilesList .list-group-item')).forEach((file, index) => {
-        
         if ($(file).data('id') == deleteId){
             var dataTransfer = new DataTransfer();
             var deletedFileName = $(file).find('span').html();

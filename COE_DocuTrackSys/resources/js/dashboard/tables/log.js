@@ -583,6 +583,25 @@ function viewLogInformation(logId) {
                     });
                     logDetail += `</ul><br>`;
                 }
+
+                // Allowed Drives
+                const documentDrives = settings.documentDrives || [];
+                if (documentDrives.length > 0) {
+                    logDetail += `<span><strong>Allowed Accounts for Document Upload: </strong></span><ul>`;
+                    documentDrives.forEach(drive => {
+                        logDetail += `<li><span>.${drive}</span></li>`;
+                    });
+                    logDetail += `</ul><br>`;
+                }
+
+                const reportDrives = settings.reportDrives || [];
+                if (reportDrives.length > 0) {
+                    logDetail += `<span><strong>Allowed Accounts for Report Upload: </strong></span><ul>`;
+                    reportDrives.forEach(drive => {
+                        logDetail += `<li><span>.${drive}</span></li>`;
+                    });
+                    logDetail += `</ul><br>`;
+                }
             
                 $('#logDetails').html(logDetail);
             } else {
@@ -593,7 +612,7 @@ function viewLogInformation(logId) {
                     <span><strong>Logo: </strong>${info.logo}</span><br>
                     <span><strong>Favicon: </strong>${info.favicon}</span><br>
                     <span><strong>About: </strong>${info.about}</span><br>
-                    <span><strong>WMSU Missiono: </strong>${info.mission}</span><br>
+                    <span><strong>WMSU Mission: </strong>${info.mission}</span><br>
                     <span><strong>WMSU Vision: </strong>${info.vision}</span><br>
                 `);
             }

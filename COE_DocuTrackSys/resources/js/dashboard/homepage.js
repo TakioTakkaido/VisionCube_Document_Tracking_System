@@ -465,7 +465,6 @@ function getMaintenanceStatus(){
 
 function getDocumentStatistics(date, type){
     $('.loading').show();
-    // moment(min).format('MMMM YYYY');
     $.ajax({
         method: 'GET',
         url: window.routes.getSpecificDocumentStatistics
@@ -473,6 +472,7 @@ function getDocumentStatistics(date, type){
             .replace(':type', type),
         success: function(response) {
             var documents = JSON.parse(response.documents);
+            // console.log(documents);
             var category = documents.category;
             var status = documents.status;
             var color = documents.color;
@@ -559,7 +559,7 @@ function getDocumentStatistics(date, type){
                         $('#categoryDay').html(categoryStats);
                         $('#statusDay').html(statusStats);
                     }else if(type === 'Week'){ 
-                        $('#dateWeek').html('<i>Week: ' + moment(date).startOf('isoWeek').format('MMM. D, YYYY') + ' - ' + moment(date).endOf('isoWeek').format('MMM. D, YYYY') + '</i>');
+                        $('#dateWeek').html('<i>Week: ' + moment(date).startOf('week').format('MMM. D, YYYY') + ' - ' + moment(date).endOf('week').format('MMM. D, YYYY') + '</i>');
                         $('#categoryWeek').html(categoryStats);
                         $('#statusWeek').html(statusStats);
                     }else if(type === 'Month'){
@@ -577,7 +577,7 @@ function getDocumentStatistics(date, type){
                     $('#categoryDay').html(`<span class="d-flex justify-content-center align-items-center text-justify">No documents tracked at this day.</span>`);
                     $('#statusDay').html(`<span class="d-flex justify-content-center align-items-center text-justify">No documents tracked at this day.</span>`);
                 }else if(type === 'Week'){
-                    $('#dateWeek').html('<i>Week: ' + moment(date).startOf('isoWeek').format('MMM. D, YYYY') + ' - ' + moment(date).endOf('isoWeek').format('MMM. D, YYYY') + '</i>');
+                    $('#dateWeek').html('<i>Week: ' + moment(date).startOf('week').format('MMM. D, YYYY') + ' - ' + moment(date).endOf('week').format('MMM. D, YYYY') + '</i>');
                     $('#categoryWeek').html(`<span class="d-flex justify-content-center align-items-center text-justify">No documents tracked at this week.</span>`);
                     $('#statusWeek').html(`<span class="d-flex justify-content-center align-items-center text-justify">No documents tracked at this week.</span>`);
                 }else if(type === 'Month'){
@@ -593,10 +593,87 @@ function getDocumentStatistics(date, type){
         }, 
         complete: function(){
             $('.loading').hide();
+            getReportTable(date, type);
         }
     });
 }
 
+export function getReportTable(date, type){
+    console.log(date)
+    $('.loading').show();
+    $.ajax({
+        method: 'GET',
+        url: window.routes.getReportDocuments
+            .replace(':date', date.toDateString())
+            .replace(':type', type),
+        success: function(response) {
+            // Header
+            var documents = JSON.parse(response.reportOutgoingDocuments);
+            var header = JSON.parse(response.reportHeader);
+            console.log(documents)
+            console.log(header);
+            var outgoingTable = ""
+            outgoingTable += '<table id="outgoing-table" class="table table-striped">';
+            outgoingTable += `<thead><tr>`;
+
+            // Iterate over the header array and add each item as a table header
+            header.forEach(function(columnName) {
+                outgoingTable += `<th>${columnName}</th>`;
+            });
+
+            outgoingTable += `</tr></thead>`;
+
+            // Body
+            outgoingTable += `<tbody>`;
+            documents.forEach(data => {
+                var row =  ""
+                row += `<tr>`
+                data.forEach(function(element, index){
+                    row += `<td>${data[index]}</td>`
+                });
+                row  += `</tr>`;
+
+                outgoingTable += row;
+            });
+            outgoingTable += `</tbody>`;
+            
+            $('#outgoing-table').html(outgoingTable);
+
+            documents = JSON.parse(response.reportIncomingDocuments);
+            var header = JSON.parse(response.reportHeader);
+            
+            var incomingTable = ""
+            incomingTable += '<table id="incoming-table" class="table table-striped">';
+            incomingTable += `<thead><tr>`;
+
+            // Iterate over the header array and add each item as a table header
+            header.forEach(function(columnName) {
+                incomingTable += `<th>${columnName}</th>`;
+            });
+
+            incomingTable += `</tr></thead>`;
+
+            // Body
+            incomingTable += `<tbody>`;
+            documents.forEach(data => {
+                var row =  ""
+                row += `<tr>`
+                data.forEach(function(element, index){
+                    row += `<td>${data[index]}</td>`
+                });
+                row  += `</tr>`;
+
+                incomingTable += row;
+            });
+            incomingTable += `</tbody>`;
+            
+            $('#incoming-table').html(incomingTable);
+        }, 
+        complete: function(){
+            $('.loading').hide();
+        }
+    });
+}
 export function getNewDocuments(){
     $.ajax({
         method: "GET",

@@ -4,6 +4,7 @@ namespace App\View\Components\Dashboard;
 
 use App\AccountRole;
 use App\Http\Controllers\ParticipantGroupController;
+use App\Models\Drive;
 use App\Models\Status;
 use App\Models\Type;
 use Closure;
@@ -31,7 +32,12 @@ class DocumentPreview extends Component
             'docTypes'      => Type::all(),
             'docStatuses'   => Status::all(),
             'roles'         => AccountRole::cases(),
-            'groups'        => ParticipantGroupController::showAllGroups()
+            'groups'        => ParticipantGroupController::showAllGroups(),
+            'drives'        => Drive::where('canDocument', true)
+                                    ->where('disabled', false)
+                                    ->whereNot('verified_at', null)
+                                    ->orderBy('id', 'asc')
+                                    ->get()
         ]);
     }
 }

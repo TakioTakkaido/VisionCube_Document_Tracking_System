@@ -216,6 +216,17 @@
                                                 </div>
                                             </div>
 
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <label for="editDocumentFolder">Google Drive to Store Document: </label>
+                                                    <select id="editDocumentFolder" class="editUploadInput" name="category">
+                                                        @foreach ($drives as $drive)
+                                                            <option value="{{$drive->id}}">{{$drive->email}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
                                             <div class="container rounded border p-3 mb-3">
                                                 <div class="row d-flex justify-content-between align-items-center">
                                                     <div class="col-auto text-left">

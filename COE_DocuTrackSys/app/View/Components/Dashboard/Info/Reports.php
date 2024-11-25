@@ -3,6 +3,7 @@
 namespace App\View\Components\Dashboard\Info;
 
 use App\Models\Drive;
+use App\Models\SysInfo;
 use Closure;
 use Illuminate\View\Component;
 use Illuminate\Contracts\View\View;
@@ -27,7 +28,8 @@ class Reports extends Component
                                     ->where('disabled', false)
                                     ->whereNot('verified_at', null)
                                     ->orderBy('id', 'asc')
-                                    ->get()
+                                    ->get(),
+            'systemName'=> SysInfo::first()->name
         ]);
     }
 }

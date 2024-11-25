@@ -48,6 +48,25 @@ class Drive extends Model {
         return $access_token;
     }
 
+    private function folderExists(string $folderId): bool
+    {
+        $apiKey = env('GOOGLE_DRIVE_API_KEY');
+        $url = "https://www.googleapis.com/drive/v3/files/{$folderId}?fields=id&key={$apiKey}";
+
+        $response = Http::get($url);
+
+        if ($response->successful()) {
+            return true; // Folder exists
+        }
+
+        if ($response->status() === 404) {
+            return false; // Folder does not exist
+        }
+
+        // Optionally handle other errors here or log them if needed
+        return false;
+    }
+
     public function createRootFolder(){
         $metadata = [
             'name' => "COE Document Tracking System",
@@ -74,7 +93,7 @@ class Drive extends Model {
 
     public function getDocumentFolder($year, $month){
         // Create Root Folder if it doesn't exist
-        if ($this->rootFolder()->first() == null) {
+        if ($this->rootFolder()->first() == null ) {
             $this->createRootFolder();
         }
 

@@ -22,7 +22,7 @@ class EditDocumentRequest extends FormRequest {
             'series_number' => $series,
             'memo_number' => $memo,
             'files.*' => $file,
-            'files' => 'nullable',
+            'files' => 'nullable|max:5',
             'recipient' => 'required|string|max:255',
             'subject' => 'required|string',
             'category' => 'required|string',

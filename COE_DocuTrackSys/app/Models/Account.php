@@ -43,16 +43,13 @@ class Account extends Authenticatable implements MustVerifyEmail {
         'role',
         'deactivated',
         
-
-        
-
         // Access Functions
         'canUpload',
         'canEdit',
         'canMove',
         'canArchive',
         'canDownload',
-        'canPrint',
+        'canReport',
 
         'lastChangedName'
     ];
