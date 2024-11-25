@@ -466,8 +466,12 @@ Route::middleware([NoDirectAccess::class])->group(function() {
                 ->name('seen');
 
                 // Get the nuber of all New Reports
-                Route::get('/getNewReports', 'getNewReports')
+                Route::get('getNewReports', 'getNewReports')
                 ->name('getNewReports');
+
+                // Show Report
+                Route::get('show/{id}', 'show')
+                ->name('show');
             });
         });
     });

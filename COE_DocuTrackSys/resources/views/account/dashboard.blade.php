@@ -141,8 +141,14 @@ Sanchez, Shane David U.
 {{-- INFORMATION TABLES --}}
 <x-dashboard.info.log />
 
+
+{{-- REPORT PREVIEW --}}
+<x-dashboard.report-preview />
+
 {{-- DOCUMENT PREVIEW --}}
 <x-dashboard.document-preview />
+
+
 
 {{-- Routes retrieving document, since AJAX cannot get this as a link, when inserted directly --}}
 <script>
@@ -240,7 +246,8 @@ Sanchez, Shane David U.
         generateReport: "{{route('report.generate')}}",
         showReports: "{{route('report.showAll')}}",
         seenReport: "{{route('report.seen')}}",
-        getNewReports: "{{route('report.getNewReports')}}"
+        getNewReports: "{{route('report.getNewReports')}}",
+        showReport: "{{route('report.show', ':id')}}"
     };
 </script>
 

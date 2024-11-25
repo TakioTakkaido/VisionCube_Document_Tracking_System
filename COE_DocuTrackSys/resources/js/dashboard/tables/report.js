@@ -59,8 +59,6 @@ $('#generateReportYearBtn').on('click', function(event){
         getReportTable(new Date($('#analyticsYear').data('value')), 'Year')
     }
 
-
-
     var reportDate = moment($('#reportDate').val()).format('YYYY');
     var fileName = $('#reportSystemName').val() + " " + reportDate;
     var snakeFileName = fileName.replace(/\s+/g, '_');
@@ -436,4 +434,46 @@ export function markAsReadReportAll(ids){
         seenReport(ids[i]);
     }
     getNewReports();
+}
+
+export function viewReport(id){
+    $('.loading').show();
+    
+    $('.reportPreviewInfo').hide();
+
+    $.ajax({
+        type: "GET",
+        url: window.routes.showReport.replace(':id', id),
+        success: function (response) {
+
+            $("#reportName").html(response.report.name);
+            $("#reportDriveFolder").html('<strong>Uploaded at: </strong>'+ response.report.drive_folder);
+            
+
+            $('#reportDateGenerated').html(moment(response.report.created_at).format('MMM. D, YYYY hh:kk a'));
+
+            $('#reportPreview').modal('show');
+
+            $('#reportInfoContainer').html(`
+                <iframe 
+                    id="reportInfoIframe"
+                    src=""
+                    style="width: 100%; height: 100%; border:none;"> 
+                </iframe>`);
+
+            $('#reportInfoIframe').attr('src', response.fileLink);
+
+            $('#reportInfoContainer').show();
+        },
+        error: function(response){
+            console.log(response);
+        },
+        beforeSend: function(){
+            $('.loading').show();
+        },
+        complete: function(){
+            $('.loading').hide();
+            $('#loadingReport').hide();
+        }
+    });
 }
